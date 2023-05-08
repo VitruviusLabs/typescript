@@ -10,7 +10,7 @@
   "scripts": {},
   "keywords": [],
   "license": "UNLICENSED",
-  "dependencies": {
+  "devDependencies": {
     "typescript": "^5.0.4"
   }
 }
