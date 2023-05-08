@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "typescript",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The VitruviusLab mono-repository for TypeScript development.",
+  "author": {
+    "name": "VitruviusLab"
+  },
+  "scripts": {},
+  "keywords": [],
+  "license": "UNLICENSED",
+  "dependencies": {
+    "typescript": "^5.0.4"
+  }
+}
