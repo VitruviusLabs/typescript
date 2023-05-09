@@ -5,7 +5,7 @@
 	"allowCompoundWords": true,
 	"dictionaries": ["softwareTerms", "typescript", "node", "html", "css", "bash", "npm"],
 	"words": ["Vitruvius"],
-	"ignoreWords": ["mochawesome"],
+	"ignoreWords": ["mochawesome", "Zamralik"],
 	"flagWords": ["hte"],
 	"ignorePaths": [
 	  "tsconfig.json",
@@ -19,6 +19,9 @@
 	  "CHANGELOG.md",
 	  "pnpm-lock.yaml",
 	  ".eslintrc.json",
-	  "pipeline.yml"
+	  "pipeline.yml",
+	  "reports/",
+	  ".tmp/",
+	  "build/"
 	]
   }

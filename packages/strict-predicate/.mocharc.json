@@ -1,0 +1,12 @@
+{
+	"$schema": "https://json.schemastore.org/mocharc",
+	"extension": [
+	  "js"
+	],
+	"spec": "./.tmp/__tests__/**/*.spec.js",
+	"require": ["./.tmp/__tests__/__init__/setup.js"],
+	"reporter": "mochawesome",
+	"reporter-options": [
+	  "reportDir=./reports/mocha"
+	]
+  }

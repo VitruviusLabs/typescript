@@ -98,6 +98,8 @@ importers:
         specifier: ^5.0.4
         version: 5.0.4
 
+  packages/strict-predicate: {}
+
 packages:
 
   /@ampproject/remapping@2.2.1:

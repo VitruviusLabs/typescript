@@ -1234,17 +1234,11 @@
 			"import/no-extraneous-dependencies": [
 				"error",
 				{
-				"devDependencies": [
-						"**/{__mocks__,__tests__}/**/*.[jt]s?(x)",
-						"**/?(*.)+(spec|test).[jt]s?(x)",
-						"**/setupTests.[jt]s",
-						"**/webpack.*.[jt]s",
-						"**/*.stories.ts?(x)",
-						"*.?(c)js"
-					],
-				"optionalDependencies": true,
-				"peerDependencies": true,
-				"bundledDependencies": true
+					"devDependencies": true,
+					"optionalDependencies": true,
+					"peerDependencies": true,
+					"bundledDependencies": true,
+					"packageDir": "./"
 				}
 			],
 			"import/order": [

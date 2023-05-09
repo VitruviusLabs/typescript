@@ -1,0 +1,54 @@
+{
+	"name": "strict-predicate",
+	"version": "0.1.0",
+	"description": "TypeScript predicates library",
+	"author": "Benjamin Blum <benjamin.blum.98@gmail.com>",
+	"contributors": [
+		"Nicolas Cordier-Cerezo <nicolas.cordier@outlook.com>"
+	],
+	"homepage": "https://github.com/Zamralik/strict-predicate#readme",
+	"bugs": "https://github.com/Zamralik/strict-predicate/issues",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Zamralik/strict-predicate.git"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": " https://registry.npmjs.org"
+	},
+	"type": "module",
+	"exports": {
+		"esm": {
+			"import": "./build/esm/index.js"
+		},
+		"types": {
+			"import": "./build/types/index.d.ts"
+		}
+	},
+	"scripts": {
+		"clean": "rm -rfv reports coverage build dist lib .eslintcache",
+		"compile": "tsc -p tsconfig.build.json",
+		"build": "pnpm clean && pnpm compile",
+		"eslint:check": "eslint .",
+		"eslint:fix": "eslint . --fix",
+		"test:compile": "rm -rf ./.tmp && tsc -p tsconfig.mocha.json",
+		"test:unit:run": "pnpm test:compile && pnpm test:unit",
+		"test:unit": "NODE_ENV=test TS_NODE_PROJECT=./tsconfig.mocha.json c8 mocha --parallel",
+		"test:mutation": "stryker run",
+		"ts:check": "tsc -p tsconfig.json --noEmit",
+		"spell:check": "cspell -c ../../.vscode/cspell.json ."
+	},
+	"keywords": [
+		"assert",
+		"assertion",
+		"guard",
+		"predicate",
+		"strict",
+		"ts",
+		"type",
+		"type-guard",
+		"typeguard",
+		"typescript"
+	]
+}

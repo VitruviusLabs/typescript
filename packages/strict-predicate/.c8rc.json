@@ -1,0 +1,23 @@
+{
+  "src": "./.tmp/src",
+  "exclude": [
+    ".tmp/**/__tests__/**",
+	".tmp/src/Types/**/*.*",
+	".tmp/src/**/index.js",
+	".tmp/src/**/_index.js"
+  ],
+  "extension": [
+    ".js"
+  ],
+  "reporter": [
+    "html"
+  ],
+  "report-dir": "./reports/c8",
+  "skip-full": true,
+  "check-coverage": true,
+  "all": true,
+  "statements": 100,
+  "branches": 100,
+  "functions": 100,
+  "lines": 100
+}
