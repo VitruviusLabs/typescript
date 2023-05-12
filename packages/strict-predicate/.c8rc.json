@@ -1,13 +1,13 @@
 {
-  "src": "./.tmp/src",
+  "src": "./src",
   "exclude": [
-    ".tmp/**/__tests__/**",
-	".tmp/src/Types/**/*.*",
-	".tmp/src/**/index.js",
-	".tmp/src/**/_index.js"
+    "**/__tests__/**",
+	"**/Types/**/*.*",
+	"**/index.ts",
+	"**/_index.ts"
   ],
   "extension": [
-    ".js"
+    ".ts"
   ],
   "reporter": [
     "html"

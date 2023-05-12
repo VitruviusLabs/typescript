@@ -5,9 +5,5 @@
 	],
 	"spec": "./__tests__/**/*.spec.ts",
 	"require": ["./__tests__/__init__/setup.ts"],
-	"loader": "ts-node/esm",
-	"reporter": "mochawesome",
-	"reporter-options": [
-	  "reportDir=./reports/mocha"
-	]
+	"loader": "ts-node/esm"
 }

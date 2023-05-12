@@ -2,7 +2,6 @@
 "$schema": "https://json.schemastore.org/tsconfig",
 "compileOnSave": false,
 "compilerOptions": {
-    "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "NodeNext",
@@ -16,11 +15,6 @@
     "skipDefaultLibCheck": true,
     "newLine": "LF",
     "baseUrl": ".",
-    "paths": {
-    "@vitruvius-lab/strict-predicate": [
-        "packages/strict-predicate/src/index.ts"
-    ]
-    },
     "allowJs": false,
     "checkJs": false,
     "allowUnreachableCode": false,
@@ -50,5 +44,5 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": false
 },
-"exclude": ["node_modules", "tmp"]
+"exclude": ["node_modules"]
 }
