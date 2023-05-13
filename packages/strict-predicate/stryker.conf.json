@@ -31,7 +31,10 @@
 	"checkers": ["typescript"],
 	"tsconfigFile": "tsconfig.stryker.json",
 	"plugins": [
-		"@stryker-mutator/mocha-runner",
-		"@stryker-mutator/typescript-checker"
-	]
+		"@stryker-mutator/typescript-checker",
+		"@stryker-mutator/mocha-runner"
+	],
+	"typescriptChecker": {
+	  "prioritizePerformanceOverAccuracy": false
+	}
 }
