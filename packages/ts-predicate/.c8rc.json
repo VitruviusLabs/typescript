@@ -1,7 +1,7 @@
 {
   "src": "./src",
   "exclude": [
-    "**/__tests__/**",
+    "**/test/**",
 	"**/Types/**/*.*",
 	"**/index.ts",
 	"**/_index.ts"

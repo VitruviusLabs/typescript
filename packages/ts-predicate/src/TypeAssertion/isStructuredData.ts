@@ -1,13 +1,14 @@
-import { hasNullableProperty, isDefined } from "../TypeGuard/_index.js";
-
 import { hasAllowedKeys } from "./hasAllowedKeys.js";
 
 import { isRecord } from "./isRecord.js";
 
-import type {
-	TypeAssertionPropertyDescriptor,
-	TypeAssertionStructuredDataDescriptor,
-} from "../Types/_index.js";
+import { buildError } from "./utils/buildError.js";
+
+import { isTypeAssertionStructuredDataDescriptor } from "./utils/isTypeAssertionStructuredDataDescriptor.js";
+
+import { validateProperty } from "./utils/validateProperty.js";
+
+import type { TypeAssertionStructuredDataDescriptor } from "../Types/_index.js";
 
 function isStructuredData<Type>(
 	value: unknown,
@@ -20,48 +21,34 @@ function isStructuredData<Type>(
 
 	hasAllowedKeys(value, DESCRIPTOR_KEYS);
 
+	const ERRORS: Array<Error> = [];
+
 	DESCRIPTOR_KEYS.forEach(
 		(key: string): void =>
 		{
-			// @ts-expect-error: Key mapping
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Key mapping
-			const PROPERTY_DESCRIPTOR: TypeAssertionPropertyDescriptor<unknown> = descriptor[key];
-
-			if (!hasNullableProperty(value, key))
-			{
-				if (PROPERTY_DESCRIPTOR.optional ?? false)
-				{
-					return;
-				}
-
-				throw new Error(`missing required property: ${key}`);
-			}
-
-			if (!isDefined(value[key]))
-			{
-				if (PROPERTY_DESCRIPTOR.nullable ?? false)
-				{
-					return;
-				}
-
-				throw new Error(`property ${key} is not nullable`);
-			}
-
 			try
 			{
-				PROPERTY_DESCRIPTOR.test(value[key]);
+				// @ts-expect-error: Key mapping
+				const PROPERTY_DESCRIPTOR: unknown = descriptor[key];
+
+				if (!isTypeAssertionStructuredDataDescriptor(PROPERTY_DESCRIPTOR))
+				{
+					throw new Error(`Invalid property descriptor for "${key}"`);
+				}
+
+				validateProperty(value, key, PROPERTY_DESCRIPTOR);
 			}
 			catch (error: unknown)
 			{
-				throw new Error(
-					`property ${key} is invalid`,
-					/* c8 ignore next 2 */
-					// Stryker disable next-line ObjectLiteral: cause
-					(error instanceof Error) ? { cause: error } : undefined
-				);
+				ERRORS.push(buildError(error, key));
 			}
 		}
 	);
+
+	if (ERRORS.length > 0)
+	{
+		throw new AggregateError(ERRORS, "Some properties are invalid");
+	}
 }
 
 export { isStructuredData };

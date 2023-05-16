@@ -27,13 +27,15 @@
 		}
 	},
 	"scripts": {
-		"clean": "rm -rfv reports coverage build dist lib .eslintcache",
+		"clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
 		"compile": "tsc -p tsconfig.build.json",
 		"build": "pnpm clean && pnpm compile",
 		"eslint:check": "eslint .",
 		"eslint:fix": "eslint . --fix",
-		"test:unit:stryker": "NODE_ENV=test TS_NODE_PROJECT=./tsconfig.stryker.json mocha --config .mocharc.stryker.json",
-		"test:unit": "NODE_ENV=test TS_NODE_PROJECT=./tsconfig.mocha.json c8 mocha --parallel",
+		"test:unit": "pnpm test:unit:build && pnpm test:unit:run",
+		"test:unit:build": "tsc -p tsconfig.test.json",
+		"test:unit:run": "node --test ./tmp/test-build/test/**/*.test.js",
+		"test:unit:stryker": "pnpm test:unit",
 		"test:mutation": "stryker run",
 		"ts:check": "tsc -p tsconfig.json --noEmit",
 		"spell:check": "cspell -c ../../.vscode/cspell.json ."

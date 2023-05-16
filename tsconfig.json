@@ -2,11 +2,10 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"compileOnSave": false,
 	"compilerOptions": {
-		"sourceMap": true,
+		"sourceMap": false,
 		"declaration": false,
 		"moduleResolution": "NodeNext",
 		"importHelpers": true,
-		"noEmit": true,
 		"pretty": true,
 		"target": "ESNext",
 		"module": "NodeNext",

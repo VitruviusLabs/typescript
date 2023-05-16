@@ -1,14 +1,14 @@
 import { randomUUID } from "node:crypto";
 
-import { isMockedDependency } from "./isMockedDependency.js";
+import { isMockedDependency } from "./Utils/isMockedDependency.js";
 
-import { isMockedModule } from "./isMockedModule.js";
+import { isMockedModule } from "./Utils/isMockedModule.js";
 
-import { setMockedModule } from "./mockStorage.js";
+import { setMockedModule } from "./Utils/mockStorage.js";
 
 import { prefix } from "./prefix.js";
 
-import { resolveModuleIdentifier } from "./resolveModuleIdentifier.js";
+import { resolveModuleIdentifier } from "./Utils/resolveModuleIdentifier.js";
 
 import type { MockedDependency } from "./Type/MockedDependency.js";
 

@@ -6,10 +6,9 @@ import { isDefined } from "./isDefined.js";
 
 import { isRecord } from "./isRecord.js";
 
-import type {
-	TypeGuardPropertyDescriptor,
-	TypeGuardStructuredDataDescriptor,
-} from "../Types/_index.js";
+import { isTypeGuardPropertyDescriptor } from "./utils/isTypeAssertionStructuredDataDescriptor.js";
+
+import type { TypeGuardStructuredDataDescriptor } from "../Types/_index.js";
 
 function isStructuredData<Type>(
 	value: unknown,
@@ -32,8 +31,12 @@ function isStructuredData<Type>(
 		(key: string): boolean =>
 		{
 			// @ts-expect-error -- Key mapping
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Key mapping
-			const PROPERTY_DESCRIPTOR: TypeGuardPropertyDescriptor<unknown> = descriptor[key];
+			const PROPERTY_DESCRIPTOR: unknown = descriptor[key];
+
+			if (!isTypeGuardPropertyDescriptor(PROPERTY_DESCRIPTOR))
+			{
+				throw new Error(`Invalid property descriptor for ${key}`);
+			}
 
 			if (!hasNullableProperty(value, key))
 			{

@@ -4,11 +4,13 @@ import { fileURLToPath } from "node:url";
 
 import { ModuleFormat } from "./Type/ModuleFormat.js";
 
-import { isMockingInfos } from "./isMockingInfos.js";
+import { buildCause } from "./Utils/buildCause.js";
+
+import { isMockingInfos } from "./Utils/isMockingInfos.js";
+
+import { resolveModuleIdentifier } from "./Utils/resolveModuleIdentifier.js";
 
 import { prefix } from "./prefix.js";
-
-import { resolveModuleIdentifier } from "./resolveModuleIdentifier.js";
 
 import type { LoadContext } from "./Type/LoadContext.js";
 
@@ -67,10 +69,7 @@ async function load(module_identifier: string, context: LoadContext, next_load: 
 	}
 	catch (error: unknown)
 	{
-		throw new Error(
-			`Unable to retrieve module ${INFOS.moduleIdentifier}`,
-			error instanceof Error ? { cause: error } : undefined
-		);
+		throw new Error(`Unable to retrieve module ${INFOS.moduleIdentifier}`, buildCause(error));
 	}
 
 	source = source.replaceAll(

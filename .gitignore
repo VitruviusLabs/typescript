@@ -3,6 +3,7 @@
 
 ### Custom ##
 .tmp/
+tmp/
 reports/
 build/
 .stryker-tmp
