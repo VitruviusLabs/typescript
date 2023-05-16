@@ -26,6 +26,9 @@
 			"import": "./build/types/index.d.ts"
 		}
 	},
+	"files": [
+		"build"
+	],
 	"scripts": {
 		"clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
 		"compile": "tsc -p tsconfig.build.json",
@@ -39,7 +42,15 @@
 		"test:unit:stryker": "pnpm test:unit",
 		"test:mutation": "stryker run",
 		"ts:check": "tsc -p tsconfig.json --noEmit",
-		"spell:check": "cspell -c ../../.vscode/cspell.json ."
+		"spell:check": "cspell -c ../../.vscode/cspell.json .",
+		"ci:lint": "pnpm eslint:check",
+		"ci:ts:check": "pnpm ts:check",
+		"ci:spell:check": "pnpm spell:check",
+		"ci:test:unit": "pnpm test:unit",
+		"ci:full": "pnpm ci:lint && pnpm ci:ts:check && pnpm ci:spell:check && pnpm ci:test:unit",
+		"ci:publish": "pnpm publish --access public",
+		"ci:publish:dry": "pnpm publish --access public --dry-run --no-git-checks",
+		"ci:build": "pnpm build"
 	},
 	"keywords": [
 		"assert",
