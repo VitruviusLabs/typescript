@@ -1,41 +1,51 @@
 {
-  "folders": [
-    {
-      "name": "nx-workspace",
-      "path": "."
-    },
-    {
-      "name": "strict-predicate",
-      "path": "./packages/strict-predicate"
-    }
-  ],
-  "settings": {
-    // Linters & prettier extensions settings
-    "files.trimTrailingWhitespace": true,
-    "eslint.validate": ["javascript", "typescript"],
-    "eslint.workingDirectories": ["./packages/strict-predicate"],
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true,
-      "source.fixAll.tslint": false // TSlint is deprecated so we automatically disable it.
-    },
-    "prettier.configPath": ".prettierrc",
-    "eslint.format.enable": true,
-    "eslint.packageManager": "pnpm",
-    // Code spell checker extension settings
-    "cSpell.enabled": true,
-    // UX
-    "explorer.fileNesting.enabled": true,
-    "search.exclude": {
-      "**/dist": true,
-      "**/lib": true,
-      "**/.yarn": true
-	},
-	// TypeScript
-	"js/ts.implicitProjectConfig.target": "ESNext",
-	"typescript.tsdk": "./node_modules/typescript/bin",
-	"typescript.tsserver.maxTsServerMemory": 4096,
-	"typescript.preferences.quoteStyle": "double"
-  }
+	"folders": [
+		{
+			"name": "nx-workspace",
+			"path": "."
+		},
+		{
+			"name": "ts-predicate",
+			"path": "./packages/ts-predicate"
+		},
+		{
+			"name": "mock-module",
+			"path": "./packages/mock-module"
+		}
+	],
+	"settings": {
+		// Linters & prettier extensions settings
+		"files.trimTrailingWhitespace": true,
+		"eslint.validate": [
+			"javascript",
+			"typescript"
+		],
+		"eslint.workingDirectories": [
+			"./packages/ts-predicate",
+			"./packages/mock-module"
+		],
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.codeActionsOnSave": {
+			"source.fixAll.eslint": true,
+			"source.fixAll.tslint": false // TSlint is deprecated so we automatically disable it.
+		},
+		"prettier.configPath": ".prettierrc",
+		"eslint.format.enable": true,
+		"eslint.packageManager": "pnpm",
+		// Code spell checker extension settings
+		"cSpell.enabled": true,
+		// UX
+		"explorer.fileNesting.enabled": true,
+		"search.exclude": {
+			"**/dist": true,
+			"**/lib": true,
+			"**/.yarn": true
+		},
+		// TypeScript
+		"js/ts.implicitProjectConfig.target": "ESNext",
+		"typescript.tsdk": "./node_modules/typescript/bin",
+		"typescript.tsserver.maxTsServerMemory": 4096,
+		"typescript.preferences.quoteStyle": "double"
+	}
 }

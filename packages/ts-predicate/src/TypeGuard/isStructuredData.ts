@@ -8,12 +8,12 @@ import { isRecord } from "./isRecord.js";
 
 import type {
 	TypeGuardPropertyDescriptor,
-	TypeGuardStructureDescriptor,
+	TypeGuardStructuredDataDescriptor,
 } from "../Types/_index.js";
 
 function isStructuredData<Type>(
 	value: unknown,
-	descriptor: TypeGuardStructureDescriptor<Type>
+	descriptor: TypeGuardStructuredDataDescriptor<Type>
 ): value is Type
 {
 	if (!isRecord(value))

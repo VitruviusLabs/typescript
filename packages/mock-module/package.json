@@ -1,17 +1,17 @@
 {
-	"name": "strict-predicate",
+	"name": "@vitruvius-lab/mock-module",
 	"version": "0.1.0",
-	"description": "TypeScript predicates library",
+	"description": "Module mocking library",
 	"author": "Benjamin Blum <benjamin.blum.98@gmail.com>",
 	"contributors": [
 		"Nicolas Cordier-Cerezo <nicolas.cordier@outlook.com>"
 	],
-	"homepage": "https://github.com/Zamralik/strict-predicate#readme",
-	"bugs": "https://github.com/Zamralik/strict-predicate/issues",
+	"homepage": "https://github.com/VitruviusLab/typescript/tree/main/packages/mock-module#readme",
+	"bugs": "https://github.com/VitruviusLab/typescript/issues",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Zamralik/strict-predicate.git"
+		"url": "https://github.com/VitruviusLab/typescript.git"
 	},
 	"publishConfig": {
 		"access": "public",
@@ -38,16 +38,14 @@
 		"ts:check": "tsc -p tsconfig.json --noEmit",
 		"spell:check": "cspell -c ../../.vscode/cspell.json ."
 	},
+	"dependencies": {
+		"@vitruvius-lab/ts-predicate": "workspace:*"
+	},
 	"keywords": [
-		"assert",
-		"assertion",
-		"guard",
-		"predicate",
-		"strict",
-		"ts",
-		"type",
-		"type-guard",
-		"typeguard",
-		"typescript"
+		"test",
+		"testing",
+		"unit",
+		"mock",
+		"module"
 	]
 }

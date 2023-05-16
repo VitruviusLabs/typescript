@@ -1,0 +1,53 @@
+{
+	"name": "@vitruvius-lab/ts-predicate",
+	"version": "0.1.0",
+	"description": "TypeScript predicates library",
+	"author": "Benjamin Blum <benjamin.blum.98@gmail.com>",
+	"contributors": [
+		"Nicolas Cordier-Cerezo <nicolas.cordier@outlook.com>"
+	],
+	"homepage": "https://github.com/VitruviusLab/typescript/tree/main/packages/ts-predicate#readme",
+	"bugs": "https://github.com/VitruviusLab/typescript/issues",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/VitruviusLab/typescript.git"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": " https://registry.npmjs.org"
+	},
+	"type": "module",
+	"exports": {
+		"esm": {
+			"import": "./build/esm/index.js"
+		},
+		"types": {
+			"import": "./build/types/index.d.ts"
+		}
+	},
+	"scripts": {
+		"clean": "rm -rfv reports coverage build dist lib .eslintcache",
+		"compile": "tsc -p tsconfig.build.json",
+		"build": "pnpm clean && pnpm compile",
+		"eslint:check": "eslint .",
+		"eslint:fix": "eslint . --fix",
+		"test:unit:stryker": "NODE_ENV=test TS_NODE_PROJECT=./tsconfig.stryker.json mocha --config .mocharc.stryker.json",
+		"test:unit": "NODE_ENV=test TS_NODE_PROJECT=./tsconfig.mocha.json c8 mocha --parallel",
+		"test:mutation": "stryker run",
+		"ts:check": "tsc -p tsconfig.json --noEmit",
+		"spell:check": "cspell -c ../../.vscode/cspell.json ."
+	},
+	"keywords": [
+		"assert",
+		"assertion",
+		"guard",
+		"predicate",
+		"strict",
+		"ts",
+		"type",
+		"type-guard",
+		"typeguard",
+		"typescript"
+	]
+}

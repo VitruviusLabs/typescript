@@ -6,12 +6,12 @@ import { isRecord } from "./isRecord.js";
 
 import type {
 	TypeAssertionPropertyDescriptor,
-	TypeAssertionStructureDescriptor,
+	TypeAssertionStructuredDataDescriptor,
 } from "../Types/_index.js";
 
 function isStructuredData<Type>(
 	value: unknown,
-	descriptor: TypeAssertionStructureDescriptor<Type>
+	descriptor: TypeAssertionStructuredDataDescriptor<Type>
 ): asserts value is Type
 {
 	isRecord(value);

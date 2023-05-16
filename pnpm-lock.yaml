@@ -95,7 +95,13 @@ importers:
         specifier: ^5.0.4
         version: 5.0.4
 
-  packages/strict-predicate: {}
+  packages/mock-module:
+    dependencies:
+      '@vitruvius-lab/ts-predicate':
+        specifier: workspace:*
+        version: link:../ts-predicate
+
+  packages/ts-predicate: {}
 
 packages:
 
