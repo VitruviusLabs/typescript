@@ -33,10 +33,7 @@ function isStructuredData<Type>(
 			// @ts-expect-error -- Key mapping
 			const PROPERTY_DESCRIPTOR: unknown = descriptor[key];
 
-			if (!isTypeGuardPropertyDescriptor(PROPERTY_DESCRIPTOR))
-			{
-				throw new Error(`Invalid property descriptor for ${key}`);
-			}
+			isTypeGuardPropertyDescriptor(PROPERTY_DESCRIPTOR, key);
 
 			if (!hasNullableProperty(value, key))
 			{

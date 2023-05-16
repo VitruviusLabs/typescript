@@ -1,4 +1,4 @@
-import { AssertionError, strictEqual } from "node:assert";
+import { deepStrictEqual, strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
@@ -27,19 +27,7 @@ describe(
 			{
 				const RESULT: unknown = buildError("lorem ipsum", "test");
 
-				if (!(RESULT instanceof Error))
-				{
-					throw new AssertionError({
-						message: "Expect value to be an instance of Error"
-					});
-				}
-
-				if (RESULT.message !== "lorem ipsum")
-				{
-					throw new AssertionError({
-						message: "Expect value's message to be the given string"
-					});
-				}
+				deepStrictEqual(RESULT, new Error("lorem ipsum"));
 			}
 		);
 
@@ -53,19 +41,7 @@ describe(
 				{
 					const RESULT: unknown = buildError(ITEM, "test");
 
-					if (!(RESULT instanceof Error))
-					{
-						throw new AssertionError({
-							message: "Expect value to be an instance of Error"
-						});
-					}
-
-					if (RESULT.message !== 'An unknown error occured when validating property "test"')
-					{
-						throw new AssertionError({
-							message: "Expect value's message to be the given string"
-						});
-					}
+					deepStrictEqual(RESULT, new Error('An unknown error occured when validating property "test"'));
 				}
 			}
 		);

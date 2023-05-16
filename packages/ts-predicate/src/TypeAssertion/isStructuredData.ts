@@ -31,10 +31,7 @@ function isStructuredData<Type>(
 				// @ts-expect-error: Key mapping
 				const PROPERTY_DESCRIPTOR: unknown = descriptor[key];
 
-				if (!isTypeAssertionStructuredDataDescriptor(PROPERTY_DESCRIPTOR))
-				{
-					throw new Error(`Invalid property descriptor for "${key}"`);
-				}
+				isTypeAssertionStructuredDataDescriptor(PROPERTY_DESCRIPTOR, key);
 
 				validateProperty(value, key, PROPERTY_DESCRIPTOR);
 			}

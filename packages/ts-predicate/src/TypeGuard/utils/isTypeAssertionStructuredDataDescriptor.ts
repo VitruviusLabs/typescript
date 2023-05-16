@@ -2,9 +2,12 @@ import { isObject } from "../isObject.js";
 
 import type { TypeGuardPropertyDescriptor } from "../../index.js";
 
-function isTypeGuardPropertyDescriptor(value: unknown): value is TypeGuardPropertyDescriptor<unknown>
+function isTypeGuardPropertyDescriptor(value: unknown, property_name: string): asserts value is TypeGuardPropertyDescriptor<unknown>
 {
-	return isObject(value);
+	if (!isObject(value))
+	{
+		throw new Error(`Invalid property descriptor for ${property_name}`);
+	}
 }
 
 export { isTypeGuardPropertyDescriptor };

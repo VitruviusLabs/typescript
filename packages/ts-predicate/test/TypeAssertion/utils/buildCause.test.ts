@@ -1,12 +1,8 @@
-import { AssertionError, strictEqual } from "node:assert";
+import { deepStrictEqual, strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
 import { buildCause } from "../../../src/TypeAssertion/utils/buildCause.js";
-
-import { hasNullableProperty } from "../../../src/TypeGuard/hasNullableProperty.js";
-
-import { isRecord } from "../../../src/TypeGuard/isRecord.js";
 
 import { getInvertedValues } from "../../utils.js";
 
@@ -22,26 +18,12 @@ describe(
 
 				const RESULT: unknown = buildCause(ERROR);
 
-				if (!isRecord(RESULT))
-				{
-					throw new AssertionError({
-						message: "Expected value to be an object"
-					});
-				}
-
-				if (!hasNullableProperty(RESULT, "cause"))
-				{
-					throw new AssertionError({
-						message: 'Expected value to have a "cause" property'
-					});
-				}
-
-				if (RESULT.cause === ERROR)
-				{
-					throw new AssertionError({
-						message: 'Expected property "cause" to be the given error'
-					});
-				}
+				deepStrictEqual(
+					RESULT,
+					{
+						cause: ERROR
+					}
+				);
 			}
 		);
 
