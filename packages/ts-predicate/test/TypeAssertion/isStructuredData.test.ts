@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isStructuredData } from "../../src/TypeAssertion/isStructuredData.js";
 
-import { BaseType, getInvertedValues, testError } from "../utils.js";
+import { BaseType, getInvertedValues, testError } from "../common/utils.js";
 
 import type { TypeAssertionStructuredDataDescriptor } from "../../src/Types/TypeAssertionStructuredDataDescriptor.js";
 

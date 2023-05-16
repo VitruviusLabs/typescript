@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isString } from "../../src/TypeAssertion/isString.js";
 
-import { BaseType, getInvertedValues, getValues, testError } from "../utils.js";
+import { BaseType, getInvertedValues, getValues, testError } from "../common/utils.js";
 
 describe(
 	"TypeAssertion / isString",

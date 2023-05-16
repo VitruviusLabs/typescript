@@ -1,3 +1,7 @@
-type MockedDependency = Record<string, unknown>;
+interface MockedDependency
+{
+	[key: string]: unknown;
+	default?: unknown;
+}
 
 export type { MockedDependency };

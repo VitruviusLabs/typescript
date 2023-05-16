@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isPopulatedArray } from "../../src/TypeGuard/isPopulatedArray.js";
 
-import { BaseType, getInvertedValues } from "../utils.js";
+import { BaseType, getInvertedValues } from "../common/utils.js";
 
 function isNumberTest(value: unknown): value is number
 {

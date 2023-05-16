@@ -1,63 +1,18 @@
-const enum BaseType
-// eslint-disable-next-line @typescript-eslint/indent -- Buggy
-{
-	NULLISH = "nullish",
-	BOOLEAN = "boolean",
-	INTEGER = "integer",
-	REAL = "real",
-	INFINITY = "infinity",
-	STRING = "string",
-	SYMBOL = "symbol",
-	ARRAY = "array",
-	RECORD = "record",
-	INSTANTIATED = "instantiated",
-	CALLABLE = "callable",
-	CONSTRUCTIBLE = "constructible",
-}
+/* eslint-disable max-classes-per-file -- Test */
 
-const enum GroupType
-// eslint-disable-next-line @typescript-eslint/indent -- Buggy
-{
-	FUNCTION_CLASS = "function-class",
-	NUMBER = "number",
-	FINITE = "finite",
-	OBJECT = "object",
-}
+import { BaseType } from "./BaseType.js";
 
-class DummyClass
-{
-	public static Method(): void { }
+import { DummyClass } from "./DummyClass.js";
 
-	public static async AsyncMethod(): Promise<void> { }
+import { GroupType } from "./GroupType.js";
 
-	public method(): void { }
+import { OldDummyClass } from "./OldDummyClass.js";
 
-	public async asyncMethod(): Promise<void> { }
-}
+import type { OldClassInstance } from "./OldClassInstance.js";
 
-interface OldClassStyle
-{
-	// eslint-disable-next-line @typescript-eslint/naming-convention -- Old class notation
-	Method: () => void;
-	// eslint-disable-next-line @typescript-eslint/naming-convention -- Old class notation
-	AsyncMethod: () => Promise<void>;
-	new(): typeof OldDummyClass;
-}
+const DUMMY: DummyClass = new DummyClass();
 
-// @ts-expect-error: old style class
-// eslint-disable-next-line @typescript-eslint/naming-convention -- Old class notation
-const OldDummyClass: OldClassStyle = function OldDummyClass() { };
-
-OldDummyClass.Method = function (): void { };
-
-OldDummyClass.AsyncMethod = async function (): Promise<void> { };
-
-OldDummyClass.prototype.method = function (): void { };
-
-OldDummyClass.prototype.asyncMethod = async function (): Promise<void> { };
-
-const DUMMY = new DummyClass();
-const OLD_DUMMY = new OldDummyClass();
+const OLD_DUMMY: OldClassInstance = new OldDummyClass();
 
 function expandTypes(types: Array<BaseType | GroupType>): Array<BaseType>
 {
@@ -118,15 +73,20 @@ function getValuesForType(type: BaseType): Array<unknown>
 				0,
 				-0,
 				1,
+				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				-1,
+				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				Number.MIN_SAFE_INTEGER + 4,
+				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				Number.MAX_SAFE_INTEGER - 4,
 			];
 
 		case BaseType.REAL:
 
 			return [
+				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				Number.MIN_SAFE_INTEGER - 4,
+				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				Number.MAX_SAFE_INTEGER + 4,
 				Number.MIN_VALUE,
 				-Number.MIN_VALUE,
@@ -152,7 +112,9 @@ function getValuesForType(type: BaseType): Array<unknown>
 		case BaseType.SYMBOL:
 
 			return [
+				// eslint-disable-next-line symbol-description -- Test
 				Symbol(),
+				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				Symbol(42),
 				Symbol("local"),
 				Symbol.for("global"),
@@ -163,6 +125,7 @@ function getValuesForType(type: BaseType): Array<unknown>
 
 			return [
 				[],
+				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				[1, 2, 3],
 			];
 
@@ -171,6 +134,7 @@ function getValuesForType(type: BaseType): Array<unknown>
 			return [
 				Object.create(null),
 				{},
+				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				{ answer: 42 },
 			];
 
@@ -185,14 +149,19 @@ function getValuesForType(type: BaseType): Array<unknown>
 		case BaseType.CALLABLE:
 
 			return [
-				() => { },
-				async function () { },
+				// eslint-disable-next-line @typescript-eslint/no-empty-function -- anonymous function
+				(): void => { },
+				// eslint-disable-next-line @typescript-eslint/no-empty-function -- anonymous function
+				async function (): Promise<void> { },
+				// eslint-disable-next-line @typescript-eslint/unbound-method -- static method
 				DummyClass.Method,
+				// eslint-disable-next-line @typescript-eslint/unbound-method -- static method
 				DummyClass.AsyncMethod,
+				// eslint-disable-next-line @typescript-eslint/unbound-method -- method
 				DUMMY.method,
+				// eslint-disable-next-line @typescript-eslint/unbound-method -- method
 				DUMMY.asyncMethod,
 				OldDummyClass.AsyncMethod,
-				// @ts-expect-error: old class style
 				OLD_DUMMY.asyncMethod,
 			];
 
@@ -200,13 +169,17 @@ function getValuesForType(type: BaseType): Array<unknown>
 
 			return [
 				class { },
-				function () { },
+				// eslint-disable-next-line @typescript-eslint/no-empty-function -- anonymous function
+				function (): void { },
 				DummyClass,
 				OldDummyClass,
 				OldDummyClass.Method,
-				// @ts-expect-error: old class notation
 				OLD_DUMMY.method,
 			];
+
+		default:
+
+			throw new Error("Impossible case");
 	}
 }
 
@@ -235,7 +208,7 @@ function getInvertedValues(...excluded_types: Array<BaseType | GroupType>): Arra
 	const EXCLUDED_TYPES: Array<BaseType> = expandTypes(excluded_types);
 
 	const INCLUDED_TYPES: Array<BaseType> = ALL_TYPES.filter(
-		(type) =>
+		(type: BaseType): boolean =>
 		{
 			return !EXCLUDED_TYPES.includes(type);
 		}
@@ -262,10 +235,12 @@ function testError(value: unknown): true
 export
 {
 	BaseType,
-	GroupType,
-	getValues,
-	getInvertedValues,
 	DummyClass,
+	getInvertedValues,
+	getValues,
+	GroupType,
 	OldDummyClass,
 	testError,
 };
+
+/* eslint-enable max-classes-per-file -- Test */

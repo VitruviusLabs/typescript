@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { getDetailedType } from "../../src/TypeHint/getDetailedType.js";
 
-import { BaseType, DummyClass, OldDummyClass, getValues } from "../utils.js";
+import { BaseType, DummyClass, OldDummyClass, getValues } from "../common/utils.js";
 
 const DUMMY = new DummyClass();
 const OLD_DUMMY = new OldDummyClass();
@@ -147,9 +147,7 @@ describe(
 					async function () { },
 					OldDummyClass.Method,
 					OldDummyClass.AsyncMethod,
-					// @ts-expect-error: old class notation
 					OLD_DUMMY.method,
-					// @ts-expect-error: old class notation
 					OLD_DUMMY.asyncMethod,
 					// anonymous version of trapDummy
 					function ()

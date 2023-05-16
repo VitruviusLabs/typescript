@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { getName } from "../../src/TypeHint/getName.js";
 
-import { DummyClass, GroupType, OldDummyClass, getInvertedValues } from "../utils.js";
+import { DummyClass, GroupType, OldDummyClass, getInvertedValues } from "../common/utils.js";
 
 const DUMMY = new DummyClass();
 

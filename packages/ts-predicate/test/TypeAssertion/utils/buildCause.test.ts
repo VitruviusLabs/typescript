@@ -4,10 +4,10 @@ import { describe, it } from "node:test";
 
 import { buildCause } from "../../../src/TypeAssertion/utils/buildCause.js";
 
-import { getInvertedValues } from "../../utils.js";
+import { getInvertedValues } from "../../common/utils.js";
 
 describe(
-	"TypeAssertion / utils / buildCause",
+	"TypeAssertion / common/utils / buildCause",
 	(): void =>
 	{
 		it(

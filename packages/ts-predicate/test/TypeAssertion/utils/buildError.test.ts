@@ -4,10 +4,10 @@ import { describe, it } from "node:test";
 
 import { buildError } from "../../../src/TypeAssertion/utils/buildError.js";
 
-import { BaseType, getInvertedValues } from "../../utils.js";
+import { BaseType, getInvertedValues } from "../../common/utils.js";
 
 describe(
-	"TypeAssertion / utils / buildError",
+	"TypeAssertion / common/utils / buildError",
 	(): void =>
 	{
 		it(
@@ -41,7 +41,7 @@ describe(
 				{
 					const RESULT: unknown = buildError(ITEM, "test");
 
-					deepStrictEqual(RESULT, new Error('An unknown error occured when validating property "test"'));
+					deepStrictEqual(RESULT, new Error('An unknown error occurred when validating property "test"'));
 				}
 			}
 		);

@@ -4,10 +4,10 @@ import { describe, it } from "node:test";
 
 import { isTypeAssertionStructuredDataDescriptor } from "../../../src/TypeAssertion/utils/isTypeAssertionStructuredDataDescriptor.js";
 
-import { GroupType, getInvertedValues, getValues, testError } from "../../utils.js";
+import { GroupType, getInvertedValues, getValues, testError } from "../../common/utils.js";
 
 describe(
-	"TypeGuard / utils / isTypeAssertionStructuredDataDescriptor",
+	"TypeGuard / common/utils / isTypeAssertionStructuredDataDescriptor",
 	(): void =>
 	{
 		it(

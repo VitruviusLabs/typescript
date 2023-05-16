@@ -1,10 +1,10 @@
-import { TypeGuard } from "@vitruvius-lab/ts-predicate";
+import { TypeAssertion } from "@vitruvius-lab/ts-predicate";
 
 import type { MockingInfos } from "../Type/MockingInfos.js";
 
-function isMockingInfos(value: unknown): value is MockingInfos
+function isMockingInfos(value: unknown): asserts value is MockingInfos
 {
-	return TypeGuard.isStructuredData<MockingInfos>(
+	return TypeAssertion.isStructuredData<MockingInfos>(
 		value,
 		{
 			token: {

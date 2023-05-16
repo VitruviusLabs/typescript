@@ -4,10 +4,10 @@ import { describe, it } from "node:test";
 
 import { isTypeGuardPropertyDescriptor } from "../../../src/TypeGuard/utils/isTypeAssertionStructuredDataDescriptor.js";
 
-import { GroupType, getInvertedValues, getValues, testError } from "../../utils.js";
+import { GroupType, getInvertedValues, getValues, testError } from "../../common/utils.js";
 
 describe(
-	"TypeGuard / utils / isTypeGuardPropertyDescriptor",
+	"TypeGuard / common/utils / isTypeGuardPropertyDescriptor",
 	(): void =>
 	{
 		it(

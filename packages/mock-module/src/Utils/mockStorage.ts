@@ -1,28 +1,31 @@
-import type { MockedModule } from "../Type/MockedModule.js";
+import type { MockedDependency } from "../Type/MockedDependency.js";
 
-const MOCKED_MODULES: Record<string, MockedModule> = {};
-
-function setMockedModule(key: string, mock: MockedModule): void
+class MockStorage
 {
-	MOCKED_MODULES[key] = mock;
-}
+	private static Mocks: Record<string, MockedDependency> = {};
 
-function getMockedModule(key: string): MockedModule
-{
-	const RESULT: MockedModule | undefined = MOCKED_MODULES[key];
-
-	if (RESULT === undefined)
+	public static Set(key: string, mock: MockedDependency): void
 	{
-		throw new Error(`No module matching key ${key}`);
+		MockStorage.Mocks[key] = mock;
 	}
 
-	return RESULT;
+	public static Get(key: string): MockedDependency
+	{
+		const RESULT: MockedDependency | undefined = MockStorage.Mocks[key];
+
+		if (RESULT === undefined)
+		{
+			throw new Error(`No module matching key ${key}`);
+		}
+
+		return RESULT;
+	}
+
+	public static Remove(key: string): void
+	{
+		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- For clean up only
+		delete MockStorage.Mocks[key];
+	}
 }
 
-function removeMockedModule(key: string): void
-{
-	// eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- For clean up only
-	delete MOCKED_MODULES[key];
-}
-
-export { getMockedModule, removeMockedModule, setMockedModule };
+export { MockStorage };

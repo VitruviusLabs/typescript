@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isNumber } from "../../src/TypeGuard/isNumber.js";
 
-import { GroupType, getInvertedValues, getValues } from "../utils.js";
+import { GroupType, getInvertedValues, getValues } from "../common/utils.js";
 
 describe(
 	"TypeGuard / isNumber",

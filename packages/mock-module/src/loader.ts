@@ -4,13 +4,13 @@ import { fileURLToPath } from "node:url";
 
 import { ModuleFormat } from "./Type/ModuleFormat.js";
 
-import { buildCause } from "./Utils/buildCause.js";
-
-import { isMockingInfos } from "./Utils/isMockingInfos.js";
-
-import { resolveModuleIdentifier } from "./Utils/resolveModuleIdentifier.js";
-
 import { prefix } from "./prefix.js";
+
+import { buildCause } from "./utils/buildCause.js";
+
+import { extractInfos } from "./utils/extractInfos.js";
+
+import { resolveModuleIdentifier } from "./utils/resolveModuleIdentifier.js";
 
 import type { LoadContext } from "./Type/LoadContext.js";
 
@@ -38,18 +38,6 @@ function resolve(module_identifier: string, context: ResolveContext, next_resolv
 	}
 
 	return next_resolve(module_identifier, context);
-}
-
-function extractInfos(module_identifier: string): MockingInfos
-{
-	const INFOS: unknown = JSON.parse(Buffer.from(module_identifier.slice(prefix.length), "base64").toString("utf-8"));
-
-	if (isMockingInfos(INFOS))
-	{
-		return INFOS;
-	}
-
-	throw new Error("Invalid mocking infos");
 }
 
 async function load(module_identifier: string, context: LoadContext, next_load: NextLoad): Promise<LoadResult>
@@ -105,16 +93,16 @@ async function load(module_identifier: string, context: LoadContext, next_load: 
 				items = items.replaceAll(/\s+as\s+/g, ": ");
 			}
 
-			return `const ${items} = getMockedModule("${INFOS.token}_${absolute_dependency_identifier}")`;
+			return `const ${items} = MockStorage.Get("${INFOS.token}_${absolute_dependency_identifier}")`;
 		}
 	);
 
-	const STORAGE_LIB: string = resolveModuleIdentifier("./mockStorage.mjs", import.meta.url);
-	const MOCK_HEADER: string = `import { getMockedModule, removeMockedModule } from "${STORAGE_LIB}";`;
+	const STORAGE_LIB: string = resolveModuleIdentifier("./utils/MockStorage.mjs", import.meta.url);
+	const MOCK_HEADER: string = `import { MockStorage } from "${STORAGE_LIB}";`;
 	const MOCK_CLEAN_UP: Array<string> = INFOS.dependencyIdentifiers.map(
 		(absolute_dependency_identifier: string): string =>
 		{
-			return `removeMockedModule("${INFOS.token}_${absolute_dependency_identifier}");`;
+			return `MockStorage.Remove("${INFOS.token}_${absolute_dependency_identifier}");`;
 		}
 	);
 

@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isPopulatedArray } from "../../src/TypeAssertion/isPopulatedArray.js";
 
-import { BaseType, getInvertedValues, testError } from "../utils.js";
+import { BaseType, getInvertedValues, testError } from "../common/utils.js";
 
 function isNumberTest(value: unknown): value is number
 {

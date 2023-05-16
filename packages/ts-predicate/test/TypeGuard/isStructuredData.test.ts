@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isStructuredData } from "../../src/TypeGuard/isStructuredData.js";
 
-import { BaseType, getInvertedValues } from "../utils.js";
+import { BaseType, getInvertedValues } from "../common/utils.js";
 
 import type { TypeGuardStructuredDataDescriptor } from "../../src/Types/TypeGuardStructuredDataDescriptor.js";
 

@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isString } from "../../src/TypeGuard/isString.js";
 
-import { BaseType, getInvertedValues, getValues } from "../utils.js";
+import { BaseType, getInvertedValues, getValues } from "../common/utils.js";
 
 describe(
 	"TypeGuard / isString",

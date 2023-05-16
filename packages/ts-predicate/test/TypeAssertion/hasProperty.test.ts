@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { hasProperty } from "../../src/TypeAssertion/hasProperty.js";
 
-import { testError } from "../utils.js";
+import { testError } from "../common/utils.js";
 
 describe(
 	"TypeAssertion / hasProperty",

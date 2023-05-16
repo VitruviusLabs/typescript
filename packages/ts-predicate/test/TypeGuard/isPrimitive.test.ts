@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isPrimitive } from "../../src/TypeGuard/isPrimitive.js";
 
-import { BaseType, GroupType, getInvertedValues, getValues } from "../utils.js";
+import { BaseType, GroupType, getInvertedValues, getValues } from "../common/utils.js";
 
 describe(
 	"TypeGuard / isPrimitive",

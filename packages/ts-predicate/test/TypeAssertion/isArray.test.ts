@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isArray } from "../../src/TypeAssertion/isArray.js";
 
-import { BaseType, getInvertedValues, getValues, testError } from "../utils.js";
+import { BaseType, getInvertedValues, getValues, testError } from "../common/utils.js";
 
 function isNumberTest(value: unknown): value is number
 {

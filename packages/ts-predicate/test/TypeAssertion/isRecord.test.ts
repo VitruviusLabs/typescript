@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isRecord } from "../../src/TypeAssertion/isRecord.js";
 
-import { BaseType, GroupType, getInvertedValues, getValues, testError } from "../utils.js";
+import { BaseType, GroupType, getInvertedValues, getValues, testError } from "../common/utils.js";
 
 function isNumberTest(value: unknown): value is number
 {

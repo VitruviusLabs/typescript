@@ -1,10 +1,11 @@
 import { TypeGuard } from "@vitruvius-lab/ts-predicate";
 
-import type { MockedModule } from "../Type/MockedModule.js";
-
-function isMockedModule(value: unknown): value is MockedModule
+function isMockedModule<MockType>(value: unknown, module_identifier: string): asserts value is MockType
 {
-	return TypeGuard.isRecord(value);
+	if (!TypeGuard.isObject(value))
+	{
+		throw new Error(`An error occurred when mocking ${module_identifier}`);
+	}
 }
 
 export { isMockedModule };

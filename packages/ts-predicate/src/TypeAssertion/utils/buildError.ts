@@ -10,7 +10,7 @@ function buildError(error: unknown, key: string): Error
 		return new Error(error);
 	}
 
-	return new Error(`An unknown error occured when validating property "${key}"`);
+	return new Error(`An unknown error occurred when validating property "${key}"`);
 }
 
 export { buildError };

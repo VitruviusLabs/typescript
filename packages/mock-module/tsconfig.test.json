@@ -1,16 +1,9 @@
 {
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"outDir": "./.tmp",
-		"rootDir": ".",
-		"baseUrl": ".",
-		"declaration": true,
-		"declarationMap": false,
-		"removeComments": false,
-		"sourceMap": false,
-		"noEmit": false,
-		"listFiles": false,
-		"listEmittedFiles": false
+		"outDir": "./tmp/test-build/",
+		"rootDir": "./",
+		"baseUrl": "."
 	},
 	"include": [
 		"./src",

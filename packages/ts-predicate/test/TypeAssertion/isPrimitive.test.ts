@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isPrimitive } from "../../src/TypeAssertion/isPrimitive.js";
 
-import { BaseType, GroupType, getInvertedValues, getValues, testError } from "../utils.js";
+import { BaseType, GroupType, getInvertedValues, getValues, testError } from "../common/utils.js";
 
 describe(
 	"TypeAssertion / isPrimitive",

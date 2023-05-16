@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isDefined } from "../../src/TypeGuard/isDefined.js";
 
-import { BaseType, getInvertedValues, getValues } from "../utils.js";
+import { BaseType, getInvertedValues, getValues } from "../common/utils.js";
 
 describe(
 	"TypeGuard / isDefined",

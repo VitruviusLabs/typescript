@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isFiniteNumber } from "../../src/TypeGuard/isFiniteNumber.js";
 
-import { BaseType, GroupType, getInvertedValues, getValues } from "../utils.js";
+import { BaseType, GroupType, getInvertedValues, getValues } from "../common/utils.js";
 
 describe(
 	"TypeGuard / isFiniteNumber",

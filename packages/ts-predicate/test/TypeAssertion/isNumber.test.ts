@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isNumber } from "../../src/TypeAssertion/isNumber.js";
 
-import { GroupType, getInvertedValues, getValues, testError } from "../utils.js";
+import { GroupType, getInvertedValues, getValues, testError } from "../common/utils.js";
 
 describe(
 	"TypeAssertion / isNumber",
