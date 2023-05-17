@@ -19,11 +19,9 @@
 	},
 	"type": "module",
 	"exports": {
-		"esm": {
-			"import": "./build/esm/index.js"
-		},
-		"types": {
-			"import": "./build/types/index.d.ts"
+		".": {
+			"import": "./build/esm/index.mjs",
+			"types": "./build/types/index.d.mts"
 		}
 	},
 	"files": [

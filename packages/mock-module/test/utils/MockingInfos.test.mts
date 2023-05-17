@@ -50,21 +50,21 @@ describe(
 							dependencyIdentifiers: ["dependency"],
 						};
 
-						const WRAPPER_INVALID_JSON = (): void =>
+						const WRAPPER_INVALID_JSON: () => void = (): void =>
 						{
 							const ENCODED: string = Buffer.from(JSON.stringify(FAKE_INFOS).slice(1), "utf-8").toString("base64");
 
 							decodeInfos(ENCODED);
 						};
 
-						const WRAPPER_UNENCODED = (): void =>
+						const WRAPPER_UNENCODED: () => void = (): void =>
 						{
 							const ENCODED: string = JSON.stringify(FAKE_INFOS);
 
 							decodeInfos(ENCODED);
 						};
 
-						const WRAPPER_TRUNCATED = (): void =>
+						const WRAPPER_TRUNCATED: () => void = (): void =>
 						{
 							const ENCODED: string = Buffer.from(JSON.stringify(FAKE_INFOS), "utf-8").toString("base64").slice(1);
 
