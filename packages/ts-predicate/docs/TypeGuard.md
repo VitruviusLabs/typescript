@@ -147,7 +147,7 @@ Narrow down the value to being an object with the property defined.
 isStructuredData(value: object, descriptor: TypeGuardStructuredDataDescriptor<T>): boolean
 ```
 
-Narrow down the value to a specificly structured data object.
+Narrow down the value to a specifically structured data object.
 The descriptor is enforced into matching the type it narrows down to.
 
 For each possible property, you can specify a boolean flag `optional` if the property do not need to exists.

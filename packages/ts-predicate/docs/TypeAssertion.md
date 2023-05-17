@@ -145,7 +145,7 @@ Asserts that the value is an object with the property defined.
 isStructuredData(value: object, descriptor: TypeAssertionStructuredDataDescriptor<T>): void
 ```
 
-Asserts that the value is a specificly structured data object. The descriptor is
+Asserts that the value is a specifically structured data object. The descriptor is
 enforced into matching the asserted type.
 
 For each possible property, you can specify a boolean flag `optional` if the
