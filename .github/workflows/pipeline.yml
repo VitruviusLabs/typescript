@@ -224,6 +224,12 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
+      - name: Building workspace dependencies
+        run: pnpm --filter ts-predicate ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter mock-module
+
       - name: Lint with ESlint
         run: pnpm --filter mock-module ci:lint
 
