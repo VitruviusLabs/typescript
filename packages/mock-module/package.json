@@ -19,11 +19,13 @@
 	},
 	"type": "module",
 	"exports": {
-		"esm": {
-			"import": "./build/esm/index.js"
+		".": {
+			"import": "./build/esm/index.mjs",
+			"types": "./build/types/index.d.ts"
 		},
-		"types": {
-			"import": "./build/types/index.d.ts"
+		"./loader": {
+			"import": "./build/esm/loader.jms",
+			"types": "./build/types/loader.d.ts"
 		}
 	},
 	"files": [

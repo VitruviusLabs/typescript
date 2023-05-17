@@ -25,12 +25,10 @@
 			"./packages/mock-module"
 		],
 		"editor.formatOnSave": true,
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
 		"editor.codeActionsOnSave": {
 			"source.fixAll.eslint": true,
 			"source.fixAll.tslint": false // TSlint is deprecated so we automatically disable it.
 		},
-		"prettier.configPath": ".prettierrc",
 		"eslint.format.enable": true,
 		"eslint.packageManager": "pnpm",
 		// Code spell checker extension settings
