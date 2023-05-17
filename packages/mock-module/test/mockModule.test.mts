@@ -12,7 +12,7 @@ describe(
 	(): void =>
 	{
 		it(
-			"",
+			"should be able to mock a dummy lib that has a module dependency",
 			async (): Promise<void> =>
 			{
 				const UUID: string = "--token--";
@@ -21,7 +21,6 @@ describe(
 					"./dummy-lib.mjs",
 					import.meta.url,
 					{
-
 						"node:crypto": {
 							randomUUID: (): string =>
 							{

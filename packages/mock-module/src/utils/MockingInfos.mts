@@ -42,7 +42,7 @@ function encodeInfos(module_identifier: string, meta_url: string, mocks: Record<
 
 function decodeInfos(data: string): MockingInfos
 {
-	const INFOS: unknown = JSON.stringify(Buffer.from(data, "base64").toString("utf-8"));
+	const INFOS: unknown = JSON.parse(Buffer.from(data, "base64").toString("utf-8"));
 
 	isMockingInfos(INFOS);
 
