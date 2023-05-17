@@ -2,7 +2,7 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isMockedModule } from "../../src/utils/isMockedModule.js";
+import { isMockedModule } from "../../src/Utils/isMockedModule.js";
 
 import { testError } from "../common/utils.js";
 

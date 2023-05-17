@@ -2,7 +2,7 @@ import { deepStrictEqual, doesNotThrow, throws } from "assert";
 
 import { describe, it } from "node:test";
 
-import { MockStorage } from "../../src/utils/MockStorage.js";
+import { MockStorage } from "../../src/Utils/mockStorage.js";
 
 import { testError } from "../common/utils.js";
 

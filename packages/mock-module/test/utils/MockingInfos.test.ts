@@ -2,11 +2,11 @@ import { deepStrictEqual, strictEqual, throws } from "assert";
 
 import { describe, it } from "node:test";
 
-import { MockStorage } from "../../src/utils/MockStorage.js";
+import { decodeInfos, encodeInfos } from "../../src/Utils/MockingInfos.js";
 
-import { decodeInfos, encodeInfos } from "../../src/utils/MockingInfos.js";
+import { MockStorage } from "../../src/Utils/mockStorage.js";
 
-import { resolveModuleIdentifier } from "../../src/utils/resolveModuleIdentifier.js";
+import { resolveModuleIdentifier } from "../../src/Utils/resolveModuleIdentifier.js";
 
 import { testError } from "../common/utils.js";
 

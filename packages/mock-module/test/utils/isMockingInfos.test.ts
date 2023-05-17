@@ -1,8 +1,8 @@
-import { strictEqual } from "node:assert";
+import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isMockingInfos } from "../../src/utils/isMockingInfos.js";
+import { isMockingInfos } from "../../src/Utils/isMockingInfos.js";
 
 import { getInvertedValues } from "../common/utils.js";
 
@@ -14,13 +14,14 @@ describe(
 			"should return true when given a valid object",
 			(): void =>
 			{
-				const RESULT: unknown = isMockingInfos({
-					token: "token",
-					moduleIdentifier: "module",
-					dependencyIdentifiers: ["dependency"]
+				doesNotThrow((): void =>
+				{
+					isMockingInfos({
+						token: "token",
+						moduleIdentifier: "module",
+						dependencyIdentifiers: ["dependency"]
+					});
 				});
-
-				strictEqual(RESULT, true);
 			}
 		);
 
@@ -32,9 +33,10 @@ describe(
 
 				for (const ITEM of ALL_VALUES)
 				{
-					const RESULT: unknown = isMockingInfos(ITEM);
-
-					strictEqual(RESULT, false);
+					throws((): void =>
+					{
+						isMockingInfos(ITEM);
+					});
 				}
 			}
 		);

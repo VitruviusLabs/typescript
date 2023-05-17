@@ -2,7 +2,7 @@ import { deepStrictEqual, strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { buildCause } from "../../src/utils/buildCause.js";
+import { buildCause } from "../../src/Utils/buildCause.js";
 
 import { getInvertedValues } from "../common/utils.js";
 

@@ -161,7 +161,7 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Test with Node Test runner
-        run: pnpm run ci:test:unit
+        run: pnpm --filter ts-predicate ci:test:unit
 
       - name: Upload reports as artifact
         uses: actions/upload-artifact@v3

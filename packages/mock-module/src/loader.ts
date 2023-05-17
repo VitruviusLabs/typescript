@@ -4,13 +4,13 @@ import { fileURLToPath } from "node:url";
 
 import { ModuleFormat } from "./Type/ModuleFormat.js";
 
+import { buildCause } from "./Utils/buildCause.js";
+
+import { extractInfos } from "./Utils/extractInfos.js";
+
+import { resolveModuleIdentifier } from "./Utils/resolveModuleIdentifier.js";
+
 import { prefix } from "./prefix.js";
-
-import { buildCause } from "./utils/buildCause.js";
-
-import { extractInfos } from "./utils/extractInfos.js";
-
-import { resolveModuleIdentifier } from "./utils/resolveModuleIdentifier.js";
 
 import type { LoadContext } from "./Type/LoadContext.js";
 
