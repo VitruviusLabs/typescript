@@ -199,7 +199,7 @@ jobs:
         id: package-version
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm --filter ts-predicate ci:publish:dry
+        run: pnpm --filter ts-predicate ci:publish
 
 ## Mock Module
 

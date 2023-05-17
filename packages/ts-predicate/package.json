@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-lab/ts-predicate",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "TypeScript predicates library",
 	"author": "Benjamin Blum <benjamin.blum.98@gmail.com>",
 	"contributors": [
@@ -27,6 +27,9 @@
 	"files": [
 		"build"
 	],
+	"engines": {
+		"node": ">=18.0.0"
+	},
 	"scripts": {
 		"clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
 		"compile": "tsc -p tsconfig.build.json",
