@@ -1164,7 +1164,7 @@
 		"no-ternary": "off",
 		"no-this-before-super": "error",
 		"no-trailing-spaces": "off",
-		"no-undef-init": "error",
+		"no-undef-init": "off",
 		"no-undefined": "off",
 		"no-underscore-dangle": "off",
 		"no-unexpected-multiline": "error",

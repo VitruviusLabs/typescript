@@ -1,366 +1,49 @@
-# strict-predicate
+# ts-predicate
+
+## Philosophy
+
+We want this lib to provide a strong foundation for your projects with tools that
+follow the strictest standards.
+
+1. This lib is entirely dependency free on purpose to avoid bitter surprises.
+2. All the provided functions are "pure": deterministic, stateless, and side-effect free.
+3. The code is tested exhaustively for maximum coverage by unit tests and mutation tests.
+
+## Presentation
+
+This lib is primarily about validating incoming data with the use
+of the `isStructuredData()` functions. These functions enforce complete
+validation of the data based on the expected type.
+
+The type is the source of truth and the validation follow from the type, not the other way.
+
+The lib also provide several functions to help both in building
+`isStructuredData()` descriptor and to discriminate types in your own code.
+
+Because `NaN` is usually an undesirable value, this lib assimilate `NaN` to a
+nullish value along with `undefined` and `null`.
+
+`JSON.stringify()` converts `NaN` into `null`.
 
 ## Getting started
 
+Choose your favourite package manager.
+
 ```bash
-yarn add strict-predicate
-# or
-npm install strict-predicate
+pnpm add @vitruvius-lab/ts-predicate
+```
+
+```bash
+yarn add @vitruvius-lab/ts-predicate
+```
+
+```
+npm install @vitruvius-lab/ts-predicate
 ```
 
 ## Documentation
 
-- [TypeAssertion](#typeassertion)
-- [TypeGuard](#typeguard)
-- [TypeHint](#typehint)
-- [Helpers](#Helpers)
-
-## TypeAssertion
-
-### isDefined
-
-```ts
-isDefined(value: unknown): void
-```
-
-Asserts that the value is not nullable, nor NaN.
-
-### IsBoolean
-
-```ts
-isBoolean(value: unknown): void
-```
-
-Asserts that the value is a boolean.
-
-### IsNumber
-
-```ts
-isNumber(value: unknown): void
-```
-
-Asserts that the value is a number, but not NaN.
-
-### IsInteger
-
-```ts
-isInteger(value: unknown): void
-```
-
-Asserts that the value is a safe integer.
-
-### IsFiniteNumber
-
-```ts
-isFiniteNumber(value: unknown): void
-```
-
-Asserts that the value is a number, but not NaN nor +/-Infinity.
-
-### IsString
-
-```ts
-isString(value: unknown): void
-```
-
-Asserts that the value is a string.
-
-### IsArray
-
-```ts
-isArray(value: unknown, constraints?: ArrayConstraints): void
-```
-
-Asserts that the value is an array.
-
-The optional parameter `constraints` accept an object described by the following interface.
-
-```ts
-interface ArrayConstraints<T>
-{
-	minLength?: number;
-	itemGuard?: (item: unknown) => item is T;
-}
-```
-
-If `minLength` is provided, it'll asserts that the value has at least that many items.<br />
-If `itemGuard` is provided, it'll asserts that the predicate hold true for every item.
-
-### IsPopulatedArray
-
-```ts
-isPopulatedArray(value: unknown, constraints?: ArrayConstraints): void
-```
-
-Like `isArray`, but asserts that the array is never empty too.
-
-### IsRecord
-
-```ts
-isRecord(value: unknown, itemGuard?: <T>(item: unknown) => item is T): void
-```
-
-Asserts that the value is a record: an object with no prototype, or directly
-using Object prototype.
-
-Symbol keys are ignored when validating record items.
-
-### IsObject
-
-```ts
-isObject(value: unknown): void
-```
-
-Asserts that the value is an object.
-
-### IsFunction
-
-```ts
-isFunction(value: unknown): void
-```
-
-Asserts that the value is a function, generator function, method, or class.
-
-### IsCallable
-
-```ts
-isCallable(value: unknown): void
-```
-
-Asserts that the value is not constructible.
-
-### HasNullableProperty
-
-```ts
-hasNullableProperty(value: object, property: string): void
-```
-
-Asserts that the value is an object with the property defined, though it may be nullish or NaN.
-
-### HasProperty
-
-```ts
-hasProperty(value: object, property: string): void
-```
-
-Asserts that the value is an object with the property defined.
-
-## TypeGuard
-
-### IsPrimitive
-
-```ts
-isPrimitive(value: unknown): boolean
-```
-
-Narrow down the value to being nullish, NaN, a boolean, a number, or a string.
-
-### IsDefined
-
-```ts
-isDefined(value: unknown): boolean
-```
-
-Narrow down the value to being not nullable, nor NaN.
-
-### IsBoolean
-
-```ts
-isBoolean(value: unknown): boolean
-```
-
-Narrow down the value to being a boolean.
-
-### IsNumber
-
-```ts
-isNumber(value: unknown): boolean
-```
-
-Narrow down the value to being a number, but not NaN.
-
-### IsInteger
-
-```ts
-isInteger(value: unknown): boolean
-```
-
-Narrow down the value to being a safe integer.
-
-### IsFiniteNumber
-
-```ts
-isFiniteNumber(value: unknown): boolean
-```
-
-Narrow down the value to being a number, but not NaN nor +/-Infinity.
-
-### IsString
-
-```ts
-isString(value: unknown): boolean
-```
-
-Narrow down the value to being a string.
-
-### IsArray
-
-```ts
-isArray(value: unknown, constraints?: ArrayConstraints): boolean
-```
-
-Narrow down the value to being an array.
-
-The optional parameter `constraints` accept an object described by the following interface.
-
-```ts
-interface ArrayConstraints<T>
-{
-	minLength?: number;
-	itemGuard?: (item: unknown) => item is T;
-}
-```
-
-If `minLength` is provided, it'll confirm that the value has at least that many items.<br />
-If `itemGuard` is provided, it'll confirm that the predicate hold true for every item.
-
-### IsPopulatedArray
-
-```ts
-isPopulatedArray(value: unknown, constraints?: ArrayConstraints): boolean
-```
-
-Like `IsArray`, but narrow it to being a populated array.
-
-### IsRecord
-
-```ts
-isRecord(value: unknown, itemGuard?: <T>(item: unknown) => item is T): boolean
-```
-
-Narrow down the value to being a record: an object with no prototype, or directly using Object prototype.
-
-Symbol keys are ignored when validating record items.
-
-### IsObject
-
-```ts
-isObject(value: unknown): boolean
-```
-
-Narrow down the value to being an object.
-
-### IsFunction
-
-```ts
-isFunction(value: unknown): boolean
-```
-
-Narrow down the value to being a function, generator function, method, or class.
-
-### IsCallable
-
-```ts
-isCallable(value: unknown): boolean
-```
-
-Narrow down the value to being not constructible.
-
-### HasNullableProperty
-
-```ts
-hasNullableProperty(value: object, property: string): boolean
-```
-
-Narrow down the value to being an object with the property defined, though it may be nullish or NaN.
-
-### HasProperty
-
-```ts
-hasProperty(value: object, property: string): boolean
-```
-
-Narrow down the value to being an object with the property defined.
-
-## TypeHint
-
-### GetBaseType
-
-```ts
-getBaseType(value: any): string
-```
-
-Return a string depending on the type of the given value.
-
-Possible values:
-
-- undefined
-- null
-- NaN
-- boolean
-- number
-- string
-- array
-- object
-- function
-- generator
-- class
-
-Note: generator refers to a generator function.
-
-### GetDetailedType
-
-```ts
-getDetailedType(value: any): string
-```
-
-Return a string depending on the type of the given value.<br />
-Provide more details than `GetBaseType`.
-
-Possible values:
-
-- undefined
-- null
-- NaN
-- boolean (true or false)
-- number (N)
-- string (N characters)
-- array (N items)
-- anonymous object
-- object anonymous class
-- object ClassName
-- anonymous function
-- function name
-- anonymous generator
-- generator name
-- anonymous class
-- class Name
-
-Note: generator refers to a generator function.
-
-### GetName
-
-```ts
-getName(value: any): string|undefined
-```
-
-If given a function, generator function, method, or class, return its name.<br />
-If given an object, return its constructor name.<br />
-If the given value doesn't have a name, return an empty string.<br />
-For any other value, return undefined.
-
-## Helpers
-
-### IsSimilar
-
-```ts
-isSimilar(a: any, b: any): boolean
-```
-
-Return true in the following cases :
-
-- The same value has been passed as both arguments.
-- Similar primitive values have been passed as arguments.
-- Deeply similar arrays or records have been passed as arguments.
-
-Otherwise, return false.
+- [TypeAssertion](docs/TypeAssertion.md)
+- [TypeGuard](docs/TypeGuard.md)
+- [TypeHint](docs/TypeHint.md)
+- [Helper](docs/Helper.md)

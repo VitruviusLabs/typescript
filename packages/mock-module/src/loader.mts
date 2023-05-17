@@ -49,7 +49,7 @@ async function load(module_identifier: string, context: LoadContext, next_load: 
 
 	const INFOS: MockingInfos = decodeInfos(module_identifier);
 
-	let source: string = "";
+	let source: string | undefined = undefined;
 
 	try
 	{
