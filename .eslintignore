@@ -1,0 +1,16 @@
+# Ignore folders #
+##################
+node_modules
+/build/*
+/dist/*
+/.stryker-tmp/*
+/coverage/*
+
+# Ignore files #
+################
+.eslintrc.json
+.pnp.*
+.DS_Store
+tsconfig.json
+tsconfig.*.json
+pnpm-lock.yaml

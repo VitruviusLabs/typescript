@@ -1,6 +1,13 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,linux,macos,visualstudiocode,git,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,linux,macos,visualstudiocode,git,node
 
+### Custom ##
+.tmp/
+tmp/
+reports/
+build/
+.stryker-tmp
+
 ### Git ###
 # Created by git for backups. To disable backups in Git:
 # $ git config --global mergetool.keepBackup false
@@ -211,6 +218,7 @@ dist
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
+!.vscode/cspell.json
 
 # Local History for Visual Studio Code
 .history/
