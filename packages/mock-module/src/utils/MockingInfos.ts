@@ -1,10 +1,10 @@
 import { randomUUID } from "node:crypto";
 
+import { MockStorage } from "./MockStorage.js";
+
 import { isMockedDependency } from "./isMockedDependency.js";
 
 import { isMockingInfos } from "./isMockingInfos.js";
-
-import { MockStorage } from "./mockStorage.js";
 
 import { resolveModuleIdentifier } from "./resolveModuleIdentifier.js";
 

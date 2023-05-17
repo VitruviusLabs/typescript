@@ -2,7 +2,7 @@ import { match, strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { resolveModuleIdentifier } from "../../src/Utils/resolveModuleIdentifier.js";
+import { resolveModuleIdentifier } from "../../src/utils/resolveModuleIdentifier.js";
 
 describe(
 	"utils / resolveModuleIdentifier",

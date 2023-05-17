@@ -1,8 +1,8 @@
-import { encodeInfos } from "./Utils/MockingInfos.js";
-
-import { isMockedModule } from "./Utils/isMockedModule.js";
-
 import { prefix } from "./prefix.js";
+
+import { encodeInfos } from "./utils/MockingInfos.js";
+
+import { isMockedModule } from "./utils/isMockedModule.js";
 
 import type { MockedDependency } from "./Type/MockedDependency.js";
 

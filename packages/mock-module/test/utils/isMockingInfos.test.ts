@@ -2,7 +2,7 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isMockingInfos } from "../../src/Utils/isMockingInfos.js";
+import { isMockingInfos } from "../../src/utils/isMockingInfos.js";
 
 import { getInvertedValues } from "../common/utils.js";
 

@@ -1,0 +1,5 @@
+[core]
+	autocrlf = false
+	ignorecase = false
+[pull]
+	rebase = true

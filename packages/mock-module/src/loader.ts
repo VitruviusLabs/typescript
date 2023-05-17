@@ -4,13 +4,13 @@ import { fileURLToPath } from "node:url";
 
 import { ModuleFormat } from "./Type/ModuleFormat.js";
 
-import { buildCause } from "./Utils/buildCause.js";
-
-import { extractInfos } from "./Utils/extractInfos.js";
-
-import { resolveModuleIdentifier } from "./Utils/resolveModuleIdentifier.js";
-
 import { prefix } from "./prefix.js";
+
+import { decodeInfos } from "./utils/MockingInfos.js";
+
+import { buildCause } from "./utils/buildCause.js";
+
+import { resolveModuleIdentifier } from "./utils/resolveModuleIdentifier.js";
 
 import type { LoadContext } from "./Type/LoadContext.js";
 
@@ -47,7 +47,7 @@ async function load(module_identifier: string, context: LoadContext, next_load: 
 		return await next_load(module_identifier, context);
 	}
 
-	const INFOS: MockingInfos = extractInfos(module_identifier);
+	const INFOS: MockingInfos = decodeInfos(module_identifier);
 
 	let source: string = "";
 
