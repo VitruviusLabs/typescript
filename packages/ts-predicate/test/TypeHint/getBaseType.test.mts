@@ -6,20 +6,22 @@ import { getBaseType } from "../../src/TypeHint/getBaseType.mjs";
 
 import { BaseType, DummyClass, GroupType, OldDummyClass, getValues } from "../common/utils.mjs";
 
-const DUMMY = new DummyClass();
-const OLD_DUMMY = new OldDummyClass();
+import type { OldClassInstance } from "../common/OldClassInstance.mjs";
 
-function trapDummy()
+const DUMMY: DummyClass = new DummyClass();
+const OLD_DUMMY: OldClassInstance = new OldDummyClass();
+
+function trapDummy(): void
 {
-	// eslint-disable-next-line @typescript-eslint/naming-convention -- Old class notation
-	function TrapDummyClass() { }
+	function TrapDummyClass(): void { }
 
+	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Test
 	function* trapDummyGenerator()
 	{
 		yield 1;
 	}
 
-	// @ts-ignore
+	// @ts-expect-error: old notation
 	new TrapDummyClass();
 	trapDummyGenerator();
 }
@@ -138,21 +140,25 @@ describe(
 			'should return "generator" when given a generator function',
 			(): void =>
 			{
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
 				function* generator1()
 				{
 					yield 1;
 				}
 
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
 				function* generator2()
 				{
 					yield 1;
 				}
 
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
 				function* generator3()
 				{
 					yield 1;
 				}
 
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
 				function* generator4()
 				{
 					yield 1;
@@ -163,18 +169,22 @@ describe(
 					generator2,
 					generator3,
 					generator4,
+					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
 					function* ()
 					{
 						yield 1;
 					},
+					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
 					function* ()
 					{
 						yield 1;
 					},
+					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
 					function* ()
 					{
 						yield 1;
 					},
+					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
 					function* ()
 					{
 						yield 1;
@@ -193,8 +203,8 @@ describe(
 			(): void =>
 			{
 				const VALUES: Array<unknown> = [
-					function () { },
-					async function () { },
+					function (): void { },
+					async function (): Promise<void> { },
 					(): void => { },
 					async (): Promise<void> => { },
 					DummyClass.Method,

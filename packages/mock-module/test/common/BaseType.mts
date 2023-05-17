@@ -1,5 +1,4 @@
 const enum BaseType
-// eslint-disable-next-line @typescript-eslint/indent -- Buggy
 {
 	NULLISH = "nullish",
 	BOOLEAN = "boolean",

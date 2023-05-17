@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isMockingInfos } from "../../src/utils/isMockingInfos.mjs";
 
-import { getInvertedValues } from "../common/utils.mjs";
+import { getInvertedValues, testError } from "../common/utils.mjs";
 
 describe(
 	"utils / isMockingInfos",
@@ -14,14 +14,16 @@ describe(
 			"should return true when given a valid object",
 			(): void =>
 			{
-				doesNotThrow((): void =>
+				const WRAPPER = (): void =>
 				{
 					isMockingInfos({
 						token: "token",
 						moduleIdentifier: "module",
 						dependencyIdentifiers: ["dependency"]
 					});
-				});
+				};
+
+				doesNotThrow(WRAPPER);
 			}
 		);
 
@@ -33,10 +35,12 @@ describe(
 
 				for (const ITEM of ALL_VALUES)
 				{
-					throws((): void =>
+					const WRAPPER = (): void =>
 					{
 						isMockingInfos(ITEM);
-					});
+					};
+
+					throws(WRAPPER, testError);
 				}
 			}
 		);

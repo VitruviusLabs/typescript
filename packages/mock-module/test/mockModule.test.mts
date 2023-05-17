@@ -17,11 +17,11 @@ describe(
 			{
 				const UUID: string = "--token--";
 
-				const MOCK = await mockModule<DummyMock>(
+				const MOCK: DummyMock = await mockModule<DummyMock>(
 					"./dummy-lib.mjs",
 					import.meta.url,
 					{
-						// eslint-disable-next-line @typescript-eslint/naming-convention -- identifier
+
 						"node:crypto": {
 							randomUUID: (): string =>
 							{

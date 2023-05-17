@@ -6,7 +6,7 @@ import { getName } from "../../src/TypeHint/getName.mjs";
 
 import { DummyClass, GroupType, OldDummyClass, getInvertedValues } from "../common/utils.mjs";
 
-const DUMMY = new DummyClass();
+const DUMMY: DummyClass = new DummyClass();
 
 describe(
 	"TypeHint / getName",
@@ -16,8 +16,9 @@ describe(
 			"should return the name of a given function, generator function, method, or class",
 			(): void =>
 			{
-				function dummyFunction() { }
+				function dummyFunction(): void { }
 
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
 				function* dummyGenerator()
 				{
 					yield 1;
@@ -46,12 +47,13 @@ describe(
 			(): void =>
 			{
 				const VALUES: Array<unknown> = [
-					// @ts-ignore
-					new (function () { })(),
+					// @ts-expect-error: old notation
+					new (function (): void { })(),
 					Object.create(null),
 					new (class { })(),
 					(): void => { },
-					function () { },
+					function (): void { },
+					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
 					function* () { yield 1; },
 					class { }
 				];

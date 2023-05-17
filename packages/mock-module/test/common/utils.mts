@@ -1,5 +1,3 @@
-/* eslint-disable max-classes-per-file -- Test */
-
 import { BaseType } from "./BaseType.mjs";
 
 import { DummyClass } from "./DummyClass.mjs";
@@ -73,20 +71,15 @@ function getValuesForType(type: BaseType): Array<unknown>
 				0,
 				-0,
 				1,
-				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				-1,
-				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				Number.MIN_SAFE_INTEGER + 4,
-				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				Number.MAX_SAFE_INTEGER - 4,
 			];
 
 		case BaseType.REAL:
 
 			return [
-				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				Number.MIN_SAFE_INTEGER - 4,
-				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				Number.MAX_SAFE_INTEGER + 4,
 				Number.MIN_VALUE,
 				-Number.MIN_VALUE,
@@ -112,9 +105,7 @@ function getValuesForType(type: BaseType): Array<unknown>
 		case BaseType.SYMBOL:
 
 			return [
-				// eslint-disable-next-line symbol-description -- Test
 				Symbol(),
-				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				Symbol(42),
 				Symbol("local"),
 				Symbol.for("global"),
@@ -125,7 +116,6 @@ function getValuesForType(type: BaseType): Array<unknown>
 
 			return [
 				[],
-				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				[1, 2, 3],
 			];
 
@@ -134,7 +124,6 @@ function getValuesForType(type: BaseType): Array<unknown>
 			return [
 				Object.create(null),
 				{},
-				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Test
 				{ answer: 42 },
 			];
 
@@ -149,17 +138,11 @@ function getValuesForType(type: BaseType): Array<unknown>
 		case BaseType.CALLABLE:
 
 			return [
-				// eslint-disable-next-line @typescript-eslint/no-empty-function -- anonymous function
 				(): void => { },
-				// eslint-disable-next-line @typescript-eslint/no-empty-function -- anonymous function
 				async function (): Promise<void> { },
-				// eslint-disable-next-line @typescript-eslint/unbound-method -- static method
 				DummyClass.Method,
-				// eslint-disable-next-line @typescript-eslint/unbound-method -- static method
 				DummyClass.AsyncMethod,
-				// eslint-disable-next-line @typescript-eslint/unbound-method -- method
 				DUMMY.method,
-				// eslint-disable-next-line @typescript-eslint/unbound-method -- method
 				DUMMY.asyncMethod,
 				OldDummyClass.AsyncMethod,
 				OLD_DUMMY.asyncMethod,
@@ -169,17 +152,12 @@ function getValuesForType(type: BaseType): Array<unknown>
 
 			return [
 				class { },
-				// eslint-disable-next-line @typescript-eslint/no-empty-function -- anonymous function
 				function (): void { },
 				DummyClass,
 				OldDummyClass,
 				OldDummyClass.Method,
 				OLD_DUMMY.method,
 			];
-
-		default:
-
-			throw new Error("Impossible case");
 	}
 }
 
@@ -242,5 +220,3 @@ export
 	OldDummyClass,
 	testError,
 };
-
-/* eslint-enable max-classes-per-file -- Test */
