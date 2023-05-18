@@ -70,12 +70,18 @@ The optional parameter `constraints` accept an object described by the following
 interface ArrayConstraints<T>
 {
 	minLength?: number;
-	itemGuard?: (item: unknown) => item is T;
+	itemTest?: (item: unknown) => item is T;
 }
+
+type ItemTest<T> =
+	| (item: unknown) => asserts item is T
+	| (item: unknown) => item is T
+;
 ```
 
-If `minLength` is provided, it'll confirm that the value has at least that many items.<br />
-If `itemGuard` is provided, it'll confirm that the predicate hold true for every item.
+If `minLength` is provided, it'll confirm that the value has at least that many items.
+
+If `itemTest` is provided, it'll confirm that the predicate hold true for every item.
 
 ## IsPopulatedArray
 
@@ -88,12 +94,21 @@ Like `IsArray`, but narrow it to being a populated array.
 ## IsRecord
 
 ```ts
-isRecord(value: unknown, itemGuard?: <T>(item: unknown) => item is T): boolean
+isRecord(value: unknown, item_test?: ItemTest<T>): boolean
 ```
 
 Narrow down the value to being a record: an object with no prototype, or directly using Object prototype.
 
 Symbol keys are ignored when validating record items.
+
+If `item_test` is provided, it'll confirm that the predicate hold true for every item.
+
+```ts
+type ItemTest<T> =
+	| (item: unknown) => asserts item is T
+	| (item: unknown) => item is T
+;
+```
 
 ## IsObject
 
@@ -117,7 +132,10 @@ Narrow down the value to being a function, generator function, method, or class.
 isCallable(value: unknown): boolean
 ```
 
-Narrow down the value to being not constructible.## HasAllowedKeys
+Narrow down the value to being a function, but not a constructible one
+(it cannot create an object by using `new`).
+
+## HasAllowedKeys
 
 ```ts
 hasAllowedKeys(value: object, allowed_keys: Array<string>): boolean
@@ -144,14 +162,14 @@ Narrow down the value to being an object with the property defined.
 ## IsStructuredData
 
 ```ts
-isStructuredData(value: object, descriptor: TypeGuardStructuredDataDescriptor<T>): boolean
+isStructuredData<T>(value: object, descriptor: StructuredDataDescriptor<T>): boolean
 ```
 
 Narrow down the value to a specifically structured data object.
 The descriptor is enforced into matching the type it narrows down to.
 
-For each possible property, you can specify a boolean flag `optional` if the property do not need to exists.
-And a flag `nullable` if the property value can be nullish.
+For each possible property, you can specify a boolean flag `optional` if the property
+can be omitted and a flag `nullable` if the property value can be nullish.
 
 Example of use
 

@@ -98,7 +98,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isPopulatedArray([1, 2, 3], { itemGuard: isNumberTest });
+					isPopulatedArray([1, 2, 3], { itemTest: isNumberTest });
 				};
 
 				doesNotThrow(WRAPPER);
@@ -111,7 +111,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemGuard: isNumberTest });
+					isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
 				};
 
 				throws(WRAPPER, testError);

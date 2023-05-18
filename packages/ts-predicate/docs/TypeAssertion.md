@@ -56,20 +56,24 @@ isArray(value: unknown, constraints?: ArrayConstraints): void
 
 Asserts that the value is an array.
 
-The optional parameter `constraints` accept an object described by the following
-interface.
+The optional parameter `constraints` accept an object described as below.
 
 ```ts
 interface ArrayConstraints<T>
 {
 	minLength?: number;
-	itemGuard?: (item: unknown) => item is T;
+	itemTest?: ItemTest<T>;
 }
+
+type ItemTest<T> =
+	| (item: unknown) => asserts item is T
+	| (item: unknown) => item is T
+;
 ```
 
-If `minLength` is provided, it'll asserts that the value has at least that many
-items.<br /> If `itemGuard` is provided, it'll asserts that the predicate hold
-true for every item.
+If `minLength` is provided, it'll asserts that the value has at least that many items.
+
+If `itemTest` is provided, it'll asserts that the predicate hold true for every item.
 
 ## IsPopulatedArray
 
@@ -82,13 +86,22 @@ Like `isArray`, but asserts that the array is never empty too.
 ## IsRecord
 
 ```ts
-isRecord(value: unknown, itemGuard?: <T>(item: unknown) => item is T): void
+isRecord(value: unknown, item_test?: ItemTest<T>): void
 ```
 
 Asserts that the value is a record: an object with no prototype, or directly
 using Object prototype.
 
 Symbol keys are ignored when validating record items.
+
+If `item_test` is provided, it'll asserts that the predicate hold true for every item.
+
+```ts
+type ItemTest<T> =
+	| (item: unknown) => asserts item is T
+	| (item: unknown) => item is T
+;
+```
 
 ## IsObject
 
@@ -112,7 +125,8 @@ Asserts that the value is a function, generator function, method, or class.
 isCallable(value: unknown): void
 ```
 
-Asserts that the value is not constructible.
+Asserts that the value is a function, but not a constructible one
+(it cannot create an object by using `new`).
 
 ## HasAllowedKeys
 
@@ -142,15 +156,14 @@ Asserts that the value is an object with the property defined.
 ## IsStructuredData
 
 ```ts
-isStructuredData(value: object, descriptor: TypeAssertionStructuredDataDescriptor<T>): void
+isStructuredData<T>(value: object, descriptor: StructuredDataDescriptor<T>): void
 ```
 
-Asserts that the value is a specifically structured data object. The descriptor is
-enforced into matching the asserted type.
+Asserts that the value is a specifically structured data object.
+The descriptor is enforced into matching the asserted type.
 
-For each possible property, you can specify a boolean flag `optional` if the
-property do not need to exists. And a flag `nullable` if the property value can
-be nullish.
+For each possible property, you can specify a boolean flag `optional` if the property
+can be omitted and a flag `nullable` if the property value can be nullish.
 
 Example of use
 

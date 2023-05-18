@@ -1,3 +1,5 @@
+import { isStructuredDataPropertyDescriptor } from "../utils/isStructuredDataPropertyDescriptor.mjs";
+
 import { hasAllowedKeys } from "./hasAllowedKeys.mjs";
 
 import { hasNullableProperty } from "./hasNullableProperty.mjs";
@@ -6,13 +8,13 @@ import { isDefined } from "./isDefined.mjs";
 
 import { isRecord } from "./isRecord.mjs";
 
-import { isTypeGuardPropertyDescriptor } from "./utils/isTypeAssertionStructuredDataDescriptor.mjs";
+import { itemGuard } from "./utils/itemGuard.mjs";
 
-import type { TypeGuardStructuredDataDescriptor } from "../Types/_index.mjs";
+import type { StructuredDataDescriptor } from "../Types/_index.mjs";
 
 function isStructuredData<Type>(
 	value: unknown,
-	descriptor: TypeGuardStructuredDataDescriptor<Type>
+	descriptor: StructuredDataDescriptor<Type>
 ): value is Type
 {
 	if (!isRecord(value))
@@ -33,7 +35,7 @@ function isStructuredData<Type>(
 			// @ts-expect-error -- Key mapping
 			const PROPERTY_DESCRIPTOR: unknown = descriptor[key];
 
-			isTypeGuardPropertyDescriptor(PROPERTY_DESCRIPTOR, key);
+			isStructuredDataPropertyDescriptor(PROPERTY_DESCRIPTOR, key);
 
 			if (!hasNullableProperty(value, key))
 			{
@@ -45,7 +47,7 @@ function isStructuredData<Type>(
 				return PROPERTY_DESCRIPTOR.nullable ?? false;
 			}
 
-			return PROPERTY_DESCRIPTOR.test(value[key]);
+			return itemGuard(value[key], PROPERTY_DESCRIPTOR.test);
 		}
 	);
 }

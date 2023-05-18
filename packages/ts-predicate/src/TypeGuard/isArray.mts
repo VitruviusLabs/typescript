@@ -1,4 +1,6 @@
-import type { ArrayConstraints } from "../Types/_index.mjs";
+import { itemGuard } from "./utils/itemGuard.mjs";
+
+import type { ArrayConstraints, Test } from "../Types/_index.mjs";
 
 function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type>): value is Array<Type>
 {
@@ -17,9 +19,16 @@ function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type>): va
 		return false;
 	}
 
-	if (constraints.itemGuard !== undefined)
+	if (constraints.itemTest !== undefined)
 	{
-		return value.every(constraints.itemGuard);
+		const GUARD: Test<Type> = constraints.itemTest;
+
+		return value.every(
+			(item: unknown): boolean =>
+			{
+				return itemGuard(item, GUARD);
+			}
+		);
 	}
 
 	return true;

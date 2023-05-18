@@ -8,7 +8,7 @@ function isFiniteNumber(value: unknown): asserts value is number
 
 	if (!guard(value))
 	{
-		throw new Error("value is not a finite number");
+		throw new Error("The value must be a finite number.");
 	}
 }
 

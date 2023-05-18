@@ -1,0 +1,15 @@
+root error
+├─── error 1
+│    ├─── error 1-1
+│    │    ├─── error 1-1-1
+│    │    └─── error 1-1-2
+│    └─── error 1-2
+├─── error 2
+│    └─── error 2-1
+│         ├─── error 2-1-1
+│         └─── error 2-1-2
+└─── error 3
+     ├─── error 3-1
+     │    └─── error 3-1-1
+     │         └─── error 3-1-1-1
+     └─── error 3-2

@@ -6,7 +6,7 @@ function isMockedDependency(value: unknown, dependency_identifier: string): asse
 {
 	if (!TypeGuard.isObject(value))
 	{
-		throw new Error(`Invalid mocked module ${dependency_identifier}`);
+		throw new Error(`Invalid mocked module ${dependency_identifier}.`);
 	}
 }
 

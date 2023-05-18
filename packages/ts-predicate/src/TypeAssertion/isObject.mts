@@ -4,7 +4,7 @@ function isObject(value: unknown): asserts value is object
 {
 	if (!guard(value))
 	{
-		throw new Error("value is not an object");
+		throw new Error("The value must be an object.");
 	}
 }
 

@@ -4,7 +4,7 @@ function isMockedModule<MockType>(value: unknown, module_identifier: string): as
 {
 	if (!TypeGuard.isObject(value))
 	{
-		throw new Error(`An error occurred when mocking ${module_identifier}`);
+		throw new Error(`An error occurred when mocking ${module_identifier}.`);
 	}
 }
 

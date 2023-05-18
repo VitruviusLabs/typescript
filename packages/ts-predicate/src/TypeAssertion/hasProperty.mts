@@ -13,7 +13,7 @@ function hasProperty<O extends object, K extends string>(
 
 	if (!guard(value[property]))
 	{
-		throw new Error(`value has a property named "${property}", but it is undefined, null, or NaN`);
+		throw new Error(`The property "${property}" must not have a nullish value (undefined, null, or NaN).`);
 	}
 }
 

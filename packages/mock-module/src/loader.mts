@@ -57,7 +57,7 @@ async function load(module_identifier: string, context: LoadContext, next_load: 
 	}
 	catch (error: unknown)
 	{
-		throw new Error(`Unable to retrieve module ${INFOS.moduleIdentifier}`, buildCause(error));
+		throw new Error(`Unable to retrieve module ${INFOS.moduleIdentifier}.`, buildCause(error));
 	}
 
 	source = source.replaceAll(

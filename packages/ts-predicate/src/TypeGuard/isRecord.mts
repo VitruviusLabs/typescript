@@ -1,11 +1,10 @@
 import { isObject } from "./isObject.mjs";
 
-import type { TypeGuardTest } from "../Types/_index.mjs";
+import { itemGuard } from "./utils/itemGuard.mjs";
 
-function isRecord<Type>(
-	value: unknown,
-	item_guard?: TypeGuardTest<Type>
-): value is Record<string, Type>
+import type { Test } from "../Types/_index.mjs";
+
+function isRecord<Type>(value: unknown, item_test?: Test<Type>): value is Record<string, Type>
 {
 	if (!isObject(value))
 	{
@@ -19,9 +18,14 @@ function isRecord<Type>(
 		return false;
 	}
 
-	if (item_guard !== undefined && !Object.values(value).every(item_guard))
+	if (item_test !== undefined)
 	{
-		return false;
+		return Object.values(value).every(
+			(item: unknown): boolean =>
+			{
+				return itemGuard(item, item_test);
+			}
+		);
 	}
 
 	return true;

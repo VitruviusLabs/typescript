@@ -1,12 +1,17 @@
 import { isArray as guard } from "../TypeGuard/isArray.mjs";
 
-import type { ArrayConstraints } from "../Types/_index.mjs";
+import { buildError } from "./utils/buildError.mjs";
+
+import { itemAssertion } from "./utils/itemAssertion.mjs";
+
+import type { ArrayConstraints, Test } from "../Types/_index.mjs";
+
 
 function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type>): asserts value is Array<Type>
 {
 	if (!guard(value))
 	{
-		throw new Error("value is not an array");
+		throw new Error("The value is not an array.");
 	}
 
 	if (constraints === undefined)
@@ -14,14 +19,51 @@ function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type>): as
 		return;
 	}
 
+	const ERRORS: Array<Error> = [];
+
 	if (constraints.minLength !== undefined && value.length < constraints.minLength)
 	{
-		throw new Error("value is an array, but it doesn't have enough items");
+		if (constraints.minLength === 1)
+		{
+			ERRORS.push(
+				new Error("It must not be empty.")
+			);
+		}
+		else
+		{
+			ERRORS.push(
+				new Error(`It must have at least ${constraints.minLength.toFixed(0)} items.`)
+			);
+		}
 	}
 
-	if (constraints.itemGuard !== undefined && !value.every(constraints.itemGuard))
+	if (constraints.itemTest !== undefined)
 	{
-		throw new Error("value is an array, but some items are invalid");
+		const GUARD: Test<Type> = constraints.itemTest;
+
+		value.forEach(
+			(item: unknown, index: number): void =>
+			{
+				try
+				{
+					itemAssertion(item, GUARD);
+				}
+				catch (error: unknown)
+				{
+					ERRORS.push(
+						new Error(
+							`The value at index ${index.toFixed(0)} is incorrect.`,
+							{ cause: buildError(error) }
+						)
+					);
+				}
+			}
+		);
+	}
+
+	if (ERRORS.length > 0)
+	{
+		throw new AggregateError(ERRORS, "The value is an array, but its content is incorrect.");
 	}
 }
 

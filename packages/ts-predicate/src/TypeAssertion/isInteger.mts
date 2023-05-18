@@ -8,7 +8,7 @@ function isInteger(value: unknown): asserts value is number
 
 	if (!guard(value))
 	{
-		throw new Error("value is not an integer");
+		throw new Error("The value must be an integer.");
 	}
 }
 

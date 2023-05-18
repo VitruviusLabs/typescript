@@ -7,7 +7,7 @@ function isPrimitive(value: unknown): asserts value is boolean | number | string
 
 	if (typeof value === "object" || typeof value === "function" || typeof value === "symbol")
 	{
-		throw new Error("value is not a primitive type");
+		throw new Error("The value must be a primitive type.");
 	}
 }
 

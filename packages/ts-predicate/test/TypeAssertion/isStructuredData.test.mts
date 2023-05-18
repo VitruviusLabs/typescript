@@ -6,7 +6,7 @@ import { isStructuredData } from "../../src/TypeAssertion/isStructuredData.mjs";
 
 import { BaseType, getInvertedValues, testError } from "../common/utils.mjs";
 
-import type { TypeAssertionStructuredDataDescriptor } from "../../src/Types/TypeAssertionStructuredDataDescriptor.mjs";
+import type { StructuredDataDescriptor } from "../../src/Types/StructuredDataDescriptor.mjs";
 
 interface TestData
 {
@@ -22,7 +22,7 @@ function isNumberTest(value: unknown): asserts value is number
 	}
 }
 
-const DESCRIPTOR: TypeAssertionStructuredDataDescriptor<TestData> =
+const DESCRIPTOR: StructuredDataDescriptor<TestData> =
 {
 	a: {
 		nullable: true,
@@ -53,6 +53,19 @@ describe(
 
 					throws(WRAPPER, testError);
 				}
+			}
+		);
+
+		it(
+			"should throw when there is an extraneous property",
+			(): void =>
+			{
+				const WRAPPER = (): void =>
+				{
+					isStructuredData({ a: 1, b: 2, c: 3 }, DESCRIPTOR);
+				};
+
+				throws(WRAPPER, testError);
 			}
 		);
 
@@ -128,19 +141,6 @@ describe(
 				const WRAPPER = (): void =>
 				{
 					isStructuredData({ a: 1, b: undefined }, DESCRIPTOR);
-				};
-
-				throws(WRAPPER, testError);
-			}
-		);
-
-		it(
-			"should throw when there is an extraneous property",
-			(): void =>
-			{
-				const WRAPPER = (): void =>
-				{
-					isStructuredData({ a: 1, b: 2, c: 3 }, DESCRIPTOR);
 				};
 
 				throws(WRAPPER, testError);

@@ -199,12 +199,12 @@ function testError(value: unknown): true
 {
 	if (!(value instanceof Error))
 	{
-		throw new Error("Not an Error object");
+		throw new Error("The value is not an Error object.");
 	}
 
 	if (value.message.length === 0)
 	{
-		throw new Error("Error message is empty");
+		throw new Error("The message must not be empty.");
 	}
 
 	return true;

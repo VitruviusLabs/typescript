@@ -2,9 +2,9 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isTypeAssertionStructuredDataDescriptor } from "../../../src/TypeAssertion/utils/isTypeAssertionStructuredDataDescriptor.mjs";
+import { isStructuredDataPropertyDescriptor } from "../../src/utils/isStructuredDataPropertyDescriptor.mjs";
 
-import { GroupType, getInvertedValues, getValues, testError } from "../../common/utils.mjs";
+import { GroupType, getInvertedValues, getValues, testError } from "../common/utils.mjs";
 
 describe(
 	"TypeGuard / common/utils / isTypeAssertionStructuredDataDescriptor",
@@ -20,7 +20,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isTypeAssertionStructuredDataDescriptor(ITEM, "test");
+						isStructuredDataPropertyDescriptor(ITEM, "test");
 					};
 
 					doesNotThrow(WRAPPER);
@@ -38,7 +38,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isTypeAssertionStructuredDataDescriptor(ITEM, "test");
+						isStructuredDataPropertyDescriptor(ITEM, "test");
 					};
 
 					throws(WRAPPER, testError);

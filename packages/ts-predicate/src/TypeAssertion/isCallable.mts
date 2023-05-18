@@ -5,7 +5,7 @@ function isCallable(value: unknown): asserts value is Function
 {
 	if (!guard(value))
 	{
-		throw new Error("value is not a callable");
+		throw new Error("The value must be a callable.");
 	}
 }
 

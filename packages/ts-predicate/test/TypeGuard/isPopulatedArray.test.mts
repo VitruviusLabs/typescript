@@ -76,7 +76,7 @@ describe(
 			"should return true when given an array with all the values passing the itemGuard constraint",
 			(): void =>
 			{
-				const RESULT: unknown = isPopulatedArray([1, 2, 3], { itemGuard: isNumberTest });
+				const RESULT: unknown = isPopulatedArray([1, 2, 3], { itemTest: isNumberTest });
 
 				strictEqual(RESULT, true);
 			}
@@ -86,7 +86,7 @@ describe(
 			"should return false when given an array with some values not passing the itemGuard constraint",
 			(): void =>
 			{
-				const RESULT: unknown = isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemGuard: isNumberTest });
+				const RESULT: unknown = isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
 
 				strictEqual(RESULT, false);
 			}

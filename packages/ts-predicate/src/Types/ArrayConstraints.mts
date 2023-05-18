@@ -1,9 +1,9 @@
-import type { TypeGuardTest } from "./TypeGuardTest.mjs";
+import type { Test } from "./Test.mjs";
 
 interface ArrayConstraints<Type>
 {
 	minLength?: number;
-	itemGuard?: TypeGuardTest<Type>;
+	itemTest?: Test<Type>;
 }
 
 export type { ArrayConstraints };

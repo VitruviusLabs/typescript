@@ -2,11 +2,11 @@ import { hasNullableProperty } from "../../TypeGuard/hasNullableProperty.mjs";
 
 import { isDefined } from "../../TypeGuard/isDefined.mjs";
 
-import { buildCause } from "./buildCause.mjs";
+import { buildError } from "./buildError.mjs";
 
-import type { TypeAssertionPropertyDescriptor } from "../../index.mjs";
+import type { StructuredDataPropertyDescriptor } from "../../Types/_index.mjs";
 
-function validateProperty(value: Record<string, unknown>, key: string, property_descriptor: TypeAssertionPropertyDescriptor<unknown>): void
+function validateProperty(value: object, key: string, property_descriptor: StructuredDataPropertyDescriptor<unknown>): void
 {
 	if (!hasNullableProperty(value, key))
 	{
@@ -15,7 +15,7 @@ function validateProperty(value: Record<string, unknown>, key: string, property_
 			return;
 		}
 
-		throw new Error(`missing required property "${key}"`);
+		throw new Error(`The required property "${key}" is missing.`);
 	}
 
 	if (!isDefined(value[key]))
@@ -25,7 +25,7 @@ function validateProperty(value: Record<string, unknown>, key: string, property_
 			return;
 		}
 
-		throw new Error(`property "${key}" is not nullable`);
+		throw new Error(`The property "${key}" must not have a nullish value (undefined, null, or NaN).`);
 	}
 
 	try
@@ -34,7 +34,10 @@ function validateProperty(value: Record<string, unknown>, key: string, property_
 	}
 	catch (error: unknown)
 	{
-		throw new Error(`property "${key}" is invalid`, buildCause(error));
+		throw new Error(
+			`The property "${key}" have an incorrect value.`,
+			{ cause: buildError(error) }
+		);
 	}
 }
 

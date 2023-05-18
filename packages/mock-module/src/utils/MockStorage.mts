@@ -15,7 +15,7 @@ class MockStorage
 
 		if (RESULT === undefined)
 		{
-			throw new Error(`No module matching key ${key}`);
+			throw new Error(`No mock dependency associated to the key "${key}".`);
 		}
 
 		return RESULT;

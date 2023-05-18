@@ -97,14 +97,14 @@ describe(
 			{
 				const WRAPPER_EMPTY = (): void =>
 				{
-					isArray([], { itemGuard: isNumberTest });
+					isArray([], { itemTest: isNumberTest });
 				};
 
 				doesNotThrow(WRAPPER_EMPTY);
 
 				const WRAPPER_VALID = (): void =>
 				{
-					isArray([1, 2, 3], { itemGuard: isNumberTest });
+					isArray([1, 2, 3], { itemTest: isNumberTest });
 				};
 
 				doesNotThrow(WRAPPER_VALID);
@@ -117,7 +117,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isArray([1, 2, 3, Symbol("anomaly")], { itemGuard: isNumberTest });
+					isArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
 				};
 
 				throws(WRAPPER, testError);

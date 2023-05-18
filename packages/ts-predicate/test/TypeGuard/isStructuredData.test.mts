@@ -6,7 +6,7 @@ import { isStructuredData } from "../../src/TypeGuard/isStructuredData.mjs";
 
 import { BaseType, getInvertedValues } from "../common/utils.mjs";
 
-import type { TypeGuardStructuredDataDescriptor } from "../../src/Types/TypeGuardStructuredDataDescriptor.mjs";
+import type { StructuredDataDescriptor } from "../../src/Types/StructuredDataDescriptor.mjs";
 
 interface TestData
 {
@@ -19,7 +19,7 @@ function isNumberTest(value: unknown): value is number
 	return typeof value === "number";
 }
 
-const DESCRIPTOR: TypeGuardStructuredDataDescriptor<TestData> =
+const DESCRIPTOR: StructuredDataDescriptor<TestData> =
 {
 	a: {
 		nullable: true,
@@ -47,6 +47,16 @@ describe(
 
 					strictEqual(RESULT, false);
 				}
+			}
+		);
+
+		it(
+			"should return false when there is an extraneous property",
+			(): void =>
+			{
+				const RESULT: unknown = isStructuredData({ a: 1, b: 2, c: 3 }, DESCRIPTOR);
+
+				strictEqual(RESULT, false);
 			}
 		);
 
@@ -105,16 +115,6 @@ describe(
 			(): void =>
 			{
 				const RESULT: unknown = isStructuredData({ a: 1, b: "2" }, DESCRIPTOR);
-
-				strictEqual(RESULT, false);
-			}
-		);
-
-		it(
-			"should return false when there is an extraneous property",
-			(): void =>
-			{
-				const RESULT: unknown = isStructuredData({ a: 1, b: 2, c: 3 }, DESCRIPTOR);
 
 				strictEqual(RESULT, false);
 			}
