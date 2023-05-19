@@ -8,6 +8,7 @@
 		"es2022": true
 	},
 	"ignorePatterns": [
+		"**/tmp/**",
 		"**/build/**",
 		"**/reports/**",
 		"**/stryker-tmp/**"

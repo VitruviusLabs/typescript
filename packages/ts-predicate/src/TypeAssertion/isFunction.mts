@@ -5,7 +5,7 @@ function isFunction(value: unknown): asserts value is Function
 {
 	if (!guard(value))
 	{
-		throw new Error("value is not a function");
+		throw new Error("The value must be a function.");
 	}
 }
 

@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isSimilar } from "../../src/Helper/isSimilar.mjs";
 
-import { BaseType, DummyClass, GroupType, getInvertedValues } from "../common/utils.mjs";
+import { BaseType, DummyClass, GroupType, getInvertedValues } from "../common/getValues.mjs";
 
 describe(
 	"Helper / IsSimilar",

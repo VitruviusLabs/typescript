@@ -1,9 +1,6 @@
 import { isArray } from "./isArray.mjs";
 
-import type {
-	ArrayConstraints,
-	PopulatedArray,
-} from "../Types/_index.mjs";
+import type { ArrayConstraints, PopulatedArray } from "../types/_index.mjs";
 
 function isPopulatedArray<Type>(
 	value: unknown,

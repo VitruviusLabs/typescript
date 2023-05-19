@@ -1,16 +1,16 @@
-function buildError(error: unknown, key: string): Error
+function buildError(error: unknown): Error
 {
 	if (error instanceof Error)
 	{
 		return error;
 	}
 
-	if (typeof error === "string")
+	if (typeof error === "string" && error !== "")
 	{
 		return new Error(error);
 	}
 
-	return new Error(`An unknown error occurred when validating property "${key}"`);
+	return new Error("An unknown error occurred.");
 }
 
 export { buildError };

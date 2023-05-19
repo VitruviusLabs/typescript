@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-lab/ts-predicate",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"description": "TypeScript predicates library",
 	"author": "Benjamin Blum <benjamin.blum.98@gmail.com>",
 	"contributors": [
@@ -34,8 +34,8 @@
 		"clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
 		"compile": "tsc -p tsconfig.build.json",
 		"build": "pnpm clean && pnpm compile",
-		"eslint:check": "eslint './**/*.mts'",
-		"eslint:fix": "eslint './**/*.mts' --fix",
+		"eslint:check": "eslint ./src ./test",
+		"eslint:fix": "eslint ./src ./test --fix",
 		"test:unit": "pnpm test:unit:build && pnpm test:unit:run",
 		"test:unit:build": "tsc -p tsconfig.test.json",
 		"test:unit:run": "node --test tmp/test-build/test",

@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isArray } from "../../src/TypeGuard/isArray.mjs";
 
-import { BaseType, getInvertedValues, getValues } from "../common/utils.mjs";
+import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -70,11 +70,11 @@ describe(
 		);
 
 		it(
-			"should return true when given an array with all the values passing the itemGuard constraint",
+			"should return true when given an array with all the values passing the itemTest constraint",
 			(): void =>
 			{
-				const RESULT_EMPTY: unknown = isArray([], { itemGuard: isNumberTest });
-				const RESULT_VALID: unknown = isArray([1, 2, 3], { itemGuard: isNumberTest });
+				const RESULT_EMPTY: unknown = isArray([], { itemTest: isNumberTest });
+				const RESULT_VALID: unknown = isArray([1, 2, 3], { itemTest: isNumberTest });
 
 				strictEqual(RESULT_EMPTY, true);
 				strictEqual(RESULT_VALID, true);
@@ -82,10 +82,10 @@ describe(
 		);
 
 		it(
-			"should return false when given an array with some values not passing the itemGuard constraint",
+			"should return false when given an array with some values not passing the itemTest constraint",
 			(): void =>
 			{
-				const RESULT: unknown = isArray([1, 2, 3, Symbol("anomaly")], { itemGuard: isNumberTest });
+				const RESULT: unknown = isArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
 
 				strictEqual(RESULT, false);
 			}

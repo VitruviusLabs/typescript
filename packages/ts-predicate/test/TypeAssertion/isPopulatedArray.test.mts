@@ -4,7 +4,10 @@ import { describe, it } from "node:test";
 
 import { isPopulatedArray } from "../../src/TypeAssertion/isPopulatedArray.mjs";
 
-import { BaseType, getInvertedValues, testError } from "../common/utils.mjs";
+import { BaseType, getInvertedValues } from "../common/getValues.mjs";
+
+import { testError } from "../common/testError.mjs";
+
 
 function isNumberTest(value: unknown): value is number
 {
@@ -93,12 +96,12 @@ describe(
 		);
 
 		it(
-			"should return when given an array with all the values passing the itemGuard constraint",
+			"should return when given an array with all the values passing the itemTest constraint",
 			(): void =>
 			{
 				const WRAPPER = (): void =>
 				{
-					isPopulatedArray([1, 2, 3], { itemGuard: isNumberTest });
+					isPopulatedArray([1, 2, 3], { itemTest: isNumberTest });
 				};
 
 				doesNotThrow(WRAPPER);
@@ -106,12 +109,12 @@ describe(
 		);
 
 		it(
-			"should throw when given an array with some values not passing the itemGuard constraint",
+			"should throw when given an array with some values not passing the itemTest constraint",
 			(): void =>
 			{
 				const WRAPPER = (): void =>
 				{
-					isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemGuard: isNumberTest });
+					isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
 				};
 
 				throws(WRAPPER, testError);

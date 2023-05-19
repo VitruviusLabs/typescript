@@ -4,7 +4,9 @@ import { describe, it } from "node:test";
 
 import { isRecord } from "../../src/TypeAssertion/isRecord.mjs";
 
-import { BaseType, GroupType, getInvertedValues, getValues, testError } from "../common/utils.mjs";
+import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
+
+import { testAggregateError, testError } from "../common/testError.mjs";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -70,7 +72,7 @@ describe(
 		);
 
 		it(
-			"should return when given a record with all the values passing the guard constraint",
+			"should return when given a record with all the values passing the test constraint",
 			(): void =>
 			{
 				const WRAPPER = (): void =>
@@ -83,7 +85,7 @@ describe(
 		);
 
 		it(
-			"should throw when given a record with some values not passing the guard constraint",
+			"should throw when given a record with some values not passing the test constraint",
 			(): void =>
 			{
 				const WRAPPER = (): void =>
@@ -91,7 +93,7 @@ describe(
 					isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, isNumberTest);
 				};
 
-				throws(WRAPPER, testError);
+				throws(WRAPPER, testAggregateError);
 			}
 		);
 	}

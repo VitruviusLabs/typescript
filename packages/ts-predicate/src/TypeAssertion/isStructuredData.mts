@@ -1,50 +1,63 @@
-import { hasAllowedKeys } from "./hasAllowedKeys.mjs";
-
-import { isRecord } from "./isRecord.mjs";
+import { isStructuredDataPropertyDescriptor } from "../utils/isStructuredDataPropertyDescriptor.mjs";
 
 import { buildError } from "./utils/buildError.mjs";
 
-import { isTypeAssertionStructuredDataDescriptor } from "./utils/isTypeAssertionStructuredDataDescriptor.mjs";
-
 import { validateProperty } from "./utils/validateProperty.mjs";
 
-import type { TypeAssertionStructuredDataDescriptor } from "../Types/_index.mjs";
+import type { StructuredDataDescriptor } from "../types/_index.mjs";
 
-function isStructuredData<Type>(
-	value: unknown,
-	descriptor: TypeAssertionStructuredDataDescriptor<Type>
-): asserts value is Type
+function isStructuredData<Type>(value: unknown, descriptor: StructuredDataDescriptor<Type>): asserts value is Type
 {
-	isRecord(value);
+	if (typeof value !== "object" || value === null)
+	{
+		throw new Error("The value must be an object.");
+	}
 
 	const DESCRIPTOR_KEYS: Array<string> = Object.keys(descriptor);
 
-	hasAllowedKeys(value, DESCRIPTOR_KEYS);
-
 	const ERRORS: Array<Error> = [];
+
+	const EXTRANEOUS_KEYS: Array<string> = Object.keys(value).filter(
+		(key: string): boolean =>
+		{
+			return !DESCRIPTOR_KEYS.includes(key);
+		}
+	);
+
+	if (EXTRANEOUS_KEYS.length > 0)
+	{
+		ERRORS.push(
+			...EXTRANEOUS_KEYS.map(
+				(key: string): Error =>
+				{
+					return new Error(`The value has an extraneous property "${key}".`);
+				}
+			)
+		);
+	}
 
 	DESCRIPTOR_KEYS.forEach(
 		(key: string): void =>
 		{
+			// @ts-expect-error: Key mapping
+			const PROPERTY_DESCRIPTOR: unknown = descriptor[key];
+
+			isStructuredDataPropertyDescriptor(PROPERTY_DESCRIPTOR, key);
+
 			try
 			{
-				// @ts-expect-error: Key mapping
-				const PROPERTY_DESCRIPTOR: unknown = descriptor[key];
-
-				isTypeAssertionStructuredDataDescriptor(PROPERTY_DESCRIPTOR, key);
-
 				validateProperty(value, key, PROPERTY_DESCRIPTOR);
 			}
 			catch (error: unknown)
 			{
-				ERRORS.push(buildError(error, key));
+				ERRORS.push(buildError(error));
 			}
 		}
 	);
 
 	if (ERRORS.length > 0)
 	{
-		throw new AggregateError(ERRORS, "Some properties are invalid");
+		throw new AggregateError(ERRORS, "The value is an object, but some properties are incorrect.");
 	}
 }
 

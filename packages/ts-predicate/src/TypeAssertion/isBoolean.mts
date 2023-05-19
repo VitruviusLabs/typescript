@@ -4,7 +4,7 @@ function isBoolean(value: unknown): asserts value is boolean
 {
 	if (!guard(value))
 	{
-		throw new Error("value is not a boolean");
+		throw new Error("The value must be a boolean.");
 	}
 }
 

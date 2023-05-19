@@ -1,6 +1,6 @@
 import { hasNullableProperty as guard } from "../TypeGuard/hasNullableProperty.mjs";
 
-import type { ObjectWithNullableProperty } from "../Types/_index.mjs";
+import type { ObjectWithNullableProperty } from "../types/_index.mjs";
 
 function hasNullableProperty<O extends object, K extends string>(
 	value: O,
@@ -9,7 +9,7 @@ function hasNullableProperty<O extends object, K extends string>(
 {
 	if (!guard<O, K>(value, property))
 	{
-		throw new Error(`value does not have a property named "${property}"`);
+		throw new Error(`The value must have a property "${property}".`);
 	}
 }
 

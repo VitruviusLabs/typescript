@@ -4,7 +4,10 @@ import { describe, it } from "node:test";
 
 import { isDefined } from "../../src/TypeAssertion/isDefined.mjs";
 
-import { BaseType, getInvertedValues, getValues, testError } from "../common/utils.mjs";
+import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
+
+import { testError } from "../common/testError.mjs";
+
 
 describe(
 	"TypeAssertion / isDefined",

@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isBoolean } from "../../src/TypeGuard/isBoolean.mjs";
 
-import { BaseType, getInvertedValues, getValues } from "../common/utils.mjs";
+import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 describe(
 	"TypeGuard / isBoolean",

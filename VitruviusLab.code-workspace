@@ -9,8 +9,8 @@
 			"path": "./packages/ts-predicate"
 		},
 		{
-			"name": "mock-module",
-			"path": "./packages/mock-module"
+			"name": "mockingbird",
+			"path": "./packages/mockingbird"
 		}
 	],
 	"settings": {
@@ -22,7 +22,7 @@
 		],
 		"eslint.workingDirectories": [
 			"./packages/ts-predicate",
-			"./packages/mock-module"
+			"./packages/mockingbird"
 		],
 		"editor.formatOnSave": true,
 		"editor.codeActionsOnSave": {

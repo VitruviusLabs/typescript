@@ -4,9 +4,11 @@ import { describe, it } from "node:test";
 
 import { isStructuredData } from "../../src/TypeAssertion/isStructuredData.mjs";
 
-import { BaseType, getInvertedValues, testError } from "../common/utils.mjs";
+import { BaseType, getInvertedValues } from "../common/getValues.mjs";
 
-import type { TypeAssertionStructuredDataDescriptor } from "../../src/Types/TypeAssertionStructuredDataDescriptor.mjs";
+import { testAggregateError, testError } from "../common/testError.mjs";
+
+import type { StructuredDataDescriptor } from "../../src/types/StructuredDataDescriptor.mjs";
 
 interface TestData
 {
@@ -22,7 +24,7 @@ function isNumberTest(value: unknown): asserts value is number
 	}
 }
 
-const DESCRIPTOR: TypeAssertionStructuredDataDescriptor<TestData> =
+const DESCRIPTOR: StructuredDataDescriptor<TestData> =
 {
 	a: {
 		nullable: true,
@@ -57,6 +59,19 @@ describe(
 		);
 
 		it(
+			"should throw when there is an extraneous property",
+			(): void =>
+			{
+				const WRAPPER = (): void =>
+				{
+					isStructuredData({ a: 1, b: 2, c: 3 }, DESCRIPTOR);
+				};
+
+				throws(WRAPPER, testAggregateError);
+			}
+		);
+
+		it(
 			"should return when every property of the object is valid",
 			(): void =>
 			{
@@ -78,7 +93,7 @@ describe(
 					isStructuredData({ a: 1, b: "2" }, DESCRIPTOR);
 				};
 
-				throws(WRAPPER, testError);
+				throws(WRAPPER, testAggregateError);
 			}
 		);
 
@@ -104,7 +119,7 @@ describe(
 					isStructuredData({ b: 2 }, DESCRIPTOR);
 				};
 
-				throws(WRAPPER, testError);
+				throws(WRAPPER, testAggregateError);
 			}
 		);
 
@@ -130,20 +145,7 @@ describe(
 					isStructuredData({ a: 1, b: undefined }, DESCRIPTOR);
 				};
 
-				throws(WRAPPER, testError);
-			}
-		);
-
-		it(
-			"should throw when there is an extraneous property",
-			(): void =>
-			{
-				const WRAPPER = (): void =>
-				{
-					isStructuredData({ a: 1, b: 2, c: 3 }, DESCRIPTOR);
-				};
-
-				throws(WRAPPER, testError);
+				throws(WRAPPER, testAggregateError);
 			}
 		);
 	}
