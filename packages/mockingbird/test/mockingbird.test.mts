@@ -5,7 +5,7 @@ import { describe, it } from "node:test";
 import { mockingbird } from "../src/mockingbird.mjs";
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- Mock
-type DummyMock = typeof import("./dummy-lib.mjs");
+type DummyModule = typeof import("./dummy/dummy-lib.mjs");
 
 describe(
 	"mockingbird",
@@ -17,8 +17,8 @@ describe(
 			{
 				const UUID: string = "--token--";
 
-				const MOCK: DummyMock = await mockingbird<DummyMock>(
-					"./dummy-lib.mjs",
+				const MOCK: DummyModule = await mockingbird<DummyModule>(
+					"./dummy/dummy-lib.mjs",
 					import.meta.url,
 					{
 						"node:crypto": {
@@ -27,6 +27,12 @@ describe(
 								return UUID;
 							}
 						},
+						"./dummyDependency.mjs": {
+							dummyDependency: (input: string): string =>
+							{
+								return input;
+							}
+						}
 					}
 				);
 

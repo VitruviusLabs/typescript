@@ -37,7 +37,7 @@ pnpm add @vitruvius-lab/ts-predicate
 yarn add @vitruvius-lab/ts-predicate
 ```
 
-```
+```bash
 npm install @vitruvius-lab/ts-predicate
 ```
 

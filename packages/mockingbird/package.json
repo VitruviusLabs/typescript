@@ -31,6 +31,9 @@
 	"files": [
 		"build"
 	],
+	"engines": {
+		"node": ">=20.0.0"
+	},
 	"scripts": {
 		"clean": "rm -rfv reports coverage build dist lib .eslintcache",
 		"compile": "tsc -p tsconfig.build.json",

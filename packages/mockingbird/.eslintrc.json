@@ -24,6 +24,7 @@
 		]
 	},
 	"ignorePatterns": [
+		"dummy-dependency.mjs",
 		"dummy-lib.mjs",
 		"**/tmp/**",
 		"**/build/**",
