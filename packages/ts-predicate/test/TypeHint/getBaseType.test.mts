@@ -4,27 +4,31 @@ import { describe, it } from "node:test";
 
 import { getBaseType } from "../../src/TypeHint/getBaseType.mjs";
 
-import { BaseType, DummyClass, GroupType, OldDummyClass, getValues } from "../common/utils.mjs";
+import { BaseType, DummyClass, GroupType, OldDummyClass, getValues } from "../common/getValues.mjs";
 
-import type { OldClassInstance } from "../common/OldClassInstance.mjs";
-
-const DUMMY: DummyClass = new DummyClass();
-const OLD_DUMMY: OldClassInstance = new OldDummyClass();
-
-function trapDummy(): void
+import
 {
-	function TrapDummyClass(): void { }
+	ANONYMOUS_ASYNC_CALLABLE,
+	ANONYMOUS_ASYNC_FUNCTION,
+	ANONYMOUS_CALLABLE,
+	ANONYMOUS_CLASS,
+	ANONYMOUS_CONSTRUCTIBLE,
+	ANONYMOUS_FUNCTION,
+	ANONYMOUS_TRAP_DUMMY,
+	GENERATOR_A,
+	GENERATOR_B,
+	GENERATOR_C,
+	GENERATOR_D,
+	alpha,
+	beta,
+	namedGenerator1,
+	namedGenerator2,
+	namedGenerator3,
+	namedGenerator4,
+	trapDummy
+} from "../common/specialValues.mjs";
 
-	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Test
-	function* trapDummyGenerator()
-	{
-		yield 1;
-	}
-
-	// @ts-expect-error: old notation
-	new TrapDummyClass();
-	trapDummyGenerator();
-}
+import type { OldClassInstance } from "../common/types/OldClassInstance.mjs";
 
 describe(
 	"TypeHint / getBaseType",
@@ -124,7 +128,7 @@ describe(
 			(): void =>
 			{
 				const VALUES: Array<unknown> = [
-					class { },
+					ANONYMOUS_CLASS,
 					DummyClass,
 					OldDummyClass,
 				];
@@ -140,55 +144,15 @@ describe(
 			'should return "generator" when given a generator function',
 			(): void =>
 			{
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-				function* generator1()
-				{
-					yield 1;
-				}
-
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-				function* generator2()
-				{
-					yield 1;
-				}
-
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-				function* generator3()
-				{
-					yield 1;
-				}
-
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-				function* generator4()
-				{
-					yield 1;
-				}
-
 				const VALUES: Array<unknown> = [
-					generator1,
-					generator2,
-					generator3,
-					generator4,
-					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-					function* ()
-					{
-						yield 1;
-					},
-					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-					function* ()
-					{
-						yield 1;
-					},
-					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-					function* ()
-					{
-						yield 1;
-					},
-					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-					function* ()
-					{
-						yield 1;
-					},
+					namedGenerator1,
+					namedGenerator2,
+					namedGenerator3,
+					namedGenerator4,
+					GENERATOR_A,
+					GENERATOR_B,
+					GENERATOR_C,
+					GENERATOR_D,
 				];
 
 				for (const ITEM of VALUES)
@@ -202,11 +166,18 @@ describe(
 			'should return "function" when given a function or method',
 			(): void =>
 			{
+				const DUMMY: DummyClass = new DummyClass();
+				const OLD_DUMMY: OldClassInstance = new OldDummyClass();
+
 				const VALUES: Array<unknown> = [
-					function (): void { },
-					async function (): Promise<void> { },
-					(): void => { },
-					async (): Promise<void> => { },
+					ANONYMOUS_CALLABLE,
+					ANONYMOUS_ASYNC_CALLABLE,
+					ANONYMOUS_FUNCTION,
+					ANONYMOUS_ASYNC_FUNCTION,
+					ANONYMOUS_CONSTRUCTIBLE,
+					ANONYMOUS_TRAP_DUMMY,
+					alpha,
+					beta,
 					DummyClass.Method,
 					DummyClass.AsyncMethod,
 					DUMMY.method,

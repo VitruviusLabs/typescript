@@ -4,7 +4,10 @@ import { describe, it } from "node:test";
 
 import { isCallable } from "../../src/TypeAssertion/isCallable.mjs";
 
-import { BaseType, getInvertedValues, getValues, testError } from "../common/utils.mjs";
+import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
+
+import { testError } from "../common/testError.mjs";
+
 
 describe(
 	"TypeAssertion / isCallable",

@@ -56,7 +56,7 @@ jobs:
         if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
         run: |
           pnpm install --frozen-lockfile
-          cd packages/mock-module && pnpm install --frozen-lockfile && cd ../..
+          cd packages/mockingbird && pnpm install --frozen-lockfile && cd ../..
 
       - name: Dependencies caching
         if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
@@ -208,7 +208,7 @@ jobs:
 
 ## Mock Module
 
-  lint-mock-module:
+  lint-mockingbird:
     needs: setup
     runs-on: ubuntu-latest
     if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
@@ -233,12 +233,12 @@ jobs:
         run: pnpm --filter ts-predicate ci:build
 
       - name: Package dependencies installation
-        run: pnpm install --filter mock-module
+        run: pnpm install --filter mockingbird
 
       - name: Lint with ESlint
-        run: pnpm --filter mock-module ci:lint
+        run: pnpm --filter mockingbird ci:lint
 
-  typescript-syntax-check-mock-module:
+  typescript-syntax-check-mockingbird:
     needs: setup
     runs-on: ubuntu-latest
     if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
@@ -263,14 +263,14 @@ jobs:
         run: pnpm --filter ts-predicate ci:build
 
       - name: Package dependencies installation
-        run: pnpm install --filter mock-module
+        run: pnpm install --filter mockingbird
 
       - name: Check TypeScript syntax
-        run: pnpm --filter mock-module ci:ts:check
+        run: pnpm --filter mockingbird ci:ts:check
 
-  publish-mock-module:
+  publish-mockingbird:
     if: ${{ github.ref == 'refs/heads/main' && ! failure() && ! cancelled() && github.event_name == 'push' }}
-    needs: [spell-check-global, lint-mock-module, typescript-syntax-check-mock-module]
+    needs: [spell-check-global, lint-mockingbird, typescript-syntax-check-mockingbird]
     runs-on: ubuntu-latest
     environment: npm
     steps:
@@ -299,13 +299,13 @@ jobs:
         run: pnpm --filter ts-predicate ci:build
 
       - name: Package dependencies installation
-        run: pnpm install --filter mock-module
+        run: pnpm install --filter mockingbird
 
       - name: Package build
-        run: pnpm --filter mock-module ci:build
+        run: pnpm --filter mockingbird ci:build
 
       - name: Publish package
         id: package-version
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm --filter mock-module ci:publish:dry
+        run: pnpm --filter mockingbird ci:publish:dry

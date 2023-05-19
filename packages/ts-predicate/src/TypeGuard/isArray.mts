@@ -1,6 +1,6 @@
 import { itemGuard } from "./utils/itemGuard.mjs";
 
-import type { ArrayConstraints, Test } from "../Types/_index.mjs";
+import type { ArrayConstraints, Test } from "../types/_index.mjs";
 
 function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type>): value is Array<Type>
 {

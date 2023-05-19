@@ -1,6 +1,6 @@
 
 
-import type { Test } from "../../Types/_index.mjs";
+import type { Test } from "../../types/_index.mjs";
 
 function itemGuard<Type>(value: unknown, callable: Test<Type>): value is Type
 {

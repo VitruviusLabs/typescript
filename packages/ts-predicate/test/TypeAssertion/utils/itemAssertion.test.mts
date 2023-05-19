@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { itemAssertion } from "../../../src/TypeAssertion/utils/itemAssertion.mjs";
 
-import { testError } from "../../common/utils.mjs";
+import { testError } from "../../common/testError.mjs";
 
 describe(
 	"TypeAssertion / utils / itemAssertion",

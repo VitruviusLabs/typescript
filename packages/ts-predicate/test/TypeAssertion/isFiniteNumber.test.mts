@@ -4,7 +4,10 @@ import { describe, it } from "node:test";
 
 import { isFiniteNumber } from "../../src/TypeAssertion/isFiniteNumber.mjs";
 
-import { BaseType, GroupType, getInvertedValues, getValues, testError } from "../common/utils.mjs";
+import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
+
+import { testError } from "../common/testError.mjs";
+
 
 describe(
 	"TypeAssertion / isFiniteNumber",

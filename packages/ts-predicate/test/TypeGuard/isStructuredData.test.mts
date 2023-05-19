@@ -4,9 +4,9 @@ import { describe, it } from "node:test";
 
 import { isStructuredData } from "../../src/TypeGuard/isStructuredData.mjs";
 
-import { BaseType, getInvertedValues } from "../common/utils.mjs";
+import { BaseType, getInvertedValues } from "../common/getValues.mjs";
 
-import type { StructuredDataDescriptor } from "../../src/Types/StructuredDataDescriptor.mjs";
+import type { StructuredDataDescriptor } from "../../src/types/StructuredDataDescriptor.mjs";
 
 interface TestData
 {

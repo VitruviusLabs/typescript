@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isRecord } from "../../src/TypeGuard/isRecord.mjs";
 
-import { BaseType, GroupType, getInvertedValues, getValues } from "../common/utils.mjs";
+import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -61,7 +61,7 @@ describe(
 		);
 
 		it(
-			"should return true when given a record with all the values passing the guard constraint",
+			"should return true when given a record with all the values passing the test constraint",
 			(): void =>
 			{
 				const RESULT: unknown = isRecord({ a: 1, b: 2, c: 3 }, isNumberTest);
@@ -71,7 +71,7 @@ describe(
 		);
 
 		it(
-			"should return false when given a record with some values not passing the guard constraint",
+			"should return false when given a record with some values not passing the test constraint",
 			(): void =>
 			{
 				const RESULT: unknown = isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, isNumberTest);

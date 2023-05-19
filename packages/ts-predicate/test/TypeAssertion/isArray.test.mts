@@ -4,7 +4,9 @@ import { describe, it } from "node:test";
 
 import { isArray } from "../../src/TypeAssertion/isArray.mjs";
 
-import { BaseType, getInvertedValues, getValues, testError } from "../common/utils.mjs";
+import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
+
+import { testAggregateError, testError } from "../common/testError.mjs";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -92,7 +94,7 @@ describe(
 		);
 
 		it(
-			"should return when given an array with all the values passing the itemGuard constraint",
+			"should return when given an array with all the values passing the itemTest constraint",
 			(): void =>
 			{
 				const WRAPPER_EMPTY = (): void =>
@@ -112,7 +114,7 @@ describe(
 		);
 
 		it(
-			"should throw when given an array with some values not passing the itemGuard constraint",
+			"should throw when given an array with some values not passing the itemTest constraint",
 			(): void =>
 			{
 				const WRAPPER = (): void =>
@@ -120,7 +122,7 @@ describe(
 					isArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
 				};
 
-				throws(WRAPPER, testError);
+				throws(WRAPPER, testAggregateError);
 			}
 		);
 	}

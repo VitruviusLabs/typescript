@@ -1,4 +1,4 @@
-import type { StructuredDataPropertyDescriptor } from "../Types/_index.mjs";
+import type { StructuredDataPropertyDescriptor } from "../types/_index.mjs";
 
 function isStructuredDataPropertyDescriptor(value: unknown, property_name: string): asserts value is StructuredDataPropertyDescriptor<unknown>
 {

@@ -4,7 +4,10 @@ import { describe, it } from "node:test";
 
 import { isFunction } from "../../src/TypeAssertion/isFunction.mjs";
 
-import { GroupType, getInvertedValues, getValues, testError } from "../common/utils.mjs";
+import { GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
+
+import { testError } from "../common/testError.mjs";
+
 
 describe(
 	"TypeAssertion / isFunction",

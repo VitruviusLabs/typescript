@@ -4,7 +4,7 @@ import { buildError } from "./utils/buildError.mjs";
 
 import { validateProperty } from "./utils/validateProperty.mjs";
 
-import type { StructuredDataDescriptor } from "../Types/_index.mjs";
+import type { StructuredDataDescriptor } from "../types/_index.mjs";
 
 function isStructuredData<Type>(value: unknown, descriptor: StructuredDataDescriptor<Type>): asserts value is Type
 {
@@ -50,17 +50,7 @@ function isStructuredData<Type>(value: unknown, descriptor: StructuredDataDescri
 			}
 			catch (error: unknown)
 			{
-				if (error instanceof Error)
-				{
-					ERRORS.push(error);
-
-					return;
-				}
-
-				throw new Error(
-					`An error occurred while validating the property "${key}".`,
-					{ cause: buildError(error) }
-				);
+				ERRORS.push(buildError(error));
 			}
 		}
 	);

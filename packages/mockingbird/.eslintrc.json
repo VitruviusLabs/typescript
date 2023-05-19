@@ -1,5 +1,7 @@
 {
-	"extends": ["../../.eslintrc.json"],
+	"extends": [
+		"../../.eslintrc.json"
+	],
 	"settings": {
 		"import/resolver": {
 			"typescript": {
@@ -21,6 +23,13 @@
 			"*.js"
 		]
 	},
+	"ignorePatterns": [
+		"dummy-lib.mjs",
+		"**/tmp/**",
+		"**/build/**",
+		"**/reports/**",
+		"**/stryker-tmp/**"
+	],
 	"rules": {
 		"import/no-extraneous-dependencies": [
 			"error",
@@ -29,7 +38,10 @@
 				"optionalDependencies": true,
 				"peerDependencies": true,
 				"bundledDependencies": true,
-				"packageDir": ["../../", "./"]
+				"packageDir": [
+					"../../",
+					"./"
+				]
 			}
 		]
 	}

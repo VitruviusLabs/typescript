@@ -1,4 +1,4 @@
-import type { OldClassConstructor } from "./OldClassConstructor.mjs";
+import type { OldClassConstructor } from "./types/OldClassConstructor.mjs";
 
 // @ts-expect-error: old notation
 const OldDummyClass: OldClassConstructor = function OldDummyClass(): void { };

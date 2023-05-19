@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { buildError } from "../../../src/TypeAssertion/utils/buildError.mjs";
 
-import { BaseType, getInvertedValues } from "../../common/utils.mjs";
+import { BaseType, getInvertedValues } from "../../common/getValues.mjs";
 
 describe(
 	"TypeAssertion / common/utils / buildError",

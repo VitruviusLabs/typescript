@@ -6,7 +6,7 @@ import { isMockedModule } from "./utils/isMockedModule.mjs";
 
 import type { MockedDependency } from "./Type/MockedDependency.mjs";
 
-async function mockModule<MockType>(module_identifier: string, meta_url: string, mocks: Record<string, MockedDependency>): Promise<MockType>
+async function mockingbird<MockType>(module_identifier: string, meta_url: string, mocks: Record<string, MockedDependency>): Promise<MockType>
 {
 	const DATA: string = encodeInfos(module_identifier, meta_url, mocks);
 
@@ -17,4 +17,4 @@ async function mockModule<MockType>(module_identifier: string, meta_url: string,
 	return MOCKED_MODULE;
 }
 
-export { mockModule };
+export { mockingbird };

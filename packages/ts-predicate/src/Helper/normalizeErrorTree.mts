@@ -1,6 +1,6 @@
 import { buildError } from "../TypeAssertion/utils/buildError.mjs";
 
-import type { NormalizedError } from "../Types/NormalizedError.mjs";
+import type { NormalizedError } from "../types/NormalizedError.mjs";
 
 function normalizeErrorTree(error: Error): NormalizedError
 {

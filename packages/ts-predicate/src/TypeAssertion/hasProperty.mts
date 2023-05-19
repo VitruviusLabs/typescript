@@ -2,7 +2,7 @@ import { isDefined as guard } from "../TypeGuard/isDefined.mjs";
 
 import { hasNullableProperty } from "./hasNullableProperty.mjs";
 
-import type { ObjectWithProperty } from "../Types/_index.mjs";
+import type { ObjectWithProperty } from "../types/_index.mjs";
 
 function hasProperty<O extends object, K extends string>(
 	value: O,

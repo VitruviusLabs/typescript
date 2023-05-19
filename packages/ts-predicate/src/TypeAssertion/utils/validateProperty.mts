@@ -4,7 +4,7 @@ import { isDefined } from "../../TypeGuard/isDefined.mjs";
 
 import { buildError } from "./buildError.mjs";
 
-import type { StructuredDataPropertyDescriptor } from "../../Types/_index.mjs";
+import type { StructuredDataPropertyDescriptor } from "../../types/_index.mjs";
 
 function validateProperty(value: object, key: string, property_descriptor: StructuredDataPropertyDescriptor<unknown>): void
 {

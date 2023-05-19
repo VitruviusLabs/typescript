@@ -65,7 +65,7 @@ importers:
         specifier: ^5.0.4
         version: 5.0.4
 
-  packages/mock-module:
+  packages/mockingbird:
     dependencies:
       '@vitruvius-lab/ts-predicate':
         specifier: workspace:*

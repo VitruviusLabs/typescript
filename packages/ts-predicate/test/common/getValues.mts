@@ -1,12 +1,12 @@
-import { BaseType } from "./BaseType.mjs";
-
 import { DummyClass } from "./DummyClass.mjs";
-
-import { GroupType } from "./GroupType.mjs";
 
 import { OldDummyClass } from "./OldDummyClass.mjs";
 
-import type { OldClassInstance } from "./OldClassInstance.mjs";
+import { BaseType } from "./types/BaseType.mjs";
+
+import { GroupType } from "./types/GroupType.mjs";
+
+import type { OldClassInstance } from "./types/OldClassInstance.mjs";
 
 const DUMMY: DummyClass = new DummyClass();
 
@@ -195,21 +195,6 @@ function getInvertedValues(...excluded_types: Array<BaseType | GroupType>): Arra
 	return getValues(...INCLUDED_TYPES);
 }
 
-function testError(value: unknown): true
-{
-	if (!(value instanceof Error))
-	{
-		throw new Error("Not an Error object");
-	}
-
-	if (value.message.length === 0)
-	{
-		throw new Error("Error message is empty");
-	}
-
-	return true;
-}
-
 export
 {
 	BaseType,
@@ -218,5 +203,4 @@ export
 	getValues,
 	GroupType,
 	OldDummyClass,
-	testError,
 };

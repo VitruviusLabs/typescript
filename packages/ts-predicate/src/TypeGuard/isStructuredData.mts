@@ -10,7 +10,7 @@ import { isRecord } from "./isRecord.mjs";
 
 import { itemGuard } from "./utils/itemGuard.mjs";
 
-import type { StructuredDataDescriptor } from "../Types/_index.mjs";
+import type { StructuredDataDescriptor } from "../types/_index.mjs";
 
 function isStructuredData<Type>(
 	value: unknown,

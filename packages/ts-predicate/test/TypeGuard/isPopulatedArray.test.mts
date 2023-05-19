@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isPopulatedArray } from "../../src/TypeGuard/isPopulatedArray.mjs";
 
-import { BaseType, getInvertedValues } from "../common/utils.mjs";
+import { BaseType, getInvertedValues } from "../common/getValues.mjs";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -73,7 +73,7 @@ describe(
 		);
 
 		it(
-			"should return true when given an array with all the values passing the itemGuard constraint",
+			"should return true when given an array with all the values passing the itemTest constraint",
 			(): void =>
 			{
 				const RESULT: unknown = isPopulatedArray([1, 2, 3], { itemTest: isNumberTest });
@@ -83,7 +83,7 @@ describe(
 		);
 
 		it(
-			"should return false when given an array with some values not passing the itemGuard constraint",
+			"should return false when given an array with some values not passing the itemTest constraint",
 			(): void =>
 			{
 				const RESULT: unknown = isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });

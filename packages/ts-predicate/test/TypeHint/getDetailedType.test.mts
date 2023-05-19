@@ -4,27 +4,31 @@ import { describe, it } from "node:test";
 
 import { getDetailedType } from "../../src/TypeHint/getDetailedType.mjs";
 
-import { BaseType, DummyClass, OldDummyClass, getValues } from "../common/utils.mjs";
+import { BaseType, DummyClass, OldDummyClass, getValues } from "../common/getValues.mjs";
 
-import type { OldClassInstance } from "../common/OldClassInstance.mjs";
-
-const DUMMY: DummyClass = new DummyClass();
-const OLD_DUMMY: OldClassInstance = new OldDummyClass();
-
-function trapDummy(): void
+import
 {
-	function TrapDummyClass(): void { }
+	ANONYMOUS_ASYNC_CALLABLE,
+	ANONYMOUS_ASYNC_FUNCTION,
+	ANONYMOUS_CALLABLE,
+	ANONYMOUS_CLASS,
+	ANONYMOUS_CONSTRUCTIBLE,
+	ANONYMOUS_FUNCTION,
+	ANONYMOUS_TRAP_DUMMY,
+	GENERATOR_A,
+	GENERATOR_B,
+	GENERATOR_C,
+	GENERATOR_D,
+	alpha,
+	beta,
+	namedGenerator1,
+	namedGenerator2,
+	namedGenerator3,
+	namedGenerator4,
+	trapDummy
+} from "../common/specialValues.mjs";
 
-	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-	function* trapDummyGenerator()
-	{
-		yield 1;
-	}
-
-	// @ts-expect-error: old notation
-	new TrapDummyClass();
-	trapDummyGenerator();
-}
+import type { OldClassInstance } from "../common/types/OldClassInstance.mjs";
 
 describe(
 	"TypeHint / getDetailedType",
@@ -142,30 +146,18 @@ describe(
 			'should return "anonymous function" when given an anonymous function',
 			(): void =>
 			{
+				const OLD_DUMMY: OldClassInstance = new OldDummyClass();
+
 				const VALUES: Array<unknown> = [
-					(): void => { },
-					async (): Promise<void> => { },
-					function (): void { },
-					async function (): Promise<void> { },
+					ANONYMOUS_CALLABLE,
+					ANONYMOUS_ASYNC_CALLABLE,
+					ANONYMOUS_FUNCTION,
+					ANONYMOUS_ASYNC_FUNCTION,
 					OldDummyClass.Method,
 					OldDummyClass.AsyncMethod,
 					OLD_DUMMY.method,
 					OLD_DUMMY.asyncMethod,
-					// anonymous version of trapDummy
-					function (): void
-					{
-						function TrapDummyClass(): void { }
-
-						// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-						function* trapDummyGenerator()
-						{
-							yield 1;
-						}
-
-						// @ts-expect-error: old notation
-						new TrapDummyClass();
-						trapDummyGenerator();
-					}
+					ANONYMOUS_TRAP_DUMMY,
 				];
 
 				for (const ITEM of VALUES)
@@ -179,14 +171,9 @@ describe(
 			'should return "function name" when given a named function',
 			(): void =>
 			{
-				function alpha(): void { }
-
-				async function beta(): Promise<void> { }
-
 				strictEqual(getDetailedType(alpha), "function alpha");
 				strictEqual(getDetailedType(beta), "function beta");
 				strictEqual(getDetailedType(trapDummy), "function trapDummy");
-				// Not using class notation
 				strictEqual(getDetailedType(Array.from), "function from");
 				strictEqual(getDetailedType([].map), "function map");
 			}
@@ -197,26 +184,10 @@ describe(
 			(): void =>
 			{
 				const VALUES: Array<unknown> = [
-					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-					function* ()
-					{
-						yield 1;
-					},
-					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-					function* ()
-					{
-						yield 1;
-					},
-					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-					function* ()
-					{
-						yield 1;
-					},
-					// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-					function* ()
-					{
-						yield 1;
-					},
+					GENERATOR_A,
+					GENERATOR_B,
+					GENERATOR_C,
+					GENERATOR_D,
 				];
 
 				for (const ITEM of VALUES)
@@ -230,34 +201,10 @@ describe(
 			'should return "generator name" when given a named generator',
 			(): void =>
 			{
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-				function* generator1()
-				{
-					yield 1;
-				}
-
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-				function* generator2()
-				{
-					yield 1;
-				}
-
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-				function* generator3()
-				{
-					yield 1;
-				}
-
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Dummy
-				function* generator4()
-				{
-					yield 1;
-				}
-
-				strictEqual(getDetailedType(generator1), "generator generator1");
-				strictEqual(getDetailedType(generator2), "generator generator2");
-				strictEqual(getDetailedType(generator3), "generator generator3");
-				strictEqual(getDetailedType(generator4), "generator generator4");
+				strictEqual(getDetailedType(namedGenerator1), "generator namedGenerator1");
+				strictEqual(getDetailedType(namedGenerator2), "generator namedGenerator2");
+				strictEqual(getDetailedType(namedGenerator3), "generator namedGenerator3");
+				strictEqual(getDetailedType(namedGenerator4), "generator namedGenerator4");
 			}
 		);
 
@@ -265,6 +212,8 @@ describe(
 			'should return "method name" when given a method',
 			(): void =>
 			{
+				const DUMMY: DummyClass = new DummyClass();
+
 				strictEqual(getDetailedType(DummyClass.Method), "method Method");
 				strictEqual(getDetailedType(DummyClass.AsyncMethod), "method AsyncMethod");
 				strictEqual(getDetailedType(DUMMY.method), "method method");
@@ -290,9 +239,9 @@ describe(
 			(): void =>
 			{
 				const VALUES: Array<unknown> = [
+					new ANONYMOUS_CLASS(),
 					// @ts-expect-error: old notation
-					new (function (): void { })(),
-					new (class { })(),
+					new ANONYMOUS_CONSTRUCTIBLE(),
 				];
 
 				for (const ITEM of VALUES)
@@ -306,6 +255,8 @@ describe(
 			'should return "object ClassName" when given an instantiated object',
 			(): void =>
 			{
+				const DUMMY: DummyClass = new DummyClass();
+
 				strictEqual(getDetailedType(DUMMY), "object DummyClass");
 			}
 		);

@@ -2,13 +2,13 @@ import { doesNotThrow, strictEqual } from "assert";
 
 import { describe, it } from "node:test";
 
-import { mockModule } from "../src/mockModule.mjs";
+import { mockingbird } from "../src/mockingbird.mjs";
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- Mock
 type DummyMock = typeof import("./dummy-lib.mjs");
 
 describe(
-	"mockModule",
+	"mockingbird",
 	(): void =>
 	{
 		it(
@@ -17,7 +17,7 @@ describe(
 			{
 				const UUID: string = "--token--";
 
-				const MOCK: DummyMock = await mockModule<DummyMock>(
+				const MOCK: DummyMock = await mockingbird<DummyMock>(
 					"./dummy-lib.mjs",
 					import.meta.url,
 					{

@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { hasAllowedKeys } from "../../src/TypeAssertion/hasAllowedKeys.mjs";
 
-import { testError } from "../common/utils.mjs";
+import { testError } from "../common/testError.mjs";
 
 describe(
 	"TypeAssertion / hasAllowedKeys",

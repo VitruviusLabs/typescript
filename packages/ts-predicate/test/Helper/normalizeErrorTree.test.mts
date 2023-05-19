@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { normalizeErrorTree } from "../../src/Helper/normalizeErrorTree.mjs";
 
-import type { NormalizedError } from "../../src/Types/_index.mjs";
+import type { NormalizedError } from "../../src/types/_index.mjs";
 
 // cspell:ignore lorem ipsum dolor sit amet consectetur adipiscing elit
 

@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { hasNullableProperty } from "../../src/TypeAssertion/hasNullableProperty.mjs";
 
-import { testError } from "../common/utils.mjs";
+import { testError } from "../common/testError.mjs";
 
 describe(
 	"TypeAssertion / hasNullableProperty",

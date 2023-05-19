@@ -4,9 +4,11 @@ import { describe, it } from "node:test";
 
 import { isStructuredData } from "../../src/TypeAssertion/isStructuredData.mjs";
 
-import { BaseType, getInvertedValues, testError } from "../common/utils.mjs";
+import { BaseType, getInvertedValues } from "../common/getValues.mjs";
 
-import type { StructuredDataDescriptor } from "../../src/Types/StructuredDataDescriptor.mjs";
+import { testAggregateError, testError } from "../common/testError.mjs";
+
+import type { StructuredDataDescriptor } from "../../src/types/StructuredDataDescriptor.mjs";
 
 interface TestData
 {
@@ -65,7 +67,7 @@ describe(
 					isStructuredData({ a: 1, b: 2, c: 3 }, DESCRIPTOR);
 				};
 
-				throws(WRAPPER, testError);
+				throws(WRAPPER, testAggregateError);
 			}
 		);
 
@@ -91,7 +93,7 @@ describe(
 					isStructuredData({ a: 1, b: "2" }, DESCRIPTOR);
 				};
 
-				throws(WRAPPER, testError);
+				throws(WRAPPER, testAggregateError);
 			}
 		);
 
@@ -117,7 +119,7 @@ describe(
 					isStructuredData({ b: 2 }, DESCRIPTOR);
 				};
 
-				throws(WRAPPER, testError);
+				throws(WRAPPER, testAggregateError);
 			}
 		);
 
@@ -143,7 +145,7 @@ describe(
 					isStructuredData({ a: 1, b: undefined }, DESCRIPTOR);
 				};
 
-				throws(WRAPPER, testError);
+				throws(WRAPPER, testAggregateError);
 			}
 		);
 	}

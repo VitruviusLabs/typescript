@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { isCallable } from "../../src/TypeGuard/isCallable.mjs";
 
-import { BaseType, getInvertedValues, getValues } from "../common/utils.mjs";
+import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 describe(
 	"TypeGuard / isCallable",
