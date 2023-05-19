@@ -13,7 +13,7 @@ function isRecord<Type>(value: unknown, item_test?: Test<Type>): asserts value i
 		throw new Error("The value must be a record.");
 	}
 
-	if (item_test !== undefined && !Object.values(value).every(item_test))
+	if (item_test !== undefined)
 	{
 		const ERRORS: Array<Error> = [];
 
