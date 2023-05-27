@@ -15,6 +15,7 @@ Possible values:
 - NaN
 - boolean
 - number
+- bigint
 - string
 - array
 - object
@@ -40,6 +41,7 @@ Possible values:
 - NaN
 - boolean (true or false)
 - number (N)
+- bigint (N)
 - string (N characters)
 - array (N items)
 - anonymous object

@@ -75,7 +75,7 @@ describe(
 		);
 
 		it(
-			'should return "number" when given a number',
+			'should return "number (N)" when given a number',
 			(): void =>
 			{
 				strictEqual(getDetailedType(0), "number (0)");
@@ -92,6 +92,21 @@ describe(
 				strictEqual(getDetailedType(-Number.MAX_VALUE), "number (-1.7976931348623157e+308)");
 				strictEqual(getDetailedType(Number.POSITIVE_INFINITY), "number (Infinity)");
 				strictEqual(getDetailedType(Number.NEGATIVE_INFINITY), "number (-Infinity)");
+			}
+		);
+
+		it(
+			'should return "bigint (N)" when given a big int',
+			(): void =>
+			{
+				strictEqual(getDetailedType(BigInt(0)), "bigint (0)");
+				strictEqual(getDetailedType(BigInt(-0)), "bigint (0)");
+				strictEqual(getDetailedType(BigInt(1)), "bigint (1)");
+				strictEqual(getDetailedType(BigInt(-1)), "bigint (-1)");
+				strictEqual(getDetailedType(BigInt(Number.MIN_SAFE_INTEGER + 4)), "bigint (-9007199254740987)");
+				strictEqual(getDetailedType(BigInt(Number.MAX_SAFE_INTEGER - 4)), "bigint (9007199254740987)");
+				strictEqual(getDetailedType(BigInt(Number.MIN_SAFE_INTEGER - 4)), "bigint (-9007199254740996)");
+				strictEqual(getDetailedType(BigInt(Number.MAX_SAFE_INTEGER + 4)), "bigint (9007199254740996)");
 			}
 		);
 

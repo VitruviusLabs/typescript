@@ -62,13 +62,12 @@ describe(
 					isArray([1, 2, 3], { minLength: 2 });
 				};
 
-				doesNotThrow(WRAPPER_GREATER_LENGTH);
-
 				const WRAPPER_EXACT_LENGTH = (): void =>
 				{
 					isArray([1, 2, 3], { minLength: 3 });
 				};
 
+				doesNotThrow(WRAPPER_GREATER_LENGTH);
 				doesNotThrow(WRAPPER_EXACT_LENGTH);
 			}
 		);
@@ -82,13 +81,12 @@ describe(
 					isArray([], { minLength: 1 });
 				};
 
-				throws(WRAPPER_EMPTY, testError);
-
 				const WRAPPER_SMALL_LENGTH = (): void =>
 				{
 					isArray([1, 2, 3], { minLength: 4 });
 				};
 
+				throws(WRAPPER_EMPTY, testError);
 				throws(WRAPPER_SMALL_LENGTH, testError);
 			}
 		);
@@ -102,13 +100,12 @@ describe(
 					isArray([], { itemTest: isNumberTest });
 				};
 
-				doesNotThrow(WRAPPER_EMPTY);
-
 				const WRAPPER_VALID = (): void =>
 				{
 					isArray([1, 2, 3], { itemTest: isNumberTest });
 				};
 
+				doesNotThrow(WRAPPER_EMPTY);
 				doesNotThrow(WRAPPER_VALID);
 			}
 		);
@@ -120,6 +117,38 @@ describe(
 				const WRAPPER = (): void =>
 				{
 					isArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
+				};
+
+				throws(WRAPPER, testAggregateError);
+			}
+		);
+
+		it(
+			"should return when given an array with all the values passing the test constraint",
+			(): void =>
+			{
+				const WRAPPER_EMPTY = (): void =>
+				{
+					isArray([], isNumberTest);
+				};
+
+				const WRAPPER_VALID = (): void =>
+				{
+					isArray([1, 2, 3], isNumberTest);
+				};
+
+				doesNotThrow(WRAPPER_EMPTY);
+				doesNotThrow(WRAPPER_VALID);
+			}
+		);
+
+		it(
+			"should throw when given an array with some values not passing the test constraint",
+			(): void =>
+			{
+				const WRAPPER = (): void =>
+				{
+					isArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
 				};
 
 				throws(WRAPPER, testAggregateError);

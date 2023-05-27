@@ -98,6 +98,11 @@ function getDetailedType(value: unknown): string
 		return `number (${value.toString()})`;
 	}
 
+	if (typeof value === "bigint")
+	{
+		return `bigint (${value.toString()})`;
+	}
+
 	if (typeof value === "string")
 	{
 		return `string (${value.length.toString()} characters)`;
@@ -105,8 +110,7 @@ function getDetailedType(value: unknown): string
 
 	if (typeof value === "symbol")
 	{
-		// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- useless
-		return `symbol ${value.toString().slice(6)}`;
+		return value.toString().replace("Symbol", "symbol ");
 	}
 
 	return typeof value;

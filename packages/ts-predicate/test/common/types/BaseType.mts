@@ -4,6 +4,7 @@ const enum BaseType
 	BOOLEAN = "boolean",
 	INTEGER = "integer",
 	REAL = "real",
+	BIG_INT = "bigint",
 	INFINITY = "infinity",
 	STRING = "string",
 	SYMBOL = "symbol",

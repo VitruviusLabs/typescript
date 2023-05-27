@@ -90,5 +90,27 @@ describe(
 				strictEqual(RESULT, false);
 			}
 		);
+
+		it(
+			"should return true when given an array with all the values passing the test constraint",
+			(): void =>
+			{
+				const RESULT_EMPTY: unknown = isArray([], isNumberTest);
+				const RESULT_VALID: unknown = isArray([1, 2, 3], isNumberTest);
+
+				strictEqual(RESULT_EMPTY, true);
+				strictEqual(RESULT_VALID, true);
+			}
+		);
+
+		it(
+			"should return false when given an array with some values not passing the test constraint",
+			(): void =>
+			{
+				const RESULT: unknown = isArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
+
+				strictEqual(RESULT, false);
+			}
+		);
 	}
 );

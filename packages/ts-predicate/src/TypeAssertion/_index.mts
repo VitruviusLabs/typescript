@@ -2,6 +2,7 @@ export * from "./hasAllowedKeys.mjs";
 export * from "./hasNullableProperty.mjs";
 export * from "./hasProperty.mjs";
 export * from "./isArray.mjs";
+export * from "./isBigInt.mjs";
 export * from "./isBoolean.mjs";
 export * from "./isCallable.mjs";
 export * from "./isDefined.mjs";

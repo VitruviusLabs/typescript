@@ -1,10 +1,12 @@
+import { buildRecordConstraints } from "../utils/buildRecordConstraints.mjs";
+
 import { isObject } from "./isObject.mjs";
 
 import { itemGuard } from "./utils/itemGuard.mjs";
 
-import type { Test } from "../types/_index.mjs";
+import type { RecordConstraints, Test } from "../types/_index.mjs";
 
-function isRecord<Type>(value: unknown, item_test?: Test<Type>): value is Record<string, Type>
+function isRecord<Type>(value: unknown, constraints?: RecordConstraints<Type> | Test<Type>): value is Record<string, Type>
 {
 	if (!isObject(value))
 	{
@@ -18,12 +20,21 @@ function isRecord<Type>(value: unknown, item_test?: Test<Type>): value is Record
 		return false;
 	}
 
-	if (item_test !== undefined)
+	const CONSTRAINTS: RecordConstraints<Type> | undefined = buildRecordConstraints(constraints);
+
+	if (CONSTRAINTS === undefined)
 	{
+		return true;
+	}
+
+	if (CONSTRAINTS.itemTest !== undefined)
+	{
+		const GUARD: Test<Type> = CONSTRAINTS.itemTest;
+
 		return Object.values(value).every(
 			(item: unknown): boolean =>
 			{
-				return itemGuard(item, item_test);
+				return itemGuard(item, GUARD);
 			}
 		);
 	}
