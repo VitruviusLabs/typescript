@@ -72,7 +72,7 @@ isArray(value: unknown, constraints?: ArrayConstraints | Test): boolean
 
 Narrow down the value to being an array.
 
-The optional parameter `constraints` accept an object described by the following interface.
+The optional parameter `constraints` accepts an object described by the following interface.
 
 ```ts
 interface ArrayConstraints<T>
@@ -109,7 +109,7 @@ Narrow down the value to being a record: an object with no prototype, or directl
 
 Symbol keys are ignored when validating record items.
 
-The optional parameter `constraints` accept an object described by the following interface.
+The optional parameter `constraints` accepts an object described by the following interface.
 
 ```ts
 interface RecordConstraints<T>

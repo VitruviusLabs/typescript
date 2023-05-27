@@ -102,7 +102,7 @@ using Object prototype.
 
 Symbol keys are ignored when validating record items.
 
-The optional parameter `constraints` accept an object described as below.
+The optional parameter `constraints` accepts an object described as below.
 
 ```ts
 interface RecordConstraints<T>
