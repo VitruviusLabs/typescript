@@ -1,28 +1,28 @@
-import { doesNotThrow, throws } from "node:assert";
+import { doesNotThrow, throws } from "assert";
 
 import { describe, it } from "node:test";
 
-import { isString } from "../../src/TypeAssertion/isString.mjs";
+import { isBigInt } from "../../src/TypeAssertion/isBigInt.mjs";
 
 import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 import { testError } from "../common/testError.mjs";
 
 describe(
-	"TypeAssertion / isString",
+	"TypeAssertion / isBigInt",
 	(): void =>
 	{
 		it(
-			"should return when given a string",
+			"should return when given a big integer",
 			(): void =>
 			{
-				const VALUES: Array<unknown> = getValues(BaseType.STRING);
+				const VALUES: Array<unknown> = getValues(BaseType.BIG_INT);
 
 				for (const ITEM of VALUES)
 				{
 					const WRAPPER = (): void =>
 					{
-						isString(ITEM);
+						isBigInt(ITEM);
 					};
 
 					doesNotThrow(WRAPPER);
@@ -34,13 +34,13 @@ describe(
 			"should throw when given anything else",
 			(): void =>
 			{
-				const VALUES: Array<unknown> = getInvertedValues(BaseType.STRING);
+				const VALUES: Array<unknown> = getInvertedValues(BaseType.BIG_INT);
 
 				for (const ITEM of VALUES)
 				{
 					const WRAPPER = (): void =>
 					{
-						isString(ITEM);
+						isBigInt(ITEM);
 					};
 
 					throws(WRAPPER, testError);

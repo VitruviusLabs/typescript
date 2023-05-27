@@ -72,6 +72,32 @@ describe(
 		);
 
 		it(
+			"should return when given a record with all the values passing the itemTest constraint",
+			(): void =>
+			{
+				const WRAPPER = (): void =>
+				{
+					isRecord({ a: 1, b: 2, c: 3 }, { itemTest: isNumberTest });
+				};
+
+				doesNotThrow(WRAPPER);
+			}
+		);
+
+		it(
+			"should throw when given a record with some values not passing the itemTest constraint",
+			(): void =>
+			{
+				const WRAPPER = (): void =>
+				{
+					isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, { itemTest: isNumberTest });
+				};
+
+				throws(WRAPPER, testAggregateError);
+			}
+		);
+
+		it(
 			"should return when given a record with all the values passing the test constraint",
 			(): void =>
 			{

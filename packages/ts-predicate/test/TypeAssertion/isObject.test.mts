@@ -8,7 +8,6 @@ import { GroupType, getInvertedValues, getValues } from "../common/getValues.mjs
 
 import { testError } from "../common/testError.mjs";
 
-
 describe(
 	"TypeAssertion / isObject",
 	(): void =>

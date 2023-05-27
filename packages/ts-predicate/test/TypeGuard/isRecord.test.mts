@@ -61,6 +61,26 @@ describe(
 		);
 
 		it(
+			"should return true when given a record with all the values passing the itemTest constraint",
+			(): void =>
+			{
+				const RESULT: unknown = isRecord({ a: 1, b: 2, c: 3 }, { itemTest: isNumberTest });
+
+				strictEqual(RESULT, true);
+			}
+		);
+
+		it(
+			"should return false when given a record with some values not passing the itemTest constraint",
+			(): void =>
+			{
+				const RESULT: unknown = isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, { itemTest: isNumberTest });
+
+				strictEqual(RESULT, false);
+			}
+		);
+
+		it(
 			"should return true when given a record with all the values passing the test constraint",
 			(): void =>
 			{

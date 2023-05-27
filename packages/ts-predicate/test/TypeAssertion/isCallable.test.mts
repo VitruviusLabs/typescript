@@ -8,7 +8,6 @@ import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs"
 
 import { testError } from "../common/testError.mjs";
 
-
 describe(
 	"TypeAssertion / isCallable",
 	(): void =>

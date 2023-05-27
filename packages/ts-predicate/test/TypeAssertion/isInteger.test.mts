@@ -8,7 +8,6 @@ import { BaseType, GroupType, getInvertedValues, getValues } from "../common/get
 
 import { testError } from "../common/testError.mjs";
 
-
 describe(
 	"TypeAssertion / isInteger",
 	(): void =>

@@ -8,7 +8,6 @@ import { BaseType, getInvertedValues } from "../common/getValues.mjs";
 
 import { testError } from "../common/testError.mjs";
 
-
 function isNumberTest(value: unknown): value is number
 {
 	return Number.isSafeInteger(value);
@@ -115,6 +114,32 @@ describe(
 				const WRAPPER = (): void =>
 				{
 					isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
+				};
+
+				throws(WRAPPER, testError);
+			}
+		);
+
+		it(
+			"should return when given an array with all the values passing the test constraint",
+			(): void =>
+			{
+				const WRAPPER = (): void =>
+				{
+					isPopulatedArray([1, 2, 3], isNumberTest);
+				};
+
+				doesNotThrow(WRAPPER);
+			}
+		);
+
+		it(
+			"should throw when given an array with some values not passing the test constraint",
+			(): void =>
+			{
+				const WRAPPER = (): void =>
+				{
+					isPopulatedArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
 				};
 
 				throws(WRAPPER, testError);

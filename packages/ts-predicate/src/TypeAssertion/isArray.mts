@@ -1,29 +1,32 @@
 import { isArray as guard } from "../TypeGuard/isArray.mjs";
 
+import { buildArrayConstraints } from "../utils/buildArrayConstraints.mjs";
+
 import { buildError } from "./utils/buildError.mjs";
 
 import { itemAssertion } from "./utils/itemAssertion.mjs";
 
 import type { ArrayConstraints, Test } from "../types/_index.mjs";
 
-
-function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type>): asserts value is Array<Type>
+function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type> | Test<Type>): asserts value is Array<Type>
 {
 	if (!guard(value))
 	{
 		throw new Error("The value is not an array.");
 	}
 
-	if (constraints === undefined)
+	const CONSTRAINTS: ArrayConstraints<Type> | undefined = buildArrayConstraints(constraints);
+
+	if (CONSTRAINTS === undefined)
 	{
 		return;
 	}
 
 	const ERRORS: Array<Error> = [];
 
-	if (constraints.minLength !== undefined && value.length < constraints.minLength)
+	if (CONSTRAINTS.minLength !== undefined && value.length < CONSTRAINTS.minLength)
 	{
-		if (constraints.minLength === 1)
+		if (CONSTRAINTS.minLength === 1)
 		{
 			ERRORS.push(
 				new Error("It must not be empty.")
@@ -32,14 +35,14 @@ function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type>): as
 		else
 		{
 			ERRORS.push(
-				new Error(`It must have at least ${constraints.minLength.toFixed(0)} items.`)
+				new Error(`It must have at least ${CONSTRAINTS.minLength.toFixed(0)} items.`)
 			);
 		}
 	}
 
-	if (constraints.itemTest !== undefined)
+	if (CONSTRAINTS.itemTest !== undefined)
 	{
-		const GUARD: Test<Type> = constraints.itemTest;
+		const GUARD: Test<Type> = CONSTRAINTS.itemTest;
 
 		value.forEach(
 			(item: unknown, index: number): void =>

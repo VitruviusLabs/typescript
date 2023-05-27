@@ -85,6 +85,21 @@ describe(
 		);
 
 		it(
+			'should return "bigint" when given a big int',
+			(): void =>
+			{
+				strictEqual(getBaseType(BigInt(0)), "bigint");
+				strictEqual(getBaseType(BigInt(-0)), "bigint");
+				strictEqual(getBaseType(BigInt(1)), "bigint");
+				strictEqual(getBaseType(BigInt(-1)), "bigint");
+				strictEqual(getBaseType(BigInt(Number.MIN_SAFE_INTEGER + 4)), "bigint");
+				strictEqual(getBaseType(BigInt(Number.MAX_SAFE_INTEGER - 4)), "bigint");
+				strictEqual(getBaseType(BigInt(Number.MIN_SAFE_INTEGER - 4)), "bigint");
+				strictEqual(getBaseType(BigInt(Number.MAX_SAFE_INTEGER + 4)), "bigint");
+			}
+		);
+
+		it(
 			'should return "string" when given a string',
 			(): void =>
 			{

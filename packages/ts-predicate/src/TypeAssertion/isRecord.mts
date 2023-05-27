@@ -1,21 +1,32 @@
 import { isRecord as guard } from "../TypeGuard/isRecord.mjs";
 
+import { buildRecordConstraints } from "../utils/buildRecordConstraints.mjs";
+
 import { buildError } from "./utils/buildError.mjs";
 
 import { itemAssertion } from "./utils/itemAssertion.mjs";
 
-import type { Test } from "../types/_index.mjs";
+import type { RecordConstraints, Test } from "../types/_index.mjs";
 
-function isRecord<Type>(value: unknown, item_test?: Test<Type>): asserts value is Record<string, Type>
+function isRecord<Type>(value: unknown, constraints?: RecordConstraints<Type> | Test<Type>): asserts value is Record<string, Type>
 {
 	if (!guard(value))
 	{
 		throw new Error("The value must be a record.");
 	}
 
-	if (item_test !== undefined)
+	const CONSTRAINTS: RecordConstraints<Type> | undefined = buildRecordConstraints(constraints);
+
+	if (CONSTRAINTS === undefined)
+	{
+		return;
+	}
+
+	if (CONSTRAINTS.itemTest !== undefined)
 	{
 		const ERRORS: Array<Error> = [];
+
+		const GUARD: Test<Type> = CONSTRAINTS.itemTest;
 
 		Object.keys(value).forEach(
 			(key: string): void =>
@@ -24,7 +35,7 @@ function isRecord<Type>(value: unknown, item_test?: Test<Type>): asserts value i
 				{
 					const VALUE: unknown = value[key];
 
-					itemAssertion(VALUE, item_test);
+					itemAssertion(VALUE, GUARD);
 				}
 				catch (error: unknown)
 				{

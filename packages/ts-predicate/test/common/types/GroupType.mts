@@ -1,9 +1,10 @@
 const enum GroupType
 {
-	FUNCTION_CLASS = "function-class",
+	PRIMITIVE = "primitive",
 	NUMBER = "number",
 	FINITE = "finite",
 	OBJECT = "object",
+	FUNCTION_CLASS = "function-class",
 }
 
 export { GroupType };

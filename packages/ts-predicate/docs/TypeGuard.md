@@ -48,6 +48,14 @@ isFiniteNumber(value: unknown): boolean
 
 Narrow down the value to being a number, but not NaN nor +/-Infinity.
 
+## IsBigInt
+
+```ts
+isBigInt(value: unknown): boolean
+```
+
+Narrow down the value to being a big integer.
+
 ## IsString
 
 ```ts
@@ -59,21 +67,21 @@ Narrow down the value to being a string.
 ## IsArray
 
 ```ts
-isArray(value: unknown, constraints?: ArrayConstraints): boolean
+isArray(value: unknown, constraints?: ArrayConstraints | Test): boolean
 ```
 
 Narrow down the value to being an array.
 
-The optional parameter `constraints` accept an object described by the following interface.
+The optional parameter `constraints` accepts an object described by the following interface.
 
 ```ts
 interface ArrayConstraints<T>
 {
 	minLength?: number;
-	itemTest?: (item: unknown) => item is T;
+	itemTest?: Test<T>;
 }
 
-type ItemTest<T> =
+type Test<T> =
 	| (item: unknown) => asserts item is T
 	| (item: unknown) => item is T
 ;
@@ -86,7 +94,7 @@ If `itemTest` is provided, it'll confirm that the predicate hold true for every 
 ## IsPopulatedArray
 
 ```ts
-isPopulatedArray(value: unknown, constraints?: ArrayConstraints): boolean
+isPopulatedArray(value: unknown, constraints?: ArrayConstraints | Test): boolean
 ```
 
 Like `IsArray`, but narrow it to being a populated array.
@@ -94,21 +102,28 @@ Like `IsArray`, but narrow it to being a populated array.
 ## IsRecord
 
 ```ts
-isRecord(value: unknown, item_test?: ItemTest<T>): boolean
+isRecord(value: unknown, constraints?: RecordConstraints | Test): boolean
 ```
 
 Narrow down the value to being a record: an object with no prototype, or directly using Object prototype.
 
 Symbol keys are ignored when validating record items.
 
-If `item_test` is provided, it'll confirm that the predicate hold true for every item.
+The optional parameter `constraints` accepts an object described by the following interface.
 
 ```ts
-type ItemTest<T> =
+interface RecordConstraints<T>
+{
+	itemTest?: Test<T>;
+}
+
+type Test<T> =
 	| (item: unknown) => asserts item is T
 	| (item: unknown) => item is T
 ;
 ```
+
+If `itemTest` is provided, it'll confirm that the predicate hold true for every item.
 
 ## IsObject
 

@@ -20,6 +20,20 @@ function expandTypes(types: Array<BaseType | GroupType>): Array<BaseType>
 	{
 		switch (TYPE)
 		{
+			case GroupType.PRIMITIVE:
+
+				TYPES.push(
+					BaseType.NULLISH,
+					BaseType.BOOLEAN,
+					BaseType.INTEGER,
+					BaseType.REAL,
+					BaseType.INFINITY,
+					BaseType.BIG_INT,
+					BaseType.STRING
+				);
+
+				break;
+
 			case GroupType.NUMBER:
 
 				TYPES.push(BaseType.INTEGER, BaseType.REAL, BaseType.INFINITY);
@@ -92,6 +106,18 @@ function getValuesForType(type: BaseType): Array<unknown>
 			return [
 				Number.POSITIVE_INFINITY,
 				Number.NEGATIVE_INFINITY,
+			];
+
+		case BaseType.BIG_INT:
+
+			return [
+				BigInt(0),
+				BigInt(1),
+				BigInt(-1),
+				BigInt(Number.MIN_SAFE_INTEGER + 4),
+				BigInt(Number.MAX_SAFE_INTEGER - 4),
+				BigInt(Number.MIN_SAFE_INTEGER - 4),
+				BigInt(Number.MAX_SAFE_INTEGER + 4),
 			];
 
 		case BaseType.STRING:
@@ -174,6 +200,7 @@ function getInvertedValues(...excluded_types: Array<BaseType | GroupType>): Arra
 		BaseType.INTEGER,
 		BaseType.REAL,
 		BaseType.INFINITY,
+		BaseType.BIG_INT,
 		BaseType.STRING,
 		BaseType.SYMBOL,
 		BaseType.ARRAY,

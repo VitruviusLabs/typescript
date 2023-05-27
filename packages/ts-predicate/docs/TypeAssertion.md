@@ -40,6 +40,14 @@ isFiniteNumber(value: unknown): void
 
 Asserts that the value is a number, but not NaN nor +/-Infinity.
 
+## IsBigInt
+
+```ts
+isBigInt(value: unknown): void
+```
+
+Asserts that the value is a big integer.
+
 ## IsString
 
 ```ts
@@ -51,7 +59,7 @@ Asserts that the value is a string.
 ## IsArray
 
 ```ts
-isArray(value: unknown, constraints?: ArrayConstraints): void
+isArray(value: unknown, constraints?: ArrayConstraints | Test): void
 ```
 
 Asserts that the value is an array.
@@ -62,10 +70,10 @@ The optional parameter `constraints` accept an object described as below.
 interface ArrayConstraints<T>
 {
 	minLength?: number;
-	itemTest?: ItemTest<T>;
+	itemTest?: Test<T>;
 }
 
-type ItemTest<T> =
+type Test<T> =
 	| (item: unknown) => asserts item is T
 	| (item: unknown) => item is T
 ;
@@ -78,7 +86,7 @@ If `itemTest` is provided, it'll asserts that the predicate hold true for every 
 ## IsPopulatedArray
 
 ```ts
-isPopulatedArray(value: unknown, constraints?: ArrayConstraints): void
+isPopulatedArray(value: unknown, constraints?: ArrayConstraints | Test): void
 ```
 
 Like `isArray`, but asserts that the array is never empty too.
@@ -86,7 +94,7 @@ Like `isArray`, but asserts that the array is never empty too.
 ## IsRecord
 
 ```ts
-isRecord(value: unknown, item_test?: ItemTest<T>): void
+isRecord(value: unknown, constraints?: RecordConstraints | Test): void
 ```
 
 Asserts that the value is a record: an object with no prototype, or directly
@@ -94,14 +102,21 @@ using Object prototype.
 
 Symbol keys are ignored when validating record items.
 
-If `item_test` is provided, it'll asserts that the predicate hold true for every item.
+The optional parameter `constraints` accepts an object described as below.
 
 ```ts
-type ItemTest<T> =
+interface RecordConstraints<T>
+{
+	itemTest?: Test<T>;
+}
+
+type Test<T> =
 	| (item: unknown) => asserts item is T
 	| (item: unknown) => item is T
 ;
 ```
+
+If `itemTest` is provided, it'll asserts that the predicate hold true for every item.
 
 ## IsObject
 

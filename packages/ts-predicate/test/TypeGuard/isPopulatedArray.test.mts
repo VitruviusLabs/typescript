@@ -91,5 +91,25 @@ describe(
 				strictEqual(RESULT, false);
 			}
 		);
+
+		it(
+			"should return true when given an array with all the values passing the test constraint",
+			(): void =>
+			{
+				const RESULT: unknown = isPopulatedArray([1, 2, 3], isNumberTest);
+
+				strictEqual(RESULT, true);
+			}
+		);
+
+		it(
+			"should return false when given an array with some values not passing the test constraint",
+			(): void =>
+			{
+				const RESULT: unknown = isPopulatedArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
+
+				strictEqual(RESULT, false);
+			}
+		);
 	}
 );
