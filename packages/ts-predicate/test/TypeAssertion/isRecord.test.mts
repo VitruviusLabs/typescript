@@ -2,7 +2,7 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isRecord } from "../../src/TypeAssertion/isRecord.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
@@ -14,7 +14,7 @@ function isNumberTest(value: unknown): value is number
 }
 
 describe(
-	"TypeAssertion / isRecord",
+	"TypeAssertion.isRecord",
 	(): void =>
 	{
 		it(
@@ -27,7 +27,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isRecord(ITEM);
+						TypeAssertion.isRecord(ITEM);
 					};
 
 					doesNotThrow(WRAPPER);
@@ -45,7 +45,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isRecord(ITEM);
+						TypeAssertion.isRecord(ITEM);
 					};
 
 					throws(WRAPPER, testError);
@@ -63,7 +63,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isRecord(ITEM);
+						TypeAssertion.isRecord(ITEM);
 					};
 
 					throws(WRAPPER, testError);
@@ -77,7 +77,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isRecord({ a: 1, b: 2, c: 3 }, { itemTest: isNumberTest });
+					TypeAssertion.isRecord({ a: 1, b: 2, c: 3 }, { itemTest: isNumberTest });
 				};
 
 				doesNotThrow(WRAPPER);
@@ -90,7 +90,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, { itemTest: isNumberTest });
+					TypeAssertion.isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, { itemTest: isNumberTest });
 				};
 
 				throws(WRAPPER, testAggregateError);
@@ -103,7 +103,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isRecord({ a: 1, b: 2, c: 3 }, isNumberTest);
+					TypeAssertion.isRecord({ a: 1, b: 2, c: 3 }, isNumberTest);
 				};
 
 				doesNotThrow(WRAPPER);
@@ -116,7 +116,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, isNumberTest);
+					TypeAssertion.isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, isNumberTest);
 				};
 
 				throws(WRAPPER, testAggregateError);

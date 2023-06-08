@@ -2,7 +2,7 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isPopulatedArray } from "../../src/TypeGuard/isPopulatedArray.mjs";
+import { TypeGuard } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues } from "../common/getValues.mjs";
 
@@ -12,14 +12,14 @@ function isNumberTest(value: unknown): value is number
 }
 
 describe(
-	"TypeGuard / isPopulatedArray",
+	"TypeGuard.isPopulatedArray",
 	(): void =>
 	{
 		it(
 			"should return false when given an empty array",
 			(): void =>
 			{
-				const RESULT: unknown = isPopulatedArray([]);
+				const RESULT: unknown = TypeGuard.isPopulatedArray([]);
 
 				strictEqual(RESULT, false);
 			}
@@ -29,7 +29,7 @@ describe(
 			"should return false when given a populated array",
 			(): void =>
 			{
-				const RESULT: unknown = isPopulatedArray([1, 2, 3]);
+				const RESULT: unknown = TypeGuard.isPopulatedArray([1, 2, 3]);
 
 				strictEqual(RESULT, true);
 			}
@@ -43,7 +43,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isPopulatedArray(ITEM);
+					const RESULT: unknown = TypeGuard.isPopulatedArray(ITEM);
 
 					strictEqual(RESULT, false);
 				}
@@ -54,8 +54,8 @@ describe(
 			"should return true when given an array with a length greater or equal to the minLength constraint",
 			(): void =>
 			{
-				const RESULT_GREATER_LENGTH: unknown = isPopulatedArray([1, 2, 3], { minLength: 2 });
-				const RESULT_EXACT_LENGTH: unknown = isPopulatedArray([1, 2, 3], { minLength: 3 });
+				const RESULT_GREATER_LENGTH: unknown = TypeGuard.isPopulatedArray([1, 2, 3], { minLength: 2 });
+				const RESULT_EXACT_LENGTH: unknown = TypeGuard.isPopulatedArray([1, 2, 3], { minLength: 3 });
 
 				strictEqual(RESULT_GREATER_LENGTH, true);
 				strictEqual(RESULT_EXACT_LENGTH, true);
@@ -66,7 +66,7 @@ describe(
 			"should return false when given an array with a length below the minLength constraint",
 			(): void =>
 			{
-				const RESULT: unknown = isPopulatedArray([1, 2, 3], { minLength: 4 });
+				const RESULT: unknown = TypeGuard.isPopulatedArray([1, 2, 3], { minLength: 4 });
 
 				strictEqual(RESULT, false);
 			}
@@ -76,7 +76,7 @@ describe(
 			"should return true when given an array with all the values passing the itemTest constraint",
 			(): void =>
 			{
-				const RESULT: unknown = isPopulatedArray([1, 2, 3], { itemTest: isNumberTest });
+				const RESULT: unknown = TypeGuard.isPopulatedArray([1, 2, 3], { itemTest: isNumberTest });
 
 				strictEqual(RESULT, true);
 			}
@@ -86,7 +86,7 @@ describe(
 			"should return false when given an array with some values not passing the itemTest constraint",
 			(): void =>
 			{
-				const RESULT: unknown = isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
+				const RESULT: unknown = TypeGuard.isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
 
 				strictEqual(RESULT, false);
 			}
@@ -96,7 +96,7 @@ describe(
 			"should return true when given an array with all the values passing the test constraint",
 			(): void =>
 			{
-				const RESULT: unknown = isPopulatedArray([1, 2, 3], isNumberTest);
+				const RESULT: unknown = TypeGuard.isPopulatedArray([1, 2, 3], isNumberTest);
 
 				strictEqual(RESULT, true);
 			}
@@ -106,7 +106,7 @@ describe(
 			"should return false when given an array with some values not passing the test constraint",
 			(): void =>
 			{
-				const RESULT: unknown = isPopulatedArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
+				const RESULT: unknown = TypeGuard.isPopulatedArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
 
 				strictEqual(RESULT, false);
 			}

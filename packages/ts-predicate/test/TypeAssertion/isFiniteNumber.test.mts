@@ -2,14 +2,14 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isFiniteNumber } from "../../src/TypeAssertion/isFiniteNumber.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 import { testError } from "../common/testError.mjs";
 
 describe(
-	"TypeAssertion / isFiniteNumber",
+	"TypeAssertion.isFiniteNumber",
 	(): void =>
 	{
 		it(
@@ -22,7 +22,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isFiniteNumber(ITEM);
+						TypeAssertion.isFiniteNumber(ITEM);
 					};
 
 					doesNotThrow(WRAPPER);
@@ -40,7 +40,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isFiniteNumber(ITEM);
+						TypeAssertion.isFiniteNumber(ITEM);
 					};
 
 					throws(WRAPPER, testError);
@@ -58,7 +58,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isFiniteNumber(ITEM);
+						TypeAssertion.isFiniteNumber(ITEM);
 					};
 
 					throws(WRAPPER, testError);

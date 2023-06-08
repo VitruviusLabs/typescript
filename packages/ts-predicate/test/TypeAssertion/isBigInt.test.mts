@@ -2,14 +2,14 @@ import { doesNotThrow, throws } from "assert";
 
 import { describe, it } from "node:test";
 
-import { isBigInt } from "../../src/TypeAssertion/isBigInt.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 import { testError } from "../common/testError.mjs";
 
 describe(
-	"TypeAssertion / isBigInt",
+	"TypeAssertion.isBigInt",
 	(): void =>
 	{
 		it(
@@ -22,7 +22,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isBigInt(ITEM);
+						TypeAssertion.isBigInt(ITEM);
 					};
 
 					doesNotThrow(WRAPPER);
@@ -40,7 +40,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isBigInt(ITEM);
+						TypeAssertion.isBigInt(ITEM);
 					};
 
 					throws(WRAPPER, testError);

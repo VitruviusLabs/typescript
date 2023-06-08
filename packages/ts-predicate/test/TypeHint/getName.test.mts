@@ -2,14 +2,14 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { getName } from "../../src/TypeHint/getName.mjs";
+import { TypeHint } from "../../src/index.mjs";
 
 import { DummyClass, GroupType, OldDummyClass, getInvertedValues } from "../common/getValues.mjs";
 
 const DUMMY: DummyClass = new DummyClass();
 
 describe(
-	"TypeHint / getName",
+	"TypeHint.getName",
 	(): void =>
 	{
 		it(
@@ -24,11 +24,11 @@ describe(
 					yield 1;
 				}
 
-				strictEqual(getName(dummyFunction), "dummyFunction");
-				strictEqual(getName(dummyGenerator), "dummyGenerator");
-				strictEqual(getName(DummyClass.Method), "Method");
-				strictEqual(getName(DummyClass), "DummyClass");
-				strictEqual(getName(OldDummyClass), "OldDummyClass");
+				strictEqual(TypeHint.getName(dummyFunction), "dummyFunction");
+				strictEqual(TypeHint.getName(dummyGenerator), "dummyGenerator");
+				strictEqual(TypeHint.getName(DummyClass.Method), "Method");
+				strictEqual(TypeHint.getName(DummyClass), "DummyClass");
+				strictEqual(TypeHint.getName(OldDummyClass), "OldDummyClass");
 			}
 		);
 
@@ -36,9 +36,9 @@ describe(
 			"should return the name of the constructor of a given object",
 			(): void =>
 			{
-				strictEqual(getName([]), "Array");
-				strictEqual(getName({}), "Object");
-				strictEqual(getName(DUMMY), "DummyClass");
+				strictEqual(TypeHint.getName([]), "Array");
+				strictEqual(TypeHint.getName({}), "Object");
+				strictEqual(TypeHint.getName(DUMMY), "DummyClass");
 			}
 		);
 
@@ -60,7 +60,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					strictEqual(getName(ITEM), "");
+					strictEqual(TypeHint.getName(ITEM), "");
 				}
 			}
 		);
@@ -73,7 +73,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					strictEqual(getName(ITEM), undefined);
+					strictEqual(TypeHint.getName(ITEM), undefined);
 				}
 			}
 		);

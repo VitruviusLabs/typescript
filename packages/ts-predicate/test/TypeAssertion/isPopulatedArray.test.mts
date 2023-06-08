@@ -2,7 +2,7 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isPopulatedArray } from "../../src/TypeAssertion/isPopulatedArray.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues } from "../common/getValues.mjs";
 
@@ -14,7 +14,7 @@ function isNumberTest(value: unknown): value is number
 }
 
 describe(
-	"TypeAssertion / isPopulatedArray",
+	"TypeAssertion.isPopulatedArray",
 	(): void =>
 	{
 		it(
@@ -23,7 +23,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isPopulatedArray([]);
+					TypeAssertion.isPopulatedArray([]);
 				};
 
 				throws(WRAPPER, testError);
@@ -36,7 +36,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isPopulatedArray([1, 2, 3]);
+					TypeAssertion.isPopulatedArray([1, 2, 3]);
 				};
 
 				doesNotThrow(WRAPPER);
@@ -53,7 +53,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isPopulatedArray(ITEM);
+						TypeAssertion.isPopulatedArray(ITEM);
 					};
 
 					throws(WRAPPER, testError);
@@ -67,14 +67,14 @@ describe(
 			{
 				const WRAPPER_GREATER_LENGTH = (): void =>
 				{
-					isPopulatedArray([1, 2, 3], { minLength: 2 });
+					TypeAssertion.isPopulatedArray([1, 2, 3], { minLength: 2 });
 				};
 
 				doesNotThrow(WRAPPER_GREATER_LENGTH);
 
 				const WRAPPER_EXACT_LENGTH = (): void =>
 				{
-					isPopulatedArray([1, 2, 3], { minLength: 3 });
+					TypeAssertion.isPopulatedArray([1, 2, 3], { minLength: 3 });
 				};
 
 				doesNotThrow(WRAPPER_EXACT_LENGTH);
@@ -87,7 +87,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isPopulatedArray([1, 2, 3], { minLength: 4 });
+					TypeAssertion.isPopulatedArray([1, 2, 3], { minLength: 4 });
 				};
 
 				throws(WRAPPER, testError);
@@ -100,7 +100,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isPopulatedArray([1, 2, 3], { itemTest: isNumberTest });
+					TypeAssertion.isPopulatedArray([1, 2, 3], { itemTest: isNumberTest });
 				};
 
 				doesNotThrow(WRAPPER);
@@ -113,7 +113,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
+					TypeAssertion.isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
 				};
 
 				throws(WRAPPER, testError);
@@ -126,7 +126,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isPopulatedArray([1, 2, 3], isNumberTest);
+					TypeAssertion.isPopulatedArray([1, 2, 3], isNumberTest);
 				};
 
 				doesNotThrow(WRAPPER);
@@ -139,7 +139,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isPopulatedArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
+					TypeAssertion.isPopulatedArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
 				};
 
 				throws(WRAPPER, testError);

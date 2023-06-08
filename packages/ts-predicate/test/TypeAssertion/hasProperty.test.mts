@@ -2,12 +2,12 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { hasProperty } from "../../src/TypeAssertion/hasProperty.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { testError } from "../common/testError.mjs";
 
 describe(
-	"TypeAssertion / hasProperty",
+	"TypeAssertion.hasProperty",
 	(): void =>
 	{
 		it(
@@ -16,7 +16,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					hasProperty({}, "answer");
+					TypeAssertion.hasProperty({}, "answer");
 				};
 
 				throws(WRAPPER, testError);
@@ -29,7 +29,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					hasProperty({ answer: undefined }, "answer");
+					TypeAssertion.hasProperty({ answer: undefined }, "answer");
 				};
 
 				throws(WRAPPER, testError);
@@ -42,7 +42,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					hasProperty({ answer: 42 }, "answer");
+					TypeAssertion.hasProperty({ answer: 42 }, "answer");
 				};
 
 				doesNotThrow(WRAPPER);

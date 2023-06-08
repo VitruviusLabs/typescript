@@ -2,12 +2,12 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isFunction } from "../../src/TypeGuard/isFunction.mjs";
+import { TypeGuard } from "../../src/index.mjs";
 
 import { GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 describe(
-	"TypeGuard / isFunction",
+	"TypeGuard.isFunction",
 	(): void =>
 	{
 		it(
@@ -18,7 +18,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isFunction(ITEM);
+					const RESULT: unknown = TypeGuard.isFunction(ITEM);
 
 					strictEqual(RESULT, true);
 				}
@@ -33,7 +33,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isFunction(ITEM);
+					const RESULT: unknown = TypeGuard.isFunction(ITEM);
 
 					strictEqual(RESULT, false);
 				}

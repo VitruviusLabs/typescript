@@ -2,14 +2,14 @@ import { doesNotThrow, throws } from "assert";
 
 import { describe, it } from "node:test";
 
-import { isBoolean } from "../../src/TypeAssertion/isBoolean.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 import { testError } from "../common/testError.mjs";
 
 describe(
-	"TypeAssertion / isBoolean",
+	"TypeAssertion.isBoolean",
 	(): void =>
 	{
 		it(
@@ -22,7 +22,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isBoolean(ITEM);
+						TypeAssertion.isBoolean(ITEM);
 					};
 
 					doesNotThrow(WRAPPER);
@@ -40,7 +40,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isBoolean(ITEM);
+						TypeAssertion.isBoolean(ITEM);
 					};
 
 					throws(WRAPPER, testError);

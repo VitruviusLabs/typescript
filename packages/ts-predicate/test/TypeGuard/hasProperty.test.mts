@@ -2,19 +2,19 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { hasProperty } from "../../src/TypeGuard/hasProperty.mjs";
+import { TypeGuard } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 describe(
-	"TypeGuard / hasProperty",
+	"TypeGuard.hasProperty",
 	(): void =>
 	{
 		it(
 			"should return false when given an object without the property",
 			(): void =>
 			{
-				const RESULT: unknown = hasProperty({}, "answer");
+				const RESULT: unknown = TypeGuard.hasProperty({}, "answer");
 
 				strictEqual(RESULT, false);
 			}
@@ -28,7 +28,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = hasProperty({ answer: ITEM }, "answer");
+					const RESULT: unknown = TypeGuard.hasProperty({ answer: ITEM }, "answer");
 
 					strictEqual(RESULT, false);
 				}
@@ -43,7 +43,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = hasProperty({ answer: ITEM }, "answer");
+					const RESULT: unknown = TypeGuard.hasProperty({ answer: ITEM }, "answer");
 
 					strictEqual(RESULT, true);
 				}

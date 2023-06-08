@@ -2,7 +2,7 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isRecord } from "../../src/TypeGuard/isRecord.mjs";
+import { TypeGuard } from "../../src/index.mjs";
 
 import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
@@ -12,7 +12,7 @@ function isNumberTest(value: unknown): value is number
 }
 
 describe(
-	"TypeGuard / isRecord",
+	"TypeGuard.isRecord",
 	(): void =>
 	{
 		it(
@@ -23,7 +23,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isRecord(ITEM);
+					const RESULT: unknown = TypeGuard.isRecord(ITEM);
 
 					strictEqual(RESULT, true);
 				}
@@ -38,7 +38,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isRecord(ITEM);
+					const RESULT: unknown = TypeGuard.isRecord(ITEM);
 
 					strictEqual(RESULT, false);
 				}
@@ -53,7 +53,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isRecord(ITEM);
+					const RESULT: unknown = TypeGuard.isRecord(ITEM);
 
 					strictEqual(RESULT, false);
 				}
@@ -64,7 +64,7 @@ describe(
 			"should return true when given a record with all the values passing the itemTest constraint",
 			(): void =>
 			{
-				const RESULT: unknown = isRecord({ a: 1, b: 2, c: 3 }, { itemTest: isNumberTest });
+				const RESULT: unknown = TypeGuard.isRecord({ a: 1, b: 2, c: 3 }, { itemTest: isNumberTest });
 
 				strictEqual(RESULT, true);
 			}
@@ -74,7 +74,7 @@ describe(
 			"should return false when given a record with some values not passing the itemTest constraint",
 			(): void =>
 			{
-				const RESULT: unknown = isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, { itemTest: isNumberTest });
+				const RESULT: unknown = TypeGuard.isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, { itemTest: isNumberTest });
 
 				strictEqual(RESULT, false);
 			}
@@ -84,7 +84,7 @@ describe(
 			"should return true when given a record with all the values passing the test constraint",
 			(): void =>
 			{
-				const RESULT: unknown = isRecord({ a: 1, b: 2, c: 3 }, isNumberTest);
+				const RESULT: unknown = TypeGuard.isRecord({ a: 1, b: 2, c: 3 }, isNumberTest);
 
 				strictEqual(RESULT, true);
 			}
@@ -94,7 +94,7 @@ describe(
 			"should return false when given a record with some values not passing the test constraint",
 			(): void =>
 			{
-				const RESULT: unknown = isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, isNumberTest);
+				const RESULT: unknown = TypeGuard.isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, isNumberTest);
 
 				strictEqual(RESULT, false);
 			}

@@ -2,14 +2,14 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isDefined } from "../../src/TypeAssertion/isDefined.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 import { testError } from "../common/testError.mjs";
 
 describe(
-	"TypeAssertion / isDefined",
+	"TypeAssertion.isDefined",
 	(): void =>
 	{
 		it(
@@ -22,7 +22,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isDefined(ITEM);
+						TypeAssertion.isDefined(ITEM);
 					};
 
 					throws(WRAPPER, testError);
@@ -40,7 +40,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isDefined(ITEM);
+						TypeAssertion.isDefined(ITEM);
 					};
 
 					doesNotThrow(WRAPPER);

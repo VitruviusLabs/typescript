@@ -2,12 +2,12 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isBoolean } from "../../src/TypeGuard/isBoolean.mjs";
+import { TypeGuard } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 describe(
-	"TypeGuard / isBoolean",
+	"TypeGuard.isBoolean",
 	(): void =>
 	{
 		it(
@@ -18,7 +18,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isBoolean(ITEM);
+					const RESULT: unknown = TypeGuard.isBoolean(ITEM);
 
 					strictEqual(RESULT, true);
 				}
@@ -33,7 +33,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isBoolean(ITEM);
+					const RESULT: unknown = TypeGuard.isBoolean(ITEM);
 
 					strictEqual(RESULT, false);
 				}

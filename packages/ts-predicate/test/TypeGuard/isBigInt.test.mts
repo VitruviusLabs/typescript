@@ -2,12 +2,12 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isBigInt } from "../../src/TypeGuard/isBigInt.mjs";
+import { TypeGuard } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 describe(
-	"TypeGuard / isBigInt",
+	"TypeGuard.isBigInt",
 	(): void =>
 	{
 		it(
@@ -18,7 +18,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isBigInt(ITEM);
+					const RESULT: unknown = TypeGuard.isBigInt(ITEM);
 
 					strictEqual(RESULT, true);
 				}
@@ -33,7 +33,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isBigInt(ITEM);
+					const RESULT: unknown = TypeGuard.isBigInt(ITEM);
 
 					strictEqual(RESULT, false);
 				}

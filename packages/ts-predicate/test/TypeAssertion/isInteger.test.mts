@@ -2,14 +2,14 @@ import { doesNotThrow, throws } from "assert";
 
 import { describe, it } from "node:test";
 
-import { isInteger } from "../../src/TypeAssertion/isInteger.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 import { testError } from "../common/testError.mjs";
 
 describe(
-	"TypeAssertion / isInteger",
+	"TypeAssertion.isInteger",
 	(): void =>
 	{
 		it(
@@ -22,7 +22,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isInteger(ITEM);
+						TypeAssertion.isInteger(ITEM);
 					};
 
 					doesNotThrow(WRAPPER);
@@ -40,7 +40,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isInteger(ITEM);
+						TypeAssertion.isInteger(ITEM);
 					};
 
 					throws(WRAPPER, testError);
@@ -58,7 +58,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isInteger(ITEM);
+						TypeAssertion.isInteger(ITEM);
 					};
 
 					throws(WRAPPER, testError);

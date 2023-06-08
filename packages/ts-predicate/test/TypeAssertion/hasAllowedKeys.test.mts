@@ -2,12 +2,12 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { hasAllowedKeys } from "../../src/TypeAssertion/hasAllowedKeys.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { testError } from "../common/testError.mjs";
 
 describe(
-	"TypeAssertion / hasAllowedKeys",
+	"TypeAssertion.hasAllowedKeys",
 	(): void =>
 	{
 		it(
@@ -16,7 +16,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					hasAllowedKeys({ a: 1, b: 2 }, ["a", "b", "c"]);
+					TypeAssertion.hasAllowedKeys({ a: 1, b: 2 }, ["a", "b", "c"]);
 				};
 
 				doesNotThrow(WRAPPER);
@@ -29,7 +29,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					hasAllowedKeys({ a: 1, b: 2, c: 3 }, ["a", "b"]);
+					TypeAssertion.hasAllowedKeys({ a: 1, b: 2, c: 3 }, ["a", "b"]);
 				};
 
 				throws(WRAPPER, testError);

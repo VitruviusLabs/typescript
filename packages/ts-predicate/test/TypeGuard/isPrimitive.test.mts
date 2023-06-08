@@ -2,12 +2,12 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isPrimitive } from "../../src/TypeGuard/isPrimitive.mjs";
+import { TypeGuard } from "../../src/index.mjs";
 
 import { GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 describe(
-	"TypeGuard / isPrimitive",
+	"TypeGuard.isPrimitive",
 	(): void =>
 	{
 		it(
@@ -18,7 +18,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isPrimitive(ITEM);
+					const RESULT: unknown = TypeGuard.isPrimitive(ITEM);
 
 					strictEqual(RESULT, true);
 				}
@@ -33,7 +33,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isPrimitive(ITEM);
+					const RESULT: unknown = TypeGuard.isPrimitive(ITEM);
 
 					strictEqual(RESULT, false);
 				}
