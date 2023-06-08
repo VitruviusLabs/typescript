@@ -2,14 +2,14 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isString } from "../../src/TypeAssertion/isString.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 import { testError } from "../common/testError.mjs";
 
 describe(
-	"TypeAssertion / isString",
+	"TypeAssertion.isString",
 	(): void =>
 	{
 		it(
@@ -22,7 +22,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isString(ITEM);
+						TypeAssertion.isString(ITEM);
 					};
 
 					doesNotThrow(WRAPPER);
@@ -40,7 +40,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isString(ITEM);
+						TypeAssertion.isString(ITEM);
 					};
 
 					throws(WRAPPER, testError);

@@ -2,7 +2,7 @@ import { doesNotThrow, throws } from "assert";
 
 import { describe, it } from "node:test";
 
-import { isArray } from "../../src/TypeAssertion/isArray.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
@@ -14,7 +14,7 @@ function isNumberTest(value: unknown): value is number
 }
 
 describe(
-	"TypeAssertion / isArray",
+	"TypeAssertion.isArray",
 	(): void =>
 	{
 		it(
@@ -27,7 +27,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isArray(ITEM);
+						TypeAssertion.isArray(ITEM);
 					};
 
 					doesNotThrow(WRAPPER);
@@ -45,7 +45,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isArray(ITEM);
+						TypeAssertion.isArray(ITEM);
 					};
 
 					throws(WRAPPER, testError);
@@ -59,12 +59,12 @@ describe(
 			{
 				const WRAPPER_GREATER_LENGTH = (): void =>
 				{
-					isArray([1, 2, 3], { minLength: 2 });
+					TypeAssertion.isArray([1, 2, 3], { minLength: 2 });
 				};
 
 				const WRAPPER_EXACT_LENGTH = (): void =>
 				{
-					isArray([1, 2, 3], { minLength: 3 });
+					TypeAssertion.isArray([1, 2, 3], { minLength: 3 });
 				};
 
 				doesNotThrow(WRAPPER_GREATER_LENGTH);
@@ -78,12 +78,12 @@ describe(
 			{
 				const WRAPPER_EMPTY = (): void =>
 				{
-					isArray([], { minLength: 1 });
+					TypeAssertion.isArray([], { minLength: 1 });
 				};
 
 				const WRAPPER_SMALL_LENGTH = (): void =>
 				{
-					isArray([1, 2, 3], { minLength: 4 });
+					TypeAssertion.isArray([1, 2, 3], { minLength: 4 });
 				};
 
 				throws(WRAPPER_EMPTY, testError);
@@ -97,12 +97,12 @@ describe(
 			{
 				const WRAPPER_EMPTY = (): void =>
 				{
-					isArray([], { itemTest: isNumberTest });
+					TypeAssertion.isArray([], { itemTest: isNumberTest });
 				};
 
 				const WRAPPER_VALID = (): void =>
 				{
-					isArray([1, 2, 3], { itemTest: isNumberTest });
+					TypeAssertion.isArray([1, 2, 3], { itemTest: isNumberTest });
 				};
 
 				doesNotThrow(WRAPPER_EMPTY);
@@ -116,7 +116,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
+					TypeAssertion.isArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
 				};
 
 				throws(WRAPPER, testAggregateError);
@@ -129,12 +129,12 @@ describe(
 			{
 				const WRAPPER_EMPTY = (): void =>
 				{
-					isArray([], isNumberTest);
+					TypeAssertion.isArray([], isNumberTest);
 				};
 
 				const WRAPPER_VALID = (): void =>
 				{
-					isArray([1, 2, 3], isNumberTest);
+					TypeAssertion.isArray([1, 2, 3], isNumberTest);
 				};
 
 				doesNotThrow(WRAPPER_EMPTY);
@@ -148,7 +148,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
+					TypeAssertion.isArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
 				};
 
 				throws(WRAPPER, testAggregateError);

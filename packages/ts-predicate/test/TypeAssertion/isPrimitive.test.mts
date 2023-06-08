@@ -2,14 +2,14 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isPrimitive } from "../../src/TypeAssertion/isPrimitive.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 import { testError } from "../common/testError.mjs";
 
 describe(
-	"TypeAssertion / isPrimitive",
+	"TypeAssertion.isPrimitive",
 	(): void =>
 	{
 		it(
@@ -22,7 +22,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isPrimitive(ITEM);
+						TypeAssertion.isPrimitive(ITEM);
 					};
 
 					doesNotThrow(WRAPPER);
@@ -40,7 +40,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isPrimitive(ITEM);
+						TypeAssertion.isPrimitive(ITEM);
 					};
 
 					throws(WRAPPER, testError);

@@ -2,12 +2,12 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { hasNullableProperty } from "../../src/TypeAssertion/hasNullableProperty.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { testError } from "../common/testError.mjs";
 
 describe(
-	"TypeAssertion / hasNullableProperty",
+	"TypeAssertion.hasNullableProperty",
 	(): void =>
 	{
 		it(
@@ -16,7 +16,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					hasNullableProperty({}, "answer");
+					TypeAssertion.hasNullableProperty({}, "answer");
 				};
 
 				throws(WRAPPER, testError);
@@ -29,7 +29,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					hasNullableProperty({ answer: undefined }, "answer");
+					TypeAssertion.hasNullableProperty({ answer: undefined }, "answer");
 				};
 
 				doesNotThrow(WRAPPER);

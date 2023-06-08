@@ -2,14 +2,14 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isFunction } from "../../src/TypeAssertion/isFunction.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 import { testError } from "../common/testError.mjs";
 
 describe(
-	"TypeAssertion / isFunction",
+	"TypeAssertion.isFunction",
 	(): void =>
 	{
 		it(
@@ -22,7 +22,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isFunction(ITEM);
+						TypeAssertion.isFunction(ITEM);
 					};
 
 					doesNotThrow(WRAPPER);
@@ -40,7 +40,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isFunction(ITEM);
+						TypeAssertion.isFunction(ITEM);
 					};
 
 					throws(WRAPPER, testError);

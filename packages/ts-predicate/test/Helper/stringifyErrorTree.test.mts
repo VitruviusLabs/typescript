@@ -2,7 +2,7 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { stringifyErrorTree } from "../../src/Helper/stringifyErrorTree.mjs";
+import { Helper } from "../../src/index.mjs";
 
 import type { NormalizedError } from "../../src/index.mjs";
 
@@ -25,7 +25,7 @@ const EXPECTED_RESULT: string = `root error
 `;
 
 describe(
-	"Helper / stringifyError",
+	"Helper.stringifyError",
 	(): void =>
 	{
 		it(
@@ -101,7 +101,7 @@ describe(
 					],
 				};
 
-				const RESULT: unknown = stringifyErrorTree(STRUCTURE);
+				const RESULT: unknown = Helper.stringifyErrorTree(STRUCTURE);
 
 				strictEqual(RESULT, EXPECTED_RESULT);
 			}
@@ -159,7 +159,7 @@ describe(
 					"root error"
 				);
 
-				const RESULT: unknown = stringifyErrorTree(ERROR);
+				const RESULT: unknown = Helper.stringifyErrorTree(ERROR);
 
 				strictEqual(RESULT, EXPECTED_RESULT);
 			}

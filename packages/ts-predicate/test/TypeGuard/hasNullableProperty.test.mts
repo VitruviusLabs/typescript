@@ -2,17 +2,17 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { hasNullableProperty } from "../../src/TypeGuard/hasNullableProperty.mjs";
+import { TypeGuard } from "../../src/index.mjs";
 
 describe(
-	"TypeGuard / hasNullableProperty",
+	"TypeGuard.hasNullableProperty",
 	(): void =>
 	{
 		it(
 			"should return false when given an object without the property",
 			(): void =>
 			{
-				const RESULT: unknown = hasNullableProperty({}, "answer");
+				const RESULT: unknown = TypeGuard.hasNullableProperty({}, "answer");
 
 				strictEqual(RESULT, false);
 			}
@@ -22,7 +22,7 @@ describe(
 			"should return true when given an object with the property",
 			(): void =>
 			{
-				const RESULT: unknown = hasNullableProperty({ answer: undefined }, "answer");
+				const RESULT: unknown = TypeGuard.hasNullableProperty({ answer: undefined }, "answer");
 
 				strictEqual(RESULT, true);
 			}

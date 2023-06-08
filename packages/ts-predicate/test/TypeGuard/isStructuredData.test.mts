@@ -2,11 +2,11 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isStructuredData } from "../../src/TypeGuard/isStructuredData.mjs";
+import { TypeGuard } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues } from "../common/getValues.mjs";
 
-import type { StructuredDataDescriptor } from "../../src/types/StructuredDataDescriptor.mjs";
+import type { StructuredDataDescriptor } from "../../src/index.mjs";
 
 interface TestData
 {
@@ -32,7 +32,7 @@ const DESCRIPTOR: StructuredDataDescriptor<TestData> =
 };
 
 describe(
-	"TypeGuard / isStructuredData",
+	"TypeGuard.isStructuredData",
 	(): void =>
 	{
 		it(
@@ -43,7 +43,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isStructuredData(ITEM, DESCRIPTOR);
+					const RESULT: unknown = TypeGuard.isStructuredData(ITEM, DESCRIPTOR);
 
 					strictEqual(RESULT, false);
 				}
@@ -54,7 +54,7 @@ describe(
 			"should return false when there is an extraneous property",
 			(): void =>
 			{
-				const RESULT: unknown = isStructuredData({ a: 1, b: 2, c: 3 }, DESCRIPTOR);
+				const RESULT: unknown = TypeGuard.isStructuredData({ a: 1, b: 2, c: 3 }, DESCRIPTOR);
 
 				strictEqual(RESULT, false);
 			}
@@ -64,7 +64,7 @@ describe(
 			"should return true when every property of the object is valid",
 			(): void =>
 			{
-				const RESULT: unknown = isStructuredData({ a: 1, b: 2 }, DESCRIPTOR);
+				const RESULT: unknown = TypeGuard.isStructuredData({ a: 1, b: 2 }, DESCRIPTOR);
 
 				strictEqual(RESULT, true);
 			}
@@ -74,7 +74,7 @@ describe(
 			"should return true when an optional property is missing",
 			(): void =>
 			{
-				const RESULT: unknown = isStructuredData({ a: 1 }, DESCRIPTOR);
+				const RESULT: unknown = TypeGuard.isStructuredData({ a: 1 }, DESCRIPTOR);
 
 				strictEqual(RESULT, true);
 			}
@@ -84,7 +84,7 @@ describe(
 			"should return false when a required property is missing",
 			(): void =>
 			{
-				const RESULT: unknown = isStructuredData({ b: 2 }, DESCRIPTOR);
+				const RESULT: unknown = TypeGuard.isStructuredData({ b: 2 }, DESCRIPTOR);
 
 				strictEqual(RESULT, false);
 			}
@@ -94,7 +94,7 @@ describe(
 			"should return true when a nullable property is nullish",
 			(): void =>
 			{
-				const RESULT: unknown = isStructuredData({ a: undefined, b: 2 }, DESCRIPTOR);
+				const RESULT: unknown = TypeGuard.isStructuredData({ a: undefined, b: 2 }, DESCRIPTOR);
 
 				strictEqual(RESULT, true);
 			}
@@ -104,7 +104,7 @@ describe(
 			"should return false when a non-nullable property is nullish",
 			(): void =>
 			{
-				const RESULT: unknown = isStructuredData({ a: 1, b: undefined }, DESCRIPTOR);
+				const RESULT: unknown = TypeGuard.isStructuredData({ a: 1, b: undefined }, DESCRIPTOR);
 
 				strictEqual(RESULT, false);
 			}
@@ -114,7 +114,7 @@ describe(
 			"should return false when a property value is invalid",
 			(): void =>
 			{
-				const RESULT: unknown = isStructuredData({ a: 1, b: "2" }, DESCRIPTOR);
+				const RESULT: unknown = TypeGuard.isStructuredData({ a: 1, b: "2" }, DESCRIPTOR);
 
 				strictEqual(RESULT, false);
 			}

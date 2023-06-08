@@ -2,13 +2,13 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isStructuredData } from "../../src/TypeAssertion/isStructuredData.mjs";
+import { TypeAssertion } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues } from "../common/getValues.mjs";
 
 import { testAggregateError, testError } from "../common/testError.mjs";
 
-import type { StructuredDataDescriptor } from "../../src/types/StructuredDataDescriptor.mjs";
+import type { StructuredDataDescriptor } from "../../src/index.mjs";
 
 interface TestData
 {
@@ -37,7 +37,7 @@ const DESCRIPTOR: StructuredDataDescriptor<TestData> =
 };
 
 describe(
-	"TypeGuard / isStructuredData",
+	"TypeAssertion.isStructuredData",
 	(): void =>
 	{
 		it(
@@ -50,7 +50,7 @@ describe(
 				{
 					const WRAPPER = (): void =>
 					{
-						isStructuredData(ITEM, DESCRIPTOR);
+						TypeAssertion.isStructuredData(ITEM, DESCRIPTOR);
 					};
 
 					throws(WRAPPER, testError);
@@ -64,7 +64,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isStructuredData({ a: 1, b: 2, c: 3 }, DESCRIPTOR);
+					TypeAssertion.isStructuredData({ a: 1, b: 2, c: 3 }, DESCRIPTOR);
 				};
 
 				throws(WRAPPER, testAggregateError);
@@ -77,7 +77,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isStructuredData({ a: 1, b: 2 }, DESCRIPTOR);
+					TypeAssertion.isStructuredData({ a: 1, b: 2 }, DESCRIPTOR);
 				};
 
 				doesNotThrow(WRAPPER);
@@ -90,7 +90,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isStructuredData({ a: 1, b: "2" }, DESCRIPTOR);
+					TypeAssertion.isStructuredData({ a: 1, b: "2" }, DESCRIPTOR);
 				};
 
 				throws(WRAPPER, testAggregateError);
@@ -103,7 +103,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isStructuredData({ a: 1 }, DESCRIPTOR);
+					TypeAssertion.isStructuredData({ a: 1 }, DESCRIPTOR);
 				};
 
 				doesNotThrow(WRAPPER);
@@ -116,7 +116,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isStructuredData({ b: 2 }, DESCRIPTOR);
+					TypeAssertion.isStructuredData({ b: 2 }, DESCRIPTOR);
 				};
 
 				throws(WRAPPER, testAggregateError);
@@ -129,7 +129,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isStructuredData({ a: undefined, b: 2 }, DESCRIPTOR);
+					TypeAssertion.isStructuredData({ a: undefined, b: 2 }, DESCRIPTOR);
 				};
 
 				doesNotThrow(WRAPPER);
@@ -142,7 +142,7 @@ describe(
 			{
 				const WRAPPER = (): void =>
 				{
-					isStructuredData({ a: 1, b: undefined }, DESCRIPTOR);
+					TypeAssertion.isStructuredData({ a: 1, b: undefined }, DESCRIPTOR);
 				};
 
 				throws(WRAPPER, testAggregateError);

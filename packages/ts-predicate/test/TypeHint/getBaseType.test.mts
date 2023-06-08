@@ -2,7 +2,7 @@ import { strictEqual } from "assert";
 
 import { describe, it } from "node:test";
 
-import { getBaseType } from "../../src/TypeHint/getBaseType.mjs";
+import { TypeHint } from "../../src/index.mjs";
 
 import { BaseType, DummyClass, GroupType, OldDummyClass, getValues } from "../common/getValues.mjs";
 
@@ -31,14 +31,14 @@ import
 import type { OldClassInstance } from "../common/types/OldClassInstance.mjs";
 
 describe(
-	"TypeHint / getBaseType",
+	"TypeHint.getBaseType",
 	(): void =>
 	{
 		it(
 			'should return "undefined" when given undefined',
 			(): void =>
 			{
-				strictEqual(getBaseType(undefined), "undefined");
+				strictEqual(TypeHint.getBaseType(undefined), "undefined");
 			}
 		);
 
@@ -46,7 +46,7 @@ describe(
 			'should return "null" when given null',
 			(): void =>
 			{
-				strictEqual(getBaseType(null), "null");
+				strictEqual(TypeHint.getBaseType(null), "null");
 			}
 		);
 
@@ -54,7 +54,7 @@ describe(
 			'should return "NaN" when given NaN',
 			(): void =>
 			{
-				strictEqual(getBaseType(Number.NaN), "NaN");
+				strictEqual(TypeHint.getBaseType(Number.NaN), "NaN");
 			}
 		);
 
@@ -66,7 +66,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					strictEqual(getBaseType(ITEM), "boolean");
+					strictEqual(TypeHint.getBaseType(ITEM), "boolean");
 				}
 			}
 		);
@@ -79,7 +79,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					strictEqual(getBaseType(ITEM), "number");
+					strictEqual(TypeHint.getBaseType(ITEM), "number");
 				}
 			}
 		);
@@ -88,14 +88,14 @@ describe(
 			'should return "bigint" when given a big int',
 			(): void =>
 			{
-				strictEqual(getBaseType(BigInt(0)), "bigint");
-				strictEqual(getBaseType(BigInt(-0)), "bigint");
-				strictEqual(getBaseType(BigInt(1)), "bigint");
-				strictEqual(getBaseType(BigInt(-1)), "bigint");
-				strictEqual(getBaseType(BigInt(Number.MIN_SAFE_INTEGER + 4)), "bigint");
-				strictEqual(getBaseType(BigInt(Number.MAX_SAFE_INTEGER - 4)), "bigint");
-				strictEqual(getBaseType(BigInt(Number.MIN_SAFE_INTEGER - 4)), "bigint");
-				strictEqual(getBaseType(BigInt(Number.MAX_SAFE_INTEGER + 4)), "bigint");
+				strictEqual(TypeHint.getBaseType(BigInt(0)), "bigint");
+				strictEqual(TypeHint.getBaseType(BigInt(-0)), "bigint");
+				strictEqual(TypeHint.getBaseType(BigInt(1)), "bigint");
+				strictEqual(TypeHint.getBaseType(BigInt(-1)), "bigint");
+				strictEqual(TypeHint.getBaseType(BigInt(Number.MIN_SAFE_INTEGER + 4)), "bigint");
+				strictEqual(TypeHint.getBaseType(BigInt(Number.MAX_SAFE_INTEGER - 4)), "bigint");
+				strictEqual(TypeHint.getBaseType(BigInt(Number.MIN_SAFE_INTEGER - 4)), "bigint");
+				strictEqual(TypeHint.getBaseType(BigInt(Number.MAX_SAFE_INTEGER + 4)), "bigint");
 			}
 		);
 
@@ -107,7 +107,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					strictEqual(getBaseType(ITEM), "string");
+					strictEqual(TypeHint.getBaseType(ITEM), "string");
 				}
 			}
 		);
@@ -120,7 +120,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					strictEqual(getBaseType(ITEM), "symbol");
+					strictEqual(TypeHint.getBaseType(ITEM), "symbol");
 				}
 			}
 		);
@@ -133,7 +133,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					strictEqual(getBaseType(ITEM), "array");
+					strictEqual(TypeHint.getBaseType(ITEM), "array");
 				}
 			}
 		);
@@ -150,7 +150,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					strictEqual(getBaseType(ITEM), "class");
+					strictEqual(TypeHint.getBaseType(ITEM), "class");
 				}
 			}
 		);
@@ -172,7 +172,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					strictEqual(getBaseType(ITEM), "generator");
+					strictEqual(TypeHint.getBaseType(ITEM), "generator");
 				}
 			}
 		);
@@ -206,7 +206,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					strictEqual(getBaseType(ITEM), "function");
+					strictEqual(TypeHint.getBaseType(ITEM), "function");
 				}
 			}
 		);
@@ -219,7 +219,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					strictEqual(getBaseType(ITEM), "object");
+					strictEqual(TypeHint.getBaseType(ITEM), "object");
 				}
 			}
 		);

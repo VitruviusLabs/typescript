@@ -2,12 +2,12 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { isDefined } from "../../src/TypeGuard/isDefined.mjs";
+import { TypeGuard } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 describe(
-	"TypeGuard / isDefined",
+	"TypeGuard.isDefined",
 	(): void =>
 	{
 		it(
@@ -18,7 +18,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isDefined(ITEM);
+					const RESULT: unknown = TypeGuard.isDefined(ITEM);
 
 					strictEqual(RESULT, false);
 				}
@@ -33,7 +33,7 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = isDefined(ITEM);
+					const RESULT: unknown = TypeGuard.isDefined(ITEM);
 
 					strictEqual(RESULT, true);
 				}

@@ -2,14 +2,14 @@ import { deepStrictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { normalizeErrorTree } from "../../src/Helper/normalizeErrorTree.mjs";
+import { Helper } from "../../src/index.mjs";
 
-import type { NormalizedError } from "../../src/types/_index.mjs";
+import type { NormalizedError } from "../../src/index.mjs";
 
 // cspell:ignore lorem ipsum dolor sit amet consectetur adipiscing elit
 
 describe(
-	"Helper / simplifyError",
+	"Helper.simplifyError",
 	(): void =>
 	{
 		it(
@@ -21,7 +21,7 @@ describe(
 					causes: []
 				};
 
-				const RESULT: unknown = normalizeErrorTree(new Error("lorem ipsum"));
+				const RESULT: unknown = Helper.normalizeErrorTree(new Error("lorem ipsum"));
 
 				deepStrictEqual(RESULT, EXPECTED_RESULT);
 			}
@@ -36,7 +36,7 @@ describe(
 					causes: []
 				};
 
-				const RESULT: unknown = normalizeErrorTree(new Error());
+				const RESULT: unknown = Helper.normalizeErrorTree(new Error());
 
 				deepStrictEqual(RESULT, EXPECTED_RESULT);
 			}
@@ -56,7 +56,7 @@ describe(
 					]
 				};
 
-				const RESULT: unknown = normalizeErrorTree(
+				const RESULT: unknown = Helper.normalizeErrorTree(
 					new Error("lorem ipsum", {
 						cause: new Error("dolor sit amet")
 					})
@@ -84,7 +84,7 @@ describe(
 					]
 				};
 
-				const RESULT: unknown = normalizeErrorTree(
+				const RESULT: unknown = Helper.normalizeErrorTree(
 					new AggregateError(
 						[
 							new Error("dolor sit amet"),
