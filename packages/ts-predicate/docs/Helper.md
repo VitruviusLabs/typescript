@@ -59,3 +59,27 @@ The value is an object, but some properties are incorrect.
 ```
 
 Useful when using `TypeAssertion` functions to print what's wrong into the console.
+
+## copyWithoutProperty
+
+```ts
+copyWithoutProperty<T>(value: T, propertyName: string): Partial<T>
+```
+
+Helper for testing. It returns a shallow copy of the object, but the chosen property is missing entirely.
+
+## copyWithNullishProperty
+
+```ts
+copyWithNullishProperty<T>(value: T, propertyName: string): Nullable<T>
+```
+
+Helper for testing. It returns a shallow copy of the object, but the chosen property value is assigned the value `undefined`.
+
+## copyWithInvalidProperty
+
+```ts
+copyWithInvalidProperty<T>(value: T, propertyName: string, value: unknown): Invalid<T>
+```
+
+Helper for testing. It returns a shallow copy of the object, but the chosen property value is assigned with the provided erroneous value.
