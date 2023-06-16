@@ -71,6 +71,16 @@ describe(
 		);
 
 		it(
+			"should ignore empty constraints.",
+			(): void =>
+			{
+				const RESULT: unknown = TypeGuard.isRecord({ a: 1, b: "2", c: true }, {});
+
+				strictEqual(RESULT, true);
+			}
+		);
+
+		it(
 			"should return false when given a record with some values not passing the itemTest constraint",
 			(): void =>
 			{

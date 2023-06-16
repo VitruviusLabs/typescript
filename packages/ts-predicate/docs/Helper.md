@@ -60,26 +60,26 @@ The value is an object, but some properties are incorrect.
 
 Useful when using `TypeAssertion` functions to print what's wrong into the console.
 
-## copyWithoutProperty
+## createCopiesWithMissingProperty
 
 ```ts
-copyWithoutProperty<T>(value: T, propertyName: string): Partial<T>
+createCopiesWithMissingProperty<T>(value: T): Array<Partial<T>>
 ```
 
-Helper for testing. It returns a shallow copy of the object, but the chosen property is missing entirely.
+Helper for testing. It returns an array of shallow copies of the object, but for each one, a different property will be missing entirely.
 
-## copyWithNullishProperty
+## createCopiesWithNullishProperty
 
 ```ts
-copyWithNullishProperty<T>(value: T, propertyName: string): Nullable<T>
+createCopiesWithNullishProperty<T>(value: T): Array<Nullable<T>>
 ```
 
-Helper for testing. It returns a shallow copy of the object, but the chosen property value is assigned the value `undefined`.
+Helper for testing. It returns an array of shallow copies of the object, but for each one, a different property will be replaced by `undefined`.
 
-## copyWithInvalidProperty
+## createCopiesWithInvalidProperty
 
 ```ts
-copyWithInvalidProperty<T>(value: T, propertyName: string, value: unknown): Invalid<T>
+createCopiesWithInvalidProperty<T>(value: T, mapping: Invalid<T>): Array<Invalid<T>>
 ```
 
-Helper for testing. It returns a shallow copy of the object, but the chosen property value is assigned with the provided erroneous value.
+Helper for testing. It returns an array of shallow copies of the object, but for each one, a different property will be replaced by the corresponding erroneous value provided in the mapping.

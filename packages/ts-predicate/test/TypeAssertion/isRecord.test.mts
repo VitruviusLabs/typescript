@@ -72,6 +72,19 @@ describe(
 		);
 
 		it(
+			"should ignore empty constraints.",
+			(): void =>
+			{
+				const WRAPPER = (): void =>
+				{
+					TypeAssertion.isRecord({ a: 1, b: "2", c: true }, {});
+				};
+
+				doesNotThrow(WRAPPER);
+			}
+		);
+
+		it(
 			"should return when given a record with all the values passing the itemTest constraint",
 			(): void =>
 			{
