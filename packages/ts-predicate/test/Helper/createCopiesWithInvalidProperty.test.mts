@@ -25,7 +25,7 @@ describe(
 					bar: "Hello, World!",
 				};
 
-				const INVALID_OBJECTS: Array<Invalid<Test>> = Helper.createCopiesWithInvalidProperty(
+				const INVALID_OBJECTS: Array<Invalid<Test>> = Helper.createCopiesWithInvalidProperty<Test>(
 					VALID_OBJECT,
 					{
 						foo: false,

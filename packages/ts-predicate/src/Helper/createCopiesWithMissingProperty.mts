@@ -1,4 +1,4 @@
-function createCopiesWithMissingProperty<Type extends object>(valid_object: Type): Array<Partial<Type>>
+function createCopiesWithMissingProperty<Type extends object>(valid_object: Required<Type>): Array<Partial<Type>>
 {
 	return Object.keys(valid_object).map(
 		// @ts-expect-error: Key mapping

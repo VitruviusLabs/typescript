@@ -71,7 +71,7 @@ describe(
 		);
 
 		it(
-			"should ignore empty constraints.",
+			"should ignore empty constraints",
 			(): void =>
 			{
 				const RESULT: unknown = TypeGuard.isRecord({ a: 1, b: "2", c: true }, {});

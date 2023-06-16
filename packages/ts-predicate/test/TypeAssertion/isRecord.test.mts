@@ -72,7 +72,7 @@ describe(
 		);
 
 		it(
-			"should ignore empty constraints.",
+			"should ignore empty constraints",
 			(): void =>
 			{
 				const WRAPPER = (): void =>
