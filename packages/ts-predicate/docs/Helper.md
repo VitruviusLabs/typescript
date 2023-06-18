@@ -59,3 +59,27 @@ The value is an object, but some properties are incorrect.
 ```
 
 Useful when using `TypeAssertion` functions to print what's wrong into the console.
+
+## createCopiesWithMissingProperty
+
+```ts
+createCopiesWithMissingProperty<T>(value: T): Array<Partial<T>>
+```
+
+Helper for testing. It returns an array of shallow copies of the object, but for each one, a different property will be missing entirely.
+
+## createCopiesWithNullishProperty
+
+```ts
+createCopiesWithNullishProperty<T>(value: T): Array<Nullable<T>>
+```
+
+Helper for testing. It returns an array of shallow copies of the object, but for each one, a different property will be replaced by `undefined`.
+
+## createCopiesWithInvalidProperty
+
+```ts
+createCopiesWithInvalidProperty<T>(value: T, mapping: Invalid<T>): Array<Invalid<T>>
+```
+
+Helper for testing. It returns an array of shallow copies of the object, but for each one, a different property will be replaced by the corresponding erroneous value provided in the mapping.

@@ -70,13 +70,12 @@ describe(
 					TypeAssertion.isPopulatedArray([1, 2, 3], { minLength: 2 });
 				};
 
-				doesNotThrow(WRAPPER_GREATER_LENGTH);
-
 				const WRAPPER_EXACT_LENGTH = (): void =>
 				{
 					TypeAssertion.isPopulatedArray([1, 2, 3], { minLength: 3 });
 				};
 
+				doesNotThrow(WRAPPER_GREATER_LENGTH);
 				doesNotThrow(WRAPPER_EXACT_LENGTH);
 			}
 		);

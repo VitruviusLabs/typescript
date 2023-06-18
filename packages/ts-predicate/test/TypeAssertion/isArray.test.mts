@@ -54,6 +54,19 @@ describe(
 		);
 
 		it(
+			"should ignore empty constraints",
+			(): void =>
+			{
+				const WRAPPER = (): void =>
+				{
+					TypeAssertion.isArray([1, "2", true], {});
+				};
+
+				doesNotThrow(WRAPPER);
+			}
+		);
+
+		it(
 			"should return when given an array with a length greater or equal to the minLength constraint",
 			(): void =>
 			{

@@ -46,6 +46,16 @@ describe(
 		);
 
 		it(
+			"should ignore empty constraint",
+			(): void =>
+			{
+				const RESULT: unknown = TypeGuard.isArray([1, "2", true], {});
+
+				strictEqual(RESULT, true);
+			}
+		);
+
+		it(
 			"should return true when given an array with a length greater or equal to the minLength constraint",
 			(): void =>
 			{
