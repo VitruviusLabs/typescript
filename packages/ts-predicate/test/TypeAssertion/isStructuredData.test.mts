@@ -72,6 +72,23 @@ describe(
 		);
 
 		it(
+			"should return when there is an extraneous property, but extraneous properties are allowed",
+			(): void =>
+			{
+				const WRAPPER = (): void =>
+				{
+					TypeAssertion.isStructuredData(
+						{ a: 1, b: 2, c: 3 },
+						DESCRIPTOR,
+						{ allowExtraneousProperties: true }
+					);
+				};
+
+				doesNotThrow(WRAPPER);
+			}
+		);
+
+		it(
 			"should return when every property of the object is valid",
 			(): void =>
 			{

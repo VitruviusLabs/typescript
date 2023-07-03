@@ -61,6 +61,20 @@ describe(
 		);
 
 		it(
+			"should return true when there is an extraneous property, but extraneous properties are allowed",
+			(): void =>
+			{
+				const RESULT: unknown = TypeGuard.isStructuredData(
+					{ a: 1, b: 2, c: 3 },
+					DESCRIPTOR,
+					{ allowExtraneousProperties: true }
+				);
+
+				strictEqual(RESULT, true);
+			}
+		);
+
+		it(
 			"should return true when every property of the object is valid",
 			(): void =>
 			{

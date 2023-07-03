@@ -1,3 +1,5 @@
+import { buildStructuredDataOptions } from "../utils/buildStructuredDataOptions.mjs";
+
 import { isStructuredDataPropertyDescriptor } from "../utils/isStructuredDataPropertyDescriptor.mjs";
 
 import { hasAllowedKeys } from "./hasAllowedKeys.mjs";
@@ -10,11 +12,12 @@ import { isRecord } from "./isRecord.mjs";
 
 import { itemGuard } from "./utils/itemGuard.mjs";
 
-import type { StructuredDataDescriptor } from "../types/_index.mjs";
+import type { StructuredDataDescriptor, StructuredDataOptions } from "../types/_index.mjs";
 
 function isStructuredData<Type>(
 	value: unknown,
-	descriptor: StructuredDataDescriptor<Type>
+	descriptor: StructuredDataDescriptor<Type>,
+	options?: StructuredDataOptions
 ): value is Type
 {
 	if (!isRecord(value))
@@ -22,9 +25,11 @@ function isStructuredData<Type>(
 		return false;
 	}
 
+	const OPTIONS: Required<StructuredDataOptions> = buildStructuredDataOptions(options);
+
 	const DESCRIPTOR_KEYS: Array<string> = Object.keys(descriptor);
 
-	if (!hasAllowedKeys(value, DESCRIPTOR_KEYS))
+	if (!OPTIONS.allowExtraneousProperties && !hasAllowedKeys(value, DESCRIPTOR_KEYS))
 	{
 		return false;
 	}
