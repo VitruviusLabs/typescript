@@ -1,39 +1,50 @@
+import { buildStructuredDataOptions } from "../utils/buildStructuredDataOptions.mjs";
+
 import { isStructuredDataPropertyDescriptor } from "../utils/isStructuredDataPropertyDescriptor.mjs";
 
 import { buildError } from "./utils/buildError.mjs";
 
 import { validateProperty } from "./utils/validateProperty.mjs";
 
-import type { StructuredDataDescriptor } from "../types/_index.mjs";
+import type { StructuredDataDescriptor, StructuredDataOptions } from "../types/_index.mjs";
 
-function isStructuredData<Type>(value: unknown, descriptor: StructuredDataDescriptor<Type>): asserts value is Type
+function isStructuredData<Type>(
+	value: unknown,
+	descriptor: StructuredDataDescriptor<Type>,
+	options?: StructuredDataOptions
+): asserts value is Type
 {
 	if (typeof value !== "object" || value === null)
 	{
 		throw new Error("The value must be an object.");
 	}
 
+	const OPTIONS: Required<StructuredDataOptions> = buildStructuredDataOptions(options);
+
 	const DESCRIPTOR_KEYS: Array<string> = Object.keys(descriptor);
 
 	const ERRORS: Array<Error> = [];
 
-	const EXTRANEOUS_KEYS: Array<string> = Object.keys(value).filter(
-		(key: string): boolean =>
-		{
-			return !DESCRIPTOR_KEYS.includes(key);
-		}
-	);
-
-	if (EXTRANEOUS_KEYS.length > 0)
+	if (!OPTIONS.allowExtraneousProperties)
 	{
-		ERRORS.push(
-			...EXTRANEOUS_KEYS.map(
-				(key: string): Error =>
-				{
-					return new Error(`The value has an extraneous property "${key}".`);
-				}
-			)
+		const EXTRANEOUS_KEYS: Array<string> = Object.keys(value).filter(
+			(key: string): boolean =>
+			{
+				return !DESCRIPTOR_KEYS.includes(key);
+			}
 		);
+
+		if (EXTRANEOUS_KEYS.length > 0)
+		{
+			ERRORS.push(
+				...EXTRANEOUS_KEYS.map(
+					(key: string): Error =>
+					{
+						return new Error(`The value has an extraneous property "${key}".`);
+					}
+				)
+			);
+		}
 	}
 
 	DESCRIPTOR_KEYS.forEach(

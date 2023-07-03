@@ -8,5 +8,6 @@ export * from "./ObjectWithProperty.mjs";
 export * from "./PopulatedArray.mjs";
 export * from "./RecordConstraints.mjs";
 export * from "./StructuredDataDescriptor.mjs";
+export * from "./StructuredDataOptions.mjs";
 export * from "./StructuredDataPropertyDescriptor.mjs";
 export * from "./Test.mjs";
