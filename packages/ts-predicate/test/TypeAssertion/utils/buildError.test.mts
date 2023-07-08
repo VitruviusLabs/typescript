@@ -2,9 +2,11 @@ import { deepStrictEqual, strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
+import { UnknownError } from "../../../src/TypeAssertion/utils/UnknownError.mjs";
+
 import { buildError } from "../../../src/TypeAssertion/utils/buildError.mjs";
 
-import { BaseType, getInvertedValues } from "../../common/getValues.mjs";
+import { getInvertedValues } from "../../common/getValues.mjs";
 
 describe(
 	"TypeAssertion / common/utils / buildError",
@@ -22,26 +24,16 @@ describe(
 		);
 
 		it(
-			"should return an Error that use the given string as message",
+			"should return an UnknownError when given anything else",
 			(): void =>
 			{
-				const RESULT: unknown = buildError("lorem ipsum");
-
-				deepStrictEqual(RESULT, new Error("lorem ipsum"));
-			}
-		);
-
-		it(
-			"should return a default Error when given anything else",
-			(): void =>
-			{
-				const VALUES: Array<unknown> = getInvertedValues(BaseType.STRING);
+				const VALUES: Array<unknown> = getInvertedValues();
 
 				for (const ITEM of VALUES)
 				{
 					const RESULT: unknown = buildError(ITEM);
 
-					deepStrictEqual(RESULT, new Error("An unknown error occurred."));
+					deepStrictEqual(RESULT, new UnknownError("An unknown error occurred.", ITEM));
 				}
 			}
 		);

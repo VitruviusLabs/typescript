@@ -177,7 +177,7 @@ Narrow down the value to being an object with the property defined.
 ## IsStructuredData
 
 ```ts
-isStructuredData<T>(value: object, descriptor: StructuredDataDescriptor<T>): boolean
+isStructuredData<T>(value: object, descriptor: StructuredDataDescriptor<T>, options?: StructuredDataOptions): boolean
 ```
 
 Narrow down the value to a specifically structured data object.
@@ -213,3 +213,14 @@ isStructuredData(
 	}
 )
 ```
+
+The optional parameter `options` accepts an object described below.
+
+```ts
+interface StructuredDataOptions
+{
+	allowExtraneousProperties?: boolean;
+}
+```
+
+If `allowExtraneousProperties` is set to `true`, it'll allow properties that are not listed in the descriptor.

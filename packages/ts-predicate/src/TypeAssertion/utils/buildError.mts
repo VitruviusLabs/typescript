@@ -1,3 +1,5 @@
+import { UnknownError } from "./UnknownError.mjs";
+
 function buildError(error: unknown): Error
 {
 	if (error instanceof Error)
@@ -5,12 +7,7 @@ function buildError(error: unknown): Error
 		return error;
 	}
 
-	if (typeof error === "string" && error !== "")
-	{
-		return new Error(error);
-	}
-
-	return new Error("An unknown error occurred.");
+	return new UnknownError("An unknown error occurred.", error);
 }
 
 export { buildError };
