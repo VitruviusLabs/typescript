@@ -49,18 +49,9 @@
 		]
 	},
 	"rules": {
-		/**
-			* eslint plugin sonarjs
-			*/
 		"sonarjs/prefer-single-boolean-return": "off",
-		/**
-			* eslint plugin comments
-			*/
 		"eslint-comments/no-unused-disable": "error",
 		"eslint-comments/require-description": "error",
-		/**
-			* typescript eslint
-			*/
 		"@typescript-eslint/no-useless-empty-export": "error",
 		"@typescript-eslint/adjacent-overload-signatures": "error",
 		"@typescript-eslint/array-type": [
@@ -749,9 +740,6 @@
 		"@typescript-eslint/space-before-function-paren": "off",
 		"space-infix-ops": "off",
 		"@typescript-eslint/space-infix-ops": "off",
-		/**
-			* eslint plugin
-			*/
 		"accessor-pairs": [
 			"warn",
 			{
@@ -1344,9 +1332,6 @@
 		"wrap-regex": "off",
 		"yield-star-spacing": "off",
 		"yoda": "off",
-		/**
-			* eslint plugin prefer arrow
-			*/
 		"prefer-arrow/prefer-arrow-functions": [
 			"error",
 			{
@@ -1356,9 +1341,6 @@
 				"allowStandaloneDeclarations": true
 			}
 		],
-		/**
-			* eslint plugin import
-			*/
 		"import/default": "off", // handled by @typescript-eslint
 		"import/named": "off", // handled by @typescript-eslint
 		"import/namespace": "off", // handled by @typescript-eslint
@@ -1456,9 +1438,6 @@
 				"./**/*.ts"
 			],
 			"rules": {
-				/**
-					* typescript eslint
-					*/
 				"@typescript-eslint/naming-convention": [
 					"error",
 					{
@@ -1589,14 +1568,14 @@
 					"never"
 				],
 				"@typescript-eslint/indent": [
-					"error", /* Rule implementation is buggy */
+					"error", // Rule implementation is buggy
 					"tab",
 					{
 						"flatTernaryExpressions": true,
 						"offsetTernaryExpressions": true,
 						"ignoreComments": true,
 						"ignoredNodes": [
-							//"https"://ts-ast-viewer.com/
+							// https://ts-ast-viewer.com/
 							"SwitchCase > BreakStatement", // JS
 							"CaseClause > BreakStatement", // TS
 							"ObjectExpression",
@@ -1670,9 +1649,6 @@
 						"int32Hint": false
 					}
 				],
-				/**
-					* eslint plugin
-					*/
 				"array-bracket-newline": [
 					"error",
 					"consistent"
@@ -1691,12 +1667,12 @@
 					"consistent"
 					// unsupported combination
 					/*
-						{
+					{
 						"consistent": true,
 						"multiline": true,
 						"minItems": null
-						},
-						*/
+					},
+					*/
 				],
 				"arrow-spacing": [
 					"error",
@@ -1933,6 +1909,7 @@
 				],
 				"@typescript-eslint/explicit-module-boundary-types": "off",
 				"@typescript-eslint/no-empty-function": "off",
+				"@typescript-eslint/no-floating-promises": "off",
 				"@typescript-eslint/no-magic-numbers": "off",
 				"@typescript-eslint/no-unsafe-member-access": "off",
 				"@typescript-eslint/no-unused-expressions": "off",
