@@ -1,8 +1,8 @@
+import { toError } from "../../Helper/toError.mjs";
+
 import { hasNullableProperty } from "../../TypeGuard/hasNullableProperty.mjs";
 
 import { isDefined } from "../../TypeGuard/isDefined.mjs";
-
-import { buildError } from "./buildError.mjs";
 
 import type { StructuredDataPropertyDescriptor } from "../../types/_index.mjs";
 
@@ -35,8 +35,8 @@ function validateProperty(value: object, key: string, property_descriptor: Struc
 	catch (error: unknown)
 	{
 		throw new Error(
-			`The property "${key}" have an incorrect value.`,
-			{ cause: buildError(error) }
+			`The property "${key}" has an incorrect value.`,
+			{ cause: toError(error) }
 		);
 	}
 }

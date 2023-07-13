@@ -1,6 +1,6 @@
-import { UnknownError } from "./UnknownError.mjs";
+import { UnknownError } from "./utils/UnknownError.mjs";
 
-function buildError(error: unknown): Error
+function toError(error: unknown): Error
 {
 	if (error instanceof Error)
 	{
@@ -10,4 +10,4 @@ function buildError(error: unknown): Error
 	return new UnknownError("An unknown error occurred.", error);
 }
 
-export { buildError };
+export { toError };

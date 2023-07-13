@@ -1,8 +1,8 @@
+import { toError } from "../Helper/toError.mjs";
+
 import { isArray as guard } from "../TypeGuard/isArray.mjs";
 
 import { buildArrayConstraints } from "../utils/buildArrayConstraints.mjs";
-
-import { buildError } from "./utils/buildError.mjs";
 
 import { itemAssertion } from "./utils/itemAssertion.mjs";
 
@@ -56,7 +56,7 @@ function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type> | Te
 					ERRORS.push(
 						new Error(
 							`The value at index ${index.toFixed(0)} is incorrect.`,
-							{ cause: buildError(error) }
+							{ cause: toError(error) }
 						)
 					);
 				}

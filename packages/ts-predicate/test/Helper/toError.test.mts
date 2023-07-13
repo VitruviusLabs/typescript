@@ -2,14 +2,12 @@ import { deepStrictEqual, strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { UnknownError } from "../../../src/TypeAssertion/utils/UnknownError.mjs";
+import { Helper } from "../../src/index.mjs";
 
-import { buildError } from "../../../src/TypeAssertion/utils/buildError.mjs";
-
-import { getInvertedValues } from "../../common/getValues.mjs";
+import { getInvertedValues } from "../common/getValues.mjs";
 
 describe(
-	"TypeAssertion / common/utils / buildError",
+	"Helper / toError",
 	(): void =>
 	{
 		it(
@@ -17,7 +15,7 @@ describe(
 			(): void =>
 			{
 				const ERROR: Error = new Error("lorem ipsum");
-				const RESULT: unknown = buildError(ERROR);
+				const RESULT: unknown = Helper.toError(ERROR);
 
 				strictEqual(RESULT, ERROR);
 			}
@@ -31,9 +29,9 @@ describe(
 
 				for (const ITEM of VALUES)
 				{
-					const RESULT: unknown = buildError(ITEM);
+					const RESULT: unknown = Helper.toError(ITEM);
 
-					deepStrictEqual(RESULT, new UnknownError("An unknown error occurred.", ITEM));
+					deepStrictEqual(RESULT, new Helper.UnknownError("An unknown error occurred.", ITEM));
 				}
 			}
 		);

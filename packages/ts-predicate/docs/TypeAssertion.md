@@ -221,6 +221,6 @@ If `allowExtraneousProperties` is set to `true`, it'll allow properties that are
 
 # UnknownError
 
-When a provided callable throw anything but an instance of `Error`, an instance of `UnknownError` will be created.
+When a provided callable throws anything but an instance of `Error`, an instance of `UnknownError` will be created.
 
 You can get the original thrown value from the `reason` property.
