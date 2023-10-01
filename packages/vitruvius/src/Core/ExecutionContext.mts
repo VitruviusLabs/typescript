@@ -1,5 +1,7 @@
 import { Kernel } from "./Kernel.mjs";
 
+import type { ClientRequest } from "./ClientRequest.mjs";
+
 import type { ExecutionContextInstantiationInterface } from "./ExecutionContext/ExecutionContextInstantiationInterface.mjs";
 
 import type { ServerResponse } from './ServerResponse.mjs';
@@ -8,13 +10,13 @@ import type { Session } from "../Service/Session.mjs";
 
 class ExecutionContext
 {
-	// private readonly request: Request;
+	private readonly request: ClientRequest;
 	private readonly response: ServerResponse;
 	private session?: Session;
 
 	private constructor(value: ExecutionContextInstantiationInterface)
 	{
-		// this.request = value.request;
+		this.request = value.request;
 		this.response = value.response;
 	}
 
@@ -23,10 +25,10 @@ class ExecutionContext
 		return new ExecutionContext(value);
 	}
 
-	// public static GetRequest(): Request|undefined
-	// {
-	// 	return Kernel.GetExecutionContext()?.getRequest();
-	// }
+	public static GetRequest(): ClientRequest|undefined
+	{
+		return Kernel.GetExecutionContext()?.getRequest();
+	}
 
 	public static GetResponse(): ServerResponse|undefined
 	{
@@ -50,10 +52,10 @@ class ExecutionContext
 		EXECUTION_CONTEXT.setSession(session);
 	}
 
-	// public getRequest(): Request
-	// {
-	// 	return this.request;
-	// }
+	public getRequest(): ClientRequest
+	{
+		return this.request;
+	}
 
 	public getResponse(): ServerResponse
 	{

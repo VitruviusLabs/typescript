@@ -1,8 +1,10 @@
+import type { ClientRequest } from "../ClientRequest.mjs";
+
 import type { ServerResponse } from "../ServerResponse.mjs";
 
 interface ExecutionContextInstantiationInterface
 {
-	// request: Request;
+	request: ClientRequest;
 	response: ServerResponse;
 }
 
