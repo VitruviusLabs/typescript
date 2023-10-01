@@ -11,6 +11,10 @@
 		{
 			"name": "mockingbird",
 			"path": "./packages/mockingbird"
+		},
+		{
+			"name": "vitruvius",
+			"path": "./packages/vitruvius"
 		}
 	],
 	"settings": {

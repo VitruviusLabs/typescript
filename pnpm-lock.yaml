@@ -74,6 +74,12 @@ importers:
 
   packages/ts-predicate: {}
 
+  packages/vitruvius:
+    dependencies:
+      '@vitruvius-lab/ts-predicate':
+        specifier: workspace:^
+        version: link:../ts-predicate
+
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:
