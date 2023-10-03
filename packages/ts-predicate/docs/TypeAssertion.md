@@ -171,7 +171,7 @@ Asserts that the value is an object with the property defined.
 ## IsStructuredData
 
 ```ts
-isStructuredData<T>(value: object, descriptor: StructuredDataDescriptor<T>): void
+isStructuredData<T>(value: object, descriptor: StructuredDataDescriptor<T>, options?: StructuredDataOptions): void
 ```
 
 Asserts that the value is a specifically structured data object.
@@ -207,3 +207,20 @@ isStructuredData(
 	},
 );
 ```
+
+The optional parameter `options` accepts an object described below.
+
+```ts
+interface StructuredDataOptions
+{
+	allowExtraneousProperties?: boolean;
+}
+```
+
+If `allowExtraneousProperties` is set to `true`, it'll allow properties that are not listed in the descriptor.
+
+# UnknownError
+
+When a provided callable throws anything but an instance of `Error`, an instance of `UnknownError` will be created.
+
+You can get the original thrown value from the `reason` property.

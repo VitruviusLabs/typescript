@@ -1,8 +1,8 @@
+import { toError } from "../Helper/toError.mjs";
+
 import { isRecord as guard } from "../TypeGuard/isRecord.mjs";
 
 import { buildRecordConstraints } from "../utils/buildRecordConstraints.mjs";
-
-import { buildError } from "./utils/buildError.mjs";
 
 import { itemAssertion } from "./utils/itemAssertion.mjs";
 
@@ -42,7 +42,7 @@ function isRecord<Type>(value: unknown, constraints?: RecordConstraints<Type> | 
 					ERRORS.push(
 						new Error(
 							`The property "${key}" has an incorrect value.`,
-							{ cause: buildError(error) }
+							{ cause: toError(error) }
 						)
 					);
 				}

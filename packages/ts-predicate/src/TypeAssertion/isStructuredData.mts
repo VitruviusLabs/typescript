@@ -1,8 +1,8 @@
+import { toError } from "../Helper/toError.mjs";
+
 import { buildStructuredDataOptions } from "../utils/buildStructuredDataOptions.mjs";
 
 import { isStructuredDataPropertyDescriptor } from "../utils/isStructuredDataPropertyDescriptor.mjs";
-
-import { buildError } from "./utils/buildError.mjs";
 
 import { validateProperty } from "./utils/validateProperty.mjs";
 
@@ -61,7 +61,7 @@ function isStructuredData<Type>(
 			}
 			catch (error: unknown)
 			{
-				ERRORS.push(buildError(error));
+				ERRORS.push(toError(error));
 			}
 		}
 	);

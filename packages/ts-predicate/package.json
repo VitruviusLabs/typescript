@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-lab/ts-predicate",
-	"version": "2.3.0",
+	"version": "2.4.0",
 	"description": "TypeScript predicates library",
 	"author": "Benjamin Blum <benjamin.blum.98@gmail.com>",
 	"contributors": [

@@ -1,4 +1,4 @@
-import { buildError } from "../TypeAssertion/utils/buildError.mjs";
+import { toError } from "./toError.mjs";
 
 import type { NormalizedError } from "../types/NormalizedError.mjs";
 
@@ -20,14 +20,14 @@ function getCauses(error: Error): Array<NormalizedError>
 		return error.errors.map(
 			(cause: unknown): NormalizedError =>
 			{
-				return normalizeErrorTree(buildError(cause));
+				return normalizeErrorTree(toError(cause));
 			}
 		);
 	}
 
 	if (error.cause !== undefined)
 	{
-		return [normalizeErrorTree(buildError(error.cause))];
+		return [normalizeErrorTree(toError(error.cause))];
 	}
 
 	return [];
