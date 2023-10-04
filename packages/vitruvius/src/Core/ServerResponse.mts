@@ -1,13 +1,16 @@
 // import type { IncomingMessage } from "http";
-import { ServerResponse as HTTPServerResponse } from "http";
+import { ServerResponse as HTTPServerResponse } from "node:http";
 
 import { createGzip } from "zlib";
 
+
 import type { HTTPStatusCodeEnum } from "./HTTP/HTTPStatusCodeEnum.mjs";
+
+import type { IncomingMessage } from "node:http";
 
 import type { Gzip } from "zlib";
 
-class ServerResponse extends HTTPServerResponse
+class ServerResponse<T extends IncomingMessage> extends HTTPServerResponse<T>
 {
 	private content: string = "";
 

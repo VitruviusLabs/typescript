@@ -30,9 +30,9 @@ class ClientRequest extends IncomingMessage
 	}
 
 	/**
-	 * initialize
+	 * initialise
 	 */
-	public initialize(): void
+	public initialise(): void
 	{
 		if (this.headers["content-type"] !== undefined)
 		{

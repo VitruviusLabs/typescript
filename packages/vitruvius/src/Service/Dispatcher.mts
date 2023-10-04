@@ -27,7 +27,7 @@ class Dispatcher
 	{
 		const ROOT_DIRECTORY: string = await FileSystem.ComputeRootDirectory();
 
-		await Dispatcher.ParseDirectoryForEndpoints(`${ROOT_DIRECTORY}/build/Endpoint`);
+		await Dispatcher.ParseDirectoryForEndpoints(`${ROOT_DIRECTORY}/Endpoint`);
 	}
 
 	private static IsTypeOfBaseEndpoint(value: unknown): value is typeof BaseEndpoint

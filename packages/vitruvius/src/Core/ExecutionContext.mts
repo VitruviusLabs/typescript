@@ -11,7 +11,7 @@ import type { Session } from "../Service/Session.mjs";
 class ExecutionContext
 {
 	private readonly request: ClientRequest;
-	private readonly response: ServerResponse;
+	private readonly response: ServerResponse<ClientRequest>;
 	private session?: Session;
 
 	private constructor(value: ExecutionContextInstantiationInterface)
@@ -30,7 +30,7 @@ class ExecutionContext
 		return Kernel.GetExecutionContext()?.getRequest();
 	}
 
-	public static GetResponse(): ServerResponse|undefined
+	public static GetResponse(): ServerResponse<ClientRequest>|undefined
 	{
 		return Kernel.GetExecutionContext()?.getResponse();
 	}
@@ -57,7 +57,7 @@ class ExecutionContext
 		return this.request;
 	}
 
-	public getResponse(): ServerResponse
+	public getResponse(): ServerResponse<ClientRequest>
 	{
 		return this.response;
 	}

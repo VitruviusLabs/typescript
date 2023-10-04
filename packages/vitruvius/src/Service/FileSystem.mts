@@ -27,19 +27,14 @@ class FileSystem
 		let dirname: string = "";
 		const OS_TYPE: string = os_type();
 
-		if (OS_TYPE === "Linux")
+		if (["Linux", "Darwin"].includes(OS_TYPE))
 		{
-			dirname = import.meta.url.replace(/^file:\/\/\/(.*)\/[^/]+$/, "/$1");
+			dirname = import.meta.url.replace(/^file:\/\/\/(?<path>.*)\/[^/]+$/, "/$1");
 		}
 
 		if (OS_TYPE === "Windows_NT")
 		{
-			dirname = import.meta.url.replace(/^file:\/\/\/[A-Z]:(.*)\/[^/]+$/, "$1");
-		}
-
-		if (OS_TYPE === "Darwin")
-		{
-			throw new Error("Darwin Operating System file system is not yet handled.");
+			dirname = import.meta.url.replace(/^file:\/\/\/[A-Z]:(?<path>.*)\/[^/]+$/, "$1");
 		}
 
 		if (dirname === "")
@@ -47,7 +42,7 @@ class FileSystem
 			throw new Error("Unrecognized operating system.");
 		}
 
-		dirname = await fs.realpath(`${dirname}/../../`);
+		dirname = await fs.realpath(`${dirname}/..`);
 
 		return dirname;
 	}

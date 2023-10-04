@@ -8,7 +8,7 @@
     "private": false,
     "type": "module",
     "scripts": {
-        "boot": "rm -rf build && tsc -p tsconfig.build.json && node build/index.mjs",
+        "boot": "pnpm run build && ./docker/scripts/boot.sh && docker logs -f vitruvius",
         "clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
         "compile": "tsc -p tsconfig.build.json",
         "build": "pnpm clean && pnpm compile",

@@ -20,6 +20,11 @@ abstract class Kernel
 	{
 		return this.GetContextAccessor().getStore();
 	}
+
+	public static SetExecutionContext(execution_context: ExecutionContext): void
+	{
+		this.GetContextAccessor().enterWith(execution_context);
+	}
 }
 
 export { Kernel };

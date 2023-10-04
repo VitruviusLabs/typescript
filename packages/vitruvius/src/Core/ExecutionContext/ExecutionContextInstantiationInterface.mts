@@ -5,7 +5,7 @@ import type { ServerResponse } from "../ServerResponse.mjs";
 interface ExecutionContextInstantiationInterface
 {
 	request: ClientRequest;
-	response: ServerResponse;
+	response: ServerResponse<ClientRequest>;
 }
 
 export type { ExecutionContextInstantiationInterface };
