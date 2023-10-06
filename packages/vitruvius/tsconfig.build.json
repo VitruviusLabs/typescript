@@ -1,7 +1,7 @@
 {
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"outDir": "./build",
+		"outDir": "./build/esm",
 		"declarationDir": "./build/types",
 		"rootDir": "./src",
 		"baseUrl": ".",

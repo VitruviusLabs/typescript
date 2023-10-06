@@ -24,9 +24,6 @@ import type { ServerConfigurationType } from "./Server/ServerConfigurationType.m
 
 import type { ServerInstantiationType } from "./Server/ServerInstantiationType.mjs";
 
-
-// import type { ServerConfigurationInterface } from "./Server/ServerConfigurationInterface.mjs";
-
 import type { BaseEndpoint } from "../Endpoint/BaseEndpoint.mjs";
 
 import type { RequestListener } from "http";
@@ -111,11 +108,15 @@ class Server
 
 		Kernel.SetExecutionContext(CONTEXT);
 
-		const ENDPOINTS: Array<typeof BaseEndpoint> = Dispatcher.GetEndpoints();
+		const ENDPOINTS: Map<string, typeof BaseEndpoint> = Dispatcher.GetEndpoints();
 
 		for (const endpoint of ENDPOINTS) {
-			if (new RegExp(endpoint.GetRoute()).test(request.url ?? '')) {
-				await endpoint.Execute();
+			console.debug(endpoint[0]);
+			console.debug(request.getRequestedPath());
+			console.debug(new RegExp(endpoint[0]).test(request.getRequestedPath()));
+
+			if (new RegExp(endpoint[0]).test(request.getRequestedPath())) {
+				await endpoint[1].Execute();
 
 				return;
 			}

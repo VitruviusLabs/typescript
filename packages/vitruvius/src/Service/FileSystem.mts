@@ -87,6 +87,43 @@ class FileSystem
 		return false;
 	}
 
+	public static async DirectoryExists(directory_path: string): Promise<boolean>
+	{
+		try
+		{
+			const STAT: Stats = await fs.stat(directory_path);
+
+			return STAT.isDirectory();
+		}
+		catch (error: unknown)
+		{
+			if (FileSystem.IsFileSystemError(error))
+			{
+				switch (error.code)
+				{
+					case "ENOENT":
+						return false;
+
+					case "EACCES":
+						// @TODO: Remove the use to console.
+						// eslint-disable-next-line no-console -- This is a WIP.
+						console.log(`Requested file ${directory_path} cannot be loaded. File exists but reader got denied permissions. Error code: EACCES.`);
+
+						return false;
+
+					default:
+						// @TODO: Remove the use to console.
+						// eslint-disable-next-line no-console -- This is a WIP.
+						console.log(`Requested file ${directory_path} could not be loaded due to an unhandled error. Error code: ${error.code}.`);
+
+						return false;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * ReadFile
 	 */

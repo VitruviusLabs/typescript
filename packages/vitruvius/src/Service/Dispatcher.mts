@@ -10,14 +10,24 @@ import type { Dirent } from "node:fs";
 
 class Dispatcher
 {
-	private static readonly ENDPOINTS: Array<typeof BaseEndpoint> = [];
+	private static readonly ENDPOINTS_DIRECTORIES: Array<string> = [];
+	private static readonly ENDPOINTS: Map<string, typeof BaseEndpoint> = new Map();
 
 	/**
 	 * GetEndpoints
 	 */
-	public static GetEndpoints(): Array<typeof BaseEndpoint>
+	public static GetEndpoints(): Map<string, typeof BaseEndpoint>
 	{
 		return this.ENDPOINTS;
+	}
+
+	public static async AddEndpointsDirectory(directory: string): Promise<void>
+	{
+		if (!(await FileSystem.DirectoryExists(directory))) {
+			throw new Error(`Impossible to add directory ${directory} as an endpoint directory as it does not exist.`);
+		}
+
+		this.ENDPOINTS_DIRECTORIES.push(directory);
 	}
 
 	/**
@@ -28,6 +38,10 @@ class Dispatcher
 		const ROOT_DIRECTORY: string = await FileSystem.ComputeRootDirectory();
 
 		await Dispatcher.ParseDirectoryForEndpoints(`${ROOT_DIRECTORY}/Endpoint`);
+
+		for (const directory of this.ENDPOINTS_DIRECTORIES) {
+			await Dispatcher.ParseDirectoryForEndpoints(directory);
+		}
 	}
 
 	private static IsTypeOfBaseEndpoint(value: unknown): value is typeof BaseEndpoint
@@ -64,7 +78,7 @@ class Dispatcher
 
 						if (Dispatcher.IsTypeOfBaseEndpoint(EXPORT))
 						{
-							this.ENDPOINTS.push(EXPORT);
+							this.ENDPOINTS.set(EXPORT.GetRoute(), EXPORT);
 						}
 					}
 				}

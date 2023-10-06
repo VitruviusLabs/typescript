@@ -7,7 +7,7 @@
 	"include": [
 		"./src",
 		"./test"
-	],
+, "../vitruvius-test/src/app.mts"	],
 	"exclude": [
 		"./node_modules"
 	]
