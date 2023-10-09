@@ -7,6 +7,12 @@
     "license": "MIT",
     "private": false,
     "type": "module",
+    "exports": {
+		".": {
+			"import": "./build/esm/index.mjs",
+			"types": "./build/types/index.d.mts"
+		}
+	},
     "scripts": {
         "boot": "pnpm run build && ./docker/scripts/boot.sh && docker logs -f vitruvius",
         "clean": "rm -rf reports coverage build dist lib .eslintcache tmp",

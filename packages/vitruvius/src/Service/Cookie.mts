@@ -9,11 +9,11 @@ class Cookie
 	 * a Record<string, string> of each received cookie.
 	 *
 	 * @param {string} cookies - The content of the cookie header.
-	 * @returns {Record<string, string>} - The cookies following a { name: value } format.
+	 * @returns {Map<string, string>} - The cookies returned within a Map with the key being the cookie name and the value it's content.
 	 */
-	public static Extract(cookies: string): Record<string, string>
+	public static Extract(cookies: string): Map<string, string>
 	{
-		const COOKIES: Record<string, string> = {};
+		const COOKIES: Map<string, string> = new Map<string, string>();
 
 		let matched_cookies: RegExpExecArray|null = this.EXTRACTION_REGEXP.exec(cookies);
 
@@ -32,7 +32,7 @@ class Cookie
 				break;
 			}
 
-			COOKIES[NAME] = VALUE;
+			COOKIES.set(NAME, VALUE);
 
 			matched_cookies = this.EXTRACTION_REGEXP.exec(cookies);
 		}

@@ -1,5 +1,6 @@
 export * from "./Cookie.mjs";
 export * from "./Cookie/index.mjs";
+export * from "./Dispatcher.mjs";
 export * from "./Environment.mjs";
 export * from "./Environment/index.mjs";
 export * from "./FileSystem.mjs";

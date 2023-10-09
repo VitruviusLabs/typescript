@@ -111,11 +111,12 @@ class Server
 		const ENDPOINTS: Map<string, typeof BaseEndpoint> = Dispatcher.GetEndpoints();
 
 		for (const endpoint of ENDPOINTS) {
-			console.debug(endpoint[0]);
-			console.debug(request.getRequestedPath());
-			console.debug(new RegExp(endpoint[0]).test(request.getRequestedPath()));
-
 			if (new RegExp(endpoint[0]).test(request.getRequestedPath())) {
+
+				for (const middleware of endpoint[1].GetMiddlewares()) {
+					await middleware.Execute();
+				}
+
 				await endpoint[1].Execute();
 
 				return;

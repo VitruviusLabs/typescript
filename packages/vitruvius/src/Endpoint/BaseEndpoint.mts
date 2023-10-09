@@ -6,7 +6,7 @@ abstract class BaseEndpoint
 {
 	protected static readonly METHOD: HTTPMethodEnum = HTTPMethodEnum.GET;
 	protected static readonly ROUTE: string = "/";
-	protected static readonly MIDDLEWARE?: typeof BaseMiddleware;
+	protected static readonly MIDDLEWARES: Array<typeof BaseMiddleware> = [];
 
 	public static async Execute(): Promise<void>
 	// eslint-disable-next-line @typescript-eslint/no-empty-function -- This is a dummy method that will be replaced when the class is extended.
@@ -25,9 +25,9 @@ abstract class BaseEndpoint
 	/**
 	 * GetMiddleware
 	 */
-	public static GetMiddleware(): typeof BaseMiddleware|undefined
+	public static GetMiddlewares(): Array<typeof BaseMiddleware>
 	{
-		return this.MIDDLEWARE;
+		return this.MIDDLEWARES;
 	}
 }
 

@@ -19,7 +19,7 @@ import type { SessionInstantiationInterface } from "./Session/SessionInstantiati
 class Session
 {
 	private readonly id: string;
-	private cookies: Record<string, string> = {};
+	private cookies: Map<string, string> = new Map<string, string>();
 
 	private readonly timeout: NodeJS.Timeout;
 
@@ -96,7 +96,7 @@ class Session
 	/**
 	 * getCookies
 	 */
-	public getCookies(): Record<string, string>
+	public getCookies(): Map<string, string>
 	{
 		return this.cookies;
 	}
@@ -106,13 +106,13 @@ class Session
 	 */
 	public setCookie(key: string, value: string): void
 	{
-		this.cookies[key] = value;
+		this.cookies.set(key, value);
 	}
 
 	/**
 	 * setCookies
 	 */
-	public setCookies(cookies: Record<string, string>): void
+	public setCookies(cookies: Map<string, string>): void
 	{
 		this.cookies = cookies;
 	}

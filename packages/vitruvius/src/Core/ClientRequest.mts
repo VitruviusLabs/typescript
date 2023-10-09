@@ -20,6 +20,7 @@ class ClientRequest extends IncomingMessage
 	// private readonly headers: IncomingHttpHeaders;
 	private contentType: string = "";
 	private boundary: string = "";
+	private cookies: Map<string, string> = new Map<string, string>();
 
 	/**
 	 * getRawBody
@@ -308,6 +309,41 @@ class ClientRequest extends IncomingMessage
 	public getRequest(): ParsedUrlQuery
 	{
 		return this.request;
+	}
+
+	/**
+	 * setCookie
+	 */
+	public setCookie(key: string, value: string): void {
+		this.cookies.set(key, value);
+	}
+
+	/**
+	 * getCookie
+	 */
+	public getCookie(key: string): string|undefined {
+		return this.cookies.get(key);
+	}
+
+	/**
+	 * setCookies
+	 */
+	public setCookies(cookies: Record<string, string>|Map<string, string>): void {
+		if (cookies instanceof Map) {
+			this.cookies = cookies;
+			return;
+		}
+
+		for (const [key, value] of Object.entries(cookies)) {
+			this.cookies.set(key, value);
+		}
+	}
+
+	/**
+	 * getCookies
+	 */
+	public getCookies(): Map<string, string> {
+		return this.cookies;
 	}
 }
 

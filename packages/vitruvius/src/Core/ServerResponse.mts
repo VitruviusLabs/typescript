@@ -1,14 +1,14 @@
-// import type { IncomingMessage } from "http";
 import { ServerResponse as HTTPServerResponse } from "node:http";
 
 import { createGzip } from "zlib";
-
 
 import type { HTTPStatusCodeEnum } from "./HTTP/HTTPStatusCodeEnum.mjs";
 
 import type { IncomingMessage } from "node:http";
 
 import type { Gzip } from "zlib";
+import { Session } from "../Service/Session.mjs";
+import { ExecutionContext } from "./ExecutionContext.mjs";
 
 class ServerResponse<T extends IncomingMessage> extends HTTPServerResponse<T>
 {
@@ -20,6 +20,20 @@ class ServerResponse<T extends IncomingMessage> extends HTTPServerResponse<T>
 	public send(content?: Buffer | string | undefined): void
 	{
 		this.setHeader("Content-Encoding", "gzip");
+
+		const session: Session|undefined = ExecutionContext.GetSession();
+
+		if (session !== undefined) {
+			const cookies: Map<string, string> = session.getCookies();
+
+			const cookiesArray: Array<string> = [];
+
+			for (const [cookiesName, cookiesValue] of cookies) {
+				cookiesArray.push(`${cookiesName}=${cookiesValue}`);
+			}
+
+			this.setHeader("Set-Cookie", cookiesArray);
+		}
 
 		// @TODO: Make response compression great again
 		const ENCODER: Gzip = createGzip();
