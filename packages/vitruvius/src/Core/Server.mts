@@ -17,7 +17,6 @@ import { Kernel } from "./Kernel.mjs";
 
 import { PortsEnum } from "./Server/PortsEnum.mjs";
 
-
 import { ServerResponse as VitruviusResponse } from "./ServerResponse.mjs";
 
 import type { ServerConfigurationType } from "./Server/ServerConfigurationType.mjs";
@@ -27,9 +26,12 @@ import type { ServerInstantiationType } from "./Server/ServerInstantiationType.m
 import type { BaseEndpoint } from "../Endpoint/BaseEndpoint.mjs";
 
 import type { RequestListener } from "http";
+// import { ReadStream } from "node:fs";
 
 class Server
 {
+	private static readonly PUBLIC_DIRECTORIES: Map<string, string> = new Map<string, string>();
+
 	private port: number = PortsEnum.DEFAULT_HTTPS;
 	private readonly https: boolean = false;
 	private readonly server: HTTPServer|HTTPSServer;
@@ -106,6 +108,24 @@ class Server
 			}
 		);
 
+		for (const [route, directory] of this.PUBLIC_DIRECTORIES) {
+			const ROUTE_REGEXP: RegExp = new RegExp(route);
+
+			if (ROUTE_REGEXP.exec(request.getRequestedPath()) !== null) {
+				const FILE_PATH: string = request.getRequestedPath().replace(ROUTE_REGEXP, "").padStart(1, "/");
+
+				if (!(await FileSystem.FileExists(`${directory}${FILE_PATH}`))) {
+					continue;
+				}
+
+				const FILE: Buffer = await FileSystem.ReadFileAsBuffer(`${directory}${FILE_PATH}`);
+
+				CONTEXT.getResponse().send(FILE);
+
+				return;
+			}
+		}
+
 		Kernel.SetExecutionContext(CONTEXT);
 
 		const ENDPOINTS: Map<string, typeof BaseEndpoint> = Dispatcher.GetEndpoints();
@@ -126,6 +146,33 @@ class Server
 		response.statusCode = HTTPStatusCodeEnum.NOT_FOUND;
 		response.write("Not found.");
 		response.end();
+	}
+
+	public static GetPublicDirectories(): Map<string, string>
+	{
+		return this.PUBLIC_DIRECTORIES;
+	}
+
+	/**
+	 * AddPublicDirectory
+	 */
+	public static async AddPublicDirectory(directory: string, route: string): Promise<void>
+	{
+		if (!(await FileSystem.DirectoryExists(directory))) {
+			throw new Error(`Impossible to add directory ${directory} as a public directory as it does not exist.`);
+		}
+
+		this.PUBLIC_DIRECTORIES.set(route, directory);
+	}
+
+	/**
+	 * SetPublicDirectories
+	 */
+	public static async SetPublicDirectories(directories: Map<string, string>): Promise<void>
+	{
+		for (const directory of directories) {
+			await this.AddPublicDirectory(directory[1], directory[0]);
+		}
 	}
 
 	/**

@@ -160,7 +160,7 @@ class ClientRequest extends IncomingMessage
 					{
 						if (index !== 0 && index < PARTS.length - 1)
 						{
-							const NAME_MATCHES: RegExpExecArray|null = /name="([^"]+)";?\s+/i.exec(part);
+							const NAME_MATCHES: RegExpExecArray|null = /name="(?<name>[^"]+)";?\s+/i.exec(part);
 							let name: string = "";
 
 							if (NAME_MATCHES !== null && NAME_MATCHES[1] !== undefined)
@@ -168,7 +168,7 @@ class ClientRequest extends IncomingMessage
 								name = NAME_MATCHES[1].trim();
 							}
 
-							const FILENAME_MATCHES: RegExpExecArray|null = /filename="([^\n]+)";?\s+/i.exec(part);
+							const FILENAME_MATCHES: RegExpExecArray|null = /filename="(?<filename>[^\n]+)";?\s+/i.exec(part);
 							let filename: string = "";
 
 							if (FILENAME_MATCHES !== null && FILENAME_MATCHES[1] !== undefined)
@@ -176,12 +176,12 @@ class ClientRequest extends IncomingMessage
 								filename = FILENAME_MATCHES[1].trim();
 							}
 
-							const CONTENT_TYPE_MATCHES: RegExpExecArray|null = /Content-Type: ([^\s]+)\s+/i.exec(part);
+							const CONTENT_TYPE_MATCHES: RegExpExecArray|null = /Content-Type: (?<contentType>[^\s]+)\s+/i.exec(part);
 							let content_type: string = "";
 
-							if (CONTENT_TYPE_MATCHES !== null && CONTENT_TYPE_MATCHES[1] !== undefined)
+							if (CONTENT_TYPE_MATCHES !== null && CONTENT_TYPE_MATCHES.groups?.['contentType'] !== undefined)
 							{
-								content_type = CONTENT_TYPE_MATCHES[1].trim();
+								content_type = CONTENT_TYPE_MATCHES.groups['contentType'].trim();
 							}
 
 							// Splitting on double Carriage Return + Line Feed is the distinctive point between preamble and content.
@@ -328,9 +328,10 @@ class ClientRequest extends IncomingMessage
 	/**
 	 * setCookies
 	 */
-	public setCookies(cookies: Record<string, string>|Map<string, string>): void {
+	public setCookies(cookies: Map<string, string> | Record<string, string>): void {
 		if (cookies instanceof Map) {
 			this.cookies = cookies;
+
 			return;
 		}
 

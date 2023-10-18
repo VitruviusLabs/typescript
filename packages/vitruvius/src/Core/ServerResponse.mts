@@ -2,13 +2,15 @@ import { ServerResponse as HTTPServerResponse } from "node:http";
 
 import { createGzip } from "zlib";
 
+import { ExecutionContext } from "./ExecutionContext.mjs";
+
 import type { HTTPStatusCodeEnum } from "./HTTP/HTTPStatusCodeEnum.mjs";
+
+import type { Session } from "../Service/Session.mjs";
 
 import type { IncomingMessage } from "node:http";
 
 import type { Gzip } from "zlib";
-import { Session } from "../Service/Session.mjs";
-import { ExecutionContext } from "./ExecutionContext.mjs";
 
 class ServerResponse<T extends IncomingMessage> extends HTTPServerResponse<T>
 {

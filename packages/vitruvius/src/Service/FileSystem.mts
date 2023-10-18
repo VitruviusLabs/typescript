@@ -1,10 +1,10 @@
-import { promises as fs } from "fs";
+import { createReadStream , promises as fs } from "fs";
 
 import { type as os_type } from "os";
 
 import type { FileSystemErrorInterface } from "./FileSystem/FileSystemErrorInterface.mjs";
 
-import type { Dirent, Stats } from "fs";
+import type { Dirent, ReadStream, Stats } from "fs";
 
 import type { FileHandle } from "fs/promises";
 
@@ -154,6 +154,13 @@ class FileSystem
 		}
 
 		return FILE;
+	}
+
+	public static ReadFileAsStream(file_path: string): ReadStream
+	{
+		const STREAM: ReadStream = createReadStream(file_path);
+
+		return STREAM;
 	}
 
 	/**
