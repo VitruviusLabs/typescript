@@ -1,6 +1,7 @@
 class Cookie
 {
 	private static readonly EXTRACTION_REGEXP: RegExp = / ?(?<name>[^=]+)=(?<value>[^;]+);?/g;
+	private static readonly COOKIE_NAME_PREFIX: string = 'vitruvius';
 
 	/**
 	 * Extract
@@ -38,6 +39,10 @@ class Cookie
 		}
 
 		return COOKIES;
+	}
+
+	public static GetCookieNamePrefix(): string {
+		return this.COOKIE_NAME_PREFIX;
 	}
 }
 

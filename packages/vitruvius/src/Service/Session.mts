@@ -6,9 +6,12 @@ import { MillisecondEnum } from "../Core/Time/MillisecondEnum.mjs";
 
 // import { CookieEnum } from "./Cookie/CookieEnum.mjs";
 
-import { Environment } from "./Environment.mjs";
 
 // import { Logger } from "./Logger.mjs";
+
+import { Cookie } from "./Cookie.mjs";
+
+import { SessionEnum } from "./Session/SessionEnum.mjs";
 
 import { SessionManager } from "./SessionManager.mjs";
 
@@ -18,6 +21,9 @@ import type { SessionInstantiationInterface } from "./Session/SessionInstantiati
 
 class Session
 {
+	private static readonly Duration: number = SessionEnum.DEFAULT_DURATION;
+	private static CookieNameScope: string = "session";
+
 	private readonly id: string;
 	private cookies: Map<string, string> = new Map<string, string>();
 
@@ -32,7 +38,7 @@ class Session
 			{
 				this.close();
 			},
-			Environment.GetUserSessionDuration() * MillisecondEnum.SECOND
+			Session.Duration * MillisecondEnum.SECOND
 		);
 	}
 
@@ -57,6 +63,27 @@ class Session
 	public static GetById(id: string): Session|undefined
 	{
 		return SessionManager.GetSession(id);
+	}
+
+	/**
+	 * GetCookieNameScope
+	 */
+	public static GetCookieNameScope(): string
+	{
+		return this.CookieNameScope;
+	}
+
+	/**
+	 * SetCookieNameScope
+	 */
+	public static SetCookieNameScope(scope: string): void
+	{
+		this.CookieNameScope = scope;
+	}
+
+	public static GetFullCookieName(): string
+	{
+		return `${Cookie.GetCookieNamePrefix()}:${Session.CookieNameScope}`;
 	}
 
 	/**

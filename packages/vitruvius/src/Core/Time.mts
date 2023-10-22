@@ -19,12 +19,12 @@ class Time extends Date
 		const RAW_MINUTES: number = this.getUTCMinutes();
 		const RAW_SECONDS: number = this.getUTCSeconds();
 
-		output = output.replace(/Y/g, RAW_YEAR.toString());
-		output = output.replace(/m/g, RAW_MONTH.toString().padStart(TimeFormattingEnum.DEFAULT_PAD_LENGTH, "0"));
-		output = output.replace(/d/g, RAW_DAY.toString().padStart(TimeFormattingEnum.DEFAULT_PAD_LENGTH, "0"));
-		output = output.replace(/H/g, RAW_HOURS.toString().padStart(TimeFormattingEnum.DEFAULT_PAD_LENGTH, "0"));
-		output = output.replace(/i/g, RAW_MINUTES.toString().padStart(TimeFormattingEnum.DEFAULT_PAD_LENGTH, "0"));
-		output = output.replace(/s/g, RAW_SECONDS.toString().padStart(TimeFormattingEnum.DEFAULT_PAD_LENGTH, "0"));
+		output = output.replaceAll(/Y/g, RAW_YEAR.toString());
+		output = output.replaceAll(/m/g, RAW_MONTH.toString().padStart(TimeFormattingEnum.DEFAULT_PAD_LENGTH, "0"));
+		output = output.replaceAll(/d/g, RAW_DAY.toString().padStart(TimeFormattingEnum.DEFAULT_PAD_LENGTH, "0"));
+		output = output.replaceAll(/H/g, RAW_HOURS.toString().padStart(TimeFormattingEnum.DEFAULT_PAD_LENGTH, "0"));
+		output = output.replaceAll(/i/g, RAW_MINUTES.toString().padStart(TimeFormattingEnum.DEFAULT_PAD_LENGTH, "0"));
+		output = output.replaceAll(/s/g, RAW_SECONDS.toString().padStart(TimeFormattingEnum.DEFAULT_PAD_LENGTH, "0"));
 
 		return output;
 	}

@@ -14,9 +14,9 @@ describe(
 			{
 				it(
 					"should exist but do nothing when called",
-					async (): Promise<void> =>
+					(): void =>
 					{
-						await assert.doesNotReject(BaseEndpoint.Execute());
+						assert.doesNotThrow(BaseEndpoint.Execute);
 					}
 				);
 			}

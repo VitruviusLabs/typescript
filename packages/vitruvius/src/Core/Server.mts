@@ -7,6 +7,8 @@ import { Dispatcher } from "../Service/Dispatcher.mjs";
 
 import { FileSystem } from "../Service/FileSystem.mjs";
 
+import { Logger } from "../Service/Logger.mjs";
+
 import { ClientRequest } from "./ClientRequest.mjs";
 
 import { ExecutionContext } from "./ExecutionContext.mjs";
@@ -26,7 +28,6 @@ import type { ServerInstantiationType } from "./Server/ServerInstantiationType.m
 import type { BaseEndpoint } from "../Endpoint/BaseEndpoint.mjs";
 
 import type { RequestListener } from "http";
-// import { ReadStream } from "node:fs";
 
 class Server
 {
@@ -46,12 +47,15 @@ class Server
 
 		if (options.https) {
 
-			this.server = new HTTPSServer({
-				cert: options.certificate,
-				key: options.key,
-				IncomingMessage: ClientRequest,
-				ServerResponse: VitruviusResponse
-			}, listener);
+			this.server = new HTTPSServer(
+				{
+					cert: options.certificate,
+					key: options.key,
+					IncomingMessage: ClientRequest,
+					ServerResponse: VitruviusResponse
+				},
+				listener
+			);
 
 			return;
 		}
@@ -61,25 +65,26 @@ class Server
 				IncomingMessage: ClientRequest,
 				ServerResponse: VitruviusResponse
 			},
-			listener);
+			listener
+		);
 	}
 
 	/**
 	 * Create
 	 */
-	// public static async Create(configuration?: ServerConfigurationInterface|undefined): Promise<Server>
 	public static async Create(options: ServerConfigurationType): Promise<Server>
 	{
 		if (options.https) {
 			const certificate: string = await FileSystem.ReadTextFile(options.certificate);
 			const key: string = await FileSystem.ReadTextFile(options.key);
-			const HTTPS_SERVER: Server = new Server({
-				...options,
-				certificate: certificate,
-				key: key
-			},
-			// @ts-expect-error - This is a very specific case where TypeScript cannot know that Node.JS will use our custom class instead of IncomingMessage.
-			this.DefaultListener.bind(this)
+			const HTTPS_SERVER: Server = new Server(
+				{
+					...options,
+					certificate: certificate,
+					key: key
+				},
+				// @ts-expect-error - This is a very specific case where TypeScript cannot know that Node.JS will use our custom class instead of IncomingMessage.
+				this.DefaultListener.bind(this)
 			);
 
 			return HTTPS_SERVER;
@@ -181,8 +186,7 @@ class Server
 	public start(): void
 	{
 		this.server.listen(this.port);
-		// eslint-disable-next-line no-console -- @TODO: Change this to a logger.
-		console.log("Server started.");
+		Logger.Informational("Server started.");
 	}
 
 	public getHTTPS(): boolean

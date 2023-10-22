@@ -1,10 +1,13 @@
 import { TypeGuard } from "@vitruvius-lab/ts-predicate";
 
-import { BaseEndpoint } from "../Endpoint/BaseEndpoint.mjs";
+
+import { isBaseEndpoint } from "./Dispatcher/isBaseEndpoint.mjs";
 
 import { FileSystem } from "./FileSystem.mjs";
 
 import { Logger } from "./Logger.mjs";
+
+import type { BaseEndpoint } from "../Endpoint/BaseEndpoint.mjs";
 
 import type { Dirent } from "node:fs";
 
@@ -44,11 +47,6 @@ class Dispatcher
 		}
 	}
 
-	private static IsTypeOfBaseEndpoint(value: unknown): value is typeof BaseEndpoint
-	{
-		return value instanceof Function && value.prototype instanceof BaseEndpoint && value !== BaseEndpoint;
-	}
-
 	// @TODO: Refactor the cognitive complexity.
 	// eslint-disable-next-line sonarjs/cognitive-complexity -- This is a temporary solution.
 	private static async ParseDirectoryForEndpoints(directory: string): Promise<void>
@@ -76,7 +74,7 @@ class Dispatcher
 						const KEY: string = ENTITY.name.replace(/\..*$/, "");
 						const EXPORT: unknown = CONTENT[KEY];
 
-						if (Dispatcher.IsTypeOfBaseEndpoint(EXPORT))
+						if (isBaseEndpoint(EXPORT))
 						{
 							this.ENDPOINTS.set(EXPORT.GetRoute(), EXPORT);
 						}
