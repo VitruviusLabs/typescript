@@ -7,6 +7,7 @@ abstract class BaseEndpoint
 	protected static readonly METHOD: HTTPMethodEnum = HTTPMethodEnum.GET;
 	protected static readonly ROUTE: string = "/";
 	protected static readonly MIDDLEWARES: Array<typeof BaseMiddleware> = [];
+	protected static readonly EXCLUDED_MIDDLEWARES: Array<typeof BaseMiddleware> = [];
 
 	public static async Execute(): Promise<void>
 	// eslint-disable-next-line @typescript-eslint/no-empty-function -- This is a dummy method that will be replaced when the class is extended.
@@ -28,6 +29,13 @@ abstract class BaseEndpoint
 	public static GetMiddlewares(): Array<typeof BaseMiddleware>
 	{
 		return this.MIDDLEWARES;
+	}
+
+	/**
+	 * GetExcludedMiddlewares
+	 */
+	public static GetExcludedMiddlewares(): Array<typeof BaseMiddleware> {
+		return this.EXCLUDED_MIDDLEWARES;
 	}
 }
 

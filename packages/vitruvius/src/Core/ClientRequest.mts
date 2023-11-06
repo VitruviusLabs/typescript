@@ -1,9 +1,12 @@
-// import type { Socket } from "net";
 import { IncomingMessage } from "node:http";
 
 import { parse as parseQuery } from "node:querystring";
 
-import type { ClientRequestFileInterface } from "./ClientRequest/ClientRequestFileInterface.mjs";
+import { TypeAssertion } from "packages/ts-predicate/build/types/index.mjs";
+
+import { Logger } from "../index.mjs";
+
+import { ContentTypeEnum } from "./HTTP/ContentTypeEnum.js";
 
 import type { IncomingHttpHeaders } from "node:http";
 
@@ -14,10 +17,9 @@ class ClientRequest extends IncomingMessage
 	private requestedPath: string = "";
 	private pathFragments: Array<string> = [];
 	private query: ParsedUrlQuery = {};
-	private request: ParsedUrlQuery = {};
-	private rawBody: string = "";
-	private body: Record<string, unknown>|string = "";
-	// private readonly headers: IncomingHttpHeaders;
+	private readonly request: ParsedUrlQuery = {};
+	private rawBody: Buffer = Buffer.from("");
+	private readonly body: Record<string, unknown>|string = "";
 	private contentType: string = "";
 	private boundary: string = "";
 	private cookies: Map<string, string> = new Map<string, string>();
@@ -25,8 +27,12 @@ class ClientRequest extends IncomingMessage
 	/**
 	 * getRawBody
 	 */
-	public getRawBody(): string
+	public async getRawBody(): Promise<Buffer>
 	{
+		if (!this.complete) {
+			this.rawBody = await this.listenForContent();
+		}
+
 		return this.rawBody;
 	}
 
@@ -39,7 +45,7 @@ class ClientRequest extends IncomingMessage
 		{
 			this.contentType = this.headers["content-type"];
 
-			if (this.contentType.includes("multipart/form-data;"))
+			if (this.contentType.includes(ContentTypeEnum.MULTIPART_FORM_DATA))
 			{
 				const SPLITTED_CONTENT_TYPE: Array<string> = this.contentType.split("=");
 
@@ -49,10 +55,10 @@ class ClientRequest extends IncomingMessage
 				}
 				else
 				{
-					//TODO Log the error of received header
+					Logger.Warning(`Received invalid multipart/form-data header: ${this.contentType}.`);
 				}
 
-				this.contentType = "multipart/form-data";
+				this.contentType = ContentTypeEnum.MULTIPART_FORM_DATA;
 			}
 		}
 
@@ -75,33 +81,41 @@ class ClientRequest extends IncomingMessage
 			this.query = parseQuery(SPLITTED_URL[1]);
 		}
 
-		let path_fragments: Array<string> = this.requestedPath.split("/");
+		const pathFragments: Array<string> = [];
+		const splittedRequestedPath: Array<string> = this.requestedPath.split("/");
 
-		path_fragments = path_fragments.filter(
-			(value: string): boolean =>
+		for (const fragment of splittedRequestedPath)
+		{
+			if (fragment.length === 0)
 			{
-				return value.length !== 0;
+				continue;
 			}
-		);
 
-		this.pathFragments = path_fragments;
+			pathFragments.push(fragment);
+		}
+
+		this.pathFragments = pathFragments;
 	}
 
 	/**
 	 * listenForContent
 	 */
-	public async listenForContent(): Promise<string>
+	public async listenForContent(): Promise<Buffer>
 	{
+		if (this.complete) {
+			return this.rawBody;
+		}
+
 		return await new Promise(
-			(resolve: (value: PromiseLike<string> | string) => void): void =>
+			(resolve: (value: Buffer) => void): void =>
 			{
-				let body: string = "";
+				let body: Buffer = Buffer.from('');
 
 				this.addListener(
 					"data",
 					(chunk: Buffer): void =>
 					{
-						body += chunk.toString("binary");
+						body = Buffer.concat([body, chunk]);
 					}
 				);
 
@@ -109,6 +123,7 @@ class ClientRequest extends IncomingMessage
 					"end",
 					(): void =>
 					{
+						this.complete = true;
 						resolve(body);
 					}
 				);
@@ -117,115 +132,28 @@ class ClientRequest extends IncomingMessage
 	}
 
 	/**
-	 * setRawBody
-	 */
-    // @TODO: Reduce the cognitive complexity by separating the processes in sub methods.
-    // eslint-disable-next-line sonarjs/cognitive-complexity -- This is a temporary solution.
-	public setRawBody(value: string): void
-	{
-		this.rawBody = value;
-
-		switch (this.getContentType())
-		{
-			case "application/json":
-
-				try
-				{
-					this.body = JSON.parse(this.rawBody) as Record<string, unknown>;
-				}
-				catch
-				{
-					//TODO: Add error log here
-				}
-
-			break;
-
-			case "application/x-www-form-urlencoded":
-
-				this.request = parseQuery(this.rawBody);
-
-			break;
-
-			case "multipart/form-data":
-
-                // @TODO: This needs to be investigated ASAP as it is not working at all and the logic is not ideal
-                // since we are waiting for the full content whilst we may need to pipe the stream.
-                // eslint-disable-next-line no-case-declarations -- This is a temporary solution.
-				const PARTS: Array<string> = this.rawBody.split(this.boundary);
-                // eslint-disable-next-line no-case-declarations, sonarjs/no-unused-collection -- This is a temporary solution.
-				const FILES: Array<ClientRequestFileInterface> = [];
-
-				PARTS.forEach(
-					(part: string, index: number): void =>
-					{
-						if (index !== 0 && index < PARTS.length - 1)
-						{
-							const NAME_MATCHES: RegExpExecArray|null = /name="(?<name>[^"]+)";?\s+/i.exec(part);
-							let name: string = "";
-
-							if (NAME_MATCHES !== null && NAME_MATCHES[1] !== undefined)
-							{
-								name = NAME_MATCHES[1].trim();
-							}
-
-							const FILENAME_MATCHES: RegExpExecArray|null = /filename="(?<filename>[^\n]+)";?\s+/i.exec(part);
-							let filename: string = "";
-
-							if (FILENAME_MATCHES !== null && FILENAME_MATCHES[1] !== undefined)
-							{
-								filename = FILENAME_MATCHES[1].trim();
-							}
-
-							const CONTENT_TYPE_MATCHES: RegExpExecArray|null = /Content-Type: (?<contentType>[^\s]+)\s+/i.exec(part);
-							let content_type: string = "";
-
-							if (CONTENT_TYPE_MATCHES !== null && CONTENT_TYPE_MATCHES.groups?.['contentType'] !== undefined)
-							{
-								content_type = CONTENT_TYPE_MATCHES.groups['contentType'].trim();
-							}
-
-							// Splitting on double Carriage Return + Line Feed is the distinctive point between preamble and content.
-							const SPLITTED_PART: Array<string> = part.split("\r\n\r\n");
-
-							if (SPLITTED_PART[1] === undefined)
-							{
-								throw new Error("Invalid multipart/form-data body received.");
-							}
-
-							if (filename === "")
-							{
-								this.request[name] = SPLITTED_PART[1];
-							}
-							else
-							{
-								FILES.push(
-									{
-										name: filename,
-										mimeType: content_type,
-										content: SPLITTED_PART[1]
-									}
-								);
-							}
-						}
-					}
-				);
-
-			break;
-
-			default:
-
-				this.body = this.rawBody;
-
-			break;
-		}
-	}
-
-	/**
 	 * getBody
 	 */
 	public getBody(): Record<string, unknown>|string
 	{
 		return this.body;
+	}
+
+	public async getBodyAsString(): Promise<string> {
+		const rawBody: Buffer = await this.getRawBody();
+		const bodyAsString: string = rawBody.toString();
+
+		return bodyAsString;
+	}
+
+	public async getBodyAsJSON(): Promise<Record<string, unknown>>
+	{
+		const bodyAsString: string = await this.getBodyAsString();
+		const json: unknown = JSON.parse(bodyAsString);
+
+		TypeAssertion.isRecord(json);
+
+		return json;
 	}
 
 	/**

@@ -9,6 +9,7 @@ import { FileSystem } from "../Service/FileSystem.mjs";
 
 import { Logger } from "../Service/Logger.mjs";
 
+
 import { ClientRequest } from "./ClientRequest.mjs";
 
 import { ExecutionContext } from "./ExecutionContext.mjs";
@@ -27,11 +28,14 @@ import type { ServerInstantiationType } from "./Server/ServerInstantiationType.m
 
 import type { BaseEndpoint } from "../Endpoint/BaseEndpoint.mjs";
 
+import type { BaseMiddleware } from "../index.mjs";
+
 import type { RequestListener } from "http";
 
 class Server
 {
 	private static readonly PUBLIC_DIRECTORIES: Map<string, string> = new Map<string, string>();
+	private static readonly GLOBAL_MIDDLEWARES: Array<typeof BaseMiddleware> = [];
 
 	private port: number = PortsEnum.DEFAULT_HTTPS;
 	private readonly https: boolean = false;
@@ -99,12 +103,10 @@ class Server
 		return HTTP_SERVER;
 	}
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity -- @TODO: Refactor this method.
 	public static async DefaultListener(request: ClientRequest, response: VitruviusResponse<ClientRequest>): Promise<void>
 	{
 		request.initialise();
-		const requestBody: string = await request.listenForContent();
-
-		request.setRawBody(requestBody);
 
 		const CONTEXT: ExecutionContext = ExecutionContext.Create(
 			{
@@ -137,6 +139,15 @@ class Server
 
 		for (const endpoint of ENDPOINTS) {
 			if (new RegExp(endpoint[0]).test(request.getRequestedPath())) {
+
+				for (const middleware of this.GLOBAL_MIDDLEWARES) {
+
+					if (endpoint[1].GetExcludedMiddlewares().includes(middleware)) {
+						continue;
+					}
+
+					await middleware.Execute();
+				}
 
 				for (const middleware of endpoint[1].GetMiddlewares()) {
 					await middleware.Execute();
@@ -178,6 +189,11 @@ class Server
 		for (const directory of directories) {
 			await this.AddPublicDirectory(directory[1], directory[0]);
 		}
+	}
+
+	public static AddGlobalMiddleware(middleware: typeof BaseMiddleware): void
+	{
+		this.GLOBAL_MIDDLEWARES.push(middleware);
 	}
 
 	/**

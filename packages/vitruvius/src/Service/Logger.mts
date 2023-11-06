@@ -2,6 +2,8 @@ import { Time } from "../Core/Time.mjs";
 
 import { LogLevelEnum } from "./Logger/LogLevelEnum.mjs";
 
+import { StackTraceParser } from "./Logger/StackTraceParser.mjs";
+
 class Logger
 {
 	/**
@@ -10,10 +12,8 @@ class Logger
 	public static Write(level: LogLevelEnum, message: string): void
 	{
 		const LEVEL: string = level.toUpperCase();
-
 		const DATE: Time = new Time();
 		const FORMATTED_DATE: string = DATE.format("Y-m-d H:i:s");
-
 		const LOG_LINE: string = `[${FORMATTED_DATE}] [${LEVEL}] - ${message}\n`;
 
 		// eslint-disable-next-line no-console -- This is a logger, it should log to the console.
@@ -30,16 +30,13 @@ class Logger
 			throw new Error("Logger.logError can only handle Error and it's derivates.");
 		}
 
-		let stack: string = "";
+		const stackTraceParser: StackTraceParser = new StackTraceParser(error);
+		const formattedStackTrace: Array<string> = stackTraceParser.getStackTraceAsTable();
 
-		if (error.stack !== undefined)
+		for (const line of formattedStackTrace)
 		{
-			stack = error.stack;
+			this.Error(line);
 		}
-
-		const MESSAGE: string = `An error occurred!\n-------------------------\nMessage: "${error.message}"\nStack trace:\n${stack}\n-------------------------`;
-
-		this.Error(MESSAGE);
 	}
 
 	/**

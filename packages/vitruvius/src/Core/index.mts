@@ -1,5 +1,4 @@
 export * from "./ClientRequest.mjs";
-export * from "./ClientRequest/index.mjs";
 export * from "./ExecutionContext.mjs";
 export * from "./ExecutionContext/index.mjs";
 export * from "./Executor.mjs";

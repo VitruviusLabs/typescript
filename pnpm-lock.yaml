@@ -80,6 +80,15 @@ importers:
         specifier: workspace:^
         version: link:../ts-predicate
 
+  packages/vitruvius-test:
+    dependencies:
+      '@vitruvius-lab/ts-predicate':
+        specifier: workspace:^
+        version: link:../ts-predicate
+      '@vitruvius-lab/vitruvius':
+        specifier: workspace:^
+        version: link:../vitruvius
+
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:

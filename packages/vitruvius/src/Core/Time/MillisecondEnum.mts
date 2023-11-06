@@ -1,12 +1,10 @@
 const enum MillisecondEnum
-// Eslint does not understand const enum and interprets it as a variable declaration in constant context.
- 
 {
-	SECOND = 1000,
-	MINUTE = 60000,
-	HOUR = 3600000,
-	DAY = 86400000,
-	WEEK = 604800000
+	SECOND = 1_000,
+	MINUTE = 60_000,
+	HOUR = 3_600_000,
+	DAY = 86_400_000,
+	WEEK = 604_800_000
 }
 
 export { MillisecondEnum };

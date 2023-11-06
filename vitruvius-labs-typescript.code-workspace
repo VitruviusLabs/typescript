@@ -15,6 +15,10 @@
 		{
 			"name": "vitruvius",
 			"path": "./packages/vitruvius"
+		},
+		{
+			"name": "vitruvius-test",
+			"path": "./packages/vitruvius-test"
 		}
 	],
 	"settings": {
