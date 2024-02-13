@@ -1,18 +1,18 @@
 {
-    "name": "@vitruvius-lab/vitruvius",
+    "name": "@vitruvius-lab/architectura",
     "version": "0.1.0",
     "description": "A light weight strongly typed Node.JS framework providing isolated context for each request.",
     "main": "build/index.js",
-    "author": "Nicolas \"SmashingQuasar\" Cordier-Cerezo (nicolas.cordier@outlook.com)",
+    "author": "Nicolas \"SmashingQuasar\" Lebacq (contact@vitruvius-labs.com)",
     "license": "MIT",
     "private": false,
     "type": "module",
     "exports": {
-		".": {
-			"import": "./build/esm/index.mjs",
-			"types": "./build/types/index.d.mts"
-		}
-	},
+        ".": {
+            "import": "./build/esm/index.mjs",
+            "types": "./build/types/index.d.mts"
+        }
+    },
     "scripts": {
         "boot": "pnpm run build && ./docker/scripts/boot.sh && docker logs -f vitruvius",
         "clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
