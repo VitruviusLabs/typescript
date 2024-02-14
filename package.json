@@ -3,9 +3,9 @@
 	"name": "typescript",
 	"version": "0.1.0",
 	"private": true,
-	"description": "The VitruviusLab mono-repository for TypeScript development.",
+	"description": "The VitruviusLabs mono-repository for TypeScript development.",
 	"author": {
-		"name": "VitruviusLab"
+		"name": "VitruviusLabs"
 	},
 	"contributors": [
 		"Nicolas Cordier-Cerezo <nicolas.cordier@outlook.com>",

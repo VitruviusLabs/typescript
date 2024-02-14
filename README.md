@@ -1,1 +1,1 @@
-# VitruviusLab - TypeScript
+# VitruviusLabs - TypeScript
