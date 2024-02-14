@@ -1,4 +1,4 @@
-import { deepStrictEqual, doesNotThrow, throws } from "assert";
+import { deepStrictEqual, doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 

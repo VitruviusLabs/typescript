@@ -1,4 +1,4 @@
-import { doesNotThrow, throws } from "assert";
+import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 

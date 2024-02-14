@@ -12,6 +12,17 @@ import type { MockedDependency } from "../Type/MockedDependency.mjs";
 
 import type { MockingInfos } from "../Type/MockingInfos.mjs";
 
+interface ConvertTextOptions
+{
+	from: BufferEncoding;
+	to: BufferEncoding;
+}
+
+function convertText(data: string, options: ConvertTextOptions): string
+{
+	return Buffer.from(data, options.from).toString(options.to);
+}
+
 function encodeInfos(module_identifier: string, meta_url: string, mocks: Record<string, MockedDependency>): string
 {
 	const TOKEN: string = randomUUID();
@@ -21,7 +32,7 @@ function encodeInfos(module_identifier: string, meta_url: string, mocks: Record<
 	Object.keys(mocks).forEach(
 		(dependency_identifier: string): void =>
 		{
-			const ABSOLUTE_DEPENDENCY_IDENTIFIER: string = resolveModuleIdentifier(dependency_identifier, meta_url);
+			const ABSOLUTE_DEPENDENCY_IDENTIFIER: string = resolveModuleIdentifier(dependency_identifier, ABSOLUTE_MODULE_IDENTIFIER);
 			const MOCKED_DEPENDENCY: unknown = mocks[dependency_identifier];
 
 			isMockedDependency(MOCKED_DEPENDENCY, dependency_identifier);
@@ -37,12 +48,16 @@ function encodeInfos(module_identifier: string, meta_url: string, mocks: Record<
 		dependencyIdentifiers: DEPENDENCY_IDENTIFIERS,
 	};
 
-	return Buffer.from(JSON.stringify(INFOS), "utf-8").toString("base64");
+	const JSON_ENCODED: string = JSON.stringify(INFOS);
+
+	return convertText(JSON_ENCODED, { from: "utf-8", to: "base64" });
 }
 
 function decodeInfos(data: string): MockingInfos
 {
-	const INFOS: unknown = JSON.parse(Buffer.from(data, "base64").toString("utf-8"));
+	const JSON_ENCODED: string = convertText(data, { from: "base64", to: "utf-8" });
+
+	const INFOS: unknown = JSON.parse(JSON_ENCODED);
 
 	isMockingInfos(INFOS);
 
