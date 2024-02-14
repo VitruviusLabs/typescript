@@ -1,17 +1,17 @@
 {
-	"name": "@vitruvius-lab/mockingbird",
+	"name": "@vitruvius-labs/mockingbird",
 	"version": "0.1.0",
 	"description": "Module mocking library",
 	"author": "Benjamin Blum <benjamin.blum.98@gmail.com>",
 	"contributors": [
 		"Nicolas Cordier-Cerezo <nicolas.cordier@outlook.com>"
 	],
-	"homepage": "https://github.com/VitruviusLab/typescript/tree/main/packages/mockingbird#readme",
-	"bugs": "https://github.com/VitruviusLab/typescript/issues",
+	"homepage": "https://github.com/VitruviusLabs/typescript/tree/main/packages/mockingbird#readme",
+	"bugs": "https://github.com/VitruviusLabs/typescript/issues",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/VitruviusLab/typescript.git"
+		"url": "https://github.com/VitruviusLabs/typescript.git"
 	},
 	"publishConfig": {
 		"access": "public",
@@ -61,7 +61,7 @@
 		"ci:build": "pnpm build"
 	},
 	"dependencies": {
-		"@vitruvius-lab/ts-predicate": "workspace:*"
+		"@vitruvius-labs/ts-predicate": "workspace:*"
 	},
 	"keywords": [
 		"test",

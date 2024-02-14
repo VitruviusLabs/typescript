@@ -1,4 +1,4 @@
-import { TypeGuard } from "@vitruvius-lab/ts-predicate";
+import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
 function isMockedModule<MockType>(value: unknown, module_identifier: string): asserts value is MockType
 {

@@ -1,4 +1,4 @@
-import { TypeAssertion } from "@vitruvius-lab/ts-predicate";
+import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
 
 import type { MockingInfos } from "../Type/MockingInfos.mjs";
 

@@ -11,15 +11,15 @@ It is compatible with the native nodejs test runners.
 Choose your favourite package manager.
 
 ```bash
-pnpm add @vitruvius-lab/mockingbird
+pnpm add @vitruvius-labs/mockingbird
 ```
 
 ```bash
-yarn add @vitruvius-lab/mockingbird
+yarn add @vitruvius-labs/mockingbird
 ```
 
 ```bash
-npm install @vitruvius-lab/mockingbird
+npm install @vitruvius-labs/mockingbird
 ```
 
 ## Documentation

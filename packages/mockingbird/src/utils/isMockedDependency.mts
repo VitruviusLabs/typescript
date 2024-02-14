@@ -1,4 +1,4 @@
-import { TypeGuard } from "@vitruvius-lab/ts-predicate";
+import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
 import type { MockedDependency } from "../Type/MockedDependency.mjs";
 

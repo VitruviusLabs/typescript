@@ -1,17 +1,17 @@
 {
-	"name": "@vitruvius-lab/ts-predicate",
+	"name": "@vitruvius-labs/ts-predicate",
 	"version": "2.4.1",
 	"description": "TypeScript predicates library",
 	"author": "Benjamin Blum <benjamin.blum.98@gmail.com>",
 	"contributors": [
 		"Nicolas Cordier-Cerezo <nicolas.cordier@outlook.com>"
 	],
-	"homepage": "https://github.com/VitruviusLab/typescript/tree/main/packages/ts-predicate#readme",
-	"bugs": "https://github.com/VitruviusLab/typescript/issues",
+	"homepage": "https://github.com/VitruviusLabs/typescript/tree/main/packages/ts-predicate#readme",
+	"bugs": "https://github.com/VitruviusLabs/typescript/issues",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/VitruviusLab/typescript.git"
+		"url": "https://github.com/VitruviusLabs/typescript.git"
 	},
 	"publishConfig": {
 		"access": "public",
