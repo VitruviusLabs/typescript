@@ -2,7 +2,7 @@ import { IncomingMessage } from "node:http";
 
 import { parse as parseQuery } from "node:querystring";
 
-import { TypeAssertion } from "packages/ts-predicate/build/types/index.mjs";
+import { TypeAssertion } from "@vitruvius-lab/ts-predicate";
 
 import { Logger } from "../index.mjs";
 
