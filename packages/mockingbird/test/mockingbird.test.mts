@@ -1,6 +1,6 @@
-import { doesNotThrow, strictEqual } from "assert";
+import { doesNotThrow, strictEqual } from "node:assert";
 
-import { describe, it } from "node:test";
+import { after, before, describe, it } from "node:test";
 
 import { mockingbird } from "../src/mockingbird.mjs";
 
@@ -11,6 +11,22 @@ describe(
 	"mockingbird",
 	(): void =>
 	{
+		let keepAlive: NodeJS.Timer | undefined = undefined;
+
+		before(
+			(): void =>
+			{
+				keepAlive = setInterval((): void => { }, 100_000);
+			}
+		);
+
+		after(
+			(): void =>
+			{
+				clearInterval(keepAlive);
+			}
+		);
+
 		it(
 			"should be able to mock a dummy lib that has a module dependency",
 			async (): Promise<void> =>
@@ -27,7 +43,7 @@ describe(
 								return UUID;
 							}
 						},
-						"./dummyDependency.mjs": {
+						"./dummy-dependency.mjs": {
 							dummyDependency: (input: string): string =>
 							{
 								return input;

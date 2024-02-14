@@ -1,6 +1,6 @@
 function dummyDependency(input)
 {
-	return input.replaceAll(/\D/);
+	return input.replaceAll(/\D/g, "");
 }
 
 export { dummyDependency };

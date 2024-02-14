@@ -1,12 +1,12 @@
 {
-	"name": "@vitruvius-lab/mock-module",
+	"name": "@vitruvius-lab/mockingbird",
 	"version": "0.1.0",
 	"description": "Module mocking library",
 	"author": "Benjamin Blum <benjamin.blum.98@gmail.com>",
 	"contributors": [
 		"Nicolas Cordier-Cerezo <nicolas.cordier@outlook.com>"
 	],
-	"homepage": "https://github.com/VitruviusLab/typescript/tree/main/packages/mock-module#readme",
+	"homepage": "https://github.com/VitruviusLab/typescript/tree/main/packages/mockingbird#readme",
 	"bugs": "https://github.com/VitruviusLab/typescript/issues",
 	"license": "MIT",
 	"repository": {
@@ -41,7 +41,10 @@
 		"eslint:check": "eslint ./src ./test",
 		"eslint:fix": "eslint ./src ./test --fix",
 		"test:unit": "pnpm test:unit:build && pnpm test:unit:run",
-		"test:unit:build": "tsc -p tsconfig.test.json",
+		"test:unit:build": "pnpm test:unit:clean && pnpm test:unit:compile && pnpm test:unit:post",
+		"test:unit:clean": "rm -rf ./tmp",
+		"test:unit:compile": "tsc -p tsconfig.test.json",
+		"test:unit:post": "cp -r ./test/dummy/ ./tmp/test-build/test/dummy",
 		"test:unit:run": "node --loader=./tmp/test-build/src/loader.mjs --test ./tmp/test-build/test",
 		"test:unit:coverage": "NODE_V8_COVERAGE=./reports/node-coverage node  --experimental-test-coverage --loader=./tmp/test-build/src/loader.mjs --test ./tmp/test-build/test",
 		"test:unit:stryker": "NODE_ENV=test TS_NODE_PROJECT=./tsconfig.stryker.json mocha --config .mocharc.stryker.json",
