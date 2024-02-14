@@ -260,3 +260,4 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,macos,visualstudiocode,git,node
 
 packages/vitruvius-test
+packages/architectura-test

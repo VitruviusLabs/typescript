@@ -13,12 +13,12 @@
 			"path": "./packages/mockingbird"
 		},
 		{
-			"name": "vitruvius",
-			"path": "./packages/vitruvius"
+			"name": "architectura",
+			"path": "./packages/architectura"
 		},
 		{
-			"name": "vitruvius-test",
-			"path": "./packages/vitruvius-test"
+			"name": "architectura-test",
+			"path": "./packages/architectura-test"
 		}
 	],
 	"settings": {
