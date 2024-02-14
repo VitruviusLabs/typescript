@@ -1,5 +1,5 @@
 {
-	"name": "@vitruvius-lab/mockingbird",
+	"name": "@vitruvius-labs/mockingbird",
 	"version": "0.1.0",
 	"description": "Module mocking library",
 	"author": "Benjamin Blum <benjamin.blum.98@gmail.com>",
@@ -61,7 +61,7 @@
 		"ci:build": "pnpm build"
 	},
 	"dependencies": {
-		"@vitruvius-lab/ts-predicate": "workspace:*"
+		"@vitruvius-labs/ts-predicate": "workspace:*"
 	},
 	"keywords": [
 		"test",

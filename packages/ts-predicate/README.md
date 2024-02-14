@@ -30,15 +30,15 @@ nullish value along with `undefined` and `null`.
 Choose your favourite package manager.
 
 ```bash
-pnpm add @vitruvius-lab/ts-predicate
+pnpm add @vitruvius-labs/ts-predicate
 ```
 
 ```bash
-yarn add @vitruvius-lab/ts-predicate
+yarn add @vitruvius-labs/ts-predicate
 ```
 
 ```bash
-npm install @vitruvius-lab/ts-predicate
+npm install @vitruvius-labs/ts-predicate
 ```
 
 ## Documentation
