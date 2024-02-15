@@ -26,8 +26,8 @@
 		],
 		"editor.formatOnSave": true,
 		"editor.codeActionsOnSave": {
-			"source.fixAll.eslint": true,
-			"source.fixAll.tslint": false // TSlint is deprecated so we automatically disable it.
+			"source.fixAll.eslint": "explicit",
+			"source.fixAll.tslint": "never"
 		},
 		"eslint.format.enable": true,
 		"eslint.packageManager": "pnpm",
