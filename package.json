@@ -15,9 +15,8 @@
 	"keywords": [],
 	"license": "UNLICENSED",
 	"devDependencies": {
-		"@stryker-mutator/core": "^6.4.2",
-		"@stryker-mutator/mocha-runner": "^6.4.2",
-		"@stryker-mutator/typescript-checker": "^6.4.2",
+		"@stryker-mutator/core": "^8.2.3",
+		"@stryker-mutator/typescript-checker": "^8.2.3",
 		"@types/node": "^20.4.1",
 		"@typescript-eslint/eslint-plugin": "^5.61.0",
 		"@typescript-eslint/parser": "^5.61.0",
