@@ -12,6 +12,9 @@
     "license": "MIT",
     "private": false,
     "type": "module",
+    "files": [
+        "./build/**/*"
+    ],
     "exports": {
         ".": {
             "import": "./build/esm/index.mjs",
