@@ -212,7 +212,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm --filter ts-predicate ci:publish
 
-  ## Mock Module
+  ## Mockingbird
 
   lint-mockingbird:
     needs: setup
@@ -321,7 +321,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm --filter mockingbird ci:publish:dry
 
-  ## TS Predicate
+  ## Architectura
 
   lint-architectura:
     needs: setup
@@ -343,6 +343,12 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Building workspace dependencies
+        run: pnpm --filter ts-predicate ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter architectura
 
       - name: Lint with ESlint
         run: pnpm --filter architectura ci:lint
@@ -368,6 +374,12 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
+      - name: Building workspace dependencies
+        run: pnpm --filter ts-predicate ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter architectura
+
       - name: Check TypeScript syntax
         run: pnpm --filter architectura ci:ts:check
 
@@ -391,6 +403,12 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Building workspace dependencies
+        run: pnpm --filter ts-predicate ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter architectura
 
       - name: Test with Node Test runner
         run: pnpm --filter architectura ci:test:unit
@@ -434,6 +452,12 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Building workspace dependencies
+        run: pnpm --filter ts-predicate ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter architectura
 
       - name: Package build
         run: pnpm --filter architectura ci:build
