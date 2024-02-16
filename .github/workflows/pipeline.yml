@@ -68,7 +68,7 @@ jobs:
   spell-check-global:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.require-spell-check == 'true' }}
+    # if: ${{ needs.setup.outputs.require-spell-check == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -94,7 +94,7 @@ jobs:
   lint-ts-predicate:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -118,7 +118,7 @@ jobs:
   typescript-syntax-check-ts-predicate:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -142,7 +142,7 @@ jobs:
   test-ts-predicate:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -217,7 +217,7 @@ jobs:
   lint-mockingbird:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -247,7 +247,7 @@ jobs:
   typescript-syntax-check-mockingbird:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -326,7 +326,7 @@ jobs:
   lint-architectura:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -356,7 +356,7 @@ jobs:
   typescript-syntax-check-architectura:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -386,7 +386,7 @@ jobs:
   test-architectura:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
