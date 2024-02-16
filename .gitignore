@@ -260,3 +260,6 @@ $RECYCLE.BIN/
 
 packages/vitruvius-test
 packages/architectura-test
+
+*.crt
+*.key
