@@ -30,12 +30,12 @@ class Logger
 			throw new Error("Logger.logError can only handle Error and it's derivates.");
 		}
 
-		const stackTraceParser: StackTraceParser = new StackTraceParser(error);
-		const formattedStackTrace: Array<string> = stackTraceParser.getStackTraceAsTable();
+		const STACK_TRACE_PARSER: StackTraceParser = new StackTraceParser(error);
+		const FORMATTED_STACK_TRACE: Array<string> = STACK_TRACE_PARSER.getStackTraceAsTable();
 
-		for (const line of formattedStackTrace)
+		for (const LINE of FORMATTED_STACK_TRACE)
 		{
-			this.Error(line);
+			this.Error(LINE);
 		}
 	}
 

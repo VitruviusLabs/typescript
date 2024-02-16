@@ -46,22 +46,22 @@ class StackTraceParser
 
         while (this.stackTrace.length > 0)
         {
-            const nextLine: StackTraceLineParsingResultInterface | undefined = this.parseNextLine();
+            const NEXT_LINE: StackTraceLineParsingResultInterface | undefined = this.parseNextLine();
 
-            if (nextLine === undefined)
+            if (NEXT_LINE === undefined)
             {
                 continue;
             }
 
-            this.lines.push(nextLine);
+            this.lines.push(NEXT_LINE);
         }
     }
 
     private static ExtractLineAndPosition(string: string): StackTraceParserLineAndPositionInterface
     {
-        const lineAndPosition: RegExpExecArray | null = StackTraceParser.LineAndPositionRegExp.exec(string);
+        const LINE_AND_POSITION: RegExpExecArray | null = StackTraceParser.LineAndPositionRegExp.exec(string);
 
-        if (lineAndPosition === null)
+        if (LINE_AND_POSITION === null)
         {
             return {
                 line: StackTraceParserEnum.LINE_NOT_FOUND_INDEX,
@@ -69,9 +69,9 @@ class StackTraceParser
             };
         }
 
-        const foundLine: string | undefined = lineAndPosition.groups?.['line'];
+        const FOUND_LINE: string | undefined = LINE_AND_POSITION.groups?.['line'];
 
-        if (foundLine === undefined)
+        if (FOUND_LINE === undefined)
         {
             return {
                 line: StackTraceParserEnum.LINE_NOT_FOUND_INDEX,
@@ -79,22 +79,22 @@ class StackTraceParser
             };
         }
 
-        const line: number = parseInt(foundLine, NumericBaseEnum.DECIMAL);
-        const foundPosition: string | undefined = lineAndPosition.groups?.['position'];
+        const LINE: number = parseInt(FOUND_LINE, NumericBaseEnum.DECIMAL);
+        const FOUND_POSITION: string | undefined = LINE_AND_POSITION.groups?.['position'];
 
-        if (foundPosition === undefined)
+        if (FOUND_POSITION === undefined)
         {
             return {
-                line: line,
+                line: LINE,
                 position: StackTraceParserEnum.POSITION_NOT_FOUND_INDEX
             };
         }
 
-        const position: number = parseInt(foundPosition, NumericBaseEnum.DECIMAL);
+        const POSITION: number = parseInt(FOUND_POSITION, NumericBaseEnum.DECIMAL);
 
         return {
-            line: line,
-            position: position
+            line: LINE,
+            position: POSITION
         };
     }
 
@@ -110,51 +110,51 @@ class StackTraceParser
             return `${string} `.padStart(length, " ");
         }
 
-        const stringPadding: number = Math.floor((length - string.length) / StackTraceParserEnum.COLUMN_PADDING);
-        const leftPaddedString: string = string.padStart(stringPadding + string.length, " ");
-        const paddedString: string = leftPaddedString.padEnd(length, " ");
+        const STRING_PADDING: number = Math.floor((length - string.length) / StackTraceParserEnum.COLUMN_PADDING);
+        const LEFT_PADDED_STRING: string = string.padStart(STRING_PADDING + string.length, " ");
+        const PADDED_STRING: string = LEFT_PADDED_STRING.padEnd(length, " ");
 
-        return paddedString;
+        return PADDED_STRING;
     }
 
-    private static GetTableTopLine(methodColumnLength: number, lineColumnLength: number, positionColumnLength: number, moduleColumnLength: number): string
+    private static GetTableTopLine(method_column_length: number, line_column_length: number, position_column_length: number, module_column_length: number): string
     {
-        const methodColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(methodColumnLength);
-        const lineColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(lineColumnLength);
-        const positionColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(positionColumnLength);
-        const moduleColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(moduleColumnLength);
+        const METHOD_COLUMN_LINE: string = StackTraceParser.TableLineHorizontalSeparator.repeat(method_column_length);
+        const LINE_COLUMN_LINE: string = StackTraceParser.TableLineHorizontalSeparator.repeat(line_column_length);
+        const POSITION_COLUMN_LINE: string = StackTraceParser.TableLineHorizontalSeparator.repeat(position_column_length);
+        const MODULE_COLUMN_LINE: string = StackTraceParser.TableLineHorizontalSeparator.repeat(module_column_length);
 
-        return `${StackTraceParser.TableLineTopLeftSeparator}${methodColumnLine}${StackTraceParser.TableLineTopSeparator}${lineColumnLine}${StackTraceParser.TableLineTopSeparator}${positionColumnLine}${StackTraceParser.TableLineTopSeparator}${moduleColumnLine}${StackTraceParser.TableLineTopRightSeparator}`;
+        return `${StackTraceParser.TableLineTopLeftSeparator}${METHOD_COLUMN_LINE}${StackTraceParser.TableLineTopSeparator}${LINE_COLUMN_LINE}${StackTraceParser.TableLineTopSeparator}${POSITION_COLUMN_LINE}${StackTraceParser.TableLineTopSeparator}${MODULE_COLUMN_LINE}${StackTraceParser.TableLineTopRightSeparator}`;
     }
 
-    private static GetTableHeaderLine(methodColumnLength: number, lineColumnLength: number, positionColumnLength: number, moduleColumnLength: number): string
+    private static GetTableHeaderLine(method_column_length: number, line_column_length: number, position_column_length: number, module_column_length: number): string
     {
-        const methodHeader: string = StackTraceParser.GetPaddedString(StackTraceParser.MethodColumnName, methodColumnLength, 'center');
-        const lineHeader: string = StackTraceParser.GetPaddedString(StackTraceParser.LineColumnName, lineColumnLength, 'center');
-        const positionHeader: string = StackTraceParser.GetPaddedString(StackTraceParser.PositionColumnName, positionColumnLength, 'center');
-        const moduleHeader: string = StackTraceParser.GetPaddedString(StackTraceParser.ModuleColumnName, moduleColumnLength, 'center');
+        const METHOD_HEADER: string = StackTraceParser.GetPaddedString(StackTraceParser.MethodColumnName, method_column_length, 'center');
+        const LINE_HEADER: string = StackTraceParser.GetPaddedString(StackTraceParser.LineColumnName, line_column_length, 'center');
+        const POSITION_HEADER: string = StackTraceParser.GetPaddedString(StackTraceParser.PositionColumnName, position_column_length, 'center');
+        const MODULE_HEADER: string = StackTraceParser.GetPaddedString(StackTraceParser.ModuleColumnName, module_column_length, 'center');
 
-        return `${StackTraceParser.TableLineVerticalSeparator}${methodHeader}${StackTraceParser.TableLineVerticalSeparator}${lineHeader}${StackTraceParser.TableLineVerticalSeparator}${positionHeader}${StackTraceParser.TableLineVerticalSeparator}${moduleHeader}${StackTraceParser.TableLineVerticalSeparator}`;
+        return `${StackTraceParser.TableLineVerticalSeparator}${METHOD_HEADER}${StackTraceParser.TableLineVerticalSeparator}${LINE_HEADER}${StackTraceParser.TableLineVerticalSeparator}${POSITION_HEADER}${StackTraceParser.TableLineVerticalSeparator}${MODULE_HEADER}${StackTraceParser.TableLineVerticalSeparator}`;
     }
 
-    private static GetTableSeparationLine(methodColumnLength: number, lineColumnLength: number, positionColumnLength: number, moduleColumnLength: number): string
+    private static GetTableSeparationLine(method_column_length: number, line_column_length: number, position_column_length: number, module_column_length: number): string
     {
-        const methodColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(methodColumnLength);
-        const lineColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(lineColumnLength);
-        const positionColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(positionColumnLength);
-        const moduleColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(moduleColumnLength);
+        const METHOD_COLUMN_LINE: string = StackTraceParser.TableLineHorizontalSeparator.repeat(method_column_length);
+        const LINE_COLUMN_LINE: string = StackTraceParser.TableLineHorizontalSeparator.repeat(line_column_length);
+        const POSITION_COLUMN_LINE: string = StackTraceParser.TableLineHorizontalSeparator.repeat(position_column_length);
+        const MODULE_COLUMN_LINE: string = StackTraceParser.TableLineHorizontalSeparator.repeat(module_column_length);
 
-        return `${StackTraceParser.TableLineLeftSeparator}${methodColumnLine}${StackTraceParser.TableLineCrossSeparator}${lineColumnLine}${StackTraceParser.TableLineCrossSeparator}${positionColumnLine}${StackTraceParser.TableLineCrossSeparator}${moduleColumnLine}${StackTraceParser.TableLineRightSeparator}`;
+        return `${StackTraceParser.TableLineLeftSeparator}${METHOD_COLUMN_LINE}${StackTraceParser.TableLineCrossSeparator}${LINE_COLUMN_LINE}${StackTraceParser.TableLineCrossSeparator}${POSITION_COLUMN_LINE}${StackTraceParser.TableLineCrossSeparator}${MODULE_COLUMN_LINE}${StackTraceParser.TableLineRightSeparator}`;
     }
 
-    private static GetTableBottomLine(methodColumnLength: number, lineColumnLength: number, positionColumnLength: number, moduleColumnLength: number): string
+    private static GetTableBottomLine(method_column_length: number, line_column_length: number, position_column_length: number, module_column_length: number): string
     {
-        const methodColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(methodColumnLength);
-        const lineColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(lineColumnLength);
-        const positionColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(positionColumnLength);
-        const moduleColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(moduleColumnLength);
+        const METHOD_COLUMN_LINE: string = StackTraceParser.TableLineHorizontalSeparator.repeat(method_column_length);
+        const LINE_COLUMN_LINE: string = StackTraceParser.TableLineHorizontalSeparator.repeat(line_column_length);
+        const POSITION_COLUMN_LINE: string = StackTraceParser.TableLineHorizontalSeparator.repeat(position_column_length);
+        const MODULE_COLUMN_LINE: string = StackTraceParser.TableLineHorizontalSeparator.repeat(module_column_length);
 
-        return `${StackTraceParser.TableLineBottomLeftSeparator}${methodColumnLine}${StackTraceParser.TableLineBottomSeparator}${lineColumnLine}${StackTraceParser.TableLineBottomSeparator}${positionColumnLine}${StackTraceParser.TableLineBottomSeparator}${moduleColumnLine}${StackTraceParser.TableLineBottomRightSeparator}`;
+        return `${StackTraceParser.TableLineBottomLeftSeparator}${METHOD_COLUMN_LINE}${StackTraceParser.TableLineBottomSeparator}${LINE_COLUMN_LINE}${StackTraceParser.TableLineBottomSeparator}${POSITION_COLUMN_LINE}${StackTraceParser.TableLineBottomSeparator}${MODULE_COLUMN_LINE}${StackTraceParser.TableLineBottomRightSeparator}`;
     }
 
     /**
@@ -175,133 +175,133 @@ class StackTraceParser
 
     public getStackTraceAsTable(): Array<string>
     {
-        const constLongestMethodLength: number = this.getLongestMethodLength();
-        const constLongestLineLength: number = this.getLongestLineLength();
-        const constLongestModuleLength: number = this.getLongestModuleLength();
-        const longestPositionLength: number = this.getLongestPositionLength();
+        const LONGEST_METHOD_LENGTH: number = this.getLongestMethodLength();
+        const LONGEST_LINE_LENGTH: number = this.getLongestLineLength();
+        const LONGEST_MODULE_LENGTH: number = this.getLongestModuleLength();
+        const LONGEST_POSITION_LENGTH: number = this.getLongestPositionLength();
 
-        const methodColumnLength: number = constLongestMethodLength + StackTraceParserEnum.COLUMN_PADDING;
-        const lineColumnLength: number = constLongestLineLength + StackTraceParserEnum.COLUMN_PADDING;
-        const positionColumnLength: number = longestPositionLength + StackTraceParserEnum.COLUMN_PADDING;
-        const moduleColumnLength: number = constLongestModuleLength + StackTraceParserEnum.COLUMN_PADDING;
-        const table: Array<string> = [];
+        const METHOD_COLUMN_LENGTH: number = LONGEST_METHOD_LENGTH + StackTraceParserEnum.COLUMN_PADDING;
+        const LINE_COLUMN_LENGTH: number = LONGEST_LINE_LENGTH + StackTraceParserEnum.COLUMN_PADDING;
+        const POSITION_COLUMN_LENGTH: number = LONGEST_POSITION_LENGTH + StackTraceParserEnum.COLUMN_PADDING;
+        const MODULE_COLUMN_LENGTH: number = LONGEST_MODULE_LENGTH + StackTraceParserEnum.COLUMN_PADDING;
+        const TABLE: Array<string> = [];
 
-        table.push(StackTraceParser.GetTableTopLine(methodColumnLength, lineColumnLength, positionColumnLength, moduleColumnLength));
-        table.push(StackTraceParser.GetTableHeaderLine(methodColumnLength, lineColumnLength, positionColumnLength, moduleColumnLength));
-        table.push(StackTraceParser.GetTableSeparationLine(methodColumnLength, lineColumnLength, positionColumnLength, moduleColumnLength));
+        TABLE.push(StackTraceParser.GetTableTopLine(METHOD_COLUMN_LENGTH, LINE_COLUMN_LENGTH, POSITION_COLUMN_LENGTH, MODULE_COLUMN_LENGTH));
+        TABLE.push(StackTraceParser.GetTableHeaderLine(METHOD_COLUMN_LENGTH, LINE_COLUMN_LENGTH, POSITION_COLUMN_LENGTH, MODULE_COLUMN_LENGTH));
+        TABLE.push(StackTraceParser.GetTableSeparationLine(METHOD_COLUMN_LENGTH, LINE_COLUMN_LENGTH, POSITION_COLUMN_LENGTH, MODULE_COLUMN_LENGTH));
 
-        for (const line of this.lines)
+        for (const LINE of this.lines)
         {
-            const methodContent: string = StackTraceParser.GetPaddedString(line.method, methodColumnLength, 'left');
-            const lineNumberContent: string = StackTraceParser.GetPaddedString(line.line.toString(), lineColumnLength, 'right');
-            const positionContent: string = StackTraceParser.GetPaddedString(line.position.toString(), positionColumnLength, 'right');
-            const moduleContent: string = StackTraceParser.GetPaddedString(line.module, moduleColumnLength, 'left');
+            const METHOD_CONTENT: string = StackTraceParser.GetPaddedString(LINE.method, METHOD_COLUMN_LENGTH, 'left');
+            const LINE_NUMBER_CONTENT: string = StackTraceParser.GetPaddedString(LINE.line.toString(), LINE_COLUMN_LENGTH, 'right');
+            const POSITION_CONTENT: string = StackTraceParser.GetPaddedString(LINE.position.toString(), POSITION_COLUMN_LENGTH, 'right');
+            const MODULE_CONTENT: string = StackTraceParser.GetPaddedString(LINE.module, MODULE_COLUMN_LENGTH, 'left');
 
-            table.push(`${StackTraceParser.TableLineVerticalSeparator}${methodContent}${StackTraceParser.TableLineVerticalSeparator}${lineNumberContent}${StackTraceParser.TableLineVerticalSeparator}${positionContent}${StackTraceParser.TableLineVerticalSeparator}${moduleContent}${StackTraceParser.TableLineVerticalSeparator}`);
+            TABLE.push(`${StackTraceParser.TableLineVerticalSeparator}${METHOD_CONTENT}${StackTraceParser.TableLineVerticalSeparator}${LINE_NUMBER_CONTENT}${StackTraceParser.TableLineVerticalSeparator}${POSITION_CONTENT}${StackTraceParser.TableLineVerticalSeparator}${MODULE_CONTENT}${StackTraceParser.TableLineVerticalSeparator}`);
         }
 
-        table.push(StackTraceParser.GetTableBottomLine(methodColumnLength, lineColumnLength, positionColumnLength, moduleColumnLength));
+        TABLE.push(StackTraceParser.GetTableBottomLine(METHOD_COLUMN_LENGTH, LINE_COLUMN_LENGTH, POSITION_COLUMN_LENGTH, MODULE_COLUMN_LENGTH));
 
-        return table;
+        return TABLE;
     }
 
     private getLongestMethodLength(): number
     {
-        let longestMethodLength: number = StackTraceParser.MethodColumnName.length;
+        let longest_method_length: number = StackTraceParser.MethodColumnName.length;
 
-        for (const line of this.lines)
+        for (const LINE of this.lines)
         {
-            const methodLength: number = line.method.length;
+            const METHOD_LENGTH: number = LINE.method.length;
 
-            if (methodLength > longestMethodLength)
+            if (METHOD_LENGTH > longest_method_length)
             {
-                longestMethodLength = methodLength;
+                longest_method_length = METHOD_LENGTH;
             }
         }
 
-        return longestMethodLength;
+        return longest_method_length;
     }
 
     private getLongestLineLength(): number
     {
-        let longestLineLength: number = StackTraceParser.LineColumnName.length;
+        let longest_line_length: number = StackTraceParser.LineColumnName.length;
 
-        for (const line of this.lines)
+        for (const LINE of this.lines)
         {
-            const lineLength: number = line.line.toString().length;
+            const LINE_LENGTH: number = LINE.line.toString().length;
 
-            if (lineLength > longestLineLength)
+            if (LINE_LENGTH > longest_line_length)
             {
-                longestLineLength = lineLength;
+                longest_line_length = LINE_LENGTH;
             }
         }
 
-        return longestLineLength;
+        return longest_line_length;
     }
 
     private getLongestPositionLength(): number
     {
-        let longestPositionLength: number = StackTraceParser.PositionColumnName.length;
+        let longest_position_length: number = StackTraceParser.PositionColumnName.length;
 
-        for (const line of this.lines)
+        for (const LINE of this.lines)
         {
-            const positionLength: number = line.position.toString().length;
+            const POSITION_LENGTH: number = LINE.position.toString().length;
 
-            if (positionLength > longestPositionLength)
+            if (POSITION_LENGTH > longest_position_length)
             {
-                longestPositionLength = positionLength;
+                longest_position_length = POSITION_LENGTH;
             }
         }
 
-        return longestPositionLength;
+        return longest_position_length;
     }
 
     private getLongestModuleLength(): number
     {
-        let longestModuleLength: number = StackTraceParser.ModuleColumnName.length;
+        let longest_module_length: number = StackTraceParser.ModuleColumnName.length;
 
-        for (const line of this.lines)
+        for (const LINE of this.lines)
         {
-            const moduleLength: number = line.module.length;
+            const MODULE_LENGTH: number = LINE.module.length;
 
-            if (moduleLength > longestModuleLength)
+            if (MODULE_LENGTH > longest_module_length)
             {
-                longestModuleLength = moduleLength;
+                longest_module_length = MODULE_LENGTH;
             }
         }
 
-        return longestModuleLength;
+        return longest_module_length;
     }
 
     private parseNextLine(): StackTraceLineParsingResultInterface | undefined
     {
-        const nextLine: string | undefined = this.stackTrace.shift();
+        const NEXT_LINE: string | undefined = this.stackTrace.shift();
 
-        if (nextLine === undefined)
+        if (NEXT_LINE === undefined)
         {
             return undefined;
         }
 
-        if (StackTraceParser.ErrorMessageRegExp.test(nextLine))
+        if (StackTraceParser.ErrorMessageRegExp.test(NEXT_LINE))
         {
             return undefined;
         }
 
-        const trimmedLine: string = nextLine.trim();
-        const cleanedLine: string = trimmedLine.replace(/^at /, "");
-        const fileIndicator: RegExpExecArray | null = StackTraceParser.FileIndicatorRegExp.exec(cleanedLine);
-        const fileIndicatorContent: string | undefined = fileIndicator?.groups?.['file'];
-        const lineAndPosition: StackTraceParserLineAndPositionInterface = StackTraceParser.ExtractLineAndPosition(fileIndicatorContent ?? trimmedLine);
-        const lineWithoutFileIndicator: string = cleanedLine.replace(StackTraceParser.FileIndicatorRegExp, "");
-        const lineWithoutFileIndicatorAndLineAndPosition: string = lineWithoutFileIndicator.replace(StackTraceParser.LineAndPositionRegExp, "");
-        const method: string = lineWithoutFileIndicatorAndLineAndPosition.replaceAll(/\(|\)/g, "").trim();
-        const foundModule: string = fileIndicatorContent?.replace(/^\(/, "").replace(/\)$/, "").replace(StackTraceParser.LineAndPositionRegExp, "").replace(/file:\/\//, "") ?? ">internal<";
+        const TRIMMED_LINE: string = NEXT_LINE.trim();
+        const CLEANED_LINE: string = TRIMMED_LINE.replace(/^at /, "");
+        const FILE_INDICATOR: RegExpExecArray | null = StackTraceParser.FileIndicatorRegExp.exec(CLEANED_LINE);
+        const FILE_INDICATOR_CONTENT: string | undefined = FILE_INDICATOR?.groups?.['file'];
+        const LINE_AND_POSITION: StackTraceParserLineAndPositionInterface = StackTraceParser.ExtractLineAndPosition(FILE_INDICATOR_CONTENT ?? TRIMMED_LINE);
+        const LINE_WITHOUT_FILE_INDICATOR: string = CLEANED_LINE.replace(StackTraceParser.FileIndicatorRegExp, "");
+        const LINE_WITHOUT_FILE_INDICATOR_AND_LINE_AND_POSITION: string = LINE_WITHOUT_FILE_INDICATOR.replace(StackTraceParser.LineAndPositionRegExp, "");
+        const METHOD: string = LINE_WITHOUT_FILE_INDICATOR_AND_LINE_AND_POSITION.replaceAll(/\(|\)/g, "").trim();
+        const FOUND_MODULE: string = FILE_INDICATOR_CONTENT?.replace(/^\(/, "").replace(/\)$/, "").replace(StackTraceParser.LineAndPositionRegExp, "").replace(/file:\/\//, "") ?? ">internal<";
 
         return {
-            method: method === "" ? ">anonymous<" : method,
-            line: lineAndPosition.line,
-            position: lineAndPosition.position,
-            module: foundModule
+            method: METHOD === "" ? ">anonymous<" : METHOD,
+            line: LINE_AND_POSITION.line,
+            position: LINE_AND_POSITION.position,
+            module: FOUND_MODULE
         };
     }
 }

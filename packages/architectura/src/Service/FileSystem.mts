@@ -127,7 +127,7 @@ class FileSystem
 	/**
 	 * ReadFile
 	 */
-	public static async ReadFile(file_path: string): Promise<Buffer|string>
+	public static async ReadFile(file_path: string): Promise<Buffer | string>
 	{
 		const EXISTS: boolean = await FileSystem.FileExists(file_path);
 
@@ -136,7 +136,7 @@ class FileSystem
 			throw new Error(`Requested file ${file_path} does not exists.`);
 		}
 
-		const FILE: Buffer|string = await fs.readFile(file_path);
+		const FILE: Buffer | string = await fs.readFile(file_path);
 
 		return FILE;
 	}
@@ -146,7 +146,7 @@ class FileSystem
 	 */
 	public static async ReadFileAsBuffer(file_path: string): Promise<Buffer>
 	{
-		const FILE: Buffer|string = await FileSystem.ReadFile(file_path);
+		const FILE: Buffer | string = await FileSystem.ReadFile(file_path);
 
 		if (typeof FILE === "string")
 		{

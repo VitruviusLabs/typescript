@@ -14,10 +14,10 @@ class ExecutionContext
 	private readonly response: RichServerResponse;
 	private session?: Session;
 
-	public constructor(contextItems: ExecutionContextInstantiationInterface)
+	public constructor(context_items: ExecutionContextInstantiationInterface)
 	{
-		this.request = contextItems.request;
-		this.response = contextItems.response;
+		this.request = context_items.request;
+		this.response = context_items.response;
 	}
 
 	/**
@@ -39,7 +39,7 @@ class ExecutionContext
 	/**
 	 * getSession
 	 */
-	public getSession(): Session|undefined
+	public getSession(): Session | undefined
 	{
 		return this.session;
 	}

@@ -5,19 +5,19 @@ class Cookie
 	private static readonly COOKIE_NAME_PREFIX: string = 'architectura';
 
 	/**
-	 * Extract
+	 * Parse
 	 *
 	 * This static method will extract the cookies in the Cookie header from the request and return
 	 * a Record<string, string> of each received cookie.
 	 *
-	 * @param {string} cookies - The content of the cookie header.
+	 * @param {string} serialized_cookies - The content of the cookie header.
 	 * @returns {Map<string, string>} - The cookies returned within a Map with the key being the cookie name and the value it's content.
 	 */
-	public static Extract(cookies: string): Map<string, string>
+	public static Parse(serialized_cookies: string): Map<string, string>
 	{
 		const COOKIES: Map<string, string> = new Map();
 
-		let matched_cookies: RegExpExecArray | null = this.EXTRACTION_REGEXP.exec(cookies);
+		let matched_cookies: RegExpExecArray | null = this.EXTRACTION_REGEXP.exec(serialized_cookies);
 
 		while (matched_cookies !== null)
 		{
@@ -36,7 +36,7 @@ class Cookie
 
 			COOKIES.set(NAME, VALUE);
 
-			matched_cookies = this.EXTRACTION_REGEXP.exec(cookies);
+			matched_cookies = this.EXTRACTION_REGEXP.exec(serialized_cookies);
 		}
 
 		return COOKIES;

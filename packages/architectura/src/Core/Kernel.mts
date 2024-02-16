@@ -23,8 +23,7 @@ abstract class Kernel
 		return this.GetContextAccessor().getStore();
 	}
 
-	//public static GetExecutionContext<CustomContext extends typeof ExecutionContext>(customClass: CustomContext): ReturnType<CustomContext["Create"]>
-	public static GetExecutionContext<CustomContext extends ExecutionContext>(customClass: ConstructorOf<CustomContext>): CustomContext
+	public static GetExecutionContext<CustomContext extends ExecutionContext>(custom_class: ConstructorOf<CustomContext>): CustomContext
 	{
 		const CONTEXT: ExecutionContext | undefined = this.ContextAccessor.getStore();
 
@@ -33,7 +32,7 @@ abstract class Kernel
 			throw new Error('No execution context found.');
 		}
 
-        if (CONTEXT instanceof customClass)
+        if (CONTEXT instanceof custom_class)
         {
 			return CONTEXT;
         }

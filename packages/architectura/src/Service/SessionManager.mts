@@ -7,7 +7,7 @@ abstract class SessionManager
 	/**
 	 * GetSession
 	 */
-	public static GetSession(key: string): Session|undefined
+	public static GetSession(key: string): Session | undefined
 	{
 		return this.SESSIONS.get(key);
 	}

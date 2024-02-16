@@ -19,7 +19,7 @@ describe(
 						const INPUT: string = "";
 						const EXPECTED_OUTPUT: Map<string, string> = new Map();
 
-						assert.deepStrictEqual(Cookie.Extract(INPUT), EXPECTED_OUTPUT);
+						assert.deepStrictEqual(Cookie.Parse(INPUT), EXPECTED_OUTPUT);
 					}
 				);
 
@@ -33,7 +33,7 @@ describe(
 							["quz", "qux"]
 						]);
 
-						assert.deepStrictEqual(Cookie.Extract(INPUT), EXPECTED_OUTPUT);
+						assert.deepStrictEqual(Cookie.Parse(INPUT), EXPECTED_OUTPUT);
 					}
 				);
 
@@ -47,7 +47,7 @@ describe(
 							["quz", "qux=zaz"]
 						]);
 
-						assert.deepStrictEqual(Cookie.Extract(INPUT), EXPECTED_OUTPUT);
+						assert.deepStrictEqual(Cookie.Parse(INPUT), EXPECTED_OUTPUT);
 					}
 				);
 			}

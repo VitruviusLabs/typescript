@@ -15,10 +15,10 @@ abstract class Singleton
         INSTANCES.set(this.constructor, this);
     }
 
-    public static GetInstance<T extends Singleton>(classConstructor: ConstructorOf<T>): T | undefined
+    public static GetInstance<T extends Singleton>(class_constructor: ConstructorOf<T>): T | undefined
     {
         // @ts-expect-error: the value has to be an instance of the constructor
-        return INSTANCES.get(classConstructor);
+        return INSTANCES.get(class_constructor);
     }
 }
 

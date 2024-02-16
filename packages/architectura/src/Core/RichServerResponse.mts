@@ -27,18 +27,19 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 		const CONTEXT: ExecutionContext = Kernel.GetExecutionContext(ExecutionContext);
 
-		const session: Session|undefined = CONTEXT.getSession();
+		const SESSION: Session | undefined = CONTEXT.getSession();
 
-		if (session !== undefined) {
-			const cookies: Map<string, string> = session.getCookies();
+		if (SESSION !== undefined)
+		{
+			const COOKIES: Map<string, string> = SESSION.getCookies();
 
-			const cookiesArray: Array<string> = [];
+			const SET_COOKIE_HEADER: Array<string> = [];
 
-			for (const [cookiesName, cookiesValue] of cookies) {
-				cookiesArray.push(`${cookiesName}=${cookiesValue}`);
+			for (const [COOKIE_NAME, COOKIE_VALUE] of COOKIES) {
+				SET_COOKIE_HEADER.push(`${COOKIE_NAME}=${COOKIE_VALUE}`);
 			}
 
-			this.setHeader("Set-Cookie", cookiesArray);
+			this.setHeader("Set-Cookie", SET_COOKIE_HEADER);
 		}
 
 		// @TODO: Make response compression great again

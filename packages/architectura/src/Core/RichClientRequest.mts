@@ -82,20 +82,20 @@ class RichClientRequest extends IncomingMessage
 			this.query = parseQuery(SPLITTED_URL[1]);
 		}
 
-		const pathFragments: Array<string> = [];
-		const splittedRequestedPath: Array<string> = this.requestedPath.split("/");
+		const PATH_FRAGMENTS: Array<string> = [];
+		const SPLITTED_REQUESTED_PATH: Array<string> = this.requestedPath.split("/");
 
-		for (const fragment of splittedRequestedPath)
+		for (const FRAGMENT of SPLITTED_REQUESTED_PATH)
 		{
-			if (fragment.length === 0)
+			if (FRAGMENT.length === 0)
 			{
 				continue;
 			}
 
-			pathFragments.push(fragment);
+			PATH_FRAGMENTS.push(FRAGMENT);
 		}
 
-		this.pathFragments = pathFragments;
+		this.pathFragments = PATH_FRAGMENTS;
 	}
 
 	/**
@@ -143,20 +143,20 @@ class RichClientRequest extends IncomingMessage
 
 	public async getBodyAsString(): Promise<string>
 	{
-		const rawBody: Buffer = await this.getRawBody();
-		const bodyAsString: string = rawBody.toString();
+		const RAW_BODY: Buffer = await this.getRawBody();
+		const BODY_AS_STRING: string = RAW_BODY.toString();
 
-		return bodyAsString;
+		return BODY_AS_STRING;
 	}
 
 	public async getBodyAsJSON(): Promise<Record<string, unknown>>
 	{
-		const bodyAsString: string = await this.getBodyAsString();
-		const json: unknown = JSON.parse(bodyAsString);
+		const BODY_AS_STRING: string = await this.getBodyAsString();
+		const PARSED_BODY: unknown = JSON.parse(BODY_AS_STRING);
 
-		TypeAssertion.isRecord(json);
+		TypeAssertion.isRecord(PARSED_BODY);
 
-		return json;
+		return PARSED_BODY;
 	}
 
 	/**
@@ -270,9 +270,9 @@ class RichClientRequest extends IncomingMessage
 			return;
 		}
 
-		for (const [key, value] of Object.entries(cookies))
+		for (const [KEY, VALUE] of Object.entries(cookies))
 		{
-			this.cookies.set(key, value);
+			this.cookies.set(KEY, VALUE);
 		}
 	}
 

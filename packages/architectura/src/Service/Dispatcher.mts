@@ -64,9 +64,9 @@ class Dispatcher
 
 		await Dispatcher.ParseDirectoryForEndpoints(`${ROOT_DIRECTORY}/Endpoint`);
 
-		for (const directory of this.ENDPOINTS_DIRECTORIES)
+		for (const DIRECTORY of this.ENDPOINTS_DIRECTORIES)
 		{
-			await Dispatcher.ParseDirectoryForEndpoints(directory);
+			await Dispatcher.ParseDirectoryForEndpoints(DIRECTORY);
 		}
 	}
 
