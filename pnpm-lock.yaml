@@ -66,6 +66,21 @@ importers:
         specifier: ^5.1.6
         version: 5.1.6
 
+  packages/architectura:
+    dependencies:
+      '@vitruvius-labs/ts-predicate':
+        specifier: workspace:*
+        version: link:../ts-predicate
+
+  packages/architectura-test:
+    dependencies:
+      '@vitruvius-labs/architectura':
+        specifier: workspace:^
+        version: link:../architectura
+      '@vitruvius-labs/ts-predicate':
+        specifier: workspace:^
+        version: link:../ts-predicate
+
   packages/mockingbird:
     dependencies:
       '@vitruvius-labs/ts-predicate':

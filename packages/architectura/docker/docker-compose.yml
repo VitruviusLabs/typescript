@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  vitruvius:
+    container_name: vitruvius
+    hostname: vitruvius
+    build:
+        context: ./
+        dockerfile: ./services/node/Dockerfile
+    image: vitruvius-lab/vitruvius
+    working_dir: /home/node/app
+    volumes:
+      - "../:/home/node/app"
+      - "../../ts-predicate:/home/node/app/node_modules/@vitruvius-labs/ts-predicate"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.vitruvius.rule=Host(`vitruvius.dev`)
+      - traefik.http.routers.vitruvius.entrypoints=https
+      - traefik.http.routers.vitruvius.tls
+      - traefik.http.services.vitruvius.loadbalancer.server.port=443
+      # - traefik.http.services.vitruvius.loadbalancer.server.scheme=https
+    networks:
+      - traefik_proxy
+networks:
+  traefik_proxy:
+    external: true

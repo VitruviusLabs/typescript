@@ -47,7 +47,6 @@ build/
 # Icon must end with two \r
 Icon
 
-
 # Thumbnails
 ._*
 
@@ -258,3 +257,9 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,macos,visualstudiocode,git,node
+
+packages/vitruvius-test
+packages/architectura-test
+
+*.crt
+*.key

@@ -13,11 +13,13 @@
 		"npm"
 	],
 	"words": [
-		"Vitruvius"
+		"Vitruvius",
+		"architectura"
 	],
 	"ignoreWords": [
 		"Zamralik",
-		"vars"
+		"vars",
+		"sonarjs"
 	],
 	"flagWords": [
 		"hte"

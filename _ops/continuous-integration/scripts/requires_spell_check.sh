@@ -51,7 +51,6 @@ for i in "${!added_files[@]}"; do
 
     if [[ "${file_requires_spell_check}" == "true" ]]; then
 
-
       files_requiring_spell_check=$(( files_requiring_spell_check-1 ))
 
     fi

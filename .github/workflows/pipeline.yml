@@ -29,7 +29,7 @@ jobs:
           echo ${{ steps.parse-changed-files.outputs.require-spell-check }}
 
       - name: PNPM installation
-        if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
+        # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
         uses: pnpm/action-setup@v2
         id: pnpm-install
         with:
@@ -37,14 +37,14 @@ jobs:
           run_install: false
 
       - name: Get pnpm store directory
-        if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
+        # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
         id: pnpm-cache
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
       - name: PNPM cache configuration
-        if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
+        # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
         uses: actions/cache@v3
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -53,13 +53,13 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
+        # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
         run: |
           pnpm install --frozen-lockfile
           cd packages/mockingbird && pnpm install --frozen-lockfile && cd ../..
 
       - name: Dependencies caching
-        if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
+        # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
         uses: actions/cache@v3
         with:
           path: node_modules
@@ -68,7 +68,7 @@ jobs:
   spell-check-global:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.require-spell-check == 'true' }}
+    # if: ${{ needs.setup.outputs.require-spell-check == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -89,12 +89,12 @@ jobs:
       - name: Check spelling with CSpell
         run: pnpm --filter ts-predicate ci:spell:check
 
-## TS Predicate
+  ## TS Predicate
 
   lint-ts-predicate:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -118,7 +118,7 @@ jobs:
   typescript-syntax-check-ts-predicate:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -142,7 +142,7 @@ jobs:
   test-ts-predicate:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -172,7 +172,13 @@ jobs:
 
   publish-ts-predicate:
     if: ${{ github.ref == 'refs/heads/main' && ! failure() && ! cancelled() && github.event_name == 'push' }}
-    needs: [spell-check-global, lint-ts-predicate, typescript-syntax-check-ts-predicate, test-ts-predicate]
+    needs:
+      [
+        spell-check-global,
+        lint-ts-predicate,
+        typescript-syntax-check-ts-predicate,
+        test-ts-predicate,
+      ]
     runs-on: ubuntu-latest
     environment: npm
     steps:
@@ -181,8 +187,8 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "18.x"
+          registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
         uses: pnpm/action-setup@v2
@@ -206,12 +212,12 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm --filter ts-predicate ci:publish
 
-## Mock Module
+  ## Mockingbird
 
   lint-mockingbird:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -241,7 +247,7 @@ jobs:
   typescript-syntax-check-mockingbird:
     needs: setup
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -270,7 +276,12 @@ jobs:
 
   publish-mockingbird:
     if: ${{ github.ref == 'refs/heads/main' && ! failure() && ! cancelled() && github.event_name == 'push' }}
-    needs: [spell-check-global, lint-mockingbird, typescript-syntax-check-mockingbird]
+    needs:
+      [
+        spell-check-global,
+        lint-mockingbird,
+        typescript-syntax-check-mockingbird,
+      ]
     runs-on: ubuntu-latest
     environment: npm
     steps:
@@ -279,8 +290,8 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "18.x"
+          registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
         uses: pnpm/action-setup@v2
@@ -309,3 +320,150 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm --filter mockingbird ci:publish:dry
+
+  ## Architectura
+
+  lint-architectura:
+    needs: setup
+    runs-on: ubuntu-latest
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: PNPM installation
+        uses: pnpm/action-setup@v2
+        id: pnpm-install
+        with:
+          version: 8
+          run_install: false
+
+      - name: Dependencies cache unpacking
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Building workspace dependencies
+        run: pnpm --filter ts-predicate ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter architectura
+
+      - name: Lint with ESlint
+        run: pnpm --filter architectura ci:lint
+
+  typescript-syntax-check-architectura:
+    needs: setup
+    runs-on: ubuntu-latest
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: PNPM installation
+        uses: pnpm/action-setup@v2
+        id: pnpm-install
+        with:
+          version: 8
+          run_install: false
+
+      - name: Dependencies cache unpacking
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Building workspace dependencies
+        run: pnpm --filter ts-predicate ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter architectura
+
+      - name: Check TypeScript syntax
+        run: pnpm --filter architectura ci:ts:check
+
+  test-architectura:
+    needs: setup
+    runs-on: ubuntu-latest
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: PNPM installation
+        uses: pnpm/action-setup@v2
+        id: pnpm-install
+        with:
+          version: 8
+          run_install: false
+
+      - name: Dependencies cache unpacking
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Building workspace dependencies
+        run: pnpm --filter ts-predicate ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter architectura
+
+      - name: Test with Node Test runner
+        run: pnpm --filter architectura ci:test:unit
+
+      - name: Upload reports as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: reports
+          path: |
+            reports/*
+
+  publish-architectura:
+    if: ${{ github.ref == 'refs/heads/main' && ! failure() && ! cancelled() && github.event_name == 'push' }}
+    needs:
+      [
+        spell-check-global,
+        lint-architectura,
+        typescript-syntax-check-architectura,
+        test-architectura,
+      ]
+    runs-on: ubuntu-latest
+    environment: npm
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: PNPM installation
+        uses: pnpm/action-setup@v2
+        id: pnpm-install
+        with:
+          version: 8
+          run_install: false
+
+      - name: Dependencies cache unpacking
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Building workspace dependencies
+        run: pnpm --filter ts-predicate ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter architectura
+
+      - name: Package build
+        run: pnpm --filter architectura ci:build
+
+      - name: Publish package
+        id: package-version
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm --filter architectura ci:publish

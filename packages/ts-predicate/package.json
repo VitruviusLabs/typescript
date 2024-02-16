@@ -2,9 +2,12 @@
 	"name": "@vitruvius-labs/ts-predicate",
 	"version": "2.4.1",
 	"description": "TypeScript predicates library",
-	"author": "Benjamin Blum <benjamin.blum.98@gmail.com>",
+	"author": {
+		"name": "VitruviusLabs"
+	},
 	"contributors": [
-		"Nicolas Cordier-Cerezo <nicolas.cordier@outlook.com>"
+		"Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>",
+		"Benjamin Blum <benjamin.blum.98@gmail.com>"
 	],
 	"homepage": "https://github.com/VitruviusLabs/typescript/tree/main/packages/ts-predicate#readme",
 	"bugs": "https://github.com/VitruviusLabs/typescript/issues",
