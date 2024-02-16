@@ -3,11 +3,7 @@ import { default as assert } from "node:assert/strict";
 
 import { describe, it } from "node:test";
 
-
-import { TimeFormattingEnum } from "../../src/Core/Time/TimeFormattingEnum.mjs";
-
-import { Time } from "../../src/Core/Time.mjs";
-
+import { Time, TimeFormattingEnum } from "../../src/index.mjs";
 
 describe(
 	"Time",

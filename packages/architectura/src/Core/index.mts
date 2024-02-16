@@ -8,5 +8,6 @@ export * from "./RichClientRequest.mjs";
 export * from "./RichServerResponse.mjs";
 export * from "./Server.mjs";
 export * from "./Server/index.mjs";
+export * from "./Singleton.mjs";
 export * from "./Time.mjs";
 export * from "./Time/index.mjs";

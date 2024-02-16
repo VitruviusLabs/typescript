@@ -3,10 +3,7 @@ import { default as assert } from "node:assert/strict";
 
 import { describe, it } from "node:test";
 
-import { Kernel } from "../../src/Core/Kernel.mjs";
-
-import { ExecutionContext } from "../../src/index.mjs";
-
+import { ExecutionContext, Kernel } from "../../src/index.mjs";
 
 describe(
 	"Kernel",

@@ -2,7 +2,7 @@ import { default as assert } from 'node:assert/strict';
 
 import { describe, it } from 'node:test';
 
-import { Dispatcher } from "../../src/Service/Dispatcher.mjs";
+import { Dispatcher } from "../../src/index.mjs";
 
 describe(
 	"Dispatcher",

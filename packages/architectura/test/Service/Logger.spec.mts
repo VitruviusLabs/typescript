@@ -3,7 +3,7 @@ import { default as assert } from 'node:assert/strict';
 
 import { describe, it } from 'node:test';
 
-import { Logger } from "../../src/Service/Logger.mjs";
+import { Logger } from "../../src/index.mjs";
 
 global.console = {
 	...global.console,

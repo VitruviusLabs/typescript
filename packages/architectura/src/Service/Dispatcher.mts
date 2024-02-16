@@ -4,15 +4,13 @@ import { basename } from "node:path";
 
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
-import { isBaseEndpoint } from "./Dispatcher/isBaseEndpoint.mjs";
-
-import { isEndpointConstructor } from "./Dispatcher/isEndpointConstructor.mjs";
+import { BaseEndpoint } from "../Endpoint/BaseEndpoint.mjs";
 
 import { FileSystem } from "./FileSystem.mjs";
 
 import { Logger } from "./Logger.mjs";
 
-import type { BaseEndpoint } from "../Endpoint/BaseEndpoint.mjs";
+import type { ConstructorOf } from "../utils/ConstructorOf.mjs";
 
 class Dispatcher
 {
@@ -107,21 +105,14 @@ class Dispatcher
 
 				for (const KEY of KEYS)
 				{
-					const EXPORT: unknown = EXPORTS[KEY];
+					let endpoint: unknown = EXPORTS[KEY];
 
-					let endpoint: BaseEndpoint | undefined = undefined;
-
-					if (isBaseEndpoint(EXPORT))
+					if (this.IsEndpointConstructor(endpoint))
 					{
-						endpoint = EXPORT;
+						endpoint = new endpoint();
 					}
 
-					if (isEndpointConstructor(EXPORT))
-					{
-						endpoint = new EXPORT();
-					}
-
-					if (isBaseEndpoint(endpoint))
+					if (endpoint instanceof BaseEndpoint)
 					{
 						this.AddEndpoint(endpoint);
 
@@ -142,6 +133,12 @@ class Dispatcher
 			Logger.Critical(`A non-Error has been thrown. Received entity: ${JSON.stringify(error)}`);
 		}
 	}
+
+	private static IsEndpointConstructor(value: unknown): value is ConstructorOf<BaseEndpoint>
+	{
+		return TypeGuard.isFunction(value) && value.prototype instanceof BaseEndpoint;
+	}
+
 }
 
 export { Dispatcher };
