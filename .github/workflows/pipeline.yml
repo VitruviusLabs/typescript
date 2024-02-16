@@ -319,7 +319,7 @@ jobs:
         id: package-version
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm --filter mockingbird ci:publish:dry
+        run: pnpm --filter mockingbird ci:publish
 
   ## Architectura
 
