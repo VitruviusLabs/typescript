@@ -1,9 +1,14 @@
 {
-    "name": "@vitruvius-lab/architectura",
+    "name": "@vitruvius-labs/architectura",
     "version": "0.1.0",
     "description": "A light weight strongly typed Node.JS framework providing isolated context for each request.",
-    "main": "build/index.js",
-    "author": "Nicolas \"SmashingQuasar\" Lebacq (contact@vitruvius-labs.com)",
+    "author": {
+        "name": "VitruviusLabs"
+    },
+    "contributors": [
+        "Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>",
+        "Benjamin Blum <benjamin.blum.98@gmail.com>"
+    ],
     "license": "MIT",
     "private": false,
     "type": "module",
@@ -38,6 +43,6 @@
         "ci:build": "pnpm build"
     },
     "dependencies": {
-        "@vitruvius-lab/ts-predicate": "workspace:^"
+        "@vitruvius-labs/ts-predicate": "workspace:*"
     }
 }

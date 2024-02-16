@@ -2,9 +2,12 @@
 	"name": "@vitruvius-labs/mockingbird",
 	"version": "0.1.0",
 	"description": "Module mocking library",
-	"author": "Benjamin Blum <benjamin.blum.98@gmail.com>",
+	"author": {
+		"name": "VitruviusLabs"
+	},
 	"contributors": [
-		"Nicolas Cordier-Cerezo <nicolas.cordier@outlook.com>"
+		"Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>",
+		"Benjamin Blum <benjamin.blum.98@gmail.com>"
 	],
 	"homepage": "https://github.com/VitruviusLabs/typescript/tree/main/packages/mockingbird#readme",
 	"bugs": "https://github.com/VitruviusLabs/typescript/issues",
