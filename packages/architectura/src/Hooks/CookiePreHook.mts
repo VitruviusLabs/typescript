@@ -13,10 +13,9 @@ abstract class CookiePreHook extends BasePreHook
 	/**
 	 * Execute
 	 */
-	// eslint-disable-next-line @typescript-eslint/require-await -- This is a temporary solution.
-	public static override async Execute(): Promise<void>
+	public execute(): void
 	{
-		const COOKIES: Map<string, string> | undefined = this.ParseCookies();
+		const COOKIES: Map<string, string> | undefined = this.parseCookies();
 
 		if (COOKIES === undefined)
 		{
@@ -28,7 +27,8 @@ abstract class CookiePreHook extends BasePreHook
 		CONTEXT.getRequest().setCookies(COOKIES);
 	}
 
-	private static ParseCookies(): Map<string, string> | undefined
+	// eslint-disable-next-line class-methods-use-this -- Stateless
+	private parseCookies(): Map<string, string> | undefined
 	{
 		const CONTEXT: ExecutionContext = Kernel.GetExecutionContext(ExecutionContext);
 
@@ -39,7 +39,7 @@ abstract class CookiePreHook extends BasePreHook
 			return undefined;
 		}
 
-		const COOKIES: Map<string, string> = Cookie.Extract(REQUEST_HEADERS.cookie);
+		const COOKIES: Map<string, string> = Cookie.Parse(REQUEST_HEADERS.cookie);
 
 		return COOKIES;
 	}

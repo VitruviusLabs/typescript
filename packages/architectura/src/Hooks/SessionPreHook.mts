@@ -11,10 +11,9 @@ import { BasePreHook } from "./BasePreHook.mjs";
 abstract class SessionPreHook extends BasePreHook
 {
 	/**
-	 * Execute
+	 * execute
 	 */
-	// eslint-disable-next-line @typescript-eslint/require-await -- This is a temporary solution.
-	public static override async Execute(): Promise<void>
+	public execute(): void
 	{
 		const CONTEXT: ExecutionContext = Kernel.GetExecutionContext(ExecutionContext);
 
@@ -22,7 +21,7 @@ abstract class SessionPreHook extends BasePreHook
 
 		if (!COOKIES.has(`${Session.GetFullCookieName()}:id`))
 		{
-			this.InitializeNewSession();
+			this.initializeNewSession();
 
 			return;
 		}
@@ -31,15 +30,16 @@ abstract class SessionPreHook extends BasePreHook
 
 		if (SESSION_ID === undefined)
 		{
-			this.InitializeNewSession();
+			this.initializeNewSession();
 
 			return;
 		}
 
-		this.InitializeExistingSession(SESSION_ID);
+		this.initializeExistingSession(SESSION_ID);
 	}
 
-	private static InitializeNewSession(): Session
+	// eslint-disable-next-line class-methods-use-this -- Stateless
+	private initializeNewSession(): Session
 	{
 		const NEW_SESSION: Session = Session.Create();
 
@@ -55,13 +55,13 @@ abstract class SessionPreHook extends BasePreHook
 		return NEW_SESSION;
 	}
 
-	private static InitializeExistingSession(session_id: string): Session
+	private initializeExistingSession(session_id: string): Session
 	{
 		let existing_session: Session | undefined = SessionManager.GetSession(session_id);
 
 		if (existing_session === undefined)
 		{
-			existing_session = this.InitializeNewSession();
+			existing_session = this.initializeNewSession();
 		}
 
 		existing_session.refresh();

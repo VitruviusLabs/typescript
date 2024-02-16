@@ -8,15 +8,15 @@ abstract class BaseEndpoint extends Singleton
 {
 	protected abstract readonly method: HTTPMethodEnum;
 	protected abstract readonly route: string;
-	protected readonly preHooks: Array<typeof BasePreHook> = [];
-	protected readonly excludedGlobalPreHooks: Array<typeof BasePreHook> = [];
-	protected readonly postHooks: Array<typeof BasePostHook> = [];
-	protected readonly excludedGlobalPostHooks: Array<typeof BasePostHook> = [];
+	protected readonly preHooks: Array<BasePreHook> = [];
+	protected readonly excludedGlobalPreHooks: Array<BasePreHook> = [];
+	protected readonly postHooks: Array<BasePostHook> = [];
+	protected readonly excludedGlobalPostHooks: Array<BasePostHook> = [];
 
 	/**
 	 * execute
 	 */
-	public abstract execute(): Promise<void>;
+	public abstract execute(): Promise<void> | void;
 
 	/**
 	 * getMethod
@@ -37,7 +37,7 @@ abstract class BaseEndpoint extends Singleton
 	/**
 	 * getPreHooks
 	 */
-	public getPreHooks(): Array<typeof BasePreHook>
+	public getPreHooks(): Array<BasePreHook>
 	{
 		return this.preHooks;
 	}
@@ -45,7 +45,7 @@ abstract class BaseEndpoint extends Singleton
 	/**
 	 * getExcludedGlobalPreHooks
 	 */
-	public getExcludedGlobalPreHooks(): Array<typeof BasePreHook>
+	public getExcludedGlobalPreHooks(): Array<BasePreHook>
 	{
 		return this.excludedGlobalPreHooks;
 	}
@@ -53,7 +53,7 @@ abstract class BaseEndpoint extends Singleton
 	/**
 	 * getPostHooks
 	 */
-	public getPostHooks(): Array<typeof BasePostHook>
+	public getPostHooks(): Array<BasePostHook>
 	{
 		return this.postHooks;
 	}
@@ -61,7 +61,7 @@ abstract class BaseEndpoint extends Singleton
 	/**
 	 * getExcludedGlobalPostHooks
 	 */
-	public getExcludedGlobalPostHooks(): Array<typeof BasePostHook>
+	public getExcludedGlobalPostHooks(): Array<BasePostHook>
 	{
 		return this.excludedGlobalPostHooks;
 	}

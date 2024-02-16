@@ -33,8 +33,8 @@ import type { RequestListener } from "http";
 class Server
 {
 	private static readonly PUBLIC_DIRECTORIES: Map<string, string> = new Map<string, string>();
-	private static readonly GLOBAL_PRE_HOOKS: Array<typeof BasePreHook> = [];
-	private static readonly GLOBAL_POST_HOOKS: Array<typeof BasePostHook> = [];
+	private static readonly GLOBAL_PRE_HOOKS: Array<BasePreHook> = [];
+	private static readonly GLOBAL_POST_HOOKS: Array<BasePostHook> = [];
 
 	private port: number = PortsEnum.DEFAULT_HTTPS;
 	private readonly https: boolean = false;
@@ -117,30 +117,30 @@ class Server
 	public static async DefaultListener(
 		request: RichClientRequest,
 		response: RichServerResponse,
-		contextConstructor: typeof ExecutionContext,
+		context_constructor: typeof ExecutionContext,
 	): Promise<void>
 	{
 		request.initialise();
 
-		const CONTEXT: ExecutionContext = new contextConstructor({
+		const CONTEXT: ExecutionContext = new context_constructor({
 			request: request,
 			response: response
 		});
 
-		for (const [route, directory] of this.PUBLIC_DIRECTORIES)
+		for (const [ROUTE, DIRECTORY] of this.PUBLIC_DIRECTORIES)
 		{
-			const ROUTE_REGEXP: RegExp = new RegExp(route);
+			const ROUTE_REGEXP: RegExp = new RegExp(ROUTE);
 
 			if (ROUTE_REGEXP.exec(request.getRequestedPath()) !== null)
 			{
 				const FILE_PATH: string = request.getRequestedPath().replace(ROUTE_REGEXP, "").padStart(1, "/");
 
-				if (!(await FileSystem.FileExists(`${directory}${FILE_PATH}`)))
+				if (!(await FileSystem.FileExists(`${DIRECTORY}${FILE_PATH}`)))
 				{
 					continue;
 				}
 
-				const FILE: Buffer = await FileSystem.ReadFileAsBuffer(`${directory}${FILE_PATH}`);
+				const FILE: Buffer = await FileSystem.ReadFileAsBuffer(`${DIRECTORY}${FILE_PATH}`);
 
 				CONTEXT.getResponse().send(FILE);
 
@@ -152,17 +152,17 @@ class Server
 
 		const ENDPOINTS: Map<string, BaseEndpoint> = Dispatcher.GetEndpoints();
 
-		for (const [, endpoint] of ENDPOINTS)
+		for (const [, ENDPOINT] of ENDPOINTS)
 		{
-			if (new RegExp(endpoint.getRoute()).test(request.getRequestedPath()))
+			if (new RegExp(ENDPOINT.getRoute()).test(request.getRequestedPath()))
 			{
 				// @TODO: handle errors
 
-				await this.RunPreHooks(endpoint);
+				await this.RunPreHooks(ENDPOINT);
 
-				await endpoint.execute();
+				await ENDPOINT.execute();
 
-				await this.RunPostHooks(endpoint);
+				await this.RunPostHooks(ENDPOINT);
 
 				return;
 			}
@@ -196,16 +196,16 @@ class Server
 	 */
 	public static async SetPublicDirectories(directories: Map<string, string>): Promise<void>
 	{
-		for (const [route, directory] of directories)
+		for (const [ROUTE, DIRECTORY] of directories)
 		{
-			await this.AddPublicDirectory(route, directory);
+			await this.AddPublicDirectory(ROUTE, DIRECTORY);
 		}
 	}
 
 	/**
 	 * AddGlobalPreHook
 	 */
-	public static AddGlobalPreHook(hook: typeof BasePreHook): void
+	public static AddGlobalPreHook(hook: BasePreHook): void
 	{
 		this.GLOBAL_PRE_HOOKS.push(hook);
 	}
@@ -213,7 +213,7 @@ class Server
 	/**
 	 * AddGlobalPostHook
 	 */
-	public static AddGlobalPostHook(hook: typeof BasePostHook): void
+	public static AddGlobalPostHook(hook: BasePostHook): void
 	{
 		this.GLOBAL_POST_HOOKS.push(hook);
 	}
@@ -227,12 +227,12 @@ class Server
 				continue;
 			}
 
-			await HOOK.Execute();
+			await HOOK.execute();
 		}
 
 		for (const HOOK of endpoint.getPreHooks())
 		{
-			await HOOK.Execute();
+			await HOOK.execute();
 		}
 	}
 
@@ -245,12 +245,12 @@ class Server
 				continue;
 			}
 
-			await HOOK.Execute();
+			await HOOK.execute();
 		}
 
 		for (const HOOK of endpoint.getPostHooks())
 		{
-			await HOOK.Execute();
+			await HOOK.execute();
 		}
 	}
 
