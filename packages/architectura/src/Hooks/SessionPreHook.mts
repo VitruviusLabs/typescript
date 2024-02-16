@@ -1,13 +1,14 @@
 import { ExecutionContext } from "../Core/ExecutionContext.mjs";
 
-
 import { Session } from "../Service/Session.mjs";
 
 import { SessionManager } from "../Service/SessionManager.mjs";
 
-import { BaseMiddleware } from "./BaseMiddleware.mjs";
+import { Kernel } from "../index.mjs";
 
-abstract class SessionMiddleware extends BaseMiddleware
+import { BasePreHook } from "./BasePreHook.mjs";
+
+abstract class SessionPreHook extends BasePreHook
 {
 	/**
 	 * Execute
@@ -15,17 +16,21 @@ abstract class SessionMiddleware extends BaseMiddleware
 	// eslint-disable-next-line @typescript-eslint/require-await -- This is a temporary solution.
 	public static override async Execute(): Promise<void>
 	{
-		const COOKIES: Map<string, string>|undefined = ExecutionContext.GetRequest()?.getCookies();
+		const CONTEXT: ExecutionContext = Kernel.GetExecutionContext(ExecutionContext);
 
-		if (COOKIES === undefined) {
+		const COOKIES: Map<string, string> = CONTEXT.getRequest().getCookies();
+
+		if (!COOKIES.has(`${Session.GetFullCookieName()}:id`))
+		{
 			this.InitializeNewSession();
 
 			return;
 		}
 
-		const SESSION_ID: string|undefined = COOKIES.get(`${Session.GetCookieNameScope()}:id`);
+		const SESSION_ID: string | undefined = COOKIES.get(`${Session.GetCookieNameScope()}:id`);
 
-		if (SESSION_ID === undefined) {
+		if (SESSION_ID === undefined)
+		{
 			this.InitializeNewSession();
 
 			return;
@@ -42,14 +47,17 @@ abstract class SessionMiddleware extends BaseMiddleware
 
 		NEW_SESSION.setCookie(`${Session.GetFullCookieName()}:id`, NEW_SESSION.getId());
 		NEW_SESSION.refresh();
-		ExecutionContext.SetSession(NEW_SESSION);
+
+		const CONTEXT: ExecutionContext = Kernel.GetExecutionContext(ExecutionContext);
+
+		CONTEXT.setSession(NEW_SESSION);
 
 		return NEW_SESSION;
 	}
 
 	private static InitializeExistingSession(session_id: string): Session
 	{
-		let existing_session: Session|undefined = SessionManager.GetSession(session_id);
+		let existing_session: Session | undefined = SessionManager.GetSession(session_id);
 
 		if (existing_session === undefined)
 		{
@@ -57,10 +65,13 @@ abstract class SessionMiddleware extends BaseMiddleware
 		}
 
 		existing_session.refresh();
-		ExecutionContext.SetSession(existing_session);
+
+		const CONTEXT: ExecutionContext = Kernel.GetExecutionContext(ExecutionContext);
+
+		CONTEXT.setSession(existing_session);
 
 		return existing_session;
 	}
 }
 
-export { SessionMiddleware };
+export { SessionPreHook };

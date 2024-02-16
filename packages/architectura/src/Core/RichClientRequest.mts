@@ -2,7 +2,7 @@ import { IncomingMessage } from "node:http";
 
 import { parse as parseQuery } from "node:querystring";
 
-import { TypeAssertion } from "@vitruvius-lab/ts-predicate";
+import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
 
 import { Logger } from "../index.mjs";
 
@@ -12,14 +12,14 @@ import type { IncomingHttpHeaders } from "node:http";
 
 import type { ParsedUrlQuery } from "node:querystring";
 
-class ClientRequest extends IncomingMessage
+class RichClientRequest extends IncomingMessage
 {
 	private requestedPath: string = "";
 	private pathFragments: Array<string> = [];
 	private query: ParsedUrlQuery = {};
 	private readonly request: ParsedUrlQuery = {};
 	private rawBody: Buffer = Buffer.from("");
-	private readonly body: Record<string, unknown>|string = "";
+	private readonly body: Record<string, unknown> | string = "";
 	private contentType: string = "";
 	private boundary: string = "";
 	private cookies: Map<string, string> = new Map<string, string>();
@@ -29,7 +29,8 @@ class ClientRequest extends IncomingMessage
 	 */
 	public async getRawBody(): Promise<Buffer>
 	{
-		if (!this.complete) {
+		if (!this.complete)
+		{
 			this.rawBody = await this.listenForContent();
 		}
 
@@ -102,7 +103,8 @@ class ClientRequest extends IncomingMessage
 	 */
 	public async listenForContent(): Promise<Buffer>
 	{
-		if (this.complete) {
+		if (this.complete)
+		{
 			return this.rawBody;
 		}
 
@@ -134,12 +136,13 @@ class ClientRequest extends IncomingMessage
 	/**
 	 * getBody
 	 */
-	public getBody(): Record<string, unknown>|string
+	public getBody(): Record<string, unknown> | string
 	{
 		return this.body;
 	}
 
-	public async getBodyAsString(): Promise<string> {
+	public async getBodyAsString(): Promise<string>
+	{
 		const rawBody: Buffer = await this.getRawBody();
 		const bodyAsString: string = rawBody.toString();
 
@@ -242,28 +245,33 @@ class ClientRequest extends IncomingMessage
 	/**
 	 * setCookie
 	 */
-	public setCookie(key: string, value: string): void {
+	public setCookie(key: string, value: string): void
+	{
 		this.cookies.set(key, value);
 	}
 
 	/**
 	 * getCookie
 	 */
-	public getCookie(key: string): string|undefined {
+	public getCookie(key: string): string | undefined
+	{
 		return this.cookies.get(key);
 	}
 
 	/**
 	 * setCookies
 	 */
-	public setCookies(cookies: Map<string, string> | Record<string, string>): void {
-		if (cookies instanceof Map) {
+	public setCookies(cookies: Map<string, string> | Record<string, string>): void
+	{
+		if (cookies instanceof Map)
+		{
 			this.cookies = cookies;
 
 			return;
 		}
 
-		for (const [key, value] of Object.entries(cookies)) {
+		for (const [key, value] of Object.entries(cookies))
+		{
 			this.cookies.set(key, value);
 		}
 	}
@@ -271,9 +279,10 @@ class ClientRequest extends IncomingMessage
 	/**
 	 * getCookies
 	 */
-	public getCookies(): Map<string, string> {
+	public getCookies(): Map<string, string>
+	{
 		return this.cookies;
 	}
 }
 
-export { ClientRequest };
+export { RichClientRequest };

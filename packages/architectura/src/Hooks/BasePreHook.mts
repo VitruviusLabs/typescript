@@ -1,4 +1,4 @@
-abstract class BaseMiddleware
+abstract class BasePreHook
 {
 	/**
 	 * Execute
@@ -8,4 +8,4 @@ abstract class BaseMiddleware
 	{}
 }
 
-export { BaseMiddleware };
+export { BasePreHook };

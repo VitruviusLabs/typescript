@@ -2,10 +2,7 @@ import { default as assert } from 'node:assert/strict';
 
 import { describe, it } from 'node:test';
 
-
 import { Dispatcher } from "../../src/Service/Dispatcher.mjs";
-
-
 
 describe(
 	"Dispatcher",
@@ -20,8 +17,8 @@ describe(
 					(): void =>
 					{
 						// @ts-expect-error - We need to access this private property for test purposes.
-						assert.deepStrictEqual(Dispatcher.ENDPOINTS, []);
-						assert.deepStrictEqual(Dispatcher.GetEndpoints(), []);
+						assert.deepStrictEqual(Dispatcher.ENDPOINTS, new Map());
+						assert.deepStrictEqual(Dispatcher.GetEndpoints(), new Map());
 					}
 				);
 

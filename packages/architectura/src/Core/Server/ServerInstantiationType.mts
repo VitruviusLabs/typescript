@@ -2,6 +2,9 @@ import type { HTTPSServerInstantiationInterface } from "./HTTPSServerInstantiati
 
 import type { HTTPServerInstantiationInterface } from "./HTTPServerInstantiationInterface.mjs";
 
-type ServerInstantiationType = HTTPServerInstantiationInterface|HTTPSServerInstantiationInterface;
+type ServerInstantiationType = (
+    | HTTPServerInstantiationInterface
+    | HTTPSServerInstantiationInterface
+);
 
 export type { ServerInstantiationType };

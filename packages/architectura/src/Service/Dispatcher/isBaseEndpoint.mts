@@ -1,8 +1,8 @@
 import { BaseEndpoint } from "../../Endpoint/BaseEndpoint.mjs";
 
-function isBaseEndpoint(value: unknown): value is typeof BaseEndpoint
+function isBaseEndpoint(value: unknown): value is BaseEndpoint
 {
-	return value instanceof Function && value.prototype instanceof BaseEndpoint && value !== BaseEndpoint;
+	return value instanceof BaseEndpoint;
 }
 
 export { isBaseEndpoint };

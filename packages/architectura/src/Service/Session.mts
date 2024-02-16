@@ -6,7 +6,6 @@ import { MillisecondEnum } from "../Core/Time/MillisecondEnum.mjs";
 
 // import { CookieEnum } from "./Cookie/CookieEnum.mjs";
 
-
 // import { Logger } from "./Logger.mjs";
 
 import { Cookie } from "./Cookie.mjs";
@@ -60,7 +59,7 @@ class Session
 	/**
 	 * GetById
 	 */
-	public static GetById(id: string): Session|undefined
+	public static GetById(id: string): Session | undefined
 	{
 		return SessionManager.GetSession(id);
 	}

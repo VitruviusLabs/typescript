@@ -4,15 +4,17 @@ import { createGzip } from "zlib";
 
 import { ExecutionContext } from "./ExecutionContext.mjs";
 
+import { Kernel } from "./Kernel.mjs";
+
 import type { HTTPStatusCodeEnum } from "./HTTP/HTTPStatusCodeEnum.mjs";
+
+import type { RichClientRequest } from "./RichClientRequest.mjs";
 
 import type { Session } from "../Service/Session.mjs";
 
-import type { IncomingMessage } from "node:http";
-
 import type { Gzip } from "zlib";
 
-class ServerResponse<T extends IncomingMessage> extends HTTPServerResponse<T>
+class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
 	private content: string = "";
 
@@ -23,7 +25,9 @@ class ServerResponse<T extends IncomingMessage> extends HTTPServerResponse<T>
 	{
 		this.setHeader("Content-Encoding", "gzip");
 
-		const session: Session|undefined = ExecutionContext.GetSession();
+		const CONTEXT: ExecutionContext = Kernel.GetExecutionContext(ExecutionContext);
+
+		const session: Session|undefined = CONTEXT.getSession();
 
 		if (session !== undefined) {
 			const cookies: Map<string, string> = session.getCookies();
@@ -70,4 +74,4 @@ class ServerResponse<T extends IncomingMessage> extends HTTPServerResponse<T>
 	}
 }
 
-export { ServerResponse };
+export { RichServerResponse };

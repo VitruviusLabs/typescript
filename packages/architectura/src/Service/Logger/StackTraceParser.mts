@@ -6,8 +6,9 @@ import type { StackTraceLineParsingResultInterface } from "./StackTraceParser/St
 
 import type { StackTraceParserLineAndPositionInterface } from "./StackTraceParser/StackTraceParserLineAndPositionInterface.mjs";
 
-class StackTraceParser {
-	private static readonly ErrorMessageRegExp: RegExp = /Error: (?<message>.*)/;
+class StackTraceParser
+{
+    private static readonly ErrorMessageRegExp: RegExp = /Error: (?<message>.*)/;
     private static readonly FileIndicatorRegExp: RegExp = /(?<file>(?:node:|file:\/\/)[^\n)]+)/;
     private static readonly LineAndPositionRegExp: RegExp = /:(?<line>[0-9]+):(?<position>[0-9]+)\)?/;
     private static readonly MethodColumnName: string = "Method";
@@ -31,20 +32,24 @@ class StackTraceParser {
     private readonly message: string = "";
     private readonly lines: Array<StackTraceLineParsingResultInterface> = [];
 
-    public constructor(error: Error) {
+    public constructor(error: Error)
+    {
         this.error = error;
 
-        if (this.error.stack === undefined) {
+        if (this.error.stack === undefined)
+        {
             throw new Error("Error has no stack trace defined.");
         }
 
         this.stackTrace = this.error.stack.split("\n");
         this.message = this.error.message;
 
-        while (this.stackTrace.length > 0) {
+        while (this.stackTrace.length > 0)
+        {
             const nextLine: StackTraceLineParsingResultInterface | undefined = this.parseNextLine();
 
-            if (nextLine === undefined) {
+            if (nextLine === undefined)
+            {
                 continue;
             }
 
@@ -52,10 +57,12 @@ class StackTraceParser {
         }
     }
 
-    private static ExtractLineAndPosition(string: string): StackTraceParserLineAndPositionInterface {
+    private static ExtractLineAndPosition(string: string): StackTraceParserLineAndPositionInterface
+    {
         const lineAndPosition: RegExpExecArray | null = StackTraceParser.LineAndPositionRegExp.exec(string);
 
-        if (lineAndPosition === null) {
+        if (lineAndPosition === null)
+        {
             return {
                 line: StackTraceParserEnum.LINE_NOT_FOUND_INDEX,
                 position: StackTraceParserEnum.POSITION_NOT_FOUND_INDEX
@@ -64,7 +71,8 @@ class StackTraceParser {
 
         const foundLine: string | undefined = lineAndPosition.groups?.['line'];
 
-        if (foundLine === undefined) {
+        if (foundLine === undefined)
+        {
             return {
                 line: StackTraceParserEnum.LINE_NOT_FOUND_INDEX,
                 position: StackTraceParserEnum.POSITION_NOT_FOUND_INDEX
@@ -74,7 +82,8 @@ class StackTraceParser {
         const line: number = parseInt(foundLine, NumericBaseEnum.DECIMAL);
         const foundPosition: string | undefined = lineAndPosition.groups?.['position'];
 
-        if (foundPosition === undefined) {
+        if (foundPosition === undefined)
+        {
             return {
                 line: line,
                 position: StackTraceParserEnum.POSITION_NOT_FOUND_INDEX
@@ -89,12 +98,15 @@ class StackTraceParser {
         };
     }
 
-    private static GetPaddedString(string: string, length: number, align: 'center' | 'left' | 'right' = 'left'): string {
-        if (align === 'left') {
+    private static GetPaddedString(string: string, length: number, align: 'center' | 'left' | 'right' = 'left'): string
+    {
+        if (align === 'left')
+        {
             return ` ${string}`.padEnd(length, " ");
         }
 
-        if (align === 'right') {
+        if (align === 'right')
+        {
             return `${string} `.padStart(length, " ");
         }
 
@@ -105,7 +117,8 @@ class StackTraceParser {
         return paddedString;
     }
 
-    private static GetTableTopLine(methodColumnLength: number, lineColumnLength: number, positionColumnLength: number, moduleColumnLength: number): string {
+    private static GetTableTopLine(methodColumnLength: number, lineColumnLength: number, positionColumnLength: number, moduleColumnLength: number): string
+    {
         const methodColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(methodColumnLength);
         const lineColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(lineColumnLength);
         const positionColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(positionColumnLength);
@@ -114,7 +127,8 @@ class StackTraceParser {
         return `${StackTraceParser.TableLineTopLeftSeparator}${methodColumnLine}${StackTraceParser.TableLineTopSeparator}${lineColumnLine}${StackTraceParser.TableLineTopSeparator}${positionColumnLine}${StackTraceParser.TableLineTopSeparator}${moduleColumnLine}${StackTraceParser.TableLineTopRightSeparator}`;
     }
 
-    private static GetTableHeaderLine(methodColumnLength: number, lineColumnLength: number, positionColumnLength: number, moduleColumnLength: number): string {
+    private static GetTableHeaderLine(methodColumnLength: number, lineColumnLength: number, positionColumnLength: number, moduleColumnLength: number): string
+    {
         const methodHeader: string = StackTraceParser.GetPaddedString(StackTraceParser.MethodColumnName, methodColumnLength, 'center');
         const lineHeader: string = StackTraceParser.GetPaddedString(StackTraceParser.LineColumnName, lineColumnLength, 'center');
         const positionHeader: string = StackTraceParser.GetPaddedString(StackTraceParser.PositionColumnName, positionColumnLength, 'center');
@@ -123,7 +137,8 @@ class StackTraceParser {
         return `${StackTraceParser.TableLineVerticalSeparator}${methodHeader}${StackTraceParser.TableLineVerticalSeparator}${lineHeader}${StackTraceParser.TableLineVerticalSeparator}${positionHeader}${StackTraceParser.TableLineVerticalSeparator}${moduleHeader}${StackTraceParser.TableLineVerticalSeparator}`;
     }
 
-    private static GetTableSeparationLine(methodColumnLength: number, lineColumnLength: number, positionColumnLength: number, moduleColumnLength: number): string {
+    private static GetTableSeparationLine(methodColumnLength: number, lineColumnLength: number, positionColumnLength: number, moduleColumnLength: number): string
+    {
         const methodColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(methodColumnLength);
         const lineColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(lineColumnLength);
         const positionColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(positionColumnLength);
@@ -132,7 +147,8 @@ class StackTraceParser {
         return `${StackTraceParser.TableLineLeftSeparator}${methodColumnLine}${StackTraceParser.TableLineCrossSeparator}${lineColumnLine}${StackTraceParser.TableLineCrossSeparator}${positionColumnLine}${StackTraceParser.TableLineCrossSeparator}${moduleColumnLine}${StackTraceParser.TableLineRightSeparator}`;
     }
 
-    private static GetTableBottomLine(methodColumnLength: number, lineColumnLength: number, positionColumnLength: number, moduleColumnLength: number): string {
+    private static GetTableBottomLine(methodColumnLength: number, lineColumnLength: number, positionColumnLength: number, moduleColumnLength: number): string
+    {
         const methodColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(methodColumnLength);
         const lineColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(lineColumnLength);
         const positionColumnLine: string = StackTraceParser.TableLineHorizontalSeparator.repeat(positionColumnLength);
@@ -144,18 +160,21 @@ class StackTraceParser {
     /**
      * getMessage
      */
-    public getMessage(): string {
+    public getMessage(): string
+    {
         return this.message;
     }
 
     /**
      * getLines
      */
-    public getLines(): Array<StackTraceLineParsingResultInterface> {
+    public getLines(): Array<StackTraceLineParsingResultInterface>
+    {
         return this.lines;
     }
 
-    public getStackTraceAsTable(): Array<string> {
+    public getStackTraceAsTable(): Array<string>
+    {
         const constLongestMethodLength: number = this.getLongestMethodLength();
         const constLongestLineLength: number = this.getLongestLineLength();
         const constLongestModuleLength: number = this.getLongestModuleLength();
@@ -171,7 +190,8 @@ class StackTraceParser {
         table.push(StackTraceParser.GetTableHeaderLine(methodColumnLength, lineColumnLength, positionColumnLength, moduleColumnLength));
         table.push(StackTraceParser.GetTableSeparationLine(methodColumnLength, lineColumnLength, positionColumnLength, moduleColumnLength));
 
-        for (const line of this.lines) {
+        for (const line of this.lines)
+        {
             const methodContent: string = StackTraceParser.GetPaddedString(line.method, methodColumnLength, 'left');
             const lineNumberContent: string = StackTraceParser.GetPaddedString(line.line.toString(), lineColumnLength, 'right');
             const positionContent: string = StackTraceParser.GetPaddedString(line.position.toString(), positionColumnLength, 'right');
@@ -185,13 +205,16 @@ class StackTraceParser {
         return table;
     }
 
-    private getLongestMethodLength(): number {
+    private getLongestMethodLength(): number
+    {
         let longestMethodLength: number = StackTraceParser.MethodColumnName.length;
 
-        for (const line of this.lines) {
+        for (const line of this.lines)
+        {
             const methodLength: number = line.method.length;
 
-            if (methodLength > longestMethodLength) {
+            if (methodLength > longestMethodLength)
+            {
                 longestMethodLength = methodLength;
             }
         }
@@ -199,13 +222,16 @@ class StackTraceParser {
         return longestMethodLength;
     }
 
-    private getLongestLineLength(): number {
+    private getLongestLineLength(): number
+    {
         let longestLineLength: number = StackTraceParser.LineColumnName.length;
 
-        for (const line of this.lines) {
+        for (const line of this.lines)
+        {
             const lineLength: number = line.line.toString().length;
 
-            if (lineLength > longestLineLength) {
+            if (lineLength > longestLineLength)
+            {
                 longestLineLength = lineLength;
             }
         }
@@ -213,13 +239,16 @@ class StackTraceParser {
         return longestLineLength;
     }
 
-    private getLongestPositionLength(): number {
+    private getLongestPositionLength(): number
+    {
         let longestPositionLength: number = StackTraceParser.PositionColumnName.length;
 
-        for (const line of this.lines) {
+        for (const line of this.lines)
+        {
             const positionLength: number = line.position.toString().length;
 
-            if (positionLength > longestPositionLength) {
+            if (positionLength > longestPositionLength)
+            {
                 longestPositionLength = positionLength;
             }
         }
@@ -227,13 +256,16 @@ class StackTraceParser {
         return longestPositionLength;
     }
 
-    private getLongestModuleLength(): number {
+    private getLongestModuleLength(): number
+    {
         let longestModuleLength: number = StackTraceParser.ModuleColumnName.length;
 
-        for (const line of this.lines) {
+        for (const line of this.lines)
+        {
             const moduleLength: number = line.module.length;
 
-            if (moduleLength > longestModuleLength) {
+            if (moduleLength > longestModuleLength)
+            {
                 longestModuleLength = moduleLength;
             }
         }
@@ -241,14 +273,17 @@ class StackTraceParser {
         return longestModuleLength;
     }
 
-    private parseNextLine(): StackTraceLineParsingResultInterface|undefined {
+    private parseNextLine(): StackTraceLineParsingResultInterface | undefined
+    {
         const nextLine: string | undefined = this.stackTrace.shift();
 
-        if (nextLine === undefined) {
+        if (nextLine === undefined)
+        {
             return undefined;
         }
 
-        if (StackTraceParser.ErrorMessageRegExp.test(nextLine)) {
+        if (StackTraceParser.ErrorMessageRegExp.test(nextLine))
+        {
             return undefined;
         }
 
@@ -269,8 +304,6 @@ class StackTraceParser {
             module: foundModule
         };
     }
-
-
 }
 
 export { StackTraceParser };

@@ -3,14 +3,11 @@ import { default as assert } from 'node:assert/strict';
 
 import { describe, it } from 'node:test';
 
-
 import { Logger } from "../../src/Service/Logger.mjs";
-
 
 global.console = {
 	...global.console,
-	log: (): void =>
-	{}
+	log: (): void => { }
 };
 
 describe(
@@ -71,49 +68,57 @@ describe(
 							(): void =>
 							{
 								Logger.LogError("Lorem ipsum dolor sit amet.");
-							}, "Logger.logError can only handle Error and it's derivates.");
+							},
+							new Error("Logger.logError can only handle Error and it's derivates.")
+						);
 
 						assert.throws(
 							(): void =>
 							{
 								Logger.LogError(1);
-							}
-						,"Logger.logError can only handle Error and it's derivates.");
+							},
+							new Error("Logger.logError can only handle Error and it's derivates.")
+						);
 
 						assert.throws(
 							(): void =>
 							{
 								Logger.LogError(undefined);
-							}
-						,"Logger.logError can only handle Error and it's derivates.");
+							},
+							new Error("Logger.logError can only handle Error and it's derivates.")
+						);
 
 						assert.throws(
 							(): void =>
 							{
 								Logger.LogError({});
-							}
-						,"Logger.logError can only handle Error and it's derivates.");
+							},
+							new Error("Logger.logError can only handle Error and it's derivates.")
+						);
 
 						assert.throws(
 							(): void =>
 							{
 								Logger.LogError(new Date());
-							}
-						,"Logger.logError can only handle Error and it's derivates.");
+							},
+							new Error("Logger.logError can only handle Error and it's derivates.")
+						);
 
 						assert.throws(
 							(): void =>
 							{
 								Logger.LogError(/^[0-9]+$/);
-							}
-						,"Logger.logError can only handle Error and it's derivates.");
+							},
+							new Error("Logger.logError can only handle Error and it's derivates.")
+						);
 
 						assert.throws(
 							(): void =>
 							{
 								Logger.LogError(["foo", "bar"]);
-							}
-						,"Logger.logError can only handle Error and it's derivates.");
+							},
+							new Error("Logger.logError can only handle Error and it's derivates.")
+						);
 					}
 				);
 			}

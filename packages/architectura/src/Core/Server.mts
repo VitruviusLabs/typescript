@@ -2,15 +2,11 @@ import { Server as HTTPServer } from "node:http";
 
 import { Server as HTTPSServer } from "node:https";
 
-
 import { Dispatcher } from "../Service/Dispatcher.mjs";
 
 import { FileSystem } from "../Service/FileSystem.mjs";
 
 import { Logger } from "../Service/Logger.mjs";
-
-
-import { ClientRequest } from "./ClientRequest.mjs";
 
 import { ExecutionContext } from "./ExecutionContext.mjs";
 
@@ -18,9 +14,11 @@ import { HTTPStatusCodeEnum } from "./HTTP/HTTPStatusCodeEnum.mjs";
 
 import { Kernel } from "./Kernel.mjs";
 
-import { PortsEnum } from "./Server/PortsEnum.mjs";
+import { RichClientRequest } from "./RichClientRequest.mjs";
 
-import { ServerResponse as VitruviusResponse } from "./ServerResponse.mjs";
+import { RichServerResponse } from "./RichServerResponse.mjs";
+
+import { PortsEnum } from "./Server/PortsEnum.mjs";
 
 import type { ServerConfigurationType } from "./Server/ServerConfigurationType.mjs";
 
@@ -28,18 +26,19 @@ import type { ServerInstantiationType } from "./Server/ServerInstantiationType.m
 
 import type { BaseEndpoint } from "../Endpoint/BaseEndpoint.mjs";
 
-import type { BaseMiddleware } from "../index.mjs";
+import type { BasePostHook, BasePreHook } from "../index.mjs";
 
 import type { RequestListener } from "http";
 
 class Server
 {
 	private static readonly PUBLIC_DIRECTORIES: Map<string, string> = new Map<string, string>();
-	private static readonly GLOBAL_MIDDLEWARES: Array<typeof BaseMiddleware> = [];
+	private static readonly GLOBAL_PRE_HOOKS: Array<typeof BasePreHook> = [];
+	private static readonly GLOBAL_POST_HOOKS: Array<typeof BasePostHook> = [];
 
 	private port: number = PortsEnum.DEFAULT_HTTPS;
 	private readonly https: boolean = false;
-	private readonly server: HTTPServer|HTTPSServer;
+	private readonly server: HTTPServer | HTTPSServer;
 
 	/**
 	 * constructor
@@ -49,14 +48,15 @@ class Server
 		this.https = options.https;
 		this.port = options.port;
 
-		if (options.https) {
-
+		if (options.https)
+		{
 			this.server = new HTTPSServer(
 				{
 					cert: options.certificate,
 					key: options.key,
-					IncomingMessage: ClientRequest,
-					ServerResponse: VitruviusResponse
+					IncomingMessage: RichClientRequest,
+					// @ts-expect-error: Incorrectly believe the request is not overloaded
+					ServerResponse: RichServerResponse
 				},
 				listener
 			);
@@ -66,8 +66,9 @@ class Server
 
 		this.server = new HTTPServer(
 			{
-				IncomingMessage: ClientRequest,
-				ServerResponse: VitruviusResponse
+				IncomingMessage: RichClientRequest,
+				// @ts-expect-error: Incorrectly believe the request is not overloaded
+				ServerResponse: RichServerResponse
 			},
 			listener
 		);
@@ -78,50 +79,64 @@ class Server
 	 */
 	public static async Create(options: ServerConfigurationType): Promise<Server>
 	{
-		if (options.https) {
-			const certificate: string = await FileSystem.ReadTextFile(options.certificate);
-			const key: string = await FileSystem.ReadTextFile(options.key);
-			const HTTPS_SERVER: Server = new Server(
-				{
-					...options,
-					certificate: certificate,
-					key: key
-				},
+		const CONTEXT_CONSTRUCTOR: typeof ExecutionContext = options.contextConstructor ?? ExecutionContext;
+
+		if (!options.https)
+		{
+			const HTTP_SERVER: Server = new Server(
+				options,
 				// @ts-expect-error - This is a very specific case where TypeScript cannot know that Node.JS will use our custom class instead of IncomingMessage.
-				this.DefaultListener.bind(this)
+				async (request: RichClientRequest, response: RichServerResponse): Promise<void> =>
+				{
+					await this.DefaultListener(request, response, CONTEXT_CONSTRUCTOR);
+				}
 			);
 
-			return HTTPS_SERVER;
+			return HTTP_SERVER;
 		}
 
-		const HTTP_SERVER: Server = new Server(
-			options,
-			// @ts-expect-error - This is a very specific case where TypeScript cannot know that Node.JS will use our custom class instead of IncomingMessage.
-			this.DefaultListener.bind(this)
-		);
+		const CERTIFICATE: string = await FileSystem.ReadTextFile(options.certificate);
+		const KEY: string = await FileSystem.ReadTextFile(options.key);
 
-		return HTTP_SERVER;
-	}
-
-	// eslint-disable-next-line sonarjs/cognitive-complexity -- @TODO: Refactor this method.
-	public static async DefaultListener(request: ClientRequest, response: VitruviusResponse<ClientRequest>): Promise<void>
-	{
-		request.initialise();
-
-		const CONTEXT: ExecutionContext = ExecutionContext.Create(
+		const HTTPS_SERVER: Server = new Server(
 			{
-				request: request,
-				response: response
+				...options,
+				certificate: CERTIFICATE,
+				key: KEY
+			},
+			// @ts-expect-error - This is a very specific case where TypeScript cannot know that Node.JS will use our custom class instead of IncomingMessage.
+			async (request: RichClientRequest, response: RichServerResponse): Promise<void> =>
+			{
+				await this.DefaultListener(request, response, CONTEXT_CONSTRUCTOR);
 			}
 		);
 
-		for (const [route, directory] of this.PUBLIC_DIRECTORIES) {
+		return HTTPS_SERVER;
+	}
+
+	public static async DefaultListener(
+		request: RichClientRequest,
+		response: RichServerResponse,
+		contextConstructor: typeof ExecutionContext,
+	): Promise<void>
+	{
+		request.initialise();
+
+		const CONTEXT: ExecutionContext = new contextConstructor({
+			request: request,
+			response: response
+		});
+
+		for (const [route, directory] of this.PUBLIC_DIRECTORIES)
+		{
 			const ROUTE_REGEXP: RegExp = new RegExp(route);
 
-			if (ROUTE_REGEXP.exec(request.getRequestedPath()) !== null) {
+			if (ROUTE_REGEXP.exec(request.getRequestedPath()) !== null)
+			{
 				const FILE_PATH: string = request.getRequestedPath().replace(ROUTE_REGEXP, "").padStart(1, "/");
 
-				if (!(await FileSystem.FileExists(`${directory}${FILE_PATH}`))) {
+				if (!(await FileSystem.FileExists(`${directory}${FILE_PATH}`)))
+				{
 					continue;
 				}
 
@@ -135,25 +150,19 @@ class Server
 
 		Kernel.SetExecutionContext(CONTEXT);
 
-		const ENDPOINTS: Map<string, typeof BaseEndpoint> = Dispatcher.GetEndpoints();
+		const ENDPOINTS: Map<string, BaseEndpoint> = Dispatcher.GetEndpoints();
 
-		for (const endpoint of ENDPOINTS) {
-			if (new RegExp(endpoint[0]).test(request.getRequestedPath())) {
+		for (const [, endpoint] of ENDPOINTS)
+		{
+			if (new RegExp(endpoint.getRoute()).test(request.getRequestedPath()))
+			{
+				// @TODO: handle errors
 
-				for (const middleware of this.GLOBAL_MIDDLEWARES) {
+				await this.RunPreHooks(endpoint);
 
-					if (endpoint[1].GetExcludedMiddlewares().includes(middleware)) {
-						continue;
-					}
+				await endpoint.execute();
 
-					await middleware.Execute();
-				}
-
-				for (const middleware of endpoint[1].GetMiddlewares()) {
-					await middleware.Execute();
-				}
-
-				await endpoint[1].Execute();
+				await this.RunPostHooks(endpoint);
 
 				return;
 			}
@@ -172,9 +181,10 @@ class Server
 	/**
 	 * AddPublicDirectory
 	 */
-	public static async AddPublicDirectory(directory: string, route: string): Promise<void>
+	public static async AddPublicDirectory(route: string, directory: string): Promise<void>
 	{
-		if (!(await FileSystem.DirectoryExists(directory))) {
+		if (!(await FileSystem.DirectoryExists(directory)))
+		{
 			throw new Error(`Impossible to add directory ${directory} as a public directory as it does not exist.`);
 		}
 
@@ -186,14 +196,62 @@ class Server
 	 */
 	public static async SetPublicDirectories(directories: Map<string, string>): Promise<void>
 	{
-		for (const directory of directories) {
-			await this.AddPublicDirectory(directory[1], directory[0]);
+		for (const [route, directory] of directories)
+		{
+			await this.AddPublicDirectory(route, directory);
 		}
 	}
 
-	public static AddGlobalMiddleware(middleware: typeof BaseMiddleware): void
+	/**
+	 * AddGlobalPreHook
+	 */
+	public static AddGlobalPreHook(hook: typeof BasePreHook): void
 	{
-		this.GLOBAL_MIDDLEWARES.push(middleware);
+		this.GLOBAL_PRE_HOOKS.push(hook);
+	}
+
+	/**
+	 * AddGlobalPostHook
+	 */
+	public static AddGlobalPostHook(hook: typeof BasePostHook): void
+	{
+		this.GLOBAL_POST_HOOKS.push(hook);
+	}
+
+	private static async RunPreHooks(endpoint: BaseEndpoint): Promise<void>
+	{
+		for (const HOOK of this.GLOBAL_PRE_HOOKS)
+		{
+			if (endpoint.getExcludedGlobalPreHooks().includes(HOOK))
+			{
+				continue;
+			}
+
+			await HOOK.Execute();
+		}
+
+		for (const HOOK of endpoint.getPreHooks())
+		{
+			await HOOK.Execute();
+		}
+	}
+
+	private static async RunPostHooks(endpoint: BaseEndpoint): Promise<void>
+	{
+		for (const HOOK of this.GLOBAL_POST_HOOKS)
+		{
+			if (endpoint.getExcludedGlobalPostHooks().includes(HOOK))
+			{
+				continue;
+			}
+
+			await HOOK.Execute();
+		}
+
+		for (const HOOK of endpoint.getPostHooks())
+		{
+			await HOOK.Execute();
+		}
 	}
 
 	/**
@@ -217,7 +275,7 @@ class Server
 	{
 		if (!Number.isInteger(port) || port < PortsEnum.LOWEST_AVAILABLE || port > PortsEnum.HIGHEST_AVAILABLE)
 		{
-			throw new Error(`"port" parameter isn't with range of valid ports. Must be an integer between ${PortsEnum.LOWEST_AVAILABLE.toString()} and ${PortsEnum.HIGHEST_AVAILABLE.toString()}`);
+			throw new Error(`"port" parameter isn't within range of valid ports. It must be an integer between ${PortsEnum.LOWEST_AVAILABLE.toString()} and ${PortsEnum.HIGHEST_AVAILABLE.toString()}`);
 		}
 
 		this.port = port;

@@ -2,20 +2,21 @@ import { ExecutionContext } from "../../Core/ExecutionContext.mjs";
 
 import { HTTPMethodEnum } from "../../Core/HTTP/HTTPMethodEnum.mjs";
 
+import { Kernel } from "../../index.mjs";
+
 import { BaseEndpoint } from "../BaseEndpoint.mjs";
-
-
 
 class HomeEndpoint extends BaseEndpoint
 {
-	protected static override readonly METHOD: HTTPMethodEnum = HTTPMethodEnum.GET;
-	protected static override readonly ROUTE: string = "^/?$";
+	protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
+	protected readonly route: string = "^/?$";
 
-	// @TODO: Refine this.
-	// eslint-disable-next-line @typescript-eslint/require-await -- This is a WIP.
-	public static override async Execute(): Promise<void>
+	// eslint-disable-next-line @typescript-eslint/require-await, class-methods-use-this -- This is a WIP.
+	public async execute(): Promise<void>
 	{
-		ExecutionContext.GetResponse()?.send('Hello World!');
+		const CONTEXT: ExecutionContext = Kernel.GetExecutionContext(ExecutionContext);
+
+		CONTEXT.getResponse().send('Hello World!');
 	}
 }
 

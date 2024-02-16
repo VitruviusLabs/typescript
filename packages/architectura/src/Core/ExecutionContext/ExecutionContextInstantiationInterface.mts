@@ -1,11 +1,11 @@
-import type { ClientRequest } from "../ClientRequest.mjs";
+import type { RichClientRequest } from "../RichClientRequest.mjs";
 
-import type { ServerResponse } from "../ServerResponse.mjs";
+import type { RichServerResponse } from "../RichServerResponse.mjs";
 
 interface ExecutionContextInstantiationInterface
 {
-	request: ClientRequest;
-	response: ServerResponse<ClientRequest>;
+	request: RichClientRequest;
+	response: RichServerResponse;
 }
 
 export type { ExecutionContextInstantiationInterface };

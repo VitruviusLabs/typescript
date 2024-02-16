@@ -1,7 +1,8 @@
+// @TODO: Handle homonymous cookies with different paths and domains.
 class Cookie
 {
 	private static readonly EXTRACTION_REGEXP: RegExp = / ?(?<name>[^=]+)=(?<value>[^;]+);?/g;
-	private static readonly COOKIE_NAME_PREFIX: string = 'vitruvius';
+	private static readonly COOKIE_NAME_PREFIX: string = 'architectura';
 
 	/**
 	 * Extract
@@ -14,9 +15,9 @@ class Cookie
 	 */
 	public static Extract(cookies: string): Map<string, string>
 	{
-		const COOKIES: Map<string, string> = new Map<string, string>();
+		const COOKIES: Map<string, string> = new Map();
 
-		let matched_cookies: RegExpExecArray|null = this.EXTRACTION_REGEXP.exec(cookies);
+		let matched_cookies: RegExpExecArray | null = this.EXTRACTION_REGEXP.exec(cookies);
 
 		while (matched_cookies !== null)
 		{
@@ -25,8 +26,8 @@ class Cookie
 				break;
 			}
 
-			const NAME: string|undefined = matched_cookies.groups["name"];
-			const VALUE: string|undefined = matched_cookies.groups["value"];
+			const NAME: string | undefined = matched_cookies.groups["name"];
+			const VALUE: string | undefined = matched_cookies.groups["value"];
 
 			if (NAME === undefined || VALUE === undefined)
 			{
@@ -41,7 +42,8 @@ class Cookie
 		return COOKIES;
 	}
 
-	public static GetCookieNamePrefix(): string {
+	public static GetCookieNamePrefix(): string
+	{
 		return this.COOKIE_NAME_PREFIX;
 	}
 }

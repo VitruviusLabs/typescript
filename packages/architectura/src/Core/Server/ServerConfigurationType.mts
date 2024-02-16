@@ -2,6 +2,9 @@ import type { HTTPSServerConfigurationInterface } from "./HTTPSServerConfigurati
 
 import type { HTTPServerConfigurationInterface } from "./HTTPServerConfigurationInterface.mjs";
 
-type ServerConfigurationType = HTTPServerConfigurationInterface|HTTPSServerConfigurationInterface;
+type ServerConfigurationType = (
+    | HTTPServerConfigurationInterface
+    | HTTPSServerConfigurationInterface
+);
 
 export type { ServerConfigurationType };

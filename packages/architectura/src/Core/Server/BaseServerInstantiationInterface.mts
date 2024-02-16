@@ -1,4 +1,5 @@
-interface BaseServerInstantiationInterface {
+interface BaseServerInstantiationInterface
+{
     port: number;
 }
 

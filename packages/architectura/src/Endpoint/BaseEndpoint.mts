@@ -1,41 +1,69 @@
-import { HTTPMethodEnum } from "../Core/HTTP/HTTPMethodEnum.mjs";
+import { Singleton } from "../Core/Singleton.mjs";
 
-import type { BaseMiddleware } from "../Middleware/BaseMiddleware.mjs";
+import type { HTTPMethodEnum } from "../Core/HTTP/HTTPMethodEnum.mjs";
 
-abstract class BaseEndpoint
+import type { BasePostHook, BasePreHook } from "../index.mjs";
+
+abstract class BaseEndpoint extends Singleton
 {
-	protected static readonly METHOD: HTTPMethodEnum = HTTPMethodEnum.GET;
-	protected static readonly ROUTE: string = "/";
-	protected static readonly MIDDLEWARES: Array<typeof BaseMiddleware> = [];
-	protected static readonly EXCLUDED_MIDDLEWARES: Array<typeof BaseMiddleware> = [];
+	protected abstract readonly method: HTTPMethodEnum;
+	protected abstract readonly route: string;
+	protected readonly preHooks: Array<typeof BasePreHook> = [];
+	protected readonly excludedGlobalPreHooks: Array<typeof BasePreHook> = [];
+	protected readonly postHooks: Array<typeof BasePostHook> = [];
+	protected readonly excludedGlobalPostHooks: Array<typeof BasePostHook> = [];
 
-	public static async Execute(): Promise<void>
-	// eslint-disable-next-line @typescript-eslint/no-empty-function -- This is a dummy method that will be replaced when the class is extended.
-	{}
+	/**
+	 * execute
+	 */
+	public abstract execute(): Promise<void>;
 
-	public static GetMethod(): HTTPMethodEnum
+	/**
+	 * getMethod
+	 */
+	public getMethod(): HTTPMethodEnum
 	{
-		return this.METHOD;
-	}
-
-	public static GetRoute(): string
-	{
-		return this.ROUTE;
+		return this.method;
 	}
 
 	/**
-	 * GetMiddleware
+	 * getRoute
 	 */
-	public static GetMiddlewares(): Array<typeof BaseMiddleware>
+	public getRoute(): string
 	{
-		return this.MIDDLEWARES;
+		return this.route;
 	}
 
 	/**
-	 * GetExcludedMiddlewares
+	 * getPreHooks
 	 */
-	public static GetExcludedMiddlewares(): Array<typeof BaseMiddleware> {
-		return this.EXCLUDED_MIDDLEWARES;
+	public getPreHooks(): Array<typeof BasePreHook>
+	{
+		return this.preHooks;
+	}
+
+	/**
+	 * getExcludedGlobalPreHooks
+	 */
+	public getExcludedGlobalPreHooks(): Array<typeof BasePreHook>
+	{
+		return this.excludedGlobalPreHooks;
+	}
+
+	/**
+	 * getPostHooks
+	 */
+	public getPostHooks(): Array<typeof BasePostHook>
+	{
+		return this.postHooks;
+	}
+
+	/**
+	 * getExcludedGlobalPostHooks
+	 */
+	public getExcludedGlobalPostHooks(): Array<typeof BasePostHook>
+	{
+		return this.excludedGlobalPostHooks;
 	}
 }
 

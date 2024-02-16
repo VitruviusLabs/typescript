@@ -5,6 +5,9 @@ import { describe, it } from "node:test";
 
 import { Kernel } from "../../src/Core/Kernel.mjs";
 
+import { ExecutionContext } from "../../src/index.mjs";
+
+
 describe(
 	"Kernel",
 	(): void =>
@@ -29,10 +32,15 @@ describe(
 			(): void =>
 			{
 				it(
-					"should return undefined when called outside of an async hook",
+					"should throw when called outside of an async hook",
 					(): void =>
 					{
-						assert.strictEqual(Kernel.GetExecutionContext(), undefined);
+						assert.throws(
+							(): void =>
+							{
+								Kernel.GetExecutionContext(ExecutionContext);
+							}
+						);
 					}
 				);
 

@@ -1,73 +1,39 @@
-import { Kernel } from "./Kernel.mjs";
-
-import type { ClientRequest } from "./ClientRequest.mjs";
 
 import type { ExecutionContextInstantiationInterface } from "./ExecutionContext/ExecutionContextInstantiationInterface.mjs";
 
-import type { ServerResponse } from './ServerResponse.mjs';
+import type { RichClientRequest } from "./RichClientRequest.mjs";
+
+
+import type { RichServerResponse } from './RichServerResponse.mjs';
 
 import type { Session } from "../Service/Session.mjs";
 
 class ExecutionContext
 {
-	private readonly request: ClientRequest;
-	private readonly response: ServerResponse<ClientRequest>;
+	private readonly request: RichClientRequest;
+	private readonly response: RichServerResponse;
 	private session?: Session;
 
-	private constructor(value: ExecutionContextInstantiationInterface)
+	public constructor(contextItems: ExecutionContextInstantiationInterface)
 	{
-		this.request = value.request;
-		this.response = value.response;
+		this.request = contextItems.request;
+		this.response = contextItems.response;
 	}
 
-	public static Create(value: ExecutionContextInstantiationInterface): ExecutionContext
-	{
-		return new ExecutionContext(value);
-	}
-
-	public static GetRequest(): ClientRequest|undefined
-	{
-		return Kernel.GetExecutionContext()?.getRequest();
-	}
-
-	public static GetResponse(): ServerResponse<ClientRequest>|undefined
-	{
-		return Kernel.GetExecutionContext()?.getResponse();
-	}
-
-	public static GetSession(): Session|undefined
-	{
-		return Kernel.GetExecutionContext()?.getSession();
-	}
-
-	public static SetSession(session: Session): void
-	{
-		const EXECUTION_CONTEXT: ExecutionContext|undefined = Kernel.GetExecutionContext();
-
-		if (EXECUTION_CONTEXT === undefined)
-		{
-			return;
-		}
-
-		EXECUTION_CONTEXT.setSession(session);
-	}
-
-	public getRequest(): ClientRequest
+	/**
+	 * getRequest
+	 */
+	public getRequest(): RichClientRequest
 	{
 		return this.request;
 	}
 
-	public getResponse(): ServerResponse<ClientRequest>
+	/**
+	 * getResponse
+	 */
+	public getResponse(): RichServerResponse
 	{
 		return this.response;
-	}
-
-	/**
-	 * setSession
-	 */
-	public setSession(session: Session): void
-	{
-		this.session = session;
 	}
 
 	/**
@@ -76,6 +42,14 @@ class ExecutionContext
 	public getSession(): Session|undefined
 	{
 		return this.session;
+	}
+
+	/**
+	 * setSession
+	 */
+	public setSession(session: Session): void
+	{
+		this.session = session;
 	}
 }
 

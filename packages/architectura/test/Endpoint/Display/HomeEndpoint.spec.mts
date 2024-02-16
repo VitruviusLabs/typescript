@@ -7,7 +7,6 @@
 
 // import { HomeEndpoint } from "../../../src/Endpoint/Display/HomeEndpoint.mjs";
 
-
 // describe(
 // 	"HomeEndpoint",
 // 	(): void =>

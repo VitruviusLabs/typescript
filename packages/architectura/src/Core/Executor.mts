@@ -1,4 +1,4 @@
-import { TypeGuard } from "@vitruvius-lab/ts-predicate";
+import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
 import type { ExecutorInstantiationInterface } from "./Executor/ExecutorInstantiationInterface.mjs";
 
@@ -13,7 +13,6 @@ class Executor
 		this.baseDelay = value.baseDelay;
 
 		this.callback = value.callback;
-
 
 		if (TypeGuard.hasProperty(value, "customDelayCalculator") && TypeGuard.isFunction(value.customDelayCalculator))
 		{
@@ -57,7 +56,7 @@ class Executor
 	// eslint-disable-next-line class-methods-use-this -- This is an exception because it's a dummy method that will be replaced by the real callback when instantiated.
 	private async callback(): Promise<void>
 	// eslint-disable-next-line @typescript-eslint/no-empty-function -- This is an exception because it's a dummy method that will be replaced by the real callback when instantiated.
-	{}
+	{ }
 
 	private calculateDelay(previous_delay: number): number
 	{
