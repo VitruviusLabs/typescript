@@ -1,8 +1,6 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 
-import type { ExecutionContext } from "./ExecutionContext.mjs";
-
-import type { ConstructorOf } from "../utils/ConstructorOf.mjs";
+import { ExecutionContext } from "./ExecutionContext.mjs";
 
 abstract class Kernel
 {
@@ -23,7 +21,10 @@ abstract class Kernel
 		return this.GetContextAccessor().getStore();
 	}
 
-	public static GetExecutionContext<CustomContext extends ExecutionContext>(custom_class: ConstructorOf<CustomContext>): CustomContext
+	public static GetExecutionContext<CustomContext extends ExecutionContext = ExecutionContext>(
+		// @ts-expect-error: CustomContext extends ExecutionContext
+		custom_class: ConstructorOf<CustomContext> = ExecutionContext
+	): CustomContext
 	{
 		const CONTEXT: ExecutionContext | undefined = this.ContextAccessor.getStore();
 
@@ -34,6 +35,7 @@ abstract class Kernel
 
         if (CONTEXT instanceof custom_class)
         {
+			// @ts-expect-error: CustomContext extends ExecutionContext
 			return CONTEXT;
         }
 

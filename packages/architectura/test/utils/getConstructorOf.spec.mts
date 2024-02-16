@@ -1,16 +1,16 @@
 import { describe, it } from "node:test";
 
-import { BaseEndpoint } from "../../src/index.mjs";
+import { getConstructorOf } from "../../src/index.mjs";
 
 describe(
-    "BaseEndpoint",
+    "getConstructorOf",
     (): void =>
     {
         it.todo(
             "should be tested",
             (): void =>
             {
-                BaseEndpoint;
+                getConstructorOf;
             }
         );
     }

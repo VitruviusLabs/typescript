@@ -1,4 +1,4 @@
-import { Server as HTTPServer } from "node:http";
+import { Server as HTTPServer, type RequestListener } from "node:http";
 
 import { Server as HTTPSServer } from "node:https";
 
@@ -7,6 +7,8 @@ import { Dispatcher } from "../Service/Dispatcher.mjs";
 import { FileSystem } from "../Service/FileSystem.mjs";
 
 import { Logger } from "../Service/Logger.mjs";
+
+import { getConstructorOf } from "../utils/getConstructorOf.mjs";
 
 import { ExecutionContext } from "./ExecutionContext.mjs";
 
@@ -24,11 +26,7 @@ import type { ServerConfigurationType } from "./Server/ServerConfigurationType.m
 
 import type { ServerInstantiationType } from "./Server/ServerInstantiationType.mjs";
 
-import type { BaseEndpoint } from "../Endpoint/BaseEndpoint.mjs";
-
-import type { BasePostHook, BasePreHook } from "../index.mjs";
-
-import type { RequestListener } from "http";
+import type { BaseEndpoint, BasePostHook, BasePreHook } from "../index.mjs";
 
 class Server
 {
@@ -222,7 +220,7 @@ class Server
 	{
 		for (const HOOK of this.GLOBAL_PRE_HOOKS)
 		{
-			if (endpoint.getExcludedGlobalPreHooks().includes(HOOK))
+			if (endpoint.getExcludedGlobalPreHooks().includes(getConstructorOf(HOOK)))
 			{
 				continue;
 			}
@@ -240,7 +238,7 @@ class Server
 	{
 		for (const HOOK of this.GLOBAL_POST_HOOKS)
 		{
-			if (endpoint.getExcludedGlobalPostHooks().includes(HOOK))
+			if (endpoint.getExcludedGlobalPostHooks().includes(getConstructorOf(HOOK)))
 			{
 				continue;
 			}

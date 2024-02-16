@@ -1,15 +1,15 @@
-import { ExecutionContext } from "../../Core/ExecutionContext.mjs";
+import { BaseEndpoint } from "../Core/Base/BaseEndpoint.mjs";
 
-import { HTTPMethodEnum } from "../../Core/HTTP/HTTPMethodEnum.mjs";
+import { ExecutionContext } from "../Core/ExecutionContext.mjs";
 
-import { Kernel } from "../../index.mjs";
+import { HTTPMethodEnum } from "../Core/HTTP/HTTPMethodEnum.mjs";
 
-import { BaseEndpoint } from "../BaseEndpoint.mjs";
+import { Kernel } from "../index.mjs";
 
-class HomeEndpoint extends BaseEndpoint
+class HelloWorldEndpoint extends BaseEndpoint
 {
 	protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
-	protected readonly route: string = "^/?$";
+	protected readonly route: string = "^.*$";
 
 	// eslint-disable-next-line @typescript-eslint/require-await, class-methods-use-this -- This is a WIP.
 	public async execute(): Promise<void>
@@ -20,4 +20,4 @@ class HomeEndpoint extends BaseEndpoint
 	}
 }
 
-export { HomeEndpoint };
+export { HelloWorldEndpoint };

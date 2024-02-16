@@ -1,2 +1,1 @@
-export * from "./BaseEndpoint.mjs";
-export * from "./Display/index.mjs";
+export * from "./HelloWorldEndpoint.mjs";

@@ -1,16 +1,16 @@
 import { describe, it } from "node:test";
 
-import { BasePreHook } from "../../src/index.mjs";
+import { BaseEndpoint } from "../../../src/index.mjs";
 
 describe(
-    "BasePreHook",
+    "BaseEndpoint",
     (): void =>
     {
         it.todo(
             "should be tested",
             (): void =>
             {
-                BasePreHook;
+                BaseEndpoint;
             }
         );
     }

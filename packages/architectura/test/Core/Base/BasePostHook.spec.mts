@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 
-import { BasePostHook } from "../../src/index.mjs";
+import { BasePostHook } from "../../../src/index.mjs";
 
 describe(
     "BasePostHook",

@@ -5,10 +5,10 @@
 
 // import { Kernel } from "../../../src/Core/Kernel.mjs";
 
-// import { HomeEndpoint } from "../../../src/Endpoint/Display/HomeEndpoint.mjs";
+// import { HelloWorldEndpoint } from "../../../src/Endpoint/Display/HelloWorldEndpoint.mjs";
 
 // describe(
-// 	"HomeEndpoint",
+// 	"HelloWorldEndpoint",
 // 	(): void =>
 // 	{
 // 		describe(
@@ -32,7 +32,7 @@
 
 // 						await Kernel.GetContextAccessor().run(
 // 							EXECUTION_CONTEXT,
-// 							HomeEndpoint.Execute.bind(HomeEndpoint)
+// 							HelloWorldEndpoint.Execute.bind(HelloWorldEndpoint)
 // 						);
 
 // 					}
@@ -44,7 +44,7 @@
 // 					{
 // 						const GET_RESPONSE_SPY: SinonSpy = spy(ExecutionContext, "GetResponse");
 
-// 						await HomeEndpoint.Execute();
+// 						await HelloWorldEndpoint.Execute();
 
 // 						expect(GET_RESPONSE_SPY.returned(undefined)).to.be.true;
 // 						GET_RESPONSE_SPY.restore();

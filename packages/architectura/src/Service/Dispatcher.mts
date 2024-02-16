@@ -4,7 +4,9 @@ import { basename } from "node:path";
 
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
-import { BaseEndpoint } from "../Endpoint/BaseEndpoint.mjs";
+import { BaseEndpoint } from "../Core/Base/BaseEndpoint.mjs";
+
+import { HelloWorldEndpoint } from "../index.mjs";
 
 import { FileSystem } from "./FileSystem.mjs";
 
@@ -22,6 +24,15 @@ class Dispatcher
 	 */
 	public static GetEndpoints(): Map<string, BaseEndpoint>
 	{
+		if (this.ENDPOINTS.size === 0)
+		{
+			const MAP: Map<string, BaseEndpoint> = new Map();
+
+			MAP.set('GET::^.*$', new HelloWorldEndpoint());
+
+			return MAP;
+		}
+
 		return this.ENDPOINTS;
 	}
 
@@ -58,10 +69,6 @@ class Dispatcher
 	 */
 	public static async RegisterEndpoints(): Promise<void>
 	{
-		const ROOT_DIRECTORY: string = await FileSystem.ComputeRootDirectory();
-
-		await Dispatcher.ParseDirectoryForEndpoints(`${ROOT_DIRECTORY}/Endpoint`);
-
 		for (const DIRECTORY of this.ENDPOINTS_DIRECTORIES)
 		{
 			await Dispatcher.ParseDirectoryForEndpoints(DIRECTORY);

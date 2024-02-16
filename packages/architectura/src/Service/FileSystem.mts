@@ -1,12 +1,12 @@
-import { createReadStream , promises as fs } from "fs";
+import { type Dirent , type ReadStream, type Stats, createReadStream } from "node:fs";
 
-import { type as os_type } from "os";
+import { type FileHandle, open, readFile, readdir, stat } from "node:fs/promises";
+
+import { dirname } from "node:path";
+
+import { fileURLToPath } from "node:url";
 
 import type { FileSystemErrorInterface } from "./FileSystem/FileSystemErrorInterface.mjs";
-
-import type { Dirent, ReadStream, Stats } from "fs";
-
-import type { FileHandle } from "fs/promises";
 
 class FileSystem
 {
@@ -22,29 +22,13 @@ class FileSystem
 	/**
 	 * ComputeRootDirectory
 	 */
-	public static async ComputeRootDirectory(): Promise<string>
+	public static ComputeRootDirectory(): string
 	{
-		let dirname: string = "";
-		const OS_TYPE: string = os_type();
+		const FILE_PATH: string = fileURLToPath(import.meta.url);
 
-		if (["Linux", "Darwin"].includes(OS_TYPE))
-		{
-			dirname = import.meta.url.replace(/^file:\/\/\/(?<path>.*)\/[^/]+$/, "/$1");
-		}
+		const GRANDPARENT_DIRECTORY: string = dirname(dirname(FILE_PATH));
 
-		if (OS_TYPE === "Windows_NT")
-		{
-			dirname = import.meta.url.replace(/^file:\/\/\/[A-Z]:(?<path>.*)\/[^/]+$/, "$1");
-		}
-
-		if (dirname === "")
-		{
-			throw new Error("Unrecognized operating system.");
-		}
-
-		dirname = await fs.realpath(`${dirname}/..`);
-
-		return dirname;
+		return GRANDPARENT_DIRECTORY;
 	}
 
 	/**
@@ -54,7 +38,7 @@ class FileSystem
 	{
 		try
 		{
-			const STAT: Stats = await fs.stat(file_path);
+			const STAT: Stats = await stat(file_path);
 
 			return STAT.isFile();
 		}
@@ -91,7 +75,7 @@ class FileSystem
 	{
 		try
 		{
-			const STAT: Stats = await fs.stat(directory_path);
+			const STAT: Stats = await stat(directory_path);
 
 			return STAT.isDirectory();
 		}
@@ -136,7 +120,7 @@ class FileSystem
 			throw new Error(`Requested file ${file_path} does not exists.`);
 		}
 
-		const FILE: Buffer | string = await fs.readFile(file_path);
+		const FILE: Buffer | string = await readFile(file_path);
 
 		return FILE;
 	}
@@ -175,7 +159,7 @@ class FileSystem
 			throw new Error(`Requested file ${file_path} does not exists.`);
 		}
 
-		const FILE: string = await fs.readFile(file_path, { encoding: "utf-8" });
+		const FILE: string = await readFile(file_path, { encoding: "utf-8" });
 
 		return FILE;
 	}
@@ -192,7 +176,7 @@ class FileSystem
 			throw new Error(`Requested file ${file_path} does not exists.`);
 		}
 
-		const FILE: fs.FileHandle = await fs.open(file_path, flags);
+		const FILE: FileHandle = await open(file_path, flags);
 
 		return FILE;
 	}
@@ -202,7 +186,7 @@ class FileSystem
 	 */
 	public static async ReadDirectory(directory: string): Promise<Array<Dirent>>
 	{
-		return await fs.readdir(directory, { encoding: "utf-8", withFileTypes: true });
+		return await readdir(directory, { encoding: "utf-8", withFileTypes: true });
 	}
 }
 

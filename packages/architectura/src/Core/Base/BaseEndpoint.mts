@@ -1,17 +1,17 @@
-import { Singleton } from "../Core/Singleton.mjs";
+import { Singleton } from "../Singleton.mjs";
 
-import type { HTTPMethodEnum } from "../Core/HTTP/HTTPMethodEnum.mjs";
+import type { BasePostHook, BasePreHook } from "../../index.mjs";
 
-import type { BasePostHook, BasePreHook } from "../index.mjs";
+import type { HTTPMethodEnum } from "../HTTP/HTTPMethodEnum.mjs";
 
 abstract class BaseEndpoint extends Singleton
 {
 	protected abstract readonly method: HTTPMethodEnum;
 	protected abstract readonly route: string;
 	protected readonly preHooks: Array<BasePreHook> = [];
-	protected readonly excludedGlobalPreHooks: Array<BasePreHook> = [];
+	protected readonly excludedGlobalPreHooks: Array<typeof BasePreHook> = [];
 	protected readonly postHooks: Array<BasePostHook> = [];
-	protected readonly excludedGlobalPostHooks: Array<BasePostHook> = [];
+	protected readonly excludedGlobalPostHooks: Array<typeof BasePostHook> = [];
 
 	/**
 	 * execute
@@ -45,7 +45,7 @@ abstract class BaseEndpoint extends Singleton
 	/**
 	 * getExcludedGlobalPreHooks
 	 */
-	public getExcludedGlobalPreHooks(): Array<BasePreHook>
+	public getExcludedGlobalPreHooks(): Array<typeof BasePreHook>
 	{
 		return this.excludedGlobalPreHooks;
 	}
@@ -61,7 +61,7 @@ abstract class BaseEndpoint extends Singleton
 	/**
 	 * getExcludedGlobalPostHooks
 	 */
-	public getExcludedGlobalPostHooks(): Array<BasePostHook>
+	public getExcludedGlobalPostHooks(): Array<typeof BasePostHook>
 	{
 		return this.excludedGlobalPostHooks;
 	}

@@ -2,7 +2,7 @@ import { default as assert } from 'node:assert/strict';
 
 import { describe, it } from 'node:test';
 
-import { Dispatcher } from "../../src/index.mjs";
+import { BaseEndpoint, Dispatcher, HTTPMethodEnum, HelloWorldEndpoint, Singleton } from "../../src/index.mjs";
 
 describe(
 	"Dispatcher",
@@ -13,23 +13,36 @@ describe(
 			(): void =>
 			{
 				it(
-					"should return the ENDPOINTS static property as an empty array when none were registered",
+					"should return the HelloWorldEndpoint when no endpoint was registered",
 					(): void =>
 					{
 						// @ts-expect-error - We need to access this private property for test purposes.
 						assert.deepStrictEqual(Dispatcher.ENDPOINTS, new Map());
-						assert.deepStrictEqual(Dispatcher.GetEndpoints(), new Map());
+						assert.deepStrictEqual(Dispatcher.GetEndpoints(), new Map([[ "GET::^.*$", Singleton.GetInstance(HelloWorldEndpoint)]]));
 					}
 				);
 
 				it(
-					"should return the ENDPOINTS static property when some were registered",
-					async (): Promise<void> =>
+					"should return the registered endpoints",
+					(): void =>
 					{
-						await Dispatcher.RegisterEndpoints();
+						class DummyEndpoint extends BaseEndpoint
+						{
+							public readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
+							public readonly route: string = "^/dummy?$";
+
+							public execute(): void {}
+						}
+
+						const ENDPOINT: DummyEndpoint = new DummyEndpoint();
+
+						Dispatcher.AddEndpoint(ENDPOINT);
 
 						// @ts-expect-error - We need to access this private property for test purposes.
 						assert.deepStrictEqual(Dispatcher.GetEndpoints(), Dispatcher.ENDPOINTS);
+
+						// @ts-expect-error - We need to access this private property for test purposes.
+						Dispatcher.ENDPOINTS.clear();
 					}
 				);
 			}

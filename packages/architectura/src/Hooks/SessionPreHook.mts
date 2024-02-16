@@ -4,9 +4,7 @@ import { Session } from "../Service/Session.mjs";
 
 import { SessionManager } from "../Service/SessionManager.mjs";
 
-import { Kernel } from "../index.mjs";
-
-import { BasePreHook } from "./BasePreHook.mjs";
+import { BasePreHook , Kernel } from "../index.mjs";
 
 abstract class SessionPreHook extends BasePreHook
 {

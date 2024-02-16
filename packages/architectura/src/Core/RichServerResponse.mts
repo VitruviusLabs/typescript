@@ -1,6 +1,6 @@
 import { ServerResponse as HTTPServerResponse } from "node:http";
 
-import { createGzip } from "zlib";
+import { type Gzip, createGzip } from "node:zlib";
 
 import { ExecutionContext } from "./ExecutionContext.mjs";
 
@@ -11,8 +11,6 @@ import type { HTTPStatusCodeEnum } from "./HTTP/HTTPStatusCodeEnum.mjs";
 import type { RichClientRequest } from "./RichClientRequest.mjs";
 
 import type { Session } from "../Service/Session.mjs";
-
-import type { Gzip } from "zlib";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
