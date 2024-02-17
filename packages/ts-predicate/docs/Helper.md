@@ -17,7 +17,7 @@ Otherwise, return false.
 ## GetConstructorOf
 
 ```ts
-getConstructorOf(value: T): ContructorOf<T>
+getConstructorOf(value: T): ConstructorOf<T>
 ```
 
 Return the constructor class for the given object.
