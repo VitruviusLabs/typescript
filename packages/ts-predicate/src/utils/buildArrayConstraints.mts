@@ -9,6 +9,11 @@ function buildArrayConstraints<Type>(constraints: ArrayConstraints<Type> | Test<
 		};
 	}
 
+	if (constraints !== undefined && constraints.minLength !== undefined && constraints.minLength < 1)
+	{
+		throw new RangeError("The minimum length cannot be less than one.");
+	}
+
 	return constraints;
 }
 

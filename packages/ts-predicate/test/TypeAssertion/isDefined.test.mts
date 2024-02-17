@@ -4,9 +4,10 @@ import { describe, it } from "node:test";
 
 import { TypeAssertion } from "../../src/index.mjs";
 
+import { createErrorTest } from "../common/createErrorTest.mjs";
+
 import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
-import { testError } from "../common/testError.mjs";
 
 describe(
 	"TypeAssertion.isDefined",
@@ -25,7 +26,7 @@ describe(
 						TypeAssertion.isDefined(ITEM);
 					};
 
-					throws(WRAPPER, testError);
+					throws(WRAPPER, createErrorTest());
 				}
 			}
 		);

@@ -126,6 +126,14 @@ isObject(value: unknown): void
 
 Asserts that the value is an object.
 
+## IsInstanceOf
+
+```ts
+isInstanceOf(value: unknown, constructor_class: ConstructorFunction): void
+```
+
+Asserts that the value is an instance of that class.
+
 ## IsFunction
 
 ```ts

@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { TypeAssertion } from "../../src/index.mjs";
 
-import { testError } from "../common/testError.mjs";
+import { createErrorTest } from "../common/createErrorTest.mjs";
 
 describe(
 	"TypeAssertion.hasNullableProperty",
@@ -19,7 +19,7 @@ describe(
 					TypeAssertion.hasNullableProperty({}, "answer");
 				};
 
-				throws(WRAPPER, testError);
+				throws(WRAPPER, createErrorTest(`The value must have a property "answer".`));
 			}
 		);
 

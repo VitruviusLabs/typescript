@@ -4,9 +4,9 @@ import { describe, it } from "node:test";
 
 import { TypeAssertion } from "../../src/index.mjs";
 
-import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
+import { createErrorTest } from "../common/createErrorTest.mjs";
 
-import { testError } from "../common/testError.mjs";
+import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 describe(
 	"TypeAssertion.isFiniteNumber",
@@ -43,7 +43,7 @@ describe(
 						TypeAssertion.isFiniteNumber(ITEM);
 					};
 
-					throws(WRAPPER, testError);
+					throws(WRAPPER, createErrorTest());
 				}
 			}
 		);
@@ -61,7 +61,7 @@ describe(
 						TypeAssertion.isFiniteNumber(ITEM);
 					};
 
-					throws(WRAPPER, testError);
+					throws(WRAPPER, createErrorTest());
 				}
 			}
 		);

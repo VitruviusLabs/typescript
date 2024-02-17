@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { itemAssertion } from "../../../src/TypeAssertion/utils/itemAssertion.mjs";
 
-import { testError } from "../../common/testError.mjs";
+import { createErrorTest } from "../../common/createErrorTest.mjs";
 
 describe(
 	"TypeAssertion / utils / itemAssertion",
@@ -47,7 +47,7 @@ describe(
 					itemAssertion(null, GUARD);
 				};
 
-				throws(WRAPPER, testError);
+				throws(WRAPPER, createErrorTest());
 			}
 		);
 
@@ -94,7 +94,7 @@ describe(
 					itemAssertion(null, GUARD);
 				};
 
-				throws(WRAPPER, testError);
+				throws(WRAPPER, createErrorTest());
 			}
 		);
 	}

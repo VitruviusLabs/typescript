@@ -4,9 +4,9 @@ import { describe, it } from "node:test";
 
 import { TypeAssertion } from "../../src/index.mjs";
 
-import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
+import { createErrorTest } from "../common/createErrorTest.mjs";
 
-import { testAggregateError, testError } from "../common/testError.mjs";
+import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -48,7 +48,7 @@ describe(
 						TypeAssertion.isArray(ITEM);
 					};
 
-					throws(WRAPPER, testError);
+					throws(WRAPPER, createErrorTest("The value is not an array."));
 				}
 			}
 		);
@@ -86,6 +86,21 @@ describe(
 		);
 
 		it(
+			"should throw when given a minLength constraint less than 1",
+			(): void =>
+			{
+				const WRAPPER = (): void =>
+				{
+					TypeAssertion.isArray([], { minLength: 0 });
+				};
+
+				throws(WRAPPER, createErrorTest(new RangeError(
+					"The minimum length cannot be less than one."
+				)));
+			}
+		);
+
+		it(
 			"should throw when given an array with a length below the minLength constraint",
 			(): void =>
 			{
@@ -99,8 +114,15 @@ describe(
 					TypeAssertion.isArray([1, 2, 3], { minLength: 4 });
 				};
 
-				throws(WRAPPER_EMPTY, testError);
-				throws(WRAPPER_SMALL_LENGTH, testError);
+				throws(WRAPPER_EMPTY, createErrorTest(new AggregateError(
+					[ new Error("It must not be empty.") ],
+					"The value is an array, but its content is incorrect."
+				)));
+
+				throws(WRAPPER_SMALL_LENGTH, createErrorTest(new AggregateError(
+					[ new Error("It must have at least 4 items.") ],
+					"The value is an array, but its content is incorrect."
+				)));
 			}
 		);
 
@@ -132,7 +154,15 @@ describe(
 					TypeAssertion.isArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
 				};
 
-				throws(WRAPPER, testAggregateError);
+				throws(WRAPPER, createErrorTest(new AggregateError(
+					[
+						new Error(
+							"The value at index 3 is incorrect.",
+							{ cause: new Error("There is no information on why the value is incorrect.") }
+						)
+					],
+					"The value is an array, but its content is incorrect."
+				)));
 			}
 		);
 
@@ -164,7 +194,15 @@ describe(
 					TypeAssertion.isArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
 				};
 
-				throws(WRAPPER, testAggregateError);
+				throws(WRAPPER, createErrorTest(new AggregateError(
+					[
+						new Error(
+							"The value at index 3 is incorrect.",
+							{ cause: new Error("There is no information on why the value is incorrect.") }
+						)
+					],
+					"The value is an array, but its content is incorrect."
+				)));
 			}
 		);
 	}

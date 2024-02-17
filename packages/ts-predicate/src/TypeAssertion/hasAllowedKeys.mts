@@ -9,7 +9,6 @@ function hasAllowedKeys(value: Record<string, unknown>, allowed_keys: Array<stri
 
 	if (FORBIDDEN_PROPERTIES.length > 0)
 	{
-		// Stryker disable next-line StringLiteral: join presentation
 		throw new Error(`The value must not have the properties "${FORBIDDEN_PROPERTIES.join('", "')}".`);
 	}
 }

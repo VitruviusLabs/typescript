@@ -2,9 +2,7 @@ import { deepStrictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { Helper } from "../../src/index.mjs";
-
-import type { Invalid } from "../../src/index.mjs";
+import { Helper, type Invalid } from "../../src/index.mjs";
 
 describe(
 	"Helper.createCopiesWithInvalidProperty",
