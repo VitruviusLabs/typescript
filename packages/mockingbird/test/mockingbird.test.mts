@@ -1,39 +1,22 @@
-import { doesNotThrow, strictEqual } from "node:assert";
+import { strictEqual } from "node:assert";
 
-import { after, before, describe, it } from "node:test";
+import { describe, it } from "node:test";
 
-import { mockingbird } from "../src/mockingbird.mjs";
+import { mockingbird } from "../src/index.mjs";
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports -- Mock
-type DummyModule = typeof import("./dummy/dummy-lib.mjs");
+import type * as DummyModule from "./dummy/dummy-lib.mjs";
 
 describe(
 	"mockingbird",
 	(): void =>
 	{
-		let keepAlive: NodeJS.Timer | undefined = undefined;
-
-		before(
-			(): void =>
-			{
-				keepAlive = setInterval((): void => { }, 100_000);
-			}
-		);
-
-		after(
-			(): void =>
-			{
-				clearInterval(keepAlive);
-			}
-		);
-
 		it(
 			"should be able to mock a dummy lib that has a module dependency",
 			async (): Promise<void> =>
 			{
 				const UUID: string = "--token--";
 
-				const MOCK: DummyModule = await mockingbird<DummyModule>(
+				const MOCK: typeof DummyModule = await mockingbird<typeof DummyModule>(
 					"./dummy/dummy-lib.mjs",
 					import.meta.url,
 					{
@@ -47,21 +30,20 @@ describe(
 							dummyDependency: (input: string): string =>
 							{
 								return input;
+							},
+							default: (input: string): string =>
+							{
+								return input;
 							}
 						}
 					}
 				);
 
-				const WRAPPER = (): void =>
-				{
-					MOCK.dummy();
-				};
-
-				doesNotThrow(WRAPPER);
-
-				const RESULT: string = MOCK.dummy();
-
-				strictEqual(RESULT, UUID);
+				strictEqual(MOCK.dummy1(), UUID);
+				strictEqual(MOCK.dummy2(), UUID);
+				strictEqual(MOCK.dummy3(), UUID);
+				strictEqual(MOCK.dummy4(), UUID);
+				strictEqual(MOCK.dummy5(), UUID);
 			}
 		);
 	}

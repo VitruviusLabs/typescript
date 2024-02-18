@@ -4,14 +4,14 @@ import { describe, it } from "node:test";
 
 import { isMockingInfos } from "../../src/utils/isMockingInfos.mjs";
 
-import { getInvertedValues, testError } from "../common/utils.mjs";
+import { BaseType, getInvertedValues, testError } from "../common/utils.mjs";
 
 describe(
 	"utils / isMockingInfos",
 	(): void =>
 	{
 		it(
-			"should return true when given a valid object",
+			"should return when given a valid object",
 			(): void =>
 			{
 				const WRAPPER = (): void =>
@@ -28,7 +28,7 @@ describe(
 		);
 
 		it(
-			"should return false when given anything else",
+			"should throw when given anything else",
 			(): void =>
 			{
 				const ALL_VALUES: Array<unknown> = getInvertedValues();
@@ -38,6 +38,28 @@ describe(
 					const WRAPPER = (): void =>
 					{
 						isMockingInfos(ITEM);
+					};
+
+					throws(WRAPPER, testError);
+				}
+			}
+		);
+
+		it(
+			"should throw if any item of dependencyIdentifiers is not a string",
+			(): void =>
+			{
+				const VALUES: Array<unknown> = getInvertedValues(BaseType.STRING);
+
+				for (const ITEM of VALUES)
+				{
+					const WRAPPER = (): void =>
+					{
+						isMockingInfos({
+							token: "token",
+							moduleIdentifier: "module",
+							dependencyIdentifiers: [ITEM]
+						});
 					};
 
 					throws(WRAPPER, testError);

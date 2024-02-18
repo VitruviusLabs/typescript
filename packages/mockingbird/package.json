@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-labs/mockingbird",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Module mocking library",
 	"author": {
 		"name": "VitruviusLabs"
@@ -24,11 +24,7 @@
 	"exports": {
 		".": {
 			"import": "./build/esm/index.mjs",
-			"types": "./build/types/index.d.ts"
-		},
-		"./loader": {
-			"import": "./build/esm/loader.jms",
-			"types": "./build/types/loader.d.ts"
+			"types": "./build/types/index.d.mts"
 		}
 	},
 	"files": [
@@ -48,9 +44,9 @@
 		"test:unit:clean": "rm -rf ./tmp",
 		"test:unit:compile": "tsc -p tsconfig.test.json",
 		"test:unit:post": "cp -r ./test/dummy/ ./tmp/test-build/test/dummy",
-		"test:unit:run": "node --loader=./tmp/test-build/src/loader.mjs --test ./tmp/test-build/test",
-		"test:unit:coverage": "NODE_V8_COVERAGE=./reports/node-coverage node  --experimental-test-coverage --loader=./tmp/test-build/src/loader.mjs --test ./tmp/test-build/test",
-		"test:unit:stryker": "NODE_ENV=test TS_NODE_PROJECT=./tsconfig.stryker.json mocha --config .mocharc.stryker.json",
+		"test:unit:run": "node --test ./tmp/test-build/test/**/*.mjs",
+		"test:unit:coverage": "NODE_V8_COVERAGE=./reports/node-coverage node  --experimental-test-coverage --test ./tmp/test-build/test/**/*.mjs",
+		"test:unit:stryker": "pnpm test:unit",
 		"test:mutation": "stryker run",
 		"ts:check": "tsc -p tsconfig.json --noEmit",
 		"spell:check": "cspell -c ../../.vscode/cspell.json .",

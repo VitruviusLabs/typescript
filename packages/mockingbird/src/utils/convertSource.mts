@@ -1,4 +1,4 @@
-import { fileURLToPath } from "node:url";
+import { convertImport } from "./convertImport.mjs";
 
 import { resolveModuleIdentifier } from "./resolveModuleIdentifier.mjs";
 
@@ -8,41 +8,19 @@ function convertSource(source: string, infos: MockingInfos): string
 {
 	let modified_source: string = source;
 
+	// const IMPORT_REGEXP: RegExp = /import\s*(?<imported_items>.+?)\s*from\s*['"](?<dependency_identifier>[^'"]+)['"]/g,
+	// eslint-disable-next-line prefer-named-capture-group -- Bug in Stryker with underscore in capture group name
+	const IMPORT_REGEXP: RegExp = /import\s*(.+?)\s*from\s*['"]([^'"]+)['"]/g;
+
 	modified_source = modified_source.replaceAll(
-		/import\s*(?<imported_items>.+?)\s*from\s*['"](?<dependency_identifier>[^'"]+)['"]/g,
-		// @ts-expect-error: first parameter is unused
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- first parameter is unused
+		IMPORT_REGEXP,
+		/* eslint-disable @typescript-eslint/no-unused-vars -- first parameter is unused */
+		// @ts-ignore: first parameter is unused
 		(match: string, imported_items: string, dependency_identifier: string): string =>
 		{
-			let absolute_dependency_identifier: string = resolveModuleIdentifier(dependency_identifier, infos.moduleIdentifier);
-
-			if (!infos.dependencyIdentifiers.includes(absolute_dependency_identifier))
-			{
-				if (absolute_dependency_identifier.startsWith("file://"))
-				{
-					absolute_dependency_identifier = fileURLToPath(absolute_dependency_identifier);
-				}
-
-				return `import ${imported_items} from "${absolute_dependency_identifier}";`;
-			}
-
-			let items: string = imported_items.trim();
-
-			if (items.startsWith("*"))
-			{
-				items = items.replace(/\*\s*as\s+/, "");
-			}
-			else if (!items.startsWith("{"))
-			{
-				items = `{ default: ${items} }`;
-			}
-			else if (/\bas\b/.test(items))
-			{
-				items = items.replaceAll(/\s+as\s+/g, ": ");
-			}
-
-			return `const ${items} = MockStorage.Get("${infos.token}_${absolute_dependency_identifier}")`;
+			return convertImport(infos, imported_items, dependency_identifier);
 		}
+		/* eslint-enable @typescript-eslint/no-unused-vars -- first parameter is unused */
 	);
 
 	const STORAGE_LIB: string = resolveModuleIdentifier("./MockStorage.mjs", import.meta.url);
@@ -54,7 +32,7 @@ function convertSource(source: string, infos: MockingInfos): string
 		}
 	);
 
-	modified_source = `${MOCK_HEADER}\n\n${modified_source}\n${MOCK_CLEAN_UP.join("\n")}\n`;
+	modified_source = `${MOCK_HEADER}\n\n${modified_source}\n${MOCK_CLEAN_UP.join("")}\n`;
 
 	return modified_source;
 }

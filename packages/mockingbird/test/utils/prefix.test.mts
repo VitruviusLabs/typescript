@@ -2,7 +2,7 @@ import { doesNotThrow } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { prefix } from "../src/prefix.mjs";
+import { prefix } from "../../src/utils/prefix.mjs";
 
 describe(
 	"prefix",

@@ -1,4 +1,4 @@
-# ts-predicate
+# mockingbird
 
 ## Presentation
 
@@ -24,12 +24,6 @@ npm install @vitruvius-labs/mockingbird
 
 ## Documentation
 
-To run your tests, you need to enable the use of the mockingbird loader.
-
-```bash
-node --loader=mockingbird --test test1.js test2.mjs custom_test_dir/ 
-```
-
 To use a mock in your test, use the `mockingbird()` function
 
 ```ts
@@ -52,7 +46,7 @@ interface MockedDependency
 
 `mocks` is a mapping of the module dependencies to replace and with what to replace them.
 
-If you have aliases in your imports, you must name the imported items by original name.
+If you have aliases in your imports, you must name the imported items by their original name.
 
 The default import for a dependency can be filled under the `default` name.
 
@@ -100,9 +94,9 @@ export { generateId };
 
 Test file
 ```ts
-type TestedModule = typeof import("../src/my-module.mjs");
+import type * as TestedModule from '../src/my-module.mjs';
 
-const MODULE: TestedModule = mockingbird<TestedModule>(
+const MODULE: typeof TestedModule = await mockingbird<typeof TestedModule>(
 	"../src/my-module.mjs",
 	import.meta.url,
 	{

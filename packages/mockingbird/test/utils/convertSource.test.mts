@@ -39,22 +39,34 @@ describe(
 			"should replace mocked dependencies.",
 			(): void =>
 			{
+				// Ugly spacing for testing purposes
 				const SOURCE: string = `
-					import { randomUUID } from "node:crypto";
-					import { foo } from "file:/foo.mjs";
+					import {randomUUID} from "node:crypto";
+					import   {   alpha   }   from   "file:/alpha.mjs";
+					import { beta   as   omega } from "file:/beta.mjs";
+					import   *   as   gamma   from "file:/gamma.mjs";
+					import   delta   from "file:/delta.mjs";
+					import   {   default   as   epsilon   }   from "file:/epsilon.mjs";
 
 					function test()
 					{
 						return randomUUID();
 					}
 
-					export { test, foo };
+					export { test, alpha, omega, gamma, delta, epsilon };
 				`;
 
 				const INFOS: MockingInfos = {
 					token: "12345",
 					moduleIdentifier: "file:///module.mjs",
-					dependencyIdentifiers: ["node:crypto", "file:///foo.mjs"],
+					dependencyIdentifiers: [
+						"node:crypto",
+						"file:///alpha.mjs",
+						"file:///beta.mjs",
+						"file:///gamma.mjs",
+						"file:///delta.mjs",
+						"file:///epsilon.mjs",
+					],
 				};
 
 				const RESULT: unknown = convertSource(SOURCE, INFOS);
@@ -66,8 +78,12 @@ describe(
 					return;
 				}
 
-				match(RESULT, /\bconst \{ randomUUID \} = MockStorage.Get\("12345_node:crypto"\);/);
-				match(RESULT, /\bconst \{ foo \} = MockStorage.Get\("12345_file:\/\/\/foo.mjs"\);/);
+				match(RESULT, /\bconst \{randomUUID\} = MockStorage.Get\("12345_node:crypto"\);/);
+				match(RESULT, /\bconst \{ {3}alpha {3}\} = MockStorage.Get\("12345_file:\/\/\/alpha.mjs"\);/);
+				match(RESULT, /\bconst \{ beta: omega \} = MockStorage.Get\("12345_file:\/\/\/beta.mjs"\);/);
+				match(RESULT, /\bconst gamma = MockStorage.Get\("12345_file:\/\/\/gamma.mjs"\);/);
+				match(RESULT, /\bconst \{ default: delta \} = MockStorage.Get\("12345_file:\/\/\/delta.mjs"\);/);
+				match(RESULT, /\bconst \{ {3}default: epsilon {3}\} = MockStorage.Get\("12345_file:\/\/\/epsilon.mjs"\);/);
 			}
 		);
 

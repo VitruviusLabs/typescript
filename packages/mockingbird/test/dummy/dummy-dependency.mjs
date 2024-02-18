@@ -4,3 +4,5 @@ function dummyDependency(input)
 }
 
 export { dummyDependency };
+
+export default dummyDependency;
