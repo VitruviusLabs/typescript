@@ -4,9 +4,10 @@ import { describe, it } from "node:test";
 
 import { TypeAssertion } from "../../src/index.mjs";
 
+import { createErrorTest } from "../common/createErrorTest.mjs";
+
 import { GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
-import { testError } from "../common/testError.mjs";
 
 describe(
 	"TypeAssertion.isNumber",
@@ -43,7 +44,7 @@ describe(
 						TypeAssertion.isNumber(ITEM);
 					};
 
-					throws(WRAPPER, testError);
+					throws(WRAPPER, createErrorTest());
 				}
 			}
 		);

@@ -133,6 +133,14 @@ isObject(value: unknown): boolean
 
 Narrow down the value to being an object.
 
+## IsInstanceOf
+
+```ts
+isInstanceOf(value: unknown, constructor_class: ConstructorFunction): boolean
+```
+
+Narrow down the value to being an instance of that class.
+
 ## IsFunction
 
 ```ts

@@ -10,12 +10,12 @@ import type { ArrayConstraints, Test } from "../types/_index.mjs";
 
 function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type> | Test<Type>): asserts value is Array<Type>
 {
+	const CONSTRAINTS: ArrayConstraints<Type> | undefined = buildArrayConstraints(constraints);
+
 	if (!guard(value))
 	{
 		throw new Error("The value is not an array.");
 	}
-
-	const CONSTRAINTS: ArrayConstraints<Type> | undefined = buildArrayConstraints(constraints);
 
 	if (CONSTRAINTS === undefined)
 	{

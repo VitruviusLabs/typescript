@@ -2,13 +2,11 @@ import { doesNotThrow, throws } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { TypeAssertion } from "../../src/index.mjs";
+import { type StructuredDataDescriptor, TypeAssertion } from "../../src/index.mjs";
+
+import { createErrorTest } from "../common/createErrorTest.mjs";
 
 import { BaseType, getInvertedValues } from "../common/getValues.mjs";
-
-import { testAggregateError, testError } from "../common/testError.mjs";
-
-import type { StructuredDataDescriptor } from "../../src/index.mjs";
 
 interface TestData
 {
@@ -53,7 +51,7 @@ describe(
 						TypeAssertion.isStructuredData(ITEM, DESCRIPTOR);
 					};
 
-					throws(WRAPPER, testError);
+					throws(WRAPPER, createErrorTest("The value must be a record."));
 				}
 			}
 		);
@@ -67,7 +65,10 @@ describe(
 					TypeAssertion.isStructuredData({ a: 1, b: 2, c: 3 }, DESCRIPTOR);
 				};
 
-				throws(WRAPPER, testAggregateError);
+				throws(WRAPPER, createErrorTest(new AggregateError(
+					[ new Error(`The value has an extraneous property "c".`) ],
+					"The value is an object, but some properties are incorrect."
+				)));
 			}
 		);
 
@@ -110,7 +111,15 @@ describe(
 					TypeAssertion.isStructuredData({ a: 1, b: "2" }, DESCRIPTOR);
 				};
 
-				throws(WRAPPER, testAggregateError);
+				throws(WRAPPER, createErrorTest(new AggregateError(
+					[
+						new Error(
+							`The property "b" has an incorrect value.`,
+							{ cause: new Error("value is not a number") }
+						)
+					],
+					"The value is an object, but some properties are incorrect."
+				)));
 			}
 		);
 
@@ -136,7 +145,10 @@ describe(
 					TypeAssertion.isStructuredData({ b: 2 }, DESCRIPTOR);
 				};
 
-				throws(WRAPPER, testAggregateError);
+				throws(WRAPPER, createErrorTest(new AggregateError(
+					[ new Error(`The required property "a" is missing.`) ],
+					"The value is an object, but some properties are incorrect."
+				)));
 			}
 		);
 
@@ -162,7 +174,10 @@ describe(
 					TypeAssertion.isStructuredData({ a: 1, b: undefined }, DESCRIPTOR);
 				};
 
-				throws(WRAPPER, testAggregateError);
+				throws(WRAPPER, createErrorTest(new AggregateError(
+					[ new Error(`The property "b" must not have a nullish value (undefined, null, or NaN).`) ],
+					"The value is an object, but some properties are incorrect."
+				)));
 			}
 		);
 	}

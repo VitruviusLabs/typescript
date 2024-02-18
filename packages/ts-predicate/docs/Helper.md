@@ -14,6 +14,16 @@ Return true in the following cases :
 
 Otherwise, return false.
 
+## GetConstructorOf
+
+```ts
+getConstructorOf(value: T): ConstructorOf<T>
+```
+
+Return the constructor class for the given object.
+
+Throws if the object has no prototype or no constructor in its prototype.
+
 ## NormalizeErrorTree
 
 ```ts

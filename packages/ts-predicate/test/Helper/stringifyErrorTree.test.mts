@@ -2,9 +2,7 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { Helper } from "../../src/index.mjs";
-
-import type { NormalizedError } from "../../src/index.mjs";
+import { Helper, type NormalizedError } from "../../src/index.mjs";
 
 // See error-output.txt
 const EXPECTED_RESULT: string = `root error

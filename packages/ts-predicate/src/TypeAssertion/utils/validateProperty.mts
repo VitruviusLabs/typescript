@@ -4,6 +4,8 @@ import { hasNullableProperty } from "../../TypeGuard/hasNullableProperty.mjs";
 
 import { isDefined } from "../../TypeGuard/isDefined.mjs";
 
+import { itemAssertion } from "./itemAssertion.mjs";
+
 import type { StructuredDataPropertyDescriptor } from "../../types/_index.mjs";
 
 function validateProperty(value: object, key: string, property_descriptor: StructuredDataPropertyDescriptor<unknown>): void
@@ -30,7 +32,7 @@ function validateProperty(value: object, key: string, property_descriptor: Struc
 
 	try
 	{
-		property_descriptor.test(value[key]);
+		itemAssertion(value[key], property_descriptor.test);
 	}
 	catch (error: unknown)
 	{

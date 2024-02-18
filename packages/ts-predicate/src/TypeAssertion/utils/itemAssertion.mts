@@ -9,7 +9,7 @@ function itemAssertion<Type>(value: unknown, callable: Test<Type>): asserts valu
 
 	if (!SUCCESS)
 	{
-		throw new Error("The value is incorrect.");
+		throw new Error("There is no information on why the value is incorrect.");
 	}
 }
 

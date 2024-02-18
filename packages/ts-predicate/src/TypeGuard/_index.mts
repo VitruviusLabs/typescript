@@ -8,6 +8,7 @@ export * from "./isCallable.mjs";
 export * from "./isDefined.mjs";
 export * from "./isFiniteNumber.mjs";
 export * from "./isFunction.mjs";
+export * from "./isInstanceOf.mjs";
 export * from "./isInteger.mjs";
 export * from "./isNumber.mjs";
 export * from "./isObject.mjs";

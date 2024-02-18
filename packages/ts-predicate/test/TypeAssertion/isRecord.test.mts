@@ -4,9 +4,9 @@ import { describe, it } from "node:test";
 
 import { TypeAssertion } from "../../src/index.mjs";
 
-import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
+import { createErrorTest } from "../common/createErrorTest.mjs";
 
-import { testAggregateError, testError } from "../common/testError.mjs";
+import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -48,7 +48,7 @@ describe(
 						TypeAssertion.isRecord(ITEM);
 					};
 
-					throws(WRAPPER, testError);
+					throws(WRAPPER, createErrorTest("The value must be a record."));
 				}
 			}
 		);
@@ -66,7 +66,7 @@ describe(
 						TypeAssertion.isRecord(ITEM);
 					};
 
-					throws(WRAPPER, testError);
+					throws(WRAPPER, createErrorTest("The value must be a record."));
 				}
 			}
 		);
@@ -106,7 +106,15 @@ describe(
 					TypeAssertion.isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, { itemTest: isNumberTest });
 				};
 
-				throws(WRAPPER, testAggregateError);
+				throws(WRAPPER, createErrorTest(new AggregateError(
+					[
+						new Error(
+							`The property "c" has an incorrect value.`,
+							{ cause: new Error("There is no information on why the value is incorrect.") }
+						)
+					],
+					"The value is a record, but some properties are incorrect."
+				)));
 			}
 		);
 
@@ -132,7 +140,15 @@ describe(
 					TypeAssertion.isRecord({ a: 1, b: 2, c: Symbol("anomaly") }, isNumberTest);
 				};
 
-				throws(WRAPPER, testAggregateError);
+				throws(WRAPPER, createErrorTest(new AggregateError(
+					[
+						new Error(
+							`The property "c" has an incorrect value.`,
+							{ cause: new Error("There is no information on why the value is incorrect.")}
+						)
+					],
+					"The value is a record, but some properties are incorrect.",
+				)));
 			}
 		);
 	}

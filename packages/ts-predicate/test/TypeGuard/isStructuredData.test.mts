@@ -2,11 +2,9 @@ import { strictEqual } from "node:assert";
 
 import { describe, it } from "node:test";
 
-import { TypeGuard } from "../../src/index.mjs";
+import { type StructuredDataDescriptor, TypeGuard } from "../../src/index.mjs";
 
 import { BaseType, getInvertedValues } from "../common/getValues.mjs";
-
-import type { StructuredDataDescriptor } from "../../src/index.mjs";
 
 interface TestData
 {

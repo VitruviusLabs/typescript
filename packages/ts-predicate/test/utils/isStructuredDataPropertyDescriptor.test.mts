@@ -4,9 +4,9 @@ import { describe, it } from "node:test";
 
 import { isStructuredDataPropertyDescriptor } from "../../src/utils/isStructuredDataPropertyDescriptor.mjs";
 
-import { GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
+import { createErrorTest } from "../common/createErrorTest.mjs";
 
-import { testError } from "../common/testError.mjs";
+import { GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 describe(
 	"TypeGuard / common/utils / isTypeAssertionStructuredDataDescriptor",
@@ -43,7 +43,7 @@ describe(
 						isStructuredDataPropertyDescriptor(ITEM, "test");
 					};
 
-					throws(WRAPPER, testError);
+					throws(WRAPPER, createErrorTest());
 				}
 			}
 		);

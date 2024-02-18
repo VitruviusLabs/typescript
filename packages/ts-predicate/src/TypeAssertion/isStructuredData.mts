@@ -4,6 +4,8 @@ import { buildStructuredDataOptions } from "../utils/buildStructuredDataOptions.
 
 import { isStructuredDataPropertyDescriptor } from "../utils/isStructuredDataPropertyDescriptor.mjs";
 
+import { isRecord } from "./isRecord.mjs";
+
 import { validateProperty } from "./utils/validateProperty.mjs";
 
 import type { StructuredDataDescriptor, StructuredDataOptions } from "../types/_index.mjs";
@@ -14,10 +16,7 @@ function isStructuredData<Type>(
 	options?: StructuredDataOptions
 ): asserts value is Type
 {
-	if (typeof value !== "object" || value === null)
-	{
-		throw new Error("The value must be an object.");
-	}
+	isRecord(value);
 
 	const OPTIONS: Required<StructuredDataOptions> = buildStructuredDataOptions(options);
 
@@ -27,24 +26,15 @@ function isStructuredData<Type>(
 
 	if (!OPTIONS.allowExtraneousProperties)
 	{
-		const EXTRANEOUS_KEYS: Array<string> = Object.keys(value).filter(
-			(key: string): boolean =>
+		Object.keys(value).forEach(
+			(key: string): void =>
 			{
-				return !DESCRIPTOR_KEYS.includes(key);
+				if (!DESCRIPTOR_KEYS.includes(key))
+				{
+					ERRORS.push(new Error(`The value has an extraneous property "${key}".`));
+				}
 			}
 		);
-
-		if (EXTRANEOUS_KEYS.length > 0)
-		{
-			ERRORS.push(
-				...EXTRANEOUS_KEYS.map(
-					(key: string): Error =>
-					{
-						return new Error(`The value has an extraneous property "${key}".`);
-					}
-				)
-			);
-		}
 	}
 
 	DESCRIPTOR_KEYS.forEach(
