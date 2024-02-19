@@ -40,7 +40,7 @@ describe(
 				};
 
 				throws(WRAPPER, createErrorTest(new AggregateError(
-					[ new Error("It must not be empty.") ],
+					[new Error("It must not be empty.")],
 					"The value is an array, but its content is incorrect."
 				)));
 			}
@@ -124,12 +124,12 @@ describe(
 				};
 
 				throws(WRAPPER_EMPTY, createErrorTest(new AggregateError(
-					[ new Error("It must not be empty.") ],
+					[new Error("It must not be empty.")],
 					"The value is an array, but its content is incorrect."
 				)));
 
 				throws(WRAPPER_SMALL_LENGTH, createErrorTest(new AggregateError(
-					[ new Error("It must have at least 4 items.") ],
+					[new Error("It must have at least 4 items.")],
 					"The value is an array, but its content is incorrect."
 				)));
 			}
@@ -161,7 +161,7 @@ describe(
 					[
 						new Error(
 							"The value at index 3 is incorrect.",
-							{ cause: new Error("There is no information on why the value is incorrect.")}
+							{ cause: new Error("There is no information on why the value is incorrect.") }
 						)
 					],
 					"The value is an array, but its content is incorrect."
@@ -195,7 +195,7 @@ describe(
 					[
 						new Error(
 							"The value at index 3 is incorrect.",
-							{ cause: new Error("There is no information on why the value is incorrect.")}
+							{ cause: new Error("There is no information on why the value is incorrect.") }
 						)
 					],
 					"The value is an array, but its content is incorrect."
