@@ -148,7 +148,6 @@ function getValuesForType(type: BaseType): Array<unknown>
 		case BaseType.RECORD:
 
 			return [
-				Object.create(null),
 				{},
 				{ answer: 42 },
 			];
@@ -156,6 +155,7 @@ function getValuesForType(type: BaseType): Array<unknown>
 		case BaseType.INSTANTIATED:
 
 			return [
+				Object.create(null),
 				DUMMY,
 				OLD_DUMMY,
 				new (class { })(),

@@ -105,7 +105,7 @@ Like `IsArray`, but narrow it to being a populated array.
 isRecord(value: unknown, constraints?: RecordConstraints | Test): boolean
 ```
 
-Narrow down the value to being a record: an object with no prototype, or directly using Object prototype.
+Narrow down the value to being a record: a direct instance of Object.
 
 Symbol keys are ignored when validating record items.
 
@@ -188,7 +188,7 @@ Narrow down the value to being an object with the property defined.
 isStructuredData<T>(value: object, descriptor: StructuredDataDescriptor<T>, options?: StructuredDataOptions): boolean
 ```
 
-Narrow down the value to a specifically structured data object.
+Narrow down the value to specifically be a structured data object.
 The descriptor is enforced into matching the type it narrows down to.
 
 For each possible property, you can specify a boolean flag `optional` if the property

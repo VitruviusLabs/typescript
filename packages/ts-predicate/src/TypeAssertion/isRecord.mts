@@ -1,3 +1,4 @@
+
 import { toError } from "../Helper/toError.mjs";
 
 import { isRecord as guard } from "../TypeGuard/isRecord.mjs";

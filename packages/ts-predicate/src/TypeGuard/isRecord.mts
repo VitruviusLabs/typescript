@@ -13,9 +13,7 @@ function isRecord<Type>(value: unknown, constraints?: RecordConstraints<Type> | 
 		return false;
 	}
 
-	const PROTO: unknown = Object.getPrototypeOf(value);
-
-	if (PROTO !== null && PROTO !== Object.prototype)
+	if (Object.getPrototypeOf(value) !== Object.prototype)
 	{
 		return false;
 	}

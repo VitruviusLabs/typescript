@@ -8,7 +8,6 @@ import { createErrorTest } from "../common/createErrorTest.mjs";
 
 import { GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
-
 describe(
 	"TypeAssertion.isNumber",
 	(): void =>

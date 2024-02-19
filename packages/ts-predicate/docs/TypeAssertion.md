@@ -97,8 +97,7 @@ Like `isArray`, but asserts that the array is never empty too.
 isRecord(value: unknown, constraints?: RecordConstraints | Test): void
 ```
 
-Asserts that the value is a record: an object with no prototype, or directly
-using Object prototype.
+Asserts that the value is a record: a direct instance of Object.
 
 Symbol keys are ignored when validating record items.
 
@@ -182,7 +181,7 @@ Asserts that the value is an object with the property defined.
 isStructuredData<T>(value: object, descriptor: StructuredDataDescriptor<T>, options?: StructuredDataOptions): void
 ```
 
-Asserts that the value is a specifically structured data object.
+Asserts that the value is specifically a structured data object.
 The descriptor is enforced into matching the asserted type.
 
 For each possible property, you can specify a boolean flag `optional` if the property

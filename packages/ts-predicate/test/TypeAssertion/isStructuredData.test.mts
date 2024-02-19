@@ -39,7 +39,7 @@ describe(
 	(): void =>
 	{
 		it(
-			"should throw when the value is not a structured data",
+			"should throw when the value is not a record",
 			(): void =>
 			{
 				const VALUES: Array<unknown> = getInvertedValues(BaseType.RECORD);

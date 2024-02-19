@@ -6,7 +6,7 @@ import { TypeAssertion } from "../../src/index.mjs";
 
 import { createErrorTest } from "../common/createErrorTest.mjs";
 
-import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
+import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -36,28 +36,10 @@ describe(
 		);
 
 		it(
-			"should throw when given an instantiated class",
-			(): void =>
-			{
-				const VALUES: Array<unknown> = getValues(BaseType.ARRAY, BaseType.INSTANTIATED);
-
-				for (const ITEM of VALUES)
-				{
-					const WRAPPER = (): void =>
-					{
-						TypeAssertion.isRecord(ITEM);
-					};
-
-					throws(WRAPPER, createErrorTest("The value must be a record."));
-				}
-			}
-		);
-
-		it(
 			"should throw when given anything else",
 			(): void =>
 			{
-				const VALUES: Array<unknown> = getInvertedValues(GroupType.OBJECT);
+				const VALUES: Array<unknown> = getInvertedValues(BaseType.RECORD);
 
 				for (const ITEM of VALUES)
 				{

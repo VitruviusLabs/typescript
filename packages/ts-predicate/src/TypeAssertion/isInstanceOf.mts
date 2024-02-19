@@ -1,4 +1,4 @@
-import type { ConstructorOf } from "../Helper/_index.mjs";
+import type { ConstructorOf } from "../types/_index.mjs";
 
 function isInstanceOf<T extends object>(value: unknown, constructor_class: ConstructorOf<T>): asserts value is InstanceType<typeof constructor_class>
 {
