@@ -39,7 +39,7 @@ describe(
 			"should throw when given an instantiated class",
 			(): void =>
 			{
-				const VALUES: Array<unknown> = getValues(BaseType.ARRAY, BaseType.INSTANTIATED);
+				const VALUES: Array<unknown> = getValues(BaseType.INSTANTIATED);
 
 				for (const ITEM of VALUES)
 				{
@@ -144,7 +144,7 @@ describe(
 					[
 						new Error(
 							`The property "c" has an incorrect value.`,
-							{ cause: new Error("There is no information on why the value is incorrect.")}
+							{ cause: new Error("There is no information on why the value is incorrect.") }
 						)
 					],
 					"The value is a record, but some properties are incorrect.",

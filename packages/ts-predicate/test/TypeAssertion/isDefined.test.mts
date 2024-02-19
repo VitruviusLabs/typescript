@@ -8,7 +8,6 @@ import { createErrorTest } from "../common/createErrorTest.mjs";
 
 import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
-
 describe(
 	"TypeAssertion.isDefined",
 	(): void =>

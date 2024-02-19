@@ -1,4 +1,5 @@
 export * from "./ArrayConstraints.mjs";
+export * from "./ConstructorOf.mjs";
 export * from "./Helper/AnythingBut.mjs";
 export * from "./Helper/Invalid.mjs";
 export * from "./Helper/Nullable.mjs";

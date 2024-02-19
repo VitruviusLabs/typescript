@@ -4,7 +4,6 @@ import { describe, it } from "node:test";
 
 import { TypeGuard } from "../../src/index.mjs";
 
-
 import { getInvertedValues } from "../common/getValues.mjs";
 
 describe(
