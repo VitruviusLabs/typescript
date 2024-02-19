@@ -6,7 +6,7 @@ import { TypeAssertion } from "../../src/index.mjs";
 
 import { createErrorTest } from "../common/createErrorTest.mjs";
 
-import { BaseType, getInvertedValues, getValues } from "../common/getValues.mjs";
+import { BaseType, GroupType, getInvertedValues, getValues } from "../common/getValues.mjs";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -36,10 +36,28 @@ describe(
 		);
 
 		it(
+			"should throw when given an instantiated class",
+			(): void =>
+			{
+				const VALUES: Array<unknown> = getValues(BaseType.INSTANTIATED);
+
+				for (const ITEM of VALUES)
+				{
+					const WRAPPER = (): void =>
+					{
+						TypeAssertion.isRecord(ITEM);
+					};
+
+					throws(WRAPPER, createErrorTest("The value must be a record."));
+				}
+			}
+		);
+
+		it(
 			"should throw when given anything else",
 			(): void =>
 			{
-				const VALUES: Array<unknown> = getInvertedValues(BaseType.RECORD);
+				const VALUES: Array<unknown> = getInvertedValues(GroupType.OBJECT);
 
 				for (const ITEM of VALUES)
 				{
@@ -126,7 +144,7 @@ describe(
 					[
 						new Error(
 							`The property "c" has an incorrect value.`,
-							{ cause: new Error("There is no information on why the value is incorrect.")}
+							{ cause: new Error("There is no information on why the value is incorrect.") }
 						)
 					],
 					"The value is a record, but some properties are incorrect.",
