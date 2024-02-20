@@ -176,7 +176,7 @@ describe(
 					return;
 				}
 
-				match(RESULT, /\bMockStorage.Remove\("12345_node:crypto"\);/);
+				match(RESULT, /\bMockStorage.Remove\("12345_node:crypto"\);\n/);
 				match(RESULT, /\bMockStorage.Remove\("12345_file:\/\/\/foo.mjs"\);/);
 			}
 		);

@@ -6,6 +6,7 @@ function createCopiesWithInvalidProperty<Type extends object>(valid_object: Requ
 		// @ts-expect-error: Key mapping
 		(key: keyof Type): Invalid<Type> =>
 		{
+			// @ts-expect-error: Temporary valid
 			const COPY: Invalid<Type> = { ...valid_object };
 
 			COPY[key] = mapping[key];

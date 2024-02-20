@@ -1,4 +1,4 @@
-import { deepStrictEqual, notDeepStrictEqual, rejects } from "node:assert";
+import { deepStrictEqual, rejects } from "node:assert";
 
 import { describe, it } from "node:test";
 
@@ -72,7 +72,19 @@ describe(
 					}
 				);
 
-				notDeepStrictEqual(RESULT, TRAP_LOAD_RESULT);
+				// The source is tested separately
+
+				const PARTIAL_LOAD_RESULT: Partial<LoadResult> = {
+					shortCircuit: RESULT.shortCircuit,
+					format: RESULT.format
+				};
+
+				const EXPECTED_LOAD_RESULT: Partial<LoadResult> = {
+					shortCircuit: true,
+					format: ModuleFormat.MODULE
+				};
+
+				deepStrictEqual(PARTIAL_LOAD_RESULT, EXPECTED_LOAD_RESULT);
 
 				// @ts-expect-error: reset mocks
 				MockStorage.Mocks = {};

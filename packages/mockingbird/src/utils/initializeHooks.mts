@@ -1,4 +1,4 @@
-
+// Stryker disable all: This file is pure side effect
 import { register } from "node:module";
 
 // eslint-disable-next-line @typescript-eslint/no-shadow -- Native class
@@ -57,3 +57,4 @@ async function initializeHooks(): Promise<void>
 }
 
 export { initializeHooks };
+// Stryker enable all

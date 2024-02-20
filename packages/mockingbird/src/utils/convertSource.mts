@@ -8,9 +8,7 @@ function convertSource(source: string, infos: MockingInfos): string
 {
 	let modified_source: string = source;
 
-	// const IMPORT_REGEXP: RegExp = /import\s*(?<imported_items>.+?)\s*from\s*['"](?<dependency_identifier>[^'"]+)['"]/g,
-	// eslint-disable-next-line prefer-named-capture-group -- Bug in Stryker with underscore in capture group name
-	const IMPORT_REGEXP: RegExp = /import\s*(.+?)\s*from\s*['"]([^'"]+)['"]/g;
+	const IMPORT_REGEXP: RegExp = /import\s*(?<imported_items>.+?)\s*from\s*['"](?<dependency_identifier>[^'"]+)['"]/g;
 
 	modified_source = modified_source.replaceAll(
 		IMPORT_REGEXP,
@@ -32,7 +30,7 @@ function convertSource(source: string, infos: MockingInfos): string
 		}
 	);
 
-	modified_source = `${MOCK_HEADER}\n\n${modified_source}\n${MOCK_CLEAN_UP.join("")}\n`;
+	modified_source = `${MOCK_HEADER}\n\n${modified_source}\n${MOCK_CLEAN_UP.join("\n")}\n`;
 
 	return modified_source;
 }

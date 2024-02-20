@@ -35,10 +35,10 @@ abstract class ExecutionContextRegistry
 			throw new Error('No execution context found.');
 		}
 
-        if (CONTEXT instanceof custom_class)
-        {
+		if (CONTEXT instanceof custom_class)
+		{
 			return CONTEXT;
-        }
+		}
 
 		throw new Error('Execution context do not inherit from custom class constructor.');
 	}
