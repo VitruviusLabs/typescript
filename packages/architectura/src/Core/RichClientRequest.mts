@@ -4,13 +4,14 @@ import { parse as parseQuery } from "node:querystring";
 
 import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
 
-import { Logger } from "../index.mjs";
+import { LoggerProxy } from "../Service/logger/logger.proxy.mjs";
 
 import { ContentTypeEnum } from "./HTTP/ContentTypeEnum.js";
 
 import type { IncomingHttpHeaders } from "node:http";
 
 import type { ParsedUrlQuery } from "node:querystring";
+
 
 class RichClientRequest extends IncomingMessage
 {
@@ -56,7 +57,7 @@ class RichClientRequest extends IncomingMessage
 				}
 				else
 				{
-					Logger.Warning(`Received invalid multipart/form-data header: ${this.contentType}.`);
+					LoggerProxy.Warning(`Received invalid multipart/form-data header: ${this.contentType}.`);
 				}
 
 				this.contentType = ContentTypeEnum.MULTIPART_FORM_DATA;
