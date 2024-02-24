@@ -1,6 +1,6 @@
 export * from "./cookie/cookie.service.mjs";
 export * from "./Dispatcher.mjs";
-export * from "./FileSystem.mjs";
+export * from "./file-system.service.mjs";
 export * from "./FileSystem/index.mjs";
 export * from "./logger/index.mjs";
 export * from "./Number/index.mjs";

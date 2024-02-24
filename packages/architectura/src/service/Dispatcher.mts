@@ -8,7 +8,7 @@ import { BaseEndpoint } from "../Core/Base/BaseEndpoint.mjs";
 
 import { HelloWorldEndpoint } from "../index.mjs";
 
-import { FileSystemService } from "./FileSystem.mjs";
+import { FileSystemService } from "./file-system.service.mjs";
 
 import { LoggerProxy } from "./logger/logger.proxy.mjs";
 
