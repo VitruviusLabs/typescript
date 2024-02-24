@@ -2,9 +2,10 @@ import { ServerResponse as HTTPServerResponse } from "node:http";
 
 import { type Gzip, createGzip } from "node:zlib";
 
-import { ExecutionContextService } from "./ExecutionContext.mjs";
-
 import { Kernel } from "./Kernel.mjs";
+
+import { ExecutionContextService } from "./execution-context.service.mjs";
+
 
 import type { HTTPStatusCodeEnum } from "./HTTP/HTTPStatusCodeEnum.mjs";
 
