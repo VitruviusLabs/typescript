@@ -11,7 +11,7 @@ import { MillisecondEnum } from "../../Core/Time/MillisecondEnum.mjs";
 
 import { SessionEnum } from "../../definition/enum/session.enum.mjs";
 
-import { SessionManager } from "../SessionManager.mjs";
+import { SessionManagerService } from "../SessionManager.mjs";
 
 import { CookieService } from "../cookie/cookie.service.mjs";
 
@@ -62,7 +62,7 @@ class SessionService
 	 */
 	public static GetById(id: string): SessionService | undefined
 	{
-		return SessionManager.GetSession(id);
+		return SessionManagerService.GetSession(id);
 	}
 
 	/**
@@ -92,7 +92,7 @@ class SessionService
 	public close(): void
 	{
 		clearTimeout(this.timeout);
-		SessionManager.ClearSession(this.getId());
+		SessionManagerService.ClearSession(this.getId());
 	}
 
 	/**
@@ -100,7 +100,7 @@ class SessionService
 	 */
 	public save(): void
 	{
-		SessionManager.SetSession(this.getId(), this);
+		SessionManagerService.SetSession(this.getId(), this);
 	}
 
 	/**

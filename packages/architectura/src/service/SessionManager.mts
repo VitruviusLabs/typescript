@@ -1,6 +1,6 @@
 import type { SessionService } from "./session/session.service.mjs";
 
-abstract class SessionManager
+abstract class SessionManagerService
 {
 	private static readonly SESSIONS: Map<string, SessionService> = new Map();
 
@@ -29,4 +29,4 @@ abstract class SessionManager
 	}
 }
 
-export { SessionManager };
+export { SessionManagerService };
