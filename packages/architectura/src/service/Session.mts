@@ -8,11 +8,12 @@ import { MillisecondEnum } from "../Core/Time/MillisecondEnum.mjs";
 
 // import { Logger } from "./Logger.mjs";
 
-import { CookieService } from "./Cookie.mjs";
 
 import { SessionEnum } from "./Session/SessionEnum.mjs";
 
 import { SessionManager } from "./SessionManager.mjs";
+
+import { CookieService } from "./cookie.service.mjs";
 
 import type { SessionInstantiationInterface } from "./Session/SessionInstantiationInterface.mjs";
 

@@ -1,4 +1,4 @@
-export * from "./Cookie.mjs";
+export * from "./cookie.service.mjs";
 export * from "./Dispatcher.mjs";
 export * from "./FileSystem.mjs";
 export * from "./FileSystem/index.mjs";
