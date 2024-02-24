@@ -2,7 +2,7 @@ import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
 import type { ExecutorInstantiationInterface } from "../definition/interface/executor-instantiation.interface.mjs";
 
-class Executor
+class ExecutorService
 {
 	private readonly maxTries: number;
 	private readonly baseDelay: number;
@@ -24,9 +24,9 @@ class Executor
 	/**
 	 * Create
 	 */
-	public static Create(value: ExecutorInstantiationInterface): Executor
+	public static Create(value: ExecutorInstantiationInterface): ExecutorService
 	{
-		return new Executor(value);
+		return new ExecutorService(value);
 	}
 
 	public async execute(): Promise<void>
@@ -72,4 +72,4 @@ class Executor
 	}
 }
 
-export { Executor };
+export { ExecutorService };
