@@ -4,6 +4,15 @@ import type { BasePostHook, BasePreHook } from "../../index.mjs";
 
 import type { HTTPMethodEnum } from "../HTTP/HTTPMethodEnum.mjs";
 
+/**
+ * This class is a base class for all endpoints.
+ * It provides a common interface for all endpoints.
+ *
+ * @remarks
+ * TypeScript does not allow for interfaces to have static methods.
+ * This class is a workaround for that limitation.
+ * It also provides a certain set of methods that all endpoints should have.
+ */
 abstract class BaseEndpoint extends Singleton
 {
 	protected abstract readonly method: HTTPMethodEnum;
