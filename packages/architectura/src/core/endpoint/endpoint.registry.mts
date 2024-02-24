@@ -4,7 +4,6 @@ import { basename } from "node:path";
 
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
-
 import { HelloWorldEndpoint } from "../../endpoint/hello-world.endpoint.mjs";
 
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";

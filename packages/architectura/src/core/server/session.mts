@@ -8,13 +8,9 @@ import { MillisecondEnum } from "../../definition/enum/millisecond.enum.mjs";
 
 // import { Logger } from "./Logger.mjs";
 
-
 import { CookieService } from "../../service/cookie/cookie.service.mjs";
 
 import { SessionEnum } from "./definition/enum/session.enum.mjs";
-
-
-
 
 import { SessionRegistry } from "./session.registry.mjs";
 

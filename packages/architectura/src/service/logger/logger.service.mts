@@ -1,18 +1,15 @@
 
-import { Time } from "../../_index.mjs";
-
-
-
 import { Singleton } from "../../utility/singleton.mjs";
+
+import { Time } from "../../utility/time.mjs";
 
 import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
 
 import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";
 
+import type { LoggerServiceWriteInterface } from "./definition/interface/logger-service-write.interface.mjs";
+
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
-
-import type { LoggerServiceWriteInterface } from "../../definition/interface/logger-service-write.interface.mjs";
-
 
 class LoggerService extends Singleton implements LoggerInterface
 {

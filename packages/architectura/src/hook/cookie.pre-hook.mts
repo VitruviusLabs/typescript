@@ -1,9 +1,12 @@
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
+import { ExecutionContext } from "../core/execution-context/execution-context.mjs";
 
-import { BasePreHook, ExecutionContextService , KernelService } from "../_index.mjs";
+import { ExecutionContextRegistry } from "../core/execution-context/execution-context.registry.mjs";
 
-import { CookieService } from "../service/_index.mjs";
+import { CookieService } from "../service/cookie/cookie.service.mjs";
+
+import { BasePreHook } from "./base.pre-hook.mjs";
 
 import type { IncomingHttpHeaders } from "node:http";
 
@@ -21,7 +24,7 @@ abstract class CookiePreHook extends BasePreHook
 			return;
 		}
 
-		const CONTEXT: ExecutionContextService = KernelService.GetExecutionContext(ExecutionContextService);
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
 
 		CONTEXT.getRequest().setCookies(COOKIES);
 	}
@@ -29,7 +32,7 @@ abstract class CookiePreHook extends BasePreHook
 	// eslint-disable-next-line class-methods-use-this -- Stateless
 	private parseCookies(): Map<string, string> | undefined
 	{
-		const CONTEXT: ExecutionContextService = KernelService.GetExecutionContext(ExecutionContextService);
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
 
 		const REQUEST_HEADERS: IncomingHttpHeaders = CONTEXT.getRequest().headers;
 

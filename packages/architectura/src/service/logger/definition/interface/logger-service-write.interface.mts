@@ -1,4 +1,4 @@
-import type { LogLevelEnum } from "../_index.mjs";
+import type { LogLevelEnum } from "../enum/log-level.enum.mjs";
 
 interface LoggerServiceWriteInterface {
     level: LogLevelEnum;

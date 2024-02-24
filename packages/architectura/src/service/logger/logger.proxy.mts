@@ -1,4 +1,3 @@
-
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
 
 import type { LoggerService } from "./logger.service.mjs";

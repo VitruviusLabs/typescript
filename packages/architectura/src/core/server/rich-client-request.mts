@@ -8,7 +8,6 @@ import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 
-
 import type { IncomingHttpHeaders } from "node:http";
 
 import type { ParsedUrlQuery } from "node:querystring";

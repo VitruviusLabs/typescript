@@ -4,14 +4,14 @@ import type { RichClientRequest } from "../server/rich-client-request.mjs";
 
 import type { RichServerResponse } from "../server/rich-server-response.mjs";
 
-import type { SessionService } from "../server/session.mjs";
+import type { Session } from "../server/session.mjs";
 
 
 class ExecutionContext
 {
 	private readonly request: RichClientRequest;
 	private readonly response: RichServerResponse;
-	private session?: SessionService;
+	private session?: Session;
 
 	public constructor(context_items: ExecutionContextInstantiationInterface)
 	{
@@ -38,7 +38,7 @@ class ExecutionContext
 	/**
 	 * getSession
 	 */
-	public getSession(): SessionService | undefined
+	public getSession(): Session | undefined
 	{
 		return this.session;
 	}
@@ -46,7 +46,7 @@ class ExecutionContext
 	/**
 	 * setSession
 	 */
-	public setSession(session: SessionService): void
+	public setSession(session: Session): void
 	{
 		this.session = session;
 	}

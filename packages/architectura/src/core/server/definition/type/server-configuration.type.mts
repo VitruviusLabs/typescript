@@ -2,7 +2,6 @@ import type { HTTPServerConfigurationInterface } from "../interface/http-server-
 
 import type { HTTPSServerConfigurationInterface } from "../interface/https-server-configuration.interface.mjs";
 
-
 type ServerConfigurationType = (
     | HTTPServerConfigurationInterface
     | HTTPSServerConfigurationInterface

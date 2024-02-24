@@ -10,9 +10,7 @@ import type { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum
 
 import type { RichClientRequest } from "./rich-client-request.mjs";
 
-
-import type { SessionService } from "../../service/_index.mjs";
-
+import type { Session } from "./session.mjs";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
@@ -27,7 +25,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
 
-		const SESSION: SessionService | undefined = CONTEXT.getSession();
+		const SESSION: Session | undefined = CONTEXT.getSession();
 
 		if (SESSION !== undefined)
 		{

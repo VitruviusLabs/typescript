@@ -2,8 +2,6 @@ import { MillisecondEnum } from "../definition/enum/millisecond.enum.mjs";
 
 import { TimeFormattingEnum } from "./definition/enum/time-formatting.enum.mjs";
 
-
-
 class Time extends Date
 {
 	/**

@@ -6,7 +6,6 @@ import { ExecutionContext } from "../core/execution-context/execution-context.mj
 
 import { ExecutionContextRegistry } from "../core/execution-context/execution-context.registry.mjs";
 
-
 class HelloWorldEndpoint extends BaseEndpoint
 {
 	protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
