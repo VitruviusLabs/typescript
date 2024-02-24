@@ -6,9 +6,10 @@ import { ExecutionContextRegistry } from "../../core/execution-context/execution
 
 import { ExecutionContext } from "../execution-context/execution-context.mjs";
 
+import type { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
+
 import type { RichClientRequest } from "./rich-client-request.mjs";
 
-import type { HTTPStatusCodeEnum } from "../../definition/enum/http-status-code.enum.mjs";
 
 import type { SessionService } from "../../service/_index.mjs";
 
