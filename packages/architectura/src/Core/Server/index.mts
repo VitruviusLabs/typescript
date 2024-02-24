@@ -6,4 +6,4 @@ export * from "../../definition/interface/http-server-instantiation.interface.mj
 export * from "../../definition/interface/https-server-configuration.interface.mjs";
 export * from "../../definition/interface/https-server-instantiation.interface.mjs";
 export * from "../../definition/type/server-configuration.type.mjs";
-export * from "./ServerInstantiationType.mjs";
+export * from "./server-instantiation.type.mjs";

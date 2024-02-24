@@ -26,7 +26,7 @@ import { RichServerResponse } from "./RichServerResponse.mjs";
 
 
 
-import type { ServerInstantiationType } from "./Server/ServerInstantiationType.mjs";
+import type { ServerInstantiationType } from "./Server/server-instantiation.type.mjs";
 
 import type { ServerConfigurationType } from "../definition/type/server-configuration.type.mjs";
 
