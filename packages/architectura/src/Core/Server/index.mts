@@ -3,7 +3,7 @@ export * from "../../definition/interface/base-server-configuration.interface.mj
 export * from "../../definition/interface/base-server-instantiation.interface.mjs";
 export * from "../../definition/interface/http-server-configuration.interface.mjs";
 export * from "../../definition/interface/http-server-instantiation.interface.mjs";
-export * from "./HTTPSServerConfigurationInterface.mjs";
+export * from "./https-server-configuration.interface.mjs";
 export * from "./HTTPSServerInstantiationInterface.mjs";
 export * from "./ServerConfigurationType.mjs";
 export * from "./ServerInstantiationType.mjs";
