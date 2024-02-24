@@ -1,4 +1,4 @@
-import type { BaseServerConfigurationInterface } from "../../definition/interface/base-server-configuration.interface.mjs";
+import type { BaseServerConfigurationInterface } from "./base-server-configuration.interface.mjs";
 
 interface HTTPServerConfigurationInterface extends BaseServerConfigurationInterface
 {
