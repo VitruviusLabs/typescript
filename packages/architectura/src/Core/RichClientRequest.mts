@@ -6,7 +6,7 @@ import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
 
 import { LoggerProxy } from "../Service/logger/logger.proxy.mjs";
 
-import { ContentTypeEnum } from "./HTTP/ContentTypeEnum.js";
+import { ContentTypeEnum } from "../definition/enum/content-type.enum.mjs";
 
 import type { IncomingHttpHeaders } from "node:http";
 
