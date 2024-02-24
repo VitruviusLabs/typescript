@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 
 // import { ExecutionContext } from "../Core/ExecutionContext.mjs";
 
-import { MillisecondEnum } from "../../Core/Time/millisecond.enum.mjs";
+import { MillisecondEnum } from "../../definition/enum/millisecond.enum.mjs";
 
 // import { CookieEnum } from "./Cookie/CookieEnum.mjs";
 
