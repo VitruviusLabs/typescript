@@ -13,7 +13,7 @@ import { SessionEnum } from "./Session/SessionEnum.mjs";
 
 import { SessionManager } from "./SessionManager.mjs";
 
-import { CookieService } from "./cookie.service.mjs";
+import { CookieService } from "./cookie/cookie.service.mjs";
 
 import type { SessionInstantiationInterface } from "./Session/SessionInstantiationInterface.mjs";
 
