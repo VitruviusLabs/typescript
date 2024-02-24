@@ -6,7 +6,7 @@ import { dirname } from "node:path";
 
 import { fileURLToPath } from "node:url";
 
-import type { FileSystemErrorInterface } from "../definition/interface/file-system-error.interface.mjs";
+import type { FileSystemErrorInterface } from "../../definition/interface/file-system-error.interface.mjs";
 
 
 class FileSystemService
