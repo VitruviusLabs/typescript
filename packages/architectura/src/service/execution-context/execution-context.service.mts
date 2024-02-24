@@ -1,7 +1,8 @@
 
-import type { RichServerResponse } from '../../Core/RichServerResponse.mjs';
-
 import type { RichClientRequest } from "../../Core/rich-client-request.mjs";
+
+import type { RichServerResponse } from '../../Core/rich-server-response.mjs';
+
 
 
 import type { ExecutionContextInstantiationInterface } from "../../definition/interface/execution-context-instantiation.interface.mjs";

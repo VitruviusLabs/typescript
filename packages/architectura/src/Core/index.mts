@@ -6,7 +6,7 @@ export * from "./ExecutionContext/index.mjs";
 export * from "./Executor/index.mjs";
 export * from "./HTTP/index.mjs";
 export * from "./rich-client-request.mjs";
-export * from "./RichServerResponse.mjs";
+export * from "./rich-server-response.mjs";
 export * from "./Server.mjs";
 export * from "./Server/index.mjs";
 export * from "./Singleton.mjs";
