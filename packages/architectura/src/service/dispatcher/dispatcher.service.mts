@@ -15,7 +15,7 @@ import { LoggerProxy } from "../logger/logger.proxy.mjs";
 import type { ConstructorOf } from "../../definition/type/constructor-of.type.mjs";
 
 
-class DispatcherService
+class EndpointRegistry
 {
 	private static readonly ENDPOINTS_DIRECTORIES: Array<string> = [];
 	private static readonly ENDPOINTS: Map<string, BaseEndpoint> = new Map();
@@ -72,7 +72,7 @@ class DispatcherService
 	{
 		for (const DIRECTORY of this.ENDPOINTS_DIRECTORIES)
 		{
-			await DispatcherService.ParseDirectoryForEndpoints(DIRECTORY);
+			await EndpointRegistry.ParseDirectoryForEndpoints(DIRECTORY);
 		}
 	}
 
@@ -149,4 +149,4 @@ class DispatcherService
 
 }
 
-export { DispatcherService };
+export { EndpointRegistry };

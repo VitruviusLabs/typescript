@@ -8,7 +8,7 @@ import { PortsEnum } from "../../definition/enum/ports.enum.mjs";
 
 import { getConstructorOf } from "../../definition/type/get-constructor-of.type.mjs";
 
-import { DispatcherService } from "../../service/dispatcher/dispatcher.service.mjs";
+import { EndpointRegistry } from "../../service/dispatcher/dispatcher.service.mjs";
 
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 
@@ -152,7 +152,7 @@ class Server
 
 		ExecutionContextRegistry.SetExecutionContext(CONTEXT);
 
-		const ENDPOINTS: Map<string, BaseEndpoint> = DispatcherService.GetEndpoints();
+		const ENDPOINTS: Map<string, BaseEndpoint> = EndpointRegistry.GetEndpoints();
 
 		for (const [, ENDPOINT] of ENDPOINTS)
 		{
