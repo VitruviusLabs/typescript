@@ -28,7 +28,7 @@ import { RichServerResponse } from "./RichServerResponse.mjs";
 
 import type { ServerInstantiationType } from "./Server/ServerInstantiationType.mjs";
 
-import type { ServerConfigurationType } from "./Server/server-configuration.type.mjs";
+import type { ServerConfigurationType } from "../definition/type/server-configuration.type.mjs";
 
 
 import type { BaseEndpoint, BasePostHook, BasePreHook } from "../index.mjs";
