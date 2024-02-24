@@ -7,3 +7,4 @@ export * from "./Number/index.mjs";
 export * from "./Session.mjs";
 export * from "./Session/index.mjs";
 export * from "./SessionManager.mjs";
+export * from './stack-trace-parser/index.mjs';
