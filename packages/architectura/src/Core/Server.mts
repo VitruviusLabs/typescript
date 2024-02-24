@@ -8,7 +8,7 @@ import { FileSystem } from "../Service/FileSystem.mjs";
 
 import { LoggerProxy } from "../Service/logger/logger.proxy.mjs";
 
-import { getConstructorOf } from "../utils/getConstructorOf.mjs";
+import { getConstructorOf } from "../utils/get-constructor-of.type.mjs";
 
 import { ExecutionContext } from "./ExecutionContext.mjs";
 
