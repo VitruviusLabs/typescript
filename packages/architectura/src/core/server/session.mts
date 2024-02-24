@@ -13,8 +13,9 @@ import { SessionEnum } from "../../definition/enum/session.enum.mjs";
 
 import { CookieService } from "../../service/cookie/cookie.service.mjs";
 
-import { SessionManagerService } from "../../service/session-manager/session-manager.service.mjs";
 
+
+import { SessionRegistry } from "../../service/session-manager/session-manager.service.mjs";
 
 import type { SessionInstantiationInterface } from "../../definition/interface/session-instantiation.interface.mjs";
 
@@ -63,7 +64,7 @@ class Session
 	 */
 	public static GetById(id: string): Session | undefined
 	{
-		return SessionManagerService.GetSession(id);
+		return SessionRegistry.GetSession(id);
 	}
 
 	/**
@@ -93,7 +94,7 @@ class Session
 	public close(): void
 	{
 		clearTimeout(this.timeout);
-		SessionManagerService.ClearSession(this.getId());
+		SessionRegistry.ClearSession(this.getId());
 	}
 
 	/**
@@ -101,7 +102,7 @@ class Session
 	 */
 	public save(): void
 	{
-		SessionManagerService.SetSession(this.getId(), this);
+		SessionRegistry.SetSession(this.getId(), this);
 	}
 
 	/**
@@ -146,4 +147,4 @@ class Session
 	}
 }
 
-export { Session as SessionService };
+export { Session };

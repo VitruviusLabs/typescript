@@ -1,9 +1,13 @@
 
-import { BasePreHook , KernelService } from "../_index.mjs";
+import { ExecutionContext } from "../core/execution-context/execution-context.mjs";
 
-import { SessionManagerService, SessionService } from "../service/_index.mjs";
+import { ExecutionContextRegistry } from "../core/execution-context/execution-context.registry.mjs";
 
-import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
+import { Session } from "../core/server/session.mjs";
+
+import { SessionRegistry } from "../service/session-manager/session-manager.service.mjs";
+
+import { BasePreHook } from "./base.pre-hook.mjs";
 
 abstract class SessionPreHook extends BasePreHook
 {
@@ -12,18 +16,18 @@ abstract class SessionPreHook extends BasePreHook
 	 */
 	public execute(): void
 	{
-		const CONTEXT: ExecutionContextService = KernelService.GetExecutionContext(ExecutionContextService);
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
 
 		const COOKIES: Map<string, string> = CONTEXT.getRequest().getCookies();
 
-		if (!COOKIES.has(`${SessionService.GetFullCookieName()}:id`))
+		if (!COOKIES.has(`${Session.GetFullCookieName()}:id`))
 		{
 			this.initializeNewSession();
 
 			return;
 		}
 
-		const SESSION_ID: string | undefined = COOKIES.get(`${SessionService.GetCookieNameScope()}:id`);
+		const SESSION_ID: string | undefined = COOKIES.get(`${Session.GetCookieNameScope()}:id`);
 
 		if (SESSION_ID === undefined)
 		{
@@ -36,25 +40,25 @@ abstract class SessionPreHook extends BasePreHook
 	}
 
 	// eslint-disable-next-line class-methods-use-this -- Stateless
-	private initializeNewSession(): SessionService
+	private initializeNewSession(): Session
 	{
-		const NEW_SESSION: SessionService = SessionService.Create();
+		const NEW_SESSION: Session = Session.Create();
 
 		NEW_SESSION.save();
 
-		NEW_SESSION.setCookie(`${SessionService.GetFullCookieName()}:id`, NEW_SESSION.getId());
+		NEW_SESSION.setCookie(`${Session.GetFullCookieName()}:id`, NEW_SESSION.getId());
 		NEW_SESSION.refresh();
 
-		const CONTEXT: ExecutionContextService = KernelService.GetExecutionContext(ExecutionContextService);
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
 
 		CONTEXT.setSession(NEW_SESSION);
 
 		return NEW_SESSION;
 	}
 
-	private initializeExistingSession(session_id: string): SessionService
+	private initializeExistingSession(session_id: string): Session
 	{
-		let existing_session: SessionService | undefined = SessionManagerService.GetSession(session_id);
+		let existing_session: Session | undefined = SessionRegistry.GetSession(session_id);
 
 		if (existing_session === undefined)
 		{
@@ -63,7 +67,7 @@ abstract class SessionPreHook extends BasePreHook
 
 		existing_session.refresh();
 
-		const CONTEXT: ExecutionContextService = KernelService.GetExecutionContext(ExecutionContextService);
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
 
 		CONTEXT.setSession(existing_session);
 
