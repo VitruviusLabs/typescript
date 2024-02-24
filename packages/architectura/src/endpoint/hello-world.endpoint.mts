@@ -1,6 +1,6 @@
 import { BaseEndpoint } from "../Core/Base/BaseEndpoint.mjs";
 
-import { HTTPMethodEnum } from "../Core/HTTP/http-method.enum.mjs";
+import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
 import { Kernel } from "../index.mjs";
 
