@@ -1,1 +1,1 @@
-export * from "./HelloWorldEndpoint.mjs";
+export * from "./hello-world.endpoint.mjs";
