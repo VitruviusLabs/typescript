@@ -1,4 +1,4 @@
-import type { ExecutionContextInstantiationInterface } from "../../definition/interface/execution-context-instantiation.interface.mjs";
+import type { ExecutionContextInstantiationInterface } from "./definition/interface/execution-context-instantiation.interface.mjs";
 
 import type { RichClientRequest } from "../server/rich-client-request.mjs";
 
