@@ -1,8 +1,9 @@
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
-import { Cookie } from "../Service/Cookie.mjs";
 
 import { BasePreHook, ExecutionContext , Kernel } from "../index.mjs";
+
+import { CookieService } from "../service/_index.mjs";
 
 import type { IncomingHttpHeaders } from "node:http";
 
@@ -37,7 +38,7 @@ abstract class CookiePreHook extends BasePreHook
 			return undefined;
 		}
 
-		const COOKIES: Map<string, string> = Cookie.Parse(REQUEST_HEADERS.cookie);
+		const COOKIES: Map<string, string> = CookieService.Parse(REQUEST_HEADERS.cookie);
 
 		return COOKIES;
 	}
