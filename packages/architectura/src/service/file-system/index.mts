@@ -1,1 +1,1 @@
-export * from "./FileSystemErrorInterface.mjs";
+export * from "./file-system-error.interface.mjs";
