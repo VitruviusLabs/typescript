@@ -1,4 +1,4 @@
-import type { SessionService } from "./Session.mjs";
+import type { SessionService } from "./session.service.mjs";
 
 abstract class SessionManager
 {
