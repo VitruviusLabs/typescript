@@ -13,7 +13,7 @@ import { getConstructorOf } from "../definition/type/get-constructor-of.type.mjs
 
 import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
 
-import { HTTPStatusCodeEnum } from "./HTTP/HTTPStatusCodeEnum.mjs";
+import { HTTPStatusCodeEnum } from "./HTTP/http-status-code.enum.mjs";
 
 import { Kernel } from "./Kernel.mjs";
 

@@ -8,7 +8,7 @@ import { Kernel } from "./Kernel.mjs";
 
 
 
-import type { HTTPStatusCodeEnum } from "./HTTP/HTTPStatusCodeEnum.mjs";
+import type { HTTPStatusCodeEnum } from "./HTTP/http-status-code.enum.mjs";
 
 import type { RichClientRequest } from "./RichClientRequest.mjs";
 
