@@ -1,4 +1,4 @@
-import type { HTTPSServerInstantiationInterface } from "./HTTPSServerInstantiationInterface.mjs";
+import type { HTTPSServerInstantiationInterface } from "./https-server-instantiation.interface.mjs";
 
 import type { HTTPServerInstantiationInterface } from "../../definition/interface/http-server-instantiation.interface.mjs";
 
