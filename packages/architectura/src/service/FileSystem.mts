@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 import type { FileSystemErrorInterface } from "./FileSystem/FileSystemErrorInterface.mjs";
 
-class FileSystem
+class FileSystemService
 {
 	/**
 	 * IsFileSystemError
@@ -44,7 +44,7 @@ class FileSystem
 		}
 		catch (error: unknown)
 		{
-			if (FileSystem.IsFileSystemError(error))
+			if (FileSystemService.IsFileSystemError(error))
 			{
 				switch (error.code)
 				{
@@ -81,7 +81,7 @@ class FileSystem
 		}
 		catch (error: unknown)
 		{
-			if (FileSystem.IsFileSystemError(error))
+			if (FileSystemService.IsFileSystemError(error))
 			{
 				switch (error.code)
 				{
@@ -113,7 +113,7 @@ class FileSystem
 	 */
 	public static async ReadFile(file_path: string): Promise<Buffer | string>
 	{
-		const EXISTS: boolean = await FileSystem.FileExists(file_path);
+		const EXISTS: boolean = await FileSystemService.FileExists(file_path);
 
 		if (!EXISTS)
 		{
@@ -130,7 +130,7 @@ class FileSystem
 	 */
 	public static async ReadFileAsBuffer(file_path: string): Promise<Buffer>
 	{
-		const FILE: Buffer | string = await FileSystem.ReadFile(file_path);
+		const FILE: Buffer | string = await FileSystemService.ReadFile(file_path);
 
 		if (typeof FILE === "string")
 		{
@@ -152,7 +152,7 @@ class FileSystem
 	 */
 	public static async ReadTextFile(file_path: string): Promise<string>
 	{
-		const EXISTS: boolean = await FileSystem.FileExists(file_path);
+		const EXISTS: boolean = await FileSystemService.FileExists(file_path);
 
 		if (!EXISTS)
 		{
@@ -169,7 +169,7 @@ class FileSystem
 	 */
 	public static async OpenFile(file_path: string, flags: string): Promise<FileHandle>
 	{
-		const EXISTS: boolean = await FileSystem.FileExists(file_path);
+		const EXISTS: boolean = await FileSystemService.FileExists(file_path);
 
 		if (!EXISTS)
 		{
@@ -190,4 +190,4 @@ class FileSystem
 	}
 }
 
-export { FileSystem };
+export { FileSystemService };

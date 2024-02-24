@@ -8,7 +8,7 @@ import { BaseEndpoint } from "../Core/Base/BaseEndpoint.mjs";
 
 import { HelloWorldEndpoint } from "../index.mjs";
 
-import { FileSystem } from "./FileSystem.mjs";
+import { FileSystemService } from "./FileSystem.mjs";
 
 import { LoggerProxy } from "./logger/logger.proxy.mjs";
 
@@ -57,7 +57,7 @@ class Dispatcher
 
 	public static async AddEndpointsDirectory(directory: string): Promise<void>
 	{
-		if (!(await FileSystem.DirectoryExists(directory)))
+		if (!(await FileSystemService.DirectoryExists(directory)))
 		{
 			throw new Error(`Impossible to add directory ${directory} as an endpoint directory as it does not exist.`);
 		}
@@ -78,7 +78,7 @@ class Dispatcher
 
 	private static async ParseDirectoryForEndpoints(directory: string): Promise<void>
 	{
-		const CONTENTS: Array<Dirent> = await FileSystem.ReadDirectory(directory);
+		const CONTENTS: Array<Dirent> = await FileSystemService.ReadDirectory(directory);
 
 		for (const ENTITY of CONTENTS)
 		{
