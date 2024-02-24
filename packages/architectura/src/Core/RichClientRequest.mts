@@ -4,9 +4,9 @@ import { parse as parseQuery } from "node:querystring";
 
 import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
 
-import { LoggerProxy } from "../Service/logger/logger.proxy.mjs";
-
 import { ContentTypeEnum } from "../definition/enum/content-type.enum.mjs";
+
+import { LoggerProxy } from "../service/_index.mjs";
 
 import type { IncomingHttpHeaders } from "node:http";
 
