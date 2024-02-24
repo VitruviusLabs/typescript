@@ -1,8 +1,9 @@
-import { Singleton } from "../../core/singleton.mjs";
 
 import { LogLevelEnum } from "../../definition/enum/log-level.enum.mjs";
 
 import { Time } from "../../index.mjs";
+
+import { Singleton } from "../../utility/singleton.mjs";
 
 import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
 
