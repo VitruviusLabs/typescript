@@ -6,12 +6,13 @@ import { HTTPStatusCodeEnum } from "../../definition/enum/http-status-code.enum.
 
 import { PortsEnum } from "../../definition/enum/ports.enum.mjs";
 
-import { getConstructorOf } from "../../definition/type/get-constructor-of.mjs";
 
 
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
+
+import { getConstructorOf } from "../../utility/get-constructor-of.mjs";
 
 import { EndpointRegistry } from "../endpoint/endpoint.registry.mjs";
 
