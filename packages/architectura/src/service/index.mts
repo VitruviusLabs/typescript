@@ -4,7 +4,7 @@ export * from "./file-system/file-system.service.mjs";
 export * from "./FileSystem/index.mjs";
 export * from "./logger/index.mjs";
 export * from "./Number/index.mjs";
-export * from "./session-manager.service.mjs";
+export * from "./session-manager/session-manager.service.mjs";
 export * from "./Session/index.mjs";
 export * from "./session/session.service.mjs";
 export * from './stack-trace-parser/index.mjs';
