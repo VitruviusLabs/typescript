@@ -1,6 +1,7 @@
-import { MillisecondEnum } from "./Time/MillisecondEnum.mjs";
-
 import { TimeFormattingEnum } from "./Time/TimeFormattingEnum.mjs";
+
+import { MillisecondEnum } from "./Time/millisecond.enum.mjs";
+
 
 class Time extends Date
 {
