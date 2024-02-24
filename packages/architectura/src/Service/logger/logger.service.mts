@@ -1,4 +1,4 @@
-import { Singleton } from "../../Core/Singletontmp.mjs";
+import { Singleton } from "../../Core/singleton.mjs";
 
 import { LogLevelEnum } from "../../definition/enum/log-level.enum.mjs";
 

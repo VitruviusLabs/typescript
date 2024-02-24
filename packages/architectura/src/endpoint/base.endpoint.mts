@@ -1,4 +1,4 @@
-import { Singleton } from "../Core/Singletontmp.mjs";
+import { Singleton } from "../Core/singleton.mjs";
 
 import type { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
