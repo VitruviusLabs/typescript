@@ -1,4 +1,4 @@
-import type { Session } from "../../core/server/session.mjs";
+import type { Session } from "./session.mjs";
 
 abstract class SessionRegistry
 {

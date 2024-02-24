@@ -5,7 +5,7 @@ import { ExecutionContextRegistry } from "../core/execution-context/execution-co
 
 import { Session } from "../core/server/session.mjs";
 
-import { SessionRegistry } from "../service/session-manager/session.registry.mjs";
+import { SessionRegistry } from "../core/server/session.registry.mjs";
 
 import { BasePreHook } from "./base.pre-hook.mjs";
 
