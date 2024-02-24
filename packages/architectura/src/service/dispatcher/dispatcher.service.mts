@@ -12,7 +12,7 @@ import { FileSystemService } from "../file-system/file-system.service.mjs";
 
 import { LoggerProxy } from "../logger/logger.proxy.mjs";
 
-import type { ConstructorOf } from "../../utils/constructor-of.type.mjs";
+import type { ConstructorOf } from "../../definition/type/constructor-of.type.mjs";
 
 
 class DispatcherService

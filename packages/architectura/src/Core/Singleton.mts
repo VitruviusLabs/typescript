@@ -1,4 +1,4 @@
-import type { ConstructorOf } from "../utils/constructor-of.type.mjs";
+import type { ConstructorOf } from "../definition/type/constructor-of.type.mjs";
 
 // eslint-disable-next-line @typescript-eslint/ban-types -- They're class constructors, not functions
 const INSTANCES: Map<Function, object> = new Map();
