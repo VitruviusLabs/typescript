@@ -1,5 +1,6 @@
 export * from './content-type.enum.mjs';
 export * from './http-method.enum.mjs';
+export * from './http-status-code.enum.mjs';
 export * from './log-level.enum.mjs';
 export * from './millisecond.enum.mjs';
 export * from './numeric-base.enum.mjs';
