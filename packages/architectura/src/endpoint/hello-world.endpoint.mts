@@ -1,10 +1,11 @@
-import { BaseEndpoint } from "../Core/Base/base.endpoint.mjs";
 
 import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
 import { Kernel } from "../index.mjs";
 
 import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
+
+import { BaseEndpoint } from "./base.endpoint.mjs";
 
 
 

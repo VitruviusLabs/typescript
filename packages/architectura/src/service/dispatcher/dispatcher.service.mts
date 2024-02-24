@@ -4,7 +4,7 @@ import { basename } from "node:path";
 
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
-import { BaseEndpoint } from "../../Core/Base/base.endpoint.mjs";
+import { BaseEndpoint } from "../../endpoint/base.endpoint.mjs";
 
 import { HelloWorldEndpoint } from "../../index.mjs";
 
