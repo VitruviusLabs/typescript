@@ -18,11 +18,12 @@ import { getConstructorOf } from "../definition/type/get-constructor-of.type.mjs
 import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
 
 
-import { KernelService } from "./Kernel.mjs";
 
 import { RichClientRequest } from "./RichClientRequest.mjs";
 
 import { RichServerResponse } from "./RichServerResponse.mjs";
+
+import { KernelService } from "./kernel.service.mjs";
 
 
 

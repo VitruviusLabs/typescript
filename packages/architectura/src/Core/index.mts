@@ -4,7 +4,7 @@ export * from "./Base/index.mjs";
 export * from "./ExecutionContext/index.mjs";
 export * from "./Executor/index.mjs";
 export * from "./HTTP/index.mjs";
-export * from "./Kernel.mjs";
+export * from "./kernel.service.mjs";
 export * from "./RichClientRequest.mjs";
 export * from "./RichServerResponse.mjs";
 export * from "./Server.mjs";
