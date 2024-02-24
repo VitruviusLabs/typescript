@@ -4,7 +4,7 @@ import { type Gzip, createGzip } from "node:zlib";
 
 import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
 
-import { Kernel } from "./Kernel.mjs";
+import { KernelService } from "./Kernel.mjs";
 
 
 
@@ -27,7 +27,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 	{
 		this.setHeader("Content-Encoding", "gzip");
 
-		const CONTEXT: ExecutionContextService = Kernel.GetExecutionContext(ExecutionContextService);
+		const CONTEXT: ExecutionContextService = KernelService.GetExecutionContext(ExecutionContextService);
 
 		const SESSION: SessionService | undefined = CONTEXT.getSession();
 

@@ -18,7 +18,7 @@ import { getConstructorOf } from "../definition/type/get-constructor-of.type.mjs
 import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
 
 
-import { Kernel } from "./Kernel.mjs";
+import { KernelService } from "./Kernel.mjs";
 
 import { RichClientRequest } from "./RichClientRequest.mjs";
 
@@ -152,7 +152,7 @@ class Server
 			}
 		}
 
-		Kernel.SetExecutionContext(CONTEXT);
+		KernelService.SetExecutionContext(CONTEXT);
 
 		const ENDPOINTS: Map<string, BaseEndpoint> = Dispatcher.GetEndpoints();
 
