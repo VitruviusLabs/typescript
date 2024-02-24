@@ -11,9 +11,9 @@ import { MillisecondEnum } from "../../definition/enum/millisecond.enum.mjs";
 
 import { SessionEnum } from "../../definition/enum/session.enum.mjs";
 
-import { CookieService } from "../cookie/cookie.service.mjs";
+import { CookieService } from "../../service/cookie/cookie.service.mjs";
 
-import { SessionManagerService } from "../session-manager/session-manager.service.mjs";
+import { SessionManagerService } from "../../service/session-manager/session-manager.service.mjs";
 
 
 import type { SessionInstantiationInterface } from "../../definition/interface/session-instantiation.interface.mjs";
