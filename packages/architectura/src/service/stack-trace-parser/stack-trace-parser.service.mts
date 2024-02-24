@@ -1,6 +1,6 @@
 import { NumericBaseEnum } from "../../definition/enum/numeric-base.enum.mjs";
 
-import { StackTraceParserServiceEnum } from "../../definition/enum/stack-trace-parser-service.enum.mjs";
+import { StackTraceParserServiceEnum } from "./definition/enum/stack-trace-parser-service.enum.mjs";
 
 import type { StackTraceLineParsingResultInterface } from "./definition/interface/stack-trace-line-parsing-result.interface.mjs";
 
