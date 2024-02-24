@@ -8,9 +8,10 @@ import { Singleton } from "../../utility/singleton.mjs";
 
 import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
 
+import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
+
 import type { LoggerServiceWriteInterface } from "../../definition/interface/logger-service-write.interface.mjs";
 
-import type { LoggerInterface } from "../../definition/interface/logger.interface.mjs";
 
 class LoggerService extends Singleton implements LoggerInterface
 {
