@@ -10,7 +10,7 @@ import { HelloWorldEndpoint } from "../index.mjs";
 
 import { FileSystem } from "./FileSystem.mjs";
 
-import { Logger } from "./logger.service.mjs";
+import { LoggerService } from "./logger.service.mjs";
 
 import type { ConstructorOf } from "../utils/ConstructorOf.mjs";
 
@@ -132,12 +132,12 @@ class Dispatcher
 		{
 			if (error instanceof Error)
 			{
-				Logger.LogError(error);
+				LoggerService.LogError(error);
 
 				return;
 			}
 
-			Logger.Critical(`A non-Error has been thrown. Received entity: ${JSON.stringify(error)}`);
+			LoggerService.Critical(`A non-Error has been thrown. Received entity: ${JSON.stringify(error)}`);
 		}
 	}
 

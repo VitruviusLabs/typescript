@@ -4,7 +4,7 @@ import { LogLevelEnum } from "./Logger/LogLevelEnum.mjs";
 
 import { StackTraceParser } from "./Logger/StackTraceParser.mjs";
 
-class Logger
+class LoggerService
 {
 	/**
 	 * Write
@@ -112,4 +112,4 @@ class Logger
 	}
 }
 
-export { Logger };
+export { LoggerService };

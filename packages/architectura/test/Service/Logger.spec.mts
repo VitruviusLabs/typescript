@@ -3,7 +3,7 @@ import { default as assert } from 'node:assert/strict';
 
 import { describe, it } from 'node:test';
 
-import { Logger } from "../../src/index.mjs";
+import { LoggerService } from "../../src/index.mjs";
 
 global.console = {
 	...global.console,
@@ -11,7 +11,7 @@ global.console = {
 };
 
 describe(
-	"Logger",
+	"LoggerService",
 	(): void =>
 	{
 		// describe(
@@ -28,7 +28,7 @@ describe(
 
 		// 				const MESSAGE: string = "This is a test message.";
 
-		// 				Logger.Write(LogLevelEnum.INFO, MESSAGE);
+		// 				LoggerService.Write(LogLevelEnum.INFO, MESSAGE);
 
 		// 				expect(CONSOLE_SPY.firstCall.args[0]).to.match(TESTING_REGEXP);
 
@@ -52,7 +52,7 @@ describe(
 
 				// 		const ERROR: Error = new Error("This is a test message.");
 
-				// 		Logger.LogError(ERROR);
+				// 		LoggerService.LogError(ERROR);
 
 				// 		expect(CONSOLE_SPY.firstCall.args[0]).to.match(TESTING_REGEXP);
 
@@ -67,57 +67,57 @@ describe(
 						assert.throws(
 							(): void =>
 							{
-								Logger.LogError("Lorem ipsum dolor sit amet.");
+								LoggerService.LogError("Lorem ipsum dolor sit amet.");
 							},
-							new Error("Logger.logError can only handle Error and it's derivates.")
+							new Error("LoggerService.logError can only handle Error and it's derivates.")
 						);
 
 						assert.throws(
 							(): void =>
 							{
-								Logger.LogError(1);
+								LoggerService.LogError(1);
 							},
-							new Error("Logger.logError can only handle Error and it's derivates.")
+							new Error("LoggerService.logError can only handle Error and it's derivates.")
 						);
 
 						assert.throws(
 							(): void =>
 							{
-								Logger.LogError(undefined);
+								LoggerService.LogError(undefined);
 							},
-							new Error("Logger.logError can only handle Error and it's derivates.")
+							new Error("LoggerService.logError can only handle Error and it's derivates.")
 						);
 
 						assert.throws(
 							(): void =>
 							{
-								Logger.LogError({});
+								LoggerService.LogError({});
 							},
-							new Error("Logger.logError can only handle Error and it's derivates.")
+							new Error("LoggerService.logError can only handle Error and it's derivates.")
 						);
 
 						assert.throws(
 							(): void =>
 							{
-								Logger.LogError(new Date());
+								LoggerService.LogError(new Date());
 							},
-							new Error("Logger.logError can only handle Error and it's derivates.")
+							new Error("LoggerService.logError can only handle Error and it's derivates.")
 						);
 
 						assert.throws(
 							(): void =>
 							{
-								Logger.LogError(/^[0-9]+$/);
+								LoggerService.LogError(/^[0-9]+$/);
 							},
-							new Error("Logger.logError can only handle Error and it's derivates.")
+							new Error("LoggerService.logError can only handle Error and it's derivates.")
 						);
 
 						assert.throws(
 							(): void =>
 							{
-								Logger.LogError(["foo", "bar"]);
+								LoggerService.LogError(["foo", "bar"]);
 							},
-							new Error("Logger.logError can only handle Error and it's derivates.")
+							new Error("LoggerService.logError can only handle Error and it's derivates.")
 						);
 					}
 				);
@@ -138,7 +138,7 @@ describe(
 
 		// 				const MESSAGE: string = "This is a test message.";
 
-		// 				Logger.Debug(MESSAGE);
+		// 				LoggerService.Debug(MESSAGE);
 
 		// 				expect(CONSOLE_SPY.firstCall.args[0]).to.match(TESTING_REGEXP);
 
@@ -162,7 +162,7 @@ describe(
 
 		// 				const MESSAGE: string = "This is a test message.";
 
-		// 				Logger.Informational(MESSAGE);
+		// 				LoggerService.Informational(MESSAGE);
 
 		// 				expect(CONSOLE_SPY.firstCall.args[0]).to.match(TESTING_REGEXP);
 
@@ -186,7 +186,7 @@ describe(
 
 		// 				const MESSAGE: string = "This is a test message.";
 
-		// 				Logger.Info(MESSAGE);
+		// 				LoggerService.Info(MESSAGE);
 
 		// 				expect(CONSOLE_SPY.firstCall.args[0]).to.match(TESTING_REGEXP);
 
@@ -198,11 +198,11 @@ describe(
 		// 			"should call the Informational method",
 		// 			(): void =>
 		// 			{
-		// 				const LOGGER_INFORMATIONAL_SPY: SinonSpy = spy(Logger, "Informational");
+		// 				const LOGGER_INFORMATIONAL_SPY: SinonSpy = spy(LoggerService, "Informational");
 
 		// 				const MESSAGE: string = "This is a test message.";
 
-		// 				Logger.Info(MESSAGE);
+		// 				LoggerService.Info(MESSAGE);
 
 		// 				expect(LOGGER_INFORMATIONAL_SPY.calledWithExactly(MESSAGE)).to.be.true;
 
@@ -226,7 +226,7 @@ describe(
 
 		// 				const MESSAGE: string = "This is a test message.";
 
-		// 				Logger.Notice(MESSAGE);
+		// 				LoggerService.Notice(MESSAGE);
 
 		// 				expect(CONSOLE_SPY.firstCall.args[0]).to.match(TESTING_REGEXP);
 
@@ -250,7 +250,7 @@ describe(
 
 		// 				const MESSAGE: string = "This is a test message.";
 
-		// 				Logger.Warning(MESSAGE);
+		// 				LoggerService.Warning(MESSAGE);
 
 		// 				expect(CONSOLE_SPY.firstCall.args[0]).to.match(TESTING_REGEXP);
 
@@ -274,7 +274,7 @@ describe(
 
 		// 				const MESSAGE: string = "This is a test message.";
 
-		// 				Logger.Error(MESSAGE);
+		// 				LoggerService.Error(MESSAGE);
 
 		// 				expect(CONSOLE_SPY.firstCall.args[0]).to.match(TESTING_REGEXP);
 
@@ -298,7 +298,7 @@ describe(
 
 		// 				const MESSAGE: string = "This is a test message.";
 
-		// 				Logger.Critical(MESSAGE);
+		// 				LoggerService.Critical(MESSAGE);
 
 		// 				expect(CONSOLE_SPY.firstCall.args[0]).to.match(TESTING_REGEXP);
 
@@ -322,7 +322,7 @@ describe(
 
 		// 				const MESSAGE: string = "This is a test message.";
 
-		// 				Logger.Alert(MESSAGE);
+		// 				LoggerService.Alert(MESSAGE);
 
 		// 				expect(CONSOLE_SPY.firstCall.args[0]).to.match(TESTING_REGEXP);
 
@@ -346,7 +346,7 @@ describe(
 
 		// 				const MESSAGE: string = "This is a test message.";
 
-		// 				Logger.Emergency(MESSAGE);
+		// 				LoggerService.Emergency(MESSAGE);
 
 		// 				expect(CONSOLE_SPY.firstCall.args[0]).to.match(TESTING_REGEXP);
 

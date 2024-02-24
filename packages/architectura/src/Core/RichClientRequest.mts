@@ -4,7 +4,7 @@ import { parse as parseQuery } from "node:querystring";
 
 import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
 
-import { Logger } from "../index.mjs";
+import { LoggerService } from "../index.mjs";
 
 import { ContentTypeEnum } from "./HTTP/ContentTypeEnum.js";
 
@@ -56,7 +56,7 @@ class RichClientRequest extends IncomingMessage
 				}
 				else
 				{
-					Logger.Warning(`Received invalid multipart/form-data header: ${this.contentType}.`);
+					LoggerService.Warning(`Received invalid multipart/form-data header: ${this.contentType}.`);
 				}
 
 				this.contentType = ContentTypeEnum.MULTIPART_FORM_DATA;
