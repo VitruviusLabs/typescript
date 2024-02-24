@@ -1,8 +1,9 @@
-import { ExecutionContextService } from "../Core/execution-context.service.mjs";
 
 import { BasePreHook , Kernel } from "../index.mjs";
 
 import { SessionManagerService, SessionService } from "../service/_index.mjs";
+
+import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
 
 abstract class SessionPreHook extends BasePreHook
 {

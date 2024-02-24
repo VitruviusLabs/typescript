@@ -1,11 +1,10 @@
-import type { ExecutionContextInstantiationInterface } from "./ExecutionContext/ExecutionContextInstantiationInterface.mjs";
+import type { ExecutionContextInstantiationInterface } from "../../Core/ExecutionContext/ExecutionContextInstantiationInterface.mjs";
 
-import type { RichClientRequest } from "./RichClientRequest.mjs";
+import type { RichClientRequest } from "../../Core/RichClientRequest.mjs";
 
-import type { RichServerResponse } from './RichServerResponse.mjs';
+import type { RichServerResponse } from '../../Core/RichServerResponse.mjs';
 
-import type { SessionService } from "../service/_index.mjs";
-
+import type { SessionService } from "../_index.mjs";
 
 class ExecutionContextService
 {

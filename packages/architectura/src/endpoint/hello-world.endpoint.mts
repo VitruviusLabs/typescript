@@ -2,10 +2,11 @@ import { BaseEndpoint } from "../Core/Base/BaseEndpoint.mjs";
 
 import { HTTPMethodEnum } from "../Core/HTTP/HTTPMethodEnum.mjs";
 
-import { ExecutionContextService } from "../Core/execution-context.service.mjs";
-
-
 import { Kernel } from "../index.mjs";
+
+import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
+
+
 
 class HelloWorldEndpoint extends BaseEndpoint
 {

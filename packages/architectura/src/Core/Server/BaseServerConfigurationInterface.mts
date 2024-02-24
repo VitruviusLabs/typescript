@@ -1,4 +1,4 @@
-import type { ExecutionContextService } from "../execution-context.service.mjs";
+import type { ExecutionContextService } from "../../service/execution-context/execution-context.service.mjs";
 
 interface BaseServerConfigurationInterface
 {
