@@ -1,4 +1,4 @@
-import type { ConstructorOf } from "./ConstructorOf.mjs";
+import type { ConstructorOf } from "./constructor-of.type.mjs";
 
 function getConstructorOf<T extends object>(value: T): ConstructorOf<T>
 {

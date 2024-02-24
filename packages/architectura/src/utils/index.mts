@@ -1,2 +1,2 @@
-export * from "./ConstructorOf.mjs";
+export * from "./constructor-of.type.mjs";
 export * from "./getConstructorOf.mjs";
