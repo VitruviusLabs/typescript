@@ -1,3 +1,4 @@
+export * from './file-system-error.interface.mjs';
 export * from './logger-service-write.interface.mjs';
 export * from './logger.interface.mjs';
 export * from './stack-trace-line-parsing-result.interface.mjs';
