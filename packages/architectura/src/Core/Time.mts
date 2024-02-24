@@ -1,6 +1,6 @@
 import { MillisecondEnum } from "../definition/enum/millisecond.enum.mjs";
 
-import { TimeFormattingEnum } from "./Time/TimeFormattingEnum.mjs";
+import { TimeFormattingEnum } from "./Time/time-formatting.enum.mjs";
 
 
 

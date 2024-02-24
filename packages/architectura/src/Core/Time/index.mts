@@ -1,2 +1,2 @@
 export * from "../../definition/enum/millisecond.enum.mjs";
-export * from "./TimeFormattingEnum.mjs";
+export * from "./time-formatting.enum.mjs";
