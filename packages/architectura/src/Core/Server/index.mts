@@ -1,5 +1,5 @@
 export * from "../../definition/enum/ports.enum.mjs";
-export * from "./BaseServerConfigurationInterface.mjs";
+export * from "./base-server-configuration.interface.mjs";
 export * from "./BaseServerInstantiationInterface.mjs";
 export * from "./HTTPServerConfigurationInterface.mjs";
 export * from "./HTTPServerInstantiationInterface.mjs";
