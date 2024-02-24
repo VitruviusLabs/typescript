@@ -1,3 +1,3 @@
 export * from "../../definition/enum/session.enum.mjs";
-export * from "./SessionInstantiationInterface.mjs";
+export * from "./session-instantiation.interface.mjs";
 export * from "./SessionInterface.mjs";
