@@ -1,4 +1,4 @@
-import { BaseEndpoint } from "../Core/Base/BaseEndpoint.mjs";
+import { BaseEndpoint } from "../Core/Base/base.endpoint.mjs";
 
 import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
