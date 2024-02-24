@@ -4,6 +4,7 @@ export * from './execution-context-instantiation.interface.mjs';
 export * from './executor-instantiation.interface.mjs';
 export * from './file-system-error.interface.mjs';
 export * from './http-server-configuration.interface.mjs';
+export * from './http-server-instantiation.interface.mjs';
 export * from './logger-service-write.interface.mjs';
 export * from './logger.interface.mjs';
 export * from './session-instantiation.interface.mjs';
