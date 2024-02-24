@@ -1,10 +1,8 @@
 import { ExecutionContext } from "../Core/ExecutionContext.mjs";
 
-import { Session } from "../Service/Session.mjs";
-
-import { SessionManager } from "../Service/SessionManager.mjs";
-
 import { BasePreHook , Kernel } from "../index.mjs";
+
+import { SessionManagerService, SessionService } from "../service/_index.mjs";
 
 abstract class SessionPreHook extends BasePreHook
 {
@@ -17,14 +15,14 @@ abstract class SessionPreHook extends BasePreHook
 
 		const COOKIES: Map<string, string> = CONTEXT.getRequest().getCookies();
 
-		if (!COOKIES.has(`${Session.GetFullCookieName()}:id`))
+		if (!COOKIES.has(`${SessionService.GetFullCookieName()}:id`))
 		{
 			this.initializeNewSession();
 
 			return;
 		}
 
-		const SESSION_ID: string | undefined = COOKIES.get(`${Session.GetCookieNameScope()}:id`);
+		const SESSION_ID: string | undefined = COOKIES.get(`${SessionService.GetCookieNameScope()}:id`);
 
 		if (SESSION_ID === undefined)
 		{
@@ -37,13 +35,13 @@ abstract class SessionPreHook extends BasePreHook
 	}
 
 	// eslint-disable-next-line class-methods-use-this -- Stateless
-	private initializeNewSession(): Session
+	private initializeNewSession(): SessionService
 	{
-		const NEW_SESSION: Session = Session.Create();
+		const NEW_SESSION: SessionService = SessionService.Create();
 
 		NEW_SESSION.save();
 
-		NEW_SESSION.setCookie(`${Session.GetFullCookieName()}:id`, NEW_SESSION.getId());
+		NEW_SESSION.setCookie(`${SessionService.GetFullCookieName()}:id`, NEW_SESSION.getId());
 		NEW_SESSION.refresh();
 
 		const CONTEXT: ExecutionContext = Kernel.GetExecutionContext(ExecutionContext);
@@ -53,9 +51,9 @@ abstract class SessionPreHook extends BasePreHook
 		return NEW_SESSION;
 	}
 
-	private initializeExistingSession(session_id: string): Session
+	private initializeExistingSession(session_id: string): SessionService
 	{
-		let existing_session: Session | undefined = SessionManager.GetSession(session_id);
+		let existing_session: SessionService | undefined = SessionManagerService.GetSession(session_id);
 
 		if (existing_session === undefined)
 		{
