@@ -4,15 +4,15 @@ import { basename } from "node:path";
 
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
-import { BaseEndpoint } from "../Core/Base/BaseEndpoint.mjs";
+import { BaseEndpoint } from "../../Core/Base/BaseEndpoint.mjs";
 
-import { HelloWorldEndpoint } from "../index.mjs";
+import { HelloWorldEndpoint } from "../../index.mjs";
 
-import { FileSystemService } from "./file-system/file-system.service.mjs";
+import { FileSystemService } from "../file-system/file-system.service.mjs";
 
-import { LoggerProxy } from "./logger/logger.proxy.mjs";
+import { LoggerProxy } from "../logger/logger.proxy.mjs";
 
-import type { ConstructorOf } from "../utils/ConstructorOf.mjs";
+import type { ConstructorOf } from "../../utils/ConstructorOf.mjs";
 
 
 class DispatcherService
