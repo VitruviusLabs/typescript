@@ -1,1 +1,1 @@
-export * from "./NumericBaseEnum.mjs";
+export * from "./numeric-base.enum.mjs";
