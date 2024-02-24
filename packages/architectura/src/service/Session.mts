@@ -9,7 +9,7 @@ import { MillisecondEnum } from "../Core/Time/MillisecondEnum.mjs";
 // import { Logger } from "./Logger.mjs";
 
 
-import { SessionEnum } from "./Session/session.enum.mjs";
+import { SessionEnum } from "../definition/enum/session.enum.mjs";
 
 import { SessionManager } from "./SessionManager.mjs";
 
