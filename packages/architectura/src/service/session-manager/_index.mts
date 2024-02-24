@@ -1,1 +1,1 @@
-export * from './session-manager.service.mjs';
+export * from './session.registry.mjs';
