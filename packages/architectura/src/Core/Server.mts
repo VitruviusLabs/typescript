@@ -10,6 +10,8 @@ import { LoggerProxy } from "../Service/logger/logger.proxy.mjs";
 
 import { HTTPStatusCodeEnum } from "../definition/enum/http-status-code.enum.mjs";
 
+import { PortsEnum } from "../definition/enum/ports.enum.mjs";
+
 import { getConstructorOf } from "../definition/type/get-constructor-of.type.mjs";
 
 
@@ -22,7 +24,6 @@ import { RichClientRequest } from "./RichClientRequest.mjs";
 
 import { RichServerResponse } from "./RichServerResponse.mjs";
 
-import { PortsEnum } from "./Server/ports.enum.mjs";
 
 
 import type { ServerConfigurationType } from "./Server/ServerConfigurationType.mjs";
