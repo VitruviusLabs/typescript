@@ -2,7 +2,7 @@ export * from "./Cookie.mjs";
 export * from "./Dispatcher.mjs";
 export * from "./FileSystem.mjs";
 export * from "./FileSystem/index.mjs";
-export * from "./Logger.mjs";
+export * from "./logger.service.mjs";
 export * from "./Logger/index.mjs";
 export * from "./Number/index.mjs";
 export * from "./Session.mjs";

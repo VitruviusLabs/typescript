@@ -6,7 +6,7 @@ import { Dispatcher } from "../Service/Dispatcher.mjs";
 
 import { FileSystem } from "../Service/FileSystem.mjs";
 
-import { Logger } from "../Service/Logger.mjs";
+import { Logger } from "../Service/logger.service.mjs";
 
 import { getConstructorOf } from "../utils/getConstructorOf.mjs";
 
