@@ -1,6 +1,6 @@
 import { Singleton } from "../../utility/singleton.mjs";
 
-import type { HTTPMethodEnum } from "../../definition/enum/http-method.enum.mjs";
+import type { HTTPMethodEnum } from "./definition/enum/http-method.enum.mjs";
 
 import type { BasePostHook } from "../../hook/base.post-hook.mjs";
 
