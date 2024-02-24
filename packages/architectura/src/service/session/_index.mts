@@ -1,1 +1,1 @@
-export * from '../../core/server/session.service.mjs';
+export * from '../../core/server/session.mjs';

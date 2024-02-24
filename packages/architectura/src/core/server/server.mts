@@ -14,12 +14,9 @@ import { FileSystemService } from "../../service/file-system/file-system.service
 
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 
-import { KernelService } from "../service/execution-context/execution-context.registry.mjs";
+import { ExecutionContext } from "../execution-context/execution-context.mjs";
 
-import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
-
-
-
+import { ExecutionContextRegistry } from "../execution-context/execution-context.registry.mjs";
 
 import { RichClientRequest } from "./rich-client-request.mjs";
 
@@ -84,7 +81,7 @@ class Server
 	 */
 	public static async Create(options: ServerConfigurationType): Promise<Server>
 	{
-		const CONTEXT_CONSTRUCTOR: typeof ExecutionContextService = options.contextConstructor ?? ExecutionContextService;
+		const CONTEXT_CONSTRUCTOR: typeof ExecutionContext = options.contextConstructor ?? ExecutionContext;
 
 		if (!options.https)
 		{
@@ -122,12 +119,12 @@ class Server
 	public static async DefaultListener(
 		request: RichClientRequest,
 		response: RichServerResponse,
-		context_constructor: typeof ExecutionContextService,
+		context_constructor: typeof ExecutionContext,
 	): Promise<void>
 	{
 		request.initialise();
 
-		const CONTEXT: ExecutionContextService = new context_constructor({
+		const CONTEXT: ExecutionContext = new context_constructor({
 			request: request,
 			response: response
 		});
@@ -153,7 +150,7 @@ class Server
 			}
 		}
 
-		KernelService.SetExecutionContext(CONTEXT);
+		ExecutionContextRegistry.SetExecutionContext(CONTEXT);
 
 		const ENDPOINTS: Map<string, BaseEndpoint> = DispatcherService.GetEndpoints();
 

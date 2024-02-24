@@ -2,16 +2,16 @@ import { ServerResponse as HTTPServerResponse } from "node:http";
 
 import { type Gzip, createGzip } from "node:zlib";
 
-import { KernelService } from "../service/execution-context/execution-context.registry.mjs";
+import { ExecutionContextRegistry } from "../../core/execution-context/execution-context.registry.mjs";
 
-import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
-
+import { ExecutionContext } from "../execution-context/execution-context.mjs";
 
 import type { RichClientRequest } from "./rich-client-request.mjs";
 
 import type { HTTPStatusCodeEnum } from "../../definition/enum/http-status-code.enum.mjs";
 
 import type { SessionService } from "../../service/_index.mjs";
+
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
@@ -24,7 +24,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 	{
 		this.setHeader("Content-Encoding", "gzip");
 
-		const CONTEXT: ExecutionContextService = KernelService.GetExecutionContext(ExecutionContextService);
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
 
 		const SESSION: SessionService | undefined = CONTEXT.getSession();
 

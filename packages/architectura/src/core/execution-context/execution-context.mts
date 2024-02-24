@@ -4,7 +4,7 @@ import type { RichClientRequest } from "../server/rich-client-request.mjs";
 
 import type { RichServerResponse } from "../server/rich-server-response.mjs";
 
-import type { SessionService } from "../server/session.service.mjs";
+import type { SessionService } from "../server/session.mjs";
 
 
 class ExecutionContext
@@ -52,4 +52,4 @@ class ExecutionContext
 	}
 }
 
-export { ExecutionContext as ExecutionContextService };
+export { ExecutionContext };
