@@ -1,23 +1,28 @@
+import { Singleton } from "../../Core/Singleton.mjs";
+
 import { Time } from "../../Core/Time.mjs";
 
 import { LogLevelEnum } from "../../definition/enum/log-level.enum.mjs";
 
 import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
 
-class LoggerService
+class LoggerService extends Singleton
 {
+	protected dateFormat: string = "Y-m-d H:i:s";
+
 	/**
 	 * Write
 	 */
 	public static Write(level: LogLevelEnum, message: string): void
 	{
-		const LEVEL: string = level.toUpperCase();
-		const DATE: Time = new Time();
-		const FORMATTED_DATE: string = DATE.format("Y-m-d H:i:s");
-		const LOG_LINE: string = `[${FORMATTED_DATE}] [${LEVEL}] - ${message}\n`;
+		const loggerService: LoggerService | undefined = Singleton.GetInstance(LoggerService);
 
-		// eslint-disable-next-line no-console -- This is a logger, it should log to the console.
-		console.log(LOG_LINE);
+		if (loggerService === undefined)
+		{
+			throw new Error("LoggerService is not initialized.");
+		}
+
+		loggerService.write(level, message);
 	}
 
 	/**
@@ -110,6 +115,18 @@ class LoggerService
 	{
 		this.Write(LogLevelEnum.EMERGENCY, message);
 	}
+
+	public write(level: LogLevelEnum, message: string): void
+	{
+		const LEVEL: string = level.toUpperCase();
+		const DATE: Time = new Time();
+		const FORMATTED_DATE: string = DATE.format(this.dateFormat);
+		const LOG_LINE: string = `[${FORMATTED_DATE}] [${LEVEL}] - ${message}\n`;
+
+		// eslint-disable-next-line no-console -- This is a logger, it should log to the console.
+		console.log(LOG_LINE);
+	}
+
 }
 
 export { LoggerService };
