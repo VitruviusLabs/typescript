@@ -2,41 +2,35 @@ import { Server as HTTPServer, type RequestListener } from "node:http";
 
 import { Server as HTTPSServer } from "node:https";
 
-import { Dispatcher } from "../Service/Dispatcher.mjs";
-
-import { FileSystem } from "../Service/FileSystem.mjs";
-
-import { LoggerProxy } from "../Service/logger/logger.proxy.mjs";
-
 import { HTTPStatusCodeEnum } from "../definition/enum/http-status-code.enum.mjs";
 
 import { PortsEnum } from "../definition/enum/ports.enum.mjs";
 
 import { getConstructorOf } from "../definition/type/get-constructor-of.type.mjs";
 
+import { DispatcherService } from "../service/dispatcher/dispatcher.service.mjs";
 
 import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
 
-
+import { FileSystemService } from "../service/file-system/file-system.service.mjs";
 
 import { KernelService } from "../service/kernel/kernel.service.mjs";
+
+import { LoggerProxy } from "../service/logger/logger.proxy.mjs";
 
 import { RichClientRequest } from "./rich-client-request.mjs";
 
 import { RichServerResponse } from "./rich-server-response.mjs";
 
-
-
-
-
-
 import type { ServerConfigurationType } from "../definition/type/server-configuration.type.mjs";
 
 import type { ServerInstantiationType } from "../definition/type/server-instantiation.type.mjs";
 
+import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
 
+import type { BasePostHook } from "../hook/base.post-hook.mjs";
 
-import type { BaseEndpoint, BasePostHook, BasePreHook } from "../index.mjs";
+import type { BasePreHook } from "../hook/base.pre-hook.mjs";
 
 class Server
 {
@@ -103,8 +97,8 @@ class Server
 			return HTTP_SERVER;
 		}
 
-		const CERTIFICATE: string = await FileSystem.ReadTextFile(options.certificate);
-		const KEY: string = await FileSystem.ReadTextFile(options.key);
+		const CERTIFICATE: string = await FileSystemService.ReadTextFile(options.certificate);
+		const KEY: string = await FileSystemService.ReadTextFile(options.key);
 
 		const HTTPS_SERVER: Server = new Server(
 			{
@@ -143,12 +137,12 @@ class Server
 			{
 				const FILE_PATH: string = request.getRequestedPath().replace(ROUTE_REGEXP, "").padStart(1, "/");
 
-				if (!(await FileSystem.FileExists(`${DIRECTORY}${FILE_PATH}`)))
+				if (!(await FileSystemService.FileExists(`${DIRECTORY}${FILE_PATH}`)))
 				{
 					continue;
 				}
 
-				const FILE: Buffer = await FileSystem.ReadFileAsBuffer(`${DIRECTORY}${FILE_PATH}`);
+				const FILE: Buffer = await FileSystemService.ReadFileAsBuffer(`${DIRECTORY}${FILE_PATH}`);
 
 				CONTEXT.getResponse().send(FILE);
 
@@ -158,7 +152,7 @@ class Server
 
 		KernelService.SetExecutionContext(CONTEXT);
 
-		const ENDPOINTS: Map<string, BaseEndpoint> = Dispatcher.GetEndpoints();
+		const ENDPOINTS: Map<string, BaseEndpoint> = DispatcherService.GetEndpoints();
 
 		for (const [, ENDPOINT] of ENDPOINTS)
 		{
@@ -191,7 +185,7 @@ class Server
 	 */
 	public static async AddPublicDirectory(route: string, directory: string): Promise<void>
 	{
-		if (!(await FileSystem.DirectoryExists(directory)))
+		if (!(await FileSystemService.DirectoryExists(directory)))
 		{
 			throw new Error(`Impossible to add directory ${directory} as a public directory as it does not exist.`);
 		}
