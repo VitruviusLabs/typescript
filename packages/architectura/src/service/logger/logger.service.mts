@@ -1,12 +1,13 @@
 
 import { Time } from "../../_index.mjs";
 
-import { LogLevelEnum } from "../../definition/enum/log-level.enum.mjs";
 
 
 import { Singleton } from "../../utility/singleton.mjs";
 
 import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
+
+import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";
 
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
 
