@@ -9,9 +9,9 @@ import { ExecutionContextService } from "../service/execution-context/execution-
 
 import type { RichClientRequest } from "./rich-client-request.mjs";
 
-import type { HTTPStatusCodeEnum } from "../definition/enum/http-status-code.enum.mjs";
+import type { HTTPStatusCodeEnum } from "../../definition/enum/http-status-code.enum.mjs";
 
-import type { SessionService } from "../service/_index.mjs";
+import type { SessionService } from "../../service/_index.mjs";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {

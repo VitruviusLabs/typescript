@@ -2,36 +2,38 @@ import { Server as HTTPServer, type RequestListener } from "node:http";
 
 import { Server as HTTPSServer } from "node:https";
 
-import { HTTPStatusCodeEnum } from "../definition/enum/http-status-code.enum.mjs";
+import { HTTPStatusCodeEnum } from "../../definition/enum/http-status-code.enum.mjs";
 
-import { PortsEnum } from "../definition/enum/ports.enum.mjs";
+import { PortsEnum } from "../../definition/enum/ports.enum.mjs";
 
-import { getConstructorOf } from "../definition/type/get-constructor-of.type.mjs";
+import { getConstructorOf } from "../../definition/type/get-constructor-of.type.mjs";
 
-import { DispatcherService } from "../service/dispatcher/dispatcher.service.mjs";
+import { DispatcherService } from "../../service/dispatcher/dispatcher.service.mjs";
+
+import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
+
+import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 
 import { KernelService } from "../service/execution-context/execution-context.registry.mjs";
 
 import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
 
-import { FileSystemService } from "../service/file-system/file-system.service.mjs";
 
 
-import { LoggerProxy } from "../service/logger/logger.proxy.mjs";
 
 import { RichClientRequest } from "./rich-client-request.mjs";
 
 import { RichServerResponse } from "./rich-server-response.mjs";
 
-import type { ServerConfigurationType } from "../definition/type/server-configuration.type.mjs";
+import type { ServerConfigurationType } from "../../definition/type/server-configuration.type.mjs";
 
-import type { ServerInstantiationType } from "../definition/type/server-instantiation.type.mjs";
+import type { ServerInstantiationType } from "../../definition/type/server-instantiation.type.mjs";
 
-import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
+import type { BaseEndpoint } from "../../endpoint/base.endpoint.mjs";
 
-import type { BasePostHook } from "../hook/base.post-hook.mjs";
+import type { BasePostHook } from "../../hook/base.post-hook.mjs";
 
-import type { BasePreHook } from "../hook/base.pre-hook.mjs";
+import type { BasePreHook } from "../../hook/base.pre-hook.mjs";
 
 class Server
 {

@@ -49,4 +49,4 @@ abstract class ExecutionContextRegistry
 	}
 }
 
-export { ExecutionContextRegistry as KernelService };
+export { ExecutionContextRegistry };
