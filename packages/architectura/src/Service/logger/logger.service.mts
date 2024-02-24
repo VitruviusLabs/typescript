@@ -1,130 +1,165 @@
 import { Singleton } from "../../Core/Singleton.mjs";
 
-import { Time } from "../../Core/Time.mjs";
-
 import { LogLevelEnum } from "../../definition/enum/log-level.enum.mjs";
+
+import { Time } from "../../index.mjs";
 
 import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
 
-class LoggerService extends Singleton
+import type { LoggerServiceWriteInterface } from "../../definition/interface/logger-service-write.interface.mjs";
+
+import type { LoggerInterface } from "../../definition/interface/logger.interface.mjs";
+
+class LoggerService extends Singleton implements LoggerInterface
 {
 	protected dateFormat: string = "Y-m-d H:i:s";
 
 	/**
 	 * Write
 	 */
-	public static Write(level: LogLevelEnum, message: string): void
+	public write(content: LoggerServiceWriteInterface): void
 	{
-		const loggerService: LoggerService | undefined = Singleton.GetInstance(LoggerService);
+		const LEVEL: string = content.level.toUpperCase();
+		const DATE: Time = new Time();
+		const FORMATTED_DATE: string = DATE.format(this.dateFormat);
+		let logLinePrefix: string = `[${FORMATTED_DATE}] [${LEVEL}]`;
 
-		if (loggerService === undefined)
+		if (content.context !== undefined)
 		{
-			throw new Error("LoggerService is not initialized.");
+			logLinePrefix += ` [${content.context}]`;
 		}
 
-		loggerService.write(level, message);
-	}
+		const LOG_LINE: string = `${logLinePrefix} - ${content.message}\n`;
 
-	/**
-	 * LogError
-	 */
-	public static LogError(error: unknown): void
-	{
-		if (!(error instanceof Error))
-		{
-			throw new Error("Logger.logError can only handle Error and it's derivates.");
-		}
-
-		const STACK_TRACE_PARSER: StackTraceParserService = new StackTraceParserService(error);
-		const FORMATTED_STACK_TRACE: Array<string> = STACK_TRACE_PARSER.getStackTraceAsTable();
-
-		for (const LINE of FORMATTED_STACK_TRACE)
-		{
-			this.Error(LINE);
-		}
+		// eslint-disable-next-line no-console -- This is a logger, it should log to the console.
+		console.log(LOG_LINE);
 	}
 
 	/**
 	 * Debug
 	 */
-	public static Debug(message: string): void
+	public debug(message: string, context?: string): void
 	{
-		this.Write(LogLevelEnum.DEBUG, message);
+		this.write({
+			level: LogLevelEnum.DEBUG,
+			message: message,
+			context: context
+		});
 	}
 
 	/**
 	 * Informational
 	 */
-	public static Informational(message: string): void
+	public informational(message: string, context?: string): void
 	{
-		this.Write(LogLevelEnum.INFO, message);
+		this.write({
+			level: LogLevelEnum.INFO,
+			message: message,
+			context: context
+		});
 	}
 
 	/**
 	 * Info
 	 */
-	public static Info(message: string): void
+	public info(message: string, context?: string): void
 	{
-		this.Informational(message);
+		this.informational(message, context);
 	}
 
 	/**
 	 * Notice
 	 */
-	public static Notice(message: string): void
+	public notice(message: string, context?: string): void
 	{
-		this.Write(LogLevelEnum.NOTICE, message);
+		this.write({
+			level: LogLevelEnum.NOTICE,
+			message: message,
+			context: context
+		});
 	}
 
 	/**
 	 * Warning
 	 */
-	public static Warning(message: string): void
+	public warning(message: string, context?: string): void
 	{
-		this.Write(LogLevelEnum.WARNING, message);
+		this.write({
+			level: LogLevelEnum.WARNING,
+			message: message,
+			context: context
+		});
 	}
 
 	/**
 	 * Error
 	 */
-	public static Error(message: string): void
+	public error(content: Error|string, context?: string): void
 	{
-		this.Write(LogLevelEnum.ERROR, message);
+		if (content instanceof Error)
+		{
+			this.logError(content);
+
+			return;
+		}
+
+		this.write({
+			level: LogLevelEnum.ERROR,
+			message: content,
+			context: context
+		});
 	}
 
 	/**
 	 * Critical
 	 */
-	public static Critical(message: string): void
+	public critical(message: string, context?: string): void
 	{
-		this.Write(LogLevelEnum.CRITICAL, message);
+		this.write({
+			level: LogLevelEnum.CRITICAL,
+			message: message,
+			context: context
+		});
 	}
 
 	/**
 	 * Alert
 	 */
-	public static Alert(message: string): void
+	public alert(message: string, context?: string): void
 	{
-		this.Write(LogLevelEnum.ALERT, message);
+		this.write({
+			level: LogLevelEnum.ALERT,
+			message: message,
+			context: context
+		});
 	}
 
 	/**
 	 * Emergency
 	 */
-	public static Emergency(message: string): void
+	public emergency(message: string, context?: string): void
 	{
-		this.Write(LogLevelEnum.EMERGENCY, message);
+		this.write({
+			level: LogLevelEnum.EMERGENCY,
+			message: message,
+			context: context
+		});
 	}
 
-	public write(level: LogLevelEnum, message: string): void
+	/**
+	 * LogError
+	 */
+	private logError(error: Error): void
 	{
-		const LEVEL: string = level.toUpperCase();
-		const DATE: Time = new Time();
-		const FORMATTED_DATE: string = DATE.format(this.dateFormat);
-		const LOG_LINE: string = `[${FORMATTED_DATE}] [${LEVEL}] - ${message}\n`;
+		const STACK_TRACE_PARSER: StackTraceParserService = new StackTraceParserService(error);
+		const FORMATTED_STACK_TRACE: Array<string> = STACK_TRACE_PARSER.getStackTraceAsTable();
 
-		// eslint-disable-next-line no-console -- This is a logger, it should log to the console.
-		console.log(LOG_LINE);
+		this.error(error.message);
+
+		for (const LINE of FORMATTED_STACK_TRACE)
+		{
+			this.error(LINE);
+		}
 	}
 
 }

@@ -6,7 +6,7 @@ import { Dispatcher } from "../Service/Dispatcher.mjs";
 
 import { FileSystem } from "../Service/FileSystem.mjs";
 
-import { LoggerService } from "../Service/logger/logger.service.mjs";
+import { LoggerProxy } from "../Service/logger/logger.proxy.mjs";
 
 import { getConstructorOf } from "../utils/getConstructorOf.mjs";
 
@@ -258,7 +258,7 @@ class Server
 	public start(): void
 	{
 		this.server.listen(this.port);
-		LoggerService.Informational("Server started.");
+		LoggerProxy.Informational("Server started.");
 	}
 
 	public getHTTPS(): boolean

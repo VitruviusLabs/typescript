@@ -19,7 +19,8 @@
 	"ignoreWords": [
 		"Zamralik",
 		"vars",
-		"sonarjs"
+		"sonarjs",
+		"traefik"
 	],
 	"flagWords": [
 		"hte"
