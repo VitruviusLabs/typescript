@@ -1,13 +1,13 @@
-import type { Session } from "./Session.mjs";
+import type { SessionService } from "./Session.mjs";
 
 abstract class SessionManager
 {
-	private static readonly SESSIONS: Map<string, Session> = new Map();
+	private static readonly SESSIONS: Map<string, SessionService> = new Map();
 
 	/**
 	 * GetSession
 	 */
-	public static GetSession(key: string): Session | undefined
+	public static GetSession(key: string): SessionService | undefined
 	{
 		return this.SESSIONS.get(key);
 	}
@@ -15,7 +15,7 @@ abstract class SessionManager
 	/**
 	 * SetSession
 	 */
-	public static SetSession(key: string, value: Session): void
+	public static SetSession(key: string, value: SessionService): void
 	{
 		this.SESSIONS.set(key, value);
 	}

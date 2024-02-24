@@ -19,7 +19,7 @@ import type { SessionInstantiationInterface } from "../definition/interface/sess
 
 // import type { SessionInterface } from "./Session/SessionInterface.mjs";
 
-class Session
+class SessionService
 {
 	private static readonly Duration: number = SessionEnum.DEFAULT_DURATION;
 	private static CookieNameScope: string = "session";
@@ -38,7 +38,7 @@ class Session
 			{
 				this.close();
 			},
-			Session.Duration * MillisecondEnum.SECOND
+			SessionService.Duration * MillisecondEnum.SECOND
 		);
 	}
 
@@ -46,13 +46,13 @@ class Session
 	 * Create
 	 */
 	// public static async Create(value: SessionInterface): Promise<Session>
-	public static Create(): Session
+	public static Create(): SessionService
 	{
 		const INSTANTIATION_INTERFACE: SessionInstantiationInterface = {
 			id: randomUUID()
 		};
 
-		const INSTANCE: Session = new Session(INSTANTIATION_INTERFACE);
+		const INSTANCE: SessionService = new SessionService(INSTANTIATION_INTERFACE);
 
 		return INSTANCE;
 	}
@@ -60,7 +60,7 @@ class Session
 	/**
 	 * GetById
 	 */
-	public static GetById(id: string): Session | undefined
+	public static GetById(id: string): SessionService | undefined
 	{
 		return SessionManager.GetSession(id);
 	}
@@ -83,7 +83,7 @@ class Session
 
 	public static GetFullCookieName(): string
 	{
-		return `${CookieService.GetCookieServiceNamePrefix()}:${Session.CookieNameScope}`;
+		return `${CookieService.GetCookieServiceNamePrefix()}:${SessionService.CookieNameScope}`;
 	}
 
 	/**
@@ -145,4 +145,4 @@ class Session
 	}
 }
 
-export { Session };
+export { SessionService };
