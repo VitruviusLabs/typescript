@@ -1,4 +1,4 @@
-import type { BaseServerInstantiationInterface } from "./BaseServerInstantiationInterface.mjs";
+import type { BaseServerInstantiationInterface } from "./base-server-instantiation.interface.mjs";
 
 interface HTTPServerInstantiationInterface extends BaseServerInstantiationInterface
 {
