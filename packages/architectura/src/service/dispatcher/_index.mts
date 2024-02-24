@@ -1,1 +1,1 @@
-export * from './endpoint.registry.mjs';
+export * from '../../core/endpoint/endpoint.registry.mjs';

@@ -4,13 +4,14 @@ import { basename } from "node:path";
 
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
-import { BaseEndpoint } from "../../endpoint/base.endpoint.mjs";
 
 import { HelloWorldEndpoint } from "../../endpoint/hello-world.endpoint.mjs";
 
-import { FileSystemService } from "../file-system/file-system.service.mjs";
+import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 
-import { LoggerProxy } from "../logger/logger.proxy.mjs";
+import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
+
+import { BaseEndpoint } from "./base.endpoint.mjs";
 
 import type { ConstructorOf } from "../../definition/type/constructor-of.type.mjs";
 
