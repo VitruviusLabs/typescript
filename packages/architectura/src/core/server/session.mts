@@ -17,7 +17,7 @@ import { CookieService } from "../../service/cookie/cookie.service.mjs";
 
 import { SessionRegistry } from "./session.registry.mjs";
 
-import type { SessionInstantiationInterface } from "../../definition/interface/session-instantiation.interface.mjs";
+import type { SessionInstantiationInterface } from "./definition/interface/session-instantiation.interface.mjs";
 
 // import type { SessionInterface } from "./Session/SessionInterface.mjs";
 
