@@ -2,20 +2,20 @@ import { randomUUID } from "node:crypto";
 
 // import { ExecutionContext } from "../Core/ExecutionContext.mjs";
 
-import { MillisecondEnum } from "../Core/Time/MillisecondEnum.mjs";
+import { MillisecondEnum } from "../../Core/Time/MillisecondEnum.mjs";
 
 // import { CookieEnum } from "./Cookie/CookieEnum.mjs";
 
 // import { Logger } from "./Logger.mjs";
 
 
-import { SessionEnum } from "../definition/enum/session.enum.mjs";
+import { SessionEnum } from "../../definition/enum/session.enum.mjs";
 
-import { SessionManager } from "./SessionManager.mjs";
+import { SessionManager } from "../SessionManager.mjs";
 
-import { CookieService } from "./cookie/cookie.service.mjs";
+import { CookieService } from "../cookie/cookie.service.mjs";
 
-import type { SessionInstantiationInterface } from "../definition/interface/session-instantiation.interface.mjs";
+import type { SessionInstantiationInterface } from "../../definition/interface/session-instantiation.interface.mjs";
 
 // import type { SessionInterface } from "./Session/SessionInterface.mjs";
 
