@@ -2,10 +2,10 @@ import { default as assert } from 'node:assert/strict';
 
 import { describe, it } from 'node:test';
 
-import { Cookie } from "../../src/_index.mjs";
+import { CookieService } from "../../src/_index.mjs";
 
 describe(
-	"Cookie",
+	"CookieService",
 	(): void =>
 	{
 		describe(
@@ -19,7 +19,7 @@ describe(
 						const INPUT: string = "";
 						const EXPECTED_OUTPUT: Map<string, string> = new Map();
 
-						assert.deepStrictEqual(Cookie.Parse(INPUT), EXPECTED_OUTPUT);
+						assert.deepStrictEqual(CookieService.Parse(INPUT), EXPECTED_OUTPUT);
 					}
 				);
 
@@ -33,7 +33,7 @@ describe(
 							["quz", "qux"]
 						]);
 
-						assert.deepStrictEqual(Cookie.Parse(INPUT), EXPECTED_OUTPUT);
+						assert.deepStrictEqual(CookieService.Parse(INPUT), EXPECTED_OUTPUT);
 					}
 				);
 
@@ -47,7 +47,7 @@ describe(
 							["quz", "qux=zaz"]
 						]);
 
-						assert.deepStrictEqual(Cookie.Parse(INPUT), EXPECTED_OUTPUT);
+						assert.deepStrictEqual(CookieService.Parse(INPUT), EXPECTED_OUTPUT);
 					}
 				);
 			}

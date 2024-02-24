@@ -3,10 +3,10 @@ import { default as assert } from "node:assert/strict";
 
 import { describe, it } from "node:test";
 
-import { ExecutionContext, Kernel } from "../../src/_index.mjs";
+import { ExecutionContext, ExecutionContextRegistry } from "../../src/_index.mjs";
 
 describe(
-	"Kernel",
+	"ExecutionContextRegistry",
 	(): void =>
 	{
 		describe(
@@ -18,7 +18,7 @@ describe(
 					(): void =>
 					{
 						// @ts-expect-error - We need to access this private property for test purposes.
-						assert.deepStrictEqual(Kernel.GetContextAccessor(), Kernel.ContextAccessor);
+						assert.deepStrictEqual(ExecutionContextRegistry.GetContextAccessor(), ExecutionContextRegistry.ContextAccessor);
 					}
 				);
 			}
@@ -35,7 +35,7 @@ describe(
 						assert.throws(
 							(): void =>
 							{
-								Kernel.GetExecutionContext(ExecutionContext);
+								ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
 							}
 						);
 					}
@@ -50,11 +50,11 @@ describe(
 				// 			response: mockExpressResponse()
 				// 		});
 
-				// 		Kernel.GetContextAccessor().run(
+				// 		ExecutionContextRegistry.GetContextAccessor().run(
 				// 			EXECUTION_CONTEXT,
 				// 			(): void =>
 				// 			{
-				// 				expect(Kernel.GetExecutionContext()).to.deep.equal(EXECUTION_CONTEXT);
+				// 				expect(ExecutionContextRegistry.GetExecutionContext()).to.deep.equal(EXECUTION_CONTEXT);
 				// 			}
 				// 		);
 				// 	}
