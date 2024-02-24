@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 
-import { Server } from "../../src/index.mjs";
+import { Server } from "../../src/_index.mjs";
 
 describe(
     "Server",

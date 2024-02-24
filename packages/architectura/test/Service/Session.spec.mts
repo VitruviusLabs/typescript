@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 
-import { Session } from "../../src/index.mjs";
+import { Session } from "../../src/_index.mjs";
 
 describe(
     "Session",

@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 
-import { SessionManager } from "../../src/index.mjs";
+import { SessionManager } from "../../src/_index.mjs";
 
 describe(
     "SessionManager",

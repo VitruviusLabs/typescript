@@ -1,7 +1,8 @@
 
+import { KernelService } from "../_index.mjs";
+
 import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
-import { KernelService } from "../index.mjs";
 
 import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
 

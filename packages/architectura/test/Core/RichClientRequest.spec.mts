@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 
-import { RichClientRequest } from "../../src/index.mjs";
+import { RichClientRequest } from "../../src/_index.mjs";
 
 describe(
     "RichClientRequest",

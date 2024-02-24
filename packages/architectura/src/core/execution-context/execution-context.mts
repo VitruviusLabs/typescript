@@ -1,18 +1,13 @@
-
-
-
-
-
 import type { ExecutionContextInstantiationInterface } from "../../definition/interface/execution-context-instantiation.interface.mjs";
-
-
 
 import type { RichClientRequest } from "../server/rich-client-request.mjs";
 
 import type { RichServerResponse } from "../server/rich-server-response.mjs";
 
+import type { SessionService } from "../server/session.service.mjs";
 
-class ExecutionContextService
+
+class ExecutionContext
 {
 	private readonly request: RichClientRequest;
 	private readonly response: RichServerResponse;
@@ -57,4 +52,4 @@ class ExecutionContextService
 	}
 }
 
-export { ExecutionContextService };
+export { ExecutionContext as ExecutionContextService };

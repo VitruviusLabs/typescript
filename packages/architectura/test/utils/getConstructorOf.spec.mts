@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 
-import { getConstructorOf } from "../../src/index.mjs";
+import { getConstructorOf } from "../../src/_index.mjs";
 
 describe(
     "getConstructorOf",

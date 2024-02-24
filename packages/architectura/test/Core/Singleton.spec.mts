@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 
-import { Singleton } from "../../src/index.mjs";
+import { Singleton } from "../../src/_index.mjs";
 
 describe(
     "Singleton",

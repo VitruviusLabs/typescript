@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 
 import { ExecutionContextService } from "./execution-context.mjs";
 
-import type { ConstructorOf } from "../../index.mjs";
+import type { ConstructorOf } from "../../definition/type/constructor-of.type.mjs";
 
 abstract class ExecutionContextRegistry
 {

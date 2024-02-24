@@ -2,7 +2,7 @@ import { default as assert } from 'node:assert/strict';
 
 import { describe, it } from 'node:test';
 
-import { BaseEndpoint, Dispatcher, HTTPMethodEnum, HelloWorldEndpoint, Singleton } from "../../src/index.mjs";
+import { BaseEndpoint, Dispatcher, HTTPMethodEnum, HelloWorldEndpoint, Singleton } from "../../src/_index.mjs";
 
 describe(
 	"Dispatcher",

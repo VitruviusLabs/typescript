@@ -1,8 +1,9 @@
 import { Singleton } from "../Core/singleton.mjs";
 
+import type { BasePostHook, BasePreHook } from "../_index.mjs";
+
 import type { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
-import type { BasePostHook, BasePreHook } from "../index.mjs";
 
 
 abstract class BaseEndpoint extends Singleton

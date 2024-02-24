@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 
-import { BaseEndpoint } from "../../../src/index.mjs";
+import { BaseEndpoint } from "../../../src/_index.mjs";
 
 describe(
     "BaseEndpoint",

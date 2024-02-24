@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 
-import { SessionPreHook } from "../../src/index.mjs";
+import { SessionPreHook } from "../../src/_index.mjs";
 
 describe(
     "SessionPreHook",

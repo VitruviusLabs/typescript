@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 
-import { FileSystem } from "../../src/index.mjs";
+import { FileSystem } from "../../src/_index.mjs";
 
 describe(
     "FileSystem",

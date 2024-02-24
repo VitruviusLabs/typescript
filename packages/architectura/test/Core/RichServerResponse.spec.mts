@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 
-import { RichServerResponse } from "../../src/index.mjs";
+import { RichServerResponse } from "../../src/_index.mjs";
 
 describe(
     "RichServerResponse",

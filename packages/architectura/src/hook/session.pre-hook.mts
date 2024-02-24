@@ -1,5 +1,5 @@
 
-import { BasePreHook , KernelService } from "../index.mjs";
+import { BasePreHook , KernelService } from "../_index.mjs";
 
 import { SessionManagerService, SessionService } from "../service/_index.mjs";
 
