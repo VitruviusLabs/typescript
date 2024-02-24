@@ -1,8 +1,8 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 
-import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
+import { ExecutionContextService } from "../execution-context/execution-context.service.mjs";
 
-import type { ConstructorOf } from "../index.mjs";
+import type { ConstructorOf } from "../../index.mjs";
 
 abstract class KernelService
 {

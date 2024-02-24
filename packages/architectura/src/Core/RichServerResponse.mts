@@ -4,7 +4,7 @@ import { type Gzip, createGzip } from "node:zlib";
 
 import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
 
-import { KernelService } from "./kernel.service.mjs";
+import { KernelService } from "../service/kernel/kernel.service.mjs";
 
 
 
