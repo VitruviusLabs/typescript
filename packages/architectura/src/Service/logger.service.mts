@@ -2,7 +2,7 @@ import { Time } from "../Core/Time.mjs";
 
 import { LogLevelEnum } from "../definition/enum/log-level.enum.mjs";
 
-import { StackTraceParser } from "./stack-trace-parser/stack-trace-parser.service.mjs";
+import { StackTraceParserService } from "./stack-trace-parser/stack-trace-parser.service.mjs";
 
 class LoggerService
 {
@@ -30,7 +30,7 @@ class LoggerService
 			throw new Error("Logger.logError can only handle Error and it's derivates.");
 		}
 
-		const STACK_TRACE_PARSER: StackTraceParser = new StackTraceParser(error);
+		const STACK_TRACE_PARSER: StackTraceParserService = new StackTraceParserService(error);
 		const FORMATTED_STACK_TRACE: Array<string> = STACK_TRACE_PARSER.getStackTraceAsTable();
 
 		for (const LINE of FORMATTED_STACK_TRACE)
