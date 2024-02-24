@@ -1,1 +1,1 @@
-export * from './dispatcher.service.mjs';
+export * from './endpoint.registry.mjs';
