@@ -22,7 +22,7 @@ import { RichClientRequest } from "./RichClientRequest.mjs";
 
 import { RichServerResponse } from "./RichServerResponse.mjs";
 
-import { PortsEnum } from "./Server/PortsEnum.mjs";
+import { PortsEnum } from "./Server/ports.enum.mjs";
 
 
 import type { ServerConfigurationType } from "./Server/ServerConfigurationType.mjs";

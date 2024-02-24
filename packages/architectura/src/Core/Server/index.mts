@@ -4,6 +4,6 @@ export * from "./HTTPServerConfigurationInterface.mjs";
 export * from "./HTTPServerInstantiationInterface.mjs";
 export * from "./HTTPSServerConfigurationInterface.mjs";
 export * from "./HTTPSServerInstantiationInterface.mjs";
-export * from "./PortsEnum.mjs";
+export * from "./ports.enum.mjs";
 export * from "./ServerConfigurationType.mjs";
 export * from "./ServerInstantiationType.mjs";
