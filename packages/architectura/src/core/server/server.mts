@@ -23,9 +23,10 @@ import { RichClientRequest } from "./rich-client-request.mjs";
 
 import { RichServerResponse } from "./rich-server-response.mjs";
 
+import type { ServerConfigurationType } from "./definition/type/server-configuration.type.mjs";
+
 import type { ServerInstantiationType } from "./definition/type/server-instantiation.type.mjs";
 
-import type { ServerConfigurationType } from "../../definition/type/server-configuration.type.mjs";
 
 
 
