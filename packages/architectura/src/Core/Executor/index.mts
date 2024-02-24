@@ -1,1 +1,1 @@
-export * from "./ExecutorInstantiationInterface.mjs";
+export * from "./executor-instantiation.interface.mjs";
