@@ -6,7 +6,7 @@ export * from '../../core/server/definition/interface/http-server-instantiation.
 export * from '../../core/server/definition/interface/https-server-configuration.interface.mjs';
 export * from '../../core/server/definition/interface/https-server-instantiation.interface.mjs';
 export * from '../../service/executor/definition/interface/executor-instantiation.interface.mjs';
-export * from './file-system-error.interface.mjs';
+export * from '../../service/file-system/definition/interface/file-system-error.interface.mjs';
 export * from './logger-service-write.interface.mjs';
 export * from './logger.interface.mjs';
 export * from './session-instantiation.interface.mjs';
