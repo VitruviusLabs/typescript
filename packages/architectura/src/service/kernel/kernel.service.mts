@@ -4,7 +4,7 @@ import { ExecutionContextService } from "../execution-context/execution-context.
 
 import type { ConstructorOf } from "../../index.mjs";
 
-abstract class KernelService
+abstract class ExecutionContextRegistry
 {
 	private static ContextAccessor: AsyncLocalStorage<ExecutionContextService>;
 
@@ -49,4 +49,4 @@ abstract class KernelService
 	}
 }
 
-export { KernelService };
+export { ExecutionContextRegistry as KernelService };
