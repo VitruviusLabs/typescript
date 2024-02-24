@@ -10,7 +10,7 @@ import { HelloWorldEndpoint } from "../index.mjs";
 
 import { FileSystem } from "./FileSystem.mjs";
 
-import { LoggerService } from "./logger.service.mjs";
+import { LoggerService } from "./logger/logger.service.mjs";
 
 import type { ConstructorOf } from "../utils/ConstructorOf.mjs";
 

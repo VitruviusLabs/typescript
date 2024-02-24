@@ -1,8 +1,8 @@
-import { Time } from "../Core/Time.mjs";
+import { Time } from "../../Core/Time.mjs";
 
-import { LogLevelEnum } from "../definition/enum/log-level.enum.mjs";
+import { LogLevelEnum } from "../../definition/enum/log-level.enum.mjs";
 
-import { StackTraceParserService } from "./stack-trace-parser/stack-trace-parser.service.mjs";
+import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
 
 class LoggerService
 {
