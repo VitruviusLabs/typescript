@@ -1,6 +1,6 @@
 import { Time } from "../Core/Time.mjs";
 
-import { LogLevelEnum } from "./Logger/log-level.enum.mjs";
+import { LogLevelEnum } from "../definition/enum/log-level.enum.mjs";
 
 import { StackTraceParser } from "./stack-trace-parser/stack-trace-parser.service.mjs";
 
