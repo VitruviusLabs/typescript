@@ -1,6 +1,6 @@
-import type { RichClientRequest } from "../RichClientRequest.mjs";
+import type { RichClientRequest } from "../../Core/RichClientRequest.mjs";
 
-import type { RichServerResponse } from "../RichServerResponse.mjs";
+import type { RichServerResponse } from "../../Core/RichServerResponse.mjs";
 
 interface ExecutionContextInstantiationInterface
 {
