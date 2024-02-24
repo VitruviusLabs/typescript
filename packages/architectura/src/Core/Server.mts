@@ -10,7 +10,7 @@ import { LoggerProxy } from "../Service/logger/logger.proxy.mjs";
 
 import { getConstructorOf } from "../definition/type/get-constructor-of.type.mjs";
 
-import { ExecutionContext } from "./ExecutionContext.mjs";
+import { ExecutionContextService } from "./ExecutionContext.mjs";
 
 import { HTTPStatusCodeEnum } from "./HTTP/HTTPStatusCodeEnum.mjs";
 
@@ -77,7 +77,7 @@ class Server
 	 */
 	public static async Create(options: ServerConfigurationType): Promise<Server>
 	{
-		const CONTEXT_CONSTRUCTOR: typeof ExecutionContext = options.contextConstructor ?? ExecutionContext;
+		const CONTEXT_CONSTRUCTOR: typeof ExecutionContextService = options.contextConstructor ?? ExecutionContextService;
 
 		if (!options.https)
 		{
@@ -115,12 +115,12 @@ class Server
 	public static async DefaultListener(
 		request: RichClientRequest,
 		response: RichServerResponse,
-		context_constructor: typeof ExecutionContext,
+		context_constructor: typeof ExecutionContextService,
 	): Promise<void>
 	{
 		request.initialise();
 
-		const CONTEXT: ExecutionContext = new context_constructor({
+		const CONTEXT: ExecutionContextService = new context_constructor({
 			request: request,
 			response: response
 		});

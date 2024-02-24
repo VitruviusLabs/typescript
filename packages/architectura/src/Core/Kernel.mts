@@ -1,34 +1,34 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 
-import { ExecutionContext } from "./ExecutionContext.mjs";
+import { ExecutionContextService } from "./ExecutionContext.mjs";
 
 import type { ConstructorOf } from "../index.mjs";
 
 abstract class Kernel
 {
-	private static ContextAccessor: AsyncLocalStorage<ExecutionContext>;
+	private static ContextAccessor: AsyncLocalStorage<ExecutionContextService>;
 
 	static
 	{
 		this.ContextAccessor = new AsyncLocalStorage();
 	}
 
-	public static GetContextAccessor(): AsyncLocalStorage<ExecutionContext>
+	public static GetContextAccessor(): AsyncLocalStorage<ExecutionContextService>
 	{
 		return this.ContextAccessor;
 	}
 
-	public static GetUnsafeExecutionContext(): ExecutionContext | undefined
+	public static GetUnsafeExecutionContext(): ExecutionContextService | undefined
 	{
 		return this.GetContextAccessor().getStore();
 	}
 
-	public static GetExecutionContext<CustomContext extends ExecutionContext = ExecutionContext>(
+	public static GetExecutionContext<CustomContext extends ExecutionContextService = ExecutionContextService>(
 		// @ts-expect-error: CustomContext extends ExecutionContext
-		custom_class: ConstructorOf<CustomContext> = ExecutionContext
+		custom_class: ConstructorOf<CustomContext> = ExecutionContextService
 	): CustomContext
 	{
-		const CONTEXT: ExecutionContext | undefined = this.ContextAccessor.getStore();
+		const CONTEXT: ExecutionContextService | undefined = this.ContextAccessor.getStore();
 
 		if (CONTEXT === undefined)
 		{
@@ -43,7 +43,7 @@ abstract class Kernel
 		throw new Error('Execution context do not inherit from custom class constructor.');
 	}
 
-	public static SetExecutionContext(execution_context: ExecutionContext): void
+	public static SetExecutionContext(execution_context: ExecutionContextService): void
 	{
 		this.GetContextAccessor().enterWith(execution_context);
 	}

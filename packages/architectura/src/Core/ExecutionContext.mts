@@ -7,7 +7,7 @@ import type { RichServerResponse } from './RichServerResponse.mjs';
 import type { SessionService } from "../service/_index.mjs";
 
 
-class ExecutionContext
+class ExecutionContextService
 {
 	private readonly request: RichClientRequest;
 	private readonly response: RichServerResponse;
@@ -52,4 +52,4 @@ class ExecutionContext
 	}
 }
 
-export { ExecutionContext };
+export { ExecutionContextService };

@@ -1,9 +1,9 @@
-import type { ExecutionContext } from "../ExecutionContext.mjs";
+import type { ExecutionContextService } from "../ExecutionContext.mjs";
 
 interface BaseServerConfigurationInterface
 {
     port: number;
-    contextConstructor?: typeof ExecutionContext;
+    contextConstructor?: typeof ExecutionContextService;
 }
 
 export type { BaseServerConfigurationInterface };
