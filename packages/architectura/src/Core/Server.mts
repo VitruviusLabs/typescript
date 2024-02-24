@@ -21,9 +21,10 @@ import { ExecutionContextService } from "../service/execution-context/execution-
 
 import { KernelService } from "../service/kernel/kernel.service.mjs";
 
-import { RichClientRequest } from "./RichClientRequest.mjs";
-
 import { RichServerResponse } from "./RichServerResponse.mjs";
+
+import { RichClientRequest } from "./rich-client-request.mjs";
+
 
 
 

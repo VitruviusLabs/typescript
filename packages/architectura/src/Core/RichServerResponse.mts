@@ -6,15 +6,11 @@ import { ExecutionContextService } from "../service/execution-context/execution-
 
 import { KernelService } from "../service/kernel/kernel.service.mjs";
 
-
-
 import type { RichClientRequest } from "./rich-client-request.mjs";
 
 import type { HTTPStatusCodeEnum } from "../definition/enum/http-status-code.enum.mjs";
 
-
 import type { SessionService } from "../service/_index.mjs";
-
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
