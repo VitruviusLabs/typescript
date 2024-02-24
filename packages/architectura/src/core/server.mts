@@ -10,11 +10,12 @@ import { getConstructorOf } from "../definition/type/get-constructor-of.type.mjs
 
 import { DispatcherService } from "../service/dispatcher/dispatcher.service.mjs";
 
+import { KernelService } from "../service/execution-context/execution-context.registry.mjs";
+
 import { ExecutionContextService } from "../service/execution-context/execution-context.service.mjs";
 
 import { FileSystemService } from "../service/file-system/file-system.service.mjs";
 
-import { KernelService } from "../service/kernel/execution-context.registry.mjs";
 
 import { LoggerProxy } from "../service/logger/logger.proxy.mjs";
 

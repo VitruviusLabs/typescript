@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 
-import { ExecutionContextService } from "../execution-context/execution-context.service.mjs";
+import { ExecutionContextService } from "./execution-context.service.mjs";
 
 import type { ConstructorOf } from "../../index.mjs";
 
