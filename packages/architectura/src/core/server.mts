@@ -14,7 +14,7 @@ import { ExecutionContextService } from "../service/execution-context/execution-
 
 import { FileSystemService } from "../service/file-system/file-system.service.mjs";
 
-import { KernelService } from "../service/kernel/kernel.service.mjs";
+import { KernelService } from "../service/kernel/execution-context.registry.mjs";
 
 import { LoggerProxy } from "../service/logger/logger.proxy.mjs";
 
