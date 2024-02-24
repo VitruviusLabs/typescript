@@ -2,7 +2,7 @@ export * from "../../definition/enum/ports.enum.mjs";
 export * from "../../definition/interface/base-server-configuration.interface.mjs";
 export * from "../../definition/interface/base-server-instantiation.interface.mjs";
 export * from "../../definition/interface/http-server-configuration.interface.mjs";
-export * from "./HTTPServerInstantiationInterface.mjs";
+export * from "./http-server-instantiation.interface.mjs";
 export * from "./HTTPSServerConfigurationInterface.mjs";
 export * from "./HTTPSServerInstantiationInterface.mjs";
 export * from "./ServerConfigurationType.mjs";
