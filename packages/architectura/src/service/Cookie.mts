@@ -1,12 +1,10 @@
 // @TODO: Handle homonymous cookies with different paths and domains.
-class Cookie
+class CookieService
 {
 	private static readonly EXTRACTION_REGEXP: RegExp = / ?(?<name>[^=]+)=(?<value>[^;]+);?/g;
 	private static readonly COOKIE_NAME_PREFIX: string = 'architectura';
 
 	/**
-	 * Parse
-	 *
 	 * This static method will extract the cookies in the Cookie header from the request and return
 	 * a Record<string, string> of each received cookie.
 	 *
@@ -42,10 +40,10 @@ class Cookie
 		return COOKIES;
 	}
 
-	public static GetCookieNamePrefix(): string
+	public static GetCookieServiceNamePrefix(): string
 	{
 		return this.COOKIE_NAME_PREFIX;
 	}
 }
 
-export { Cookie };
+export { CookieService };

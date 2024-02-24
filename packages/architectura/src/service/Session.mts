@@ -8,7 +8,7 @@ import { MillisecondEnum } from "../Core/Time/MillisecondEnum.mjs";
 
 // import { Logger } from "./Logger.mjs";
 
-import { Cookie } from "./Cookie.mjs";
+import { CookieService } from "./Cookie.mjs";
 
 import { SessionEnum } from "./Session/SessionEnum.mjs";
 
@@ -82,7 +82,7 @@ class Session
 
 	public static GetFullCookieName(): string
 	{
-		return `${Cookie.GetCookieNamePrefix()}:${Session.CookieNameScope}`;
+		return `${CookieService.GetCookieServiceNamePrefix()}:${Session.CookieNameScope}`;
 	}
 
 	/**
