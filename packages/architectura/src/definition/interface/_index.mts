@@ -1,3 +1,4 @@
+export * from './base-server-configuration.interface.mjs';
 export * from './execution-context-instantiation.interface.mjs';
 export * from './executor-instantiation.interface.mjs';
 export * from './file-system-error.interface.mjs';
