@@ -6,7 +6,7 @@ import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
 import { BaseEndpoint } from "../../endpoint/base.endpoint.mjs";
 
-import { HelloWorldEndpoint } from "../../index.mjs";
+import { HelloWorldEndpoint } from "../../endpoint/hello-world.endpoint.mjs";
 
 import { FileSystemService } from "../file-system/file-system.service.mjs";
 

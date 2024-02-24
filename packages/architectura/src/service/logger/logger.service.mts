@@ -1,4 +1,4 @@
-import { Singleton } from "../../Core/singleton.mjs";
+import { Singleton } from "../../core/singleton.mjs";
 
 import { LogLevelEnum } from "../../definition/enum/log-level.enum.mjs";
 
@@ -12,7 +12,7 @@ import type { LoggerInterface } from "../../definition/interface/logger.interfac
 
 class LoggerService extends Singleton implements LoggerInterface
 {
-	protected dateFormat: string = "Y-m-d H:i:s";
+	protected readonly dateFormat: string = "Y-m-d H:i:s";
 
 	/**
 	 * Write
