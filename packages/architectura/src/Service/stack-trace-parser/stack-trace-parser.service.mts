@@ -1,10 +1,11 @@
+import { StackTraceParserEnum } from "../Logger/StackTraceParser/StackTraceParserEnum.mjs";
+
 import { NumericBaseEnum } from "../Number/NumericBaseEnum.mjs";
 
-import { StackTraceParserEnum } from "./StackTraceParser/StackTraceParserEnum.mjs";
 
-import type { StackTraceLineParsingResultInterface } from "./StackTraceParser/StackTraceLineParsingResultInterface.js";
+import type { StackTraceLineParsingResultInterface } from "../Logger/StackTraceParser/StackTraceLineParsingResultInterface.js";
 
-import type { StackTraceParserLineAndPositionInterface } from "./StackTraceParser/StackTraceParserLineAndPositionInterface.mjs";
+import type { StackTraceParserLineAndPositionInterface } from "../Logger/StackTraceParser/StackTraceParserLineAndPositionInterface.mjs";
 
 class StackTraceParser
 {
