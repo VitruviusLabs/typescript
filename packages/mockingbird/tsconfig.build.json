@@ -11,7 +11,7 @@
 		"sourceMap": false,
 		"noEmit": false,
 		"listFiles": false,
-		"listEmittedFiles": true
+		"listEmittedFiles": false
 	},
 	"include": [
 		"./src"

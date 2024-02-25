@@ -2,7 +2,7 @@ import type { BaseServerConfigurationInterface } from "./base-server-configurati
 
 interface HTTPServerConfigurationInterface extends BaseServerConfigurationInterface
 {
-    https: false;
+	https: false;
 }
 
 export type { HTTPServerConfigurationInterface };

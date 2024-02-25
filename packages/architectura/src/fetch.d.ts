@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-invalid-void-type, @typescript-eslint/no-use-before-define, @typescript-eslint/no-redeclare, id-denylist, @typescript-eslint/naming-convention
- */
+/* eslint-disable */
 
 /**
- * Currently DefinitelyTyped is not supporting the Fetch API so we need to implement the types ourselves for the time being...
- */
+ * Currently DefinitelyTyped did not add Fetch API for NodeJs.
+ * We need to implement the types ourselves for the time being.
+**/
 
 interface Headers
 {
@@ -434,4 +434,4 @@ declare const FormData: {
 	new(): FormData;
 };
 
-  /* eslint-enable @typescript-eslint/no-invalid-void-type, @typescript-eslint/no-use-before-define, @typescript-eslint/no-redeclare, id-denylist */
+/* eslint-enable */

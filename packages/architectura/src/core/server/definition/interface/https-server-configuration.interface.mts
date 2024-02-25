@@ -2,9 +2,9 @@ import type { BaseServerConfigurationInterface } from "./base-server-configurati
 
 interface HTTPSServerConfigurationInterface extends BaseServerConfigurationInterface
 {
-    https: true;
-    certificate: string;
-    key: string;
+	https: true;
+	certificate: string;
+	key: string;
 }
 
 export type { HTTPSServerConfigurationInterface };

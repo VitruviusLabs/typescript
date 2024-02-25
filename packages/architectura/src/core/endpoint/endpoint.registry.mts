@@ -1,19 +1,10 @@
-import { type Dirent } from "node:fs";
-
+import type { Dirent } from "node:fs";
 import { basename } from "node:path";
-
-import { TypeGuard } from "@vitruvius-labs/ts-predicate";
-
+import { type ConstructorOf, TypeGuard } from "@vitruvius-labs/ts-predicate";
 import { HelloWorldEndpoint } from "../../endpoint/hello-world.endpoint.mjs";
-
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
-
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
-
 import { BaseEndpoint } from "./base.endpoint.mjs";
-
-import type { ConstructorOf } from "../../definition/type/constructor-of.type.mjs";
-
 
 class EndpointRegistry
 {
@@ -29,7 +20,7 @@ class EndpointRegistry
 		{
 			const MAP: Map<string, BaseEndpoint> = new Map();
 
-			MAP.set('GET::^.*$', new HelloWorldEndpoint());
+			MAP.set("GET::^.*$", new HelloWorldEndpoint());
 
 			return MAP;
 		}
@@ -57,7 +48,7 @@ class EndpointRegistry
 
 	public static async AddEndpointsDirectory(directory: string): Promise<void>
 	{
-		if (!(await FileSystemService.DirectoryExists(directory)))
+		if (!await FileSystemService.DirectoryExists(directory))
 		{
 			throw new Error(`Impossible to add directory ${directory} as an endpoint directory as it does not exist.`);
 		}
@@ -108,7 +99,7 @@ class EndpointRegistry
 			{
 				const KEYS: Array<string> = [
 					basename(path, ".mjs"),
-					"endpoint"
+					"endpoint",
 				];
 
 				for (const KEY of KEYS)
@@ -146,7 +137,6 @@ class EndpointRegistry
 	{
 		return TypeGuard.isFunction(value) && value.prototype instanceof BaseEndpoint;
 	}
-
 }
 
 export { EndpointRegistry };

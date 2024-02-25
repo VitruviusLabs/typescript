@@ -1,51 +1,51 @@
 {
-    "name": "@vitruvius-labs/architectura",
-    "version": "0.1.0",
-    "description": "A light weight strongly typed Node.JS framework providing isolated context for each request.",
-    "author": {
-        "name": "VitruviusLabs"
-    },
-    "contributors": [
-        "Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>",
-        "Benjamin Blum <benjamin.blum.98@gmail.com>"
-    ],
-    "license": "MIT",
-    "private": false,
-    "type": "module",
-    "files": [
-        "./build/**/*"
-    ],
-    "exports": {
-        ".": {
-            "import": "./build/esm/index.mjs",
-            "types": "./build/types/index.d.mts"
-        }
-    },
-    "scripts": {
-        "boot": "pnpm run build && ./docker/scripts/boot.sh && docker logs -f vitruvius",
-        "clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
-        "compile": "tsc -p tsconfig.build.json",
-        "build": "pnpm clean && pnpm compile",
-        "eslint:check": "eslint ./src ./test",
-        "eslint:fix": "eslint ./src ./test --fix",
-        "test:unit": "pnpm test:unit:build && pnpm test:unit:run",
-        "test:unit:build": "tsc -p tsconfig.test.json",
-        "test:unit:run": "node --test tmp/test-build/test",
-        "test:unit:coverage": "NODE_V8_COVERAGE=./reports/node-coverage node --experimental-test-coverage --test ./tmp/test-build/test",
-        "test:unit:stryker": "pnpm test:unit",
-        "test:mutation": "stryker run",
-        "ts:check": "tsc -p tsconfig.json --noEmit",
-        "spell:check": "cspell -c ../../.vscode/cspell.json .",
-        "ci:lint": "pnpm eslint:check",
-        "ci:ts:check": "pnpm ts:check",
-        "ci:spell:check": "pnpm spell:check",
-        "ci:test:unit": "pnpm test:unit",
-        "ci:full": "pnpm ci:lint && pnpm ci:ts:check && pnpm ci:spell:check && pnpm ci:test:unit",
-        "ci:publish": "pnpm publish --access public",
-        "ci:publish:dry": "pnpm publish --access public --dry-run --no-git-checks",
-        "ci:build": "pnpm build"
-    },
-    "dependencies": {
-        "@vitruvius-labs/ts-predicate": "workspace:*"
-    }
+	"name": "@vitruvius-labs/architectura",
+	"version": "0.1.1",
+	"description": "A light weight strongly typed Node.JS framework providing isolated context for each request.",
+	"author": {
+		"name": "VitruviusLabs"
+	},
+	"contributors": [
+		"Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>",
+		"Benjamin Blum <benjamin.blum.98@gmail.com>"
+	],
+	"license": "MIT",
+	"private": false,
+	"type": "module",
+	"files": [
+		"./build/**/*"
+	],
+	"exports": {
+		".": {
+			"import": "./build/esm/index.mjs",
+			"types": "./build/types/index.d.mts"
+		}
+	},
+	"scripts": {
+		"boot": "pnpm run build && ./docker/scripts/boot.sh && docker logs -f vitruvius",
+		"clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
+		"compile": "tsc -p tsconfig.build.json",
+		"build": "pnpm clean && pnpm compile",
+		"eslint:check": "eslint ./src ./test",
+		"eslint:fix": "eslint ./src ./test --fix",
+		"test:unit": "pnpm test:unit:build && pnpm test:unit:run",
+		"test:unit:build": "tsc -p tsconfig.test.json",
+		"test:unit:run": "node --test tmp/test-build/test",
+		"test:unit:coverage": "NODE_V8_COVERAGE=./reports/node-coverage node --experimental-test-coverage --test ./tmp/test-build/test",
+		"test:unit:stryker": "pnpm test:unit",
+		"test:mutation": "stryker run",
+		"ts:check": "tsc -p tsconfig.json --noEmit",
+		"spell:check": "cspell -c ../../.vscode/cspell.json .",
+		"ci:lint": "pnpm eslint:check",
+		"ci:ts:check": "pnpm ts:check",
+		"ci:spell:check": "pnpm spell:check",
+		"ci:test:unit": "pnpm test:unit",
+		"ci:full": "pnpm ci:lint && pnpm ci:ts:check && pnpm ci:spell:check && pnpm ci:test:unit",
+		"ci:publish": "pnpm publish --access public",
+		"ci:publish:dry": "pnpm publish --access public --dry-run --no-git-checks",
+		"ci:build": "pnpm build"
+	},
+	"dependencies": {
+		"@vitruvius-labs/ts-predicate": "workspace:*"
+	}
 }

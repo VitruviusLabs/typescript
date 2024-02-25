@@ -7,7 +7,7 @@ const enum LogLevelEnum
 	ERROR = "error",
 	CRITICAL = "critical",
 	ALERT = "alert",
-	EMERGENCY = "emergency"
+	EMERGENCY = "emergency",
 }
 
 export { LogLevelEnum };

@@ -1,15 +1,9 @@
 import { ServerResponse as HTTPServerResponse } from "node:http";
-
 import { type Gzip, createGzip } from "node:zlib";
-
 import { ExecutionContextRegistry } from "../../core/execution-context/execution-context.registry.mjs";
-
 import { ExecutionContext } from "../execution-context/execution-context.mjs";
-
 import type { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
-
 import type { RichClientRequest } from "./rich-client-request.mjs";
-
 import type { Session } from "./session.mjs";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
@@ -33,7 +27,8 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 			const SET_COOKIE_HEADER: Array<string> = [];
 
-			for (const [COOKIE_NAME, COOKIE_VALUE] of COOKIES) {
+			for (const [COOKIE_NAME, COOKIE_VALUE] of COOKIES)
+{
 				SET_COOKIE_HEADER.push(`${COOKIE_NAME}=${COOKIE_VALUE}`);
 			}
 

@@ -1,35 +1,19 @@
 import { Server as HTTPServer, type RequestListener } from "node:http";
-
 import { Server as HTTPSServer } from "node:https";
-
+import { Helper, TypeAssertion } from "@vitruvius-labs/ts-predicate";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
-
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
-
-import { getConstructorOf } from "../../utility/get-constructor-of.mjs";
-
 import { EndpointRegistry } from "../endpoint/endpoint.registry.mjs";
-
 import { ExecutionContext } from "../execution-context/execution-context.mjs";
-
 import { ExecutionContextRegistry } from "../execution-context/execution-context.registry.mjs";
-
 import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
-
 import { PortsEnum } from "./definition/enum/ports.enum.mjs";
-
 import { RichClientRequest } from "./rich-client-request.mjs";
-
 import { RichServerResponse } from "./rich-server-response.mjs";
-
 import type { ServerConfigurationType } from "./definition/type/server-configuration.type.mjs";
-
 import type { ServerInstantiationType } from "./definition/type/server-instantiation.type.mjs";
-
 import type { BasePostHook } from "../../hook/base.post-hook.mjs";
-
 import type { BasePreHook } from "../../hook/base.pre-hook.mjs";
-
 import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
 
 class Server
@@ -38,7 +22,7 @@ class Server
 	private static readonly GLOBAL_PRE_HOOKS: Array<BasePreHook> = [];
 	private static readonly GLOBAL_POST_HOOKS: Array<BasePostHook> = [];
 
-	private port: number = PortsEnum.DEFAULT_HTTPS;
+	private readonly port: number = PortsEnum.DEFAULT_HTTPS;
 	private readonly https: boolean = false;
 	private readonly server: HTTPServer | HTTPSServer;
 
@@ -47,6 +31,8 @@ class Server
 	 */
 	private constructor(options: ServerInstantiationType, listener: RequestListener)
 	{
+		Server.ValidatePort(options.port);
+
 		this.https = options.https;
 		this.port = options.port;
 
@@ -58,7 +44,7 @@ class Server
 					key: options.key,
 					IncomingMessage: RichClientRequest,
 					// @ts-expect-error: Incorrectly believe the request is not overloaded
-					ServerResponse: RichServerResponse
+					ServerResponse: RichServerResponse,
 				},
 				listener
 			);
@@ -70,7 +56,7 @@ class Server
 			{
 				IncomingMessage: RichClientRequest,
 				// @ts-expect-error: Incorrectly believe the request is not overloaded
-				ServerResponse: RichServerResponse
+				ServerResponse: RichServerResponse,
 			},
 			listener
 		);
@@ -88,7 +74,7 @@ class Server
 			const HTTP_SERVER: Server = new Server(
 				options,
 				// @ts-expect-error - This is a very specific case where TypeScript cannot know that Node.JS will use our custom class instead of IncomingMessage.
-				async (request: RichClientRequest, response: RichServerResponse): Promise<void> =>
+				async (request: RichClientRequest, response: RichServerResponse): void =>
 				{
 					await this.DefaultListener(request, response, CONTEXT_CONSTRUCTOR);
 				}
@@ -104,10 +90,10 @@ class Server
 			{
 				...options,
 				certificate: CERTIFICATE,
-				key: KEY
+				key: KEY,
 			},
 			// @ts-expect-error - This is a very specific case where TypeScript cannot know that Node.JS will use our custom class instead of IncomingMessage.
-			async (request: RichClientRequest, response: RichServerResponse): Promise<void> =>
+			async (request: RichClientRequest, response: RichServerResponse): void =>
 			{
 				await this.DefaultListener(request, response, CONTEXT_CONSTRUCTOR);
 			}
@@ -119,14 +105,14 @@ class Server
 	public static async DefaultListener(
 		request: RichClientRequest,
 		response: RichServerResponse,
-		context_constructor: typeof ExecutionContext,
+		context_constructor: typeof ExecutionContext
 	): Promise<void>
 	{
 		request.initialise();
 
 		const CONTEXT: ExecutionContext = new context_constructor({
 			request: request,
-			response: response
+			response: response,
 		});
 
 		for (const [ROUTE, DIRECTORY] of this.PUBLIC_DIRECTORIES)
@@ -135,9 +121,10 @@ class Server
 
 			if (ROUTE_REGEXP.exec(request.getRequestedPath()) !== null)
 			{
-				const FILE_PATH: string = request.getRequestedPath().replace(ROUTE_REGEXP, "").padStart(1, "/");
+				const FILE_PATH: string = request.getRequestedPath().replace(ROUTE_REGEXP, "")
+.padStart(1, "/");
 
-				if (!(await FileSystemService.FileExists(`${DIRECTORY}${FILE_PATH}`)))
+				if (!await FileSystemService.FileExists(`${DIRECTORY}${FILE_PATH}`))
 				{
 					continue;
 				}
@@ -185,7 +172,7 @@ class Server
 	 */
 	public static async AddPublicDirectory(route: string, directory: string): Promise<void>
 	{
-		if (!(await FileSystemService.DirectoryExists(directory)))
+		if (!await FileSystemService.DirectoryExists(directory))
 		{
 			throw new Error(`Impossible to add directory ${directory} as a public directory as it does not exist.`);
 		}
@@ -224,7 +211,7 @@ class Server
 	{
 		for (const HOOK of this.GLOBAL_PRE_HOOKS)
 		{
-			if (endpoint.getExcludedGlobalPreHooks().includes(getConstructorOf(HOOK)))
+			if (endpoint.getExcludedGlobalPreHooks().includes(Helper.getConstructorOf(HOOK)))
 			{
 				continue;
 			}
@@ -242,7 +229,7 @@ class Server
 	{
 		for (const HOOK of this.GLOBAL_POST_HOOKS)
 		{
-			if (endpoint.getExcludedGlobalPostHooks().includes(getConstructorOf(HOOK)))
+			if (endpoint.getExcludedGlobalPostHooks().includes(Helper.getConstructorOf(HOOK)))
 			{
 				continue;
 			}
@@ -253,6 +240,20 @@ class Server
 		for (const HOOK of endpoint.getPostHooks())
 		{
 			await HOOK.execute();
+		}
+	}
+
+	/**
+	 * ValidatePort
+	 */
+	private static ValidatePort(port: number): void
+	{
+		TypeAssertion.isInteger(port);
+
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- range boundaries
+		if (port < PortsEnum.LOWEST_AVAILABLE || PortsEnum.HIGHEST_AVAILABLE < port)
+		{
+			throw new Error(`"port" parameter isn't within range of valid ports. It must be an integer between ${PortsEnum.LOWEST_AVAILABLE.toString()} and ${PortsEnum.HIGHEST_AVAILABLE.toString()}`);
 		}
 	}
 
@@ -268,19 +269,6 @@ class Server
 	public getHTTPS(): boolean
 	{
 		return this.https;
-	}
-
-	/**
-	 * setPort
-	 */
-	public setPort(port: number): void
-	{
-		if (!Number.isInteger(port) || port < PortsEnum.LOWEST_AVAILABLE || port > PortsEnum.HIGHEST_AVAILABLE)
-		{
-			throw new Error(`"port" parameter isn't within range of valid ports. It must be an integer between ${PortsEnum.LOWEST_AVAILABLE.toString()} and ${PortsEnum.HIGHEST_AVAILABLE.toString()}`);
-		}
-
-		this.port = port;
 	}
 }
 

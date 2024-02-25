@@ -1,7 +1,5 @@
-import { default as assert } from 'node:assert/strict';
-
-import { describe, it } from 'node:test';
-
+import { default as assert } from "node:assert/strict";
+import { describe, it } from "node:test";
 import { CookieService } from "../../../src/_index.mjs";
 
 describe(
@@ -30,7 +28,7 @@ describe(
 						const INPUT: string = "foo=bar; quz=qux";
 						const EXPECTED_OUTPUT: Map<string, string> = new Map([
 							["foo", "bar"],
-							["quz", "qux"]
+							["quz", "qux"],
 						]);
 
 						assert.deepStrictEqual(CookieService.Parse(INPUT), EXPECTED_OUTPUT);
@@ -44,7 +42,7 @@ describe(
 						const INPUT: string = "foo=bar; quz=qux=zaz";
 						const EXPECTED_OUTPUT: Map<string, string> = new Map([
 							["foo", "bar"],
-							["quz", "qux=zaz"]
+							["quz", "qux=zaz"],
 						]);
 
 						assert.deepStrictEqual(CookieService.Parse(INPUT), EXPECTED_OUTPUT);

@@ -5,6 +5,10 @@
 			"path": "."
 		},
 		{
+			"name": "testing-ground",
+			"path": "./packages/testing-ground"
+		},
+		{
 			"name": "ts-predicate",
 			"path": "./packages/ts-predicate"
 		},

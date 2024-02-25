@@ -56,7 +56,6 @@ Unsupported syntax for imports:
 
 ```ts
 import defaultExport, { export1 } from "module-name";
-
 import defaultExport, * as name from "module-name";
 ```
 
@@ -75,7 +74,7 @@ Module file
 ```ts
 import { randomUUID as seed } from "node:crypto";
 import * as formatter from "./formatter.mjs";
-import validateId from "./validateId.mjs";
+import validateId from "./validate-id.mjs";
 
 function generateId(): string
 {

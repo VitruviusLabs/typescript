@@ -1,13 +1,8 @@
-
-import { encodeInfos } from "./utils/MockingInfos.mjs";
-
-import { initializeHooks } from "./utils/initializeHooks.mjs";
-
-import { isMockedModule } from "./utils/isMockedModule.mjs";
-
+import { encodeInfos } from "./utils/mocking-infos.mjs";
+import { initializeHooks } from "./utils/initialize-hooks.mjs";
+import { isMockedModule } from "./utils/is-mocked-module.mjs";
 import { prefix } from "./utils/prefix.mjs";
-
-import type { MockedDependency } from "./Type/MockedDependency.mjs";
+import type { MockedDependency } from "./definition/interface/mocked-dependency.mjs";
 
 async function mockingbird<MockType>(module_identifier: string, meta_url: string, mocks: Record<string, MockedDependency>): Promise<MockType>
 {

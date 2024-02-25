@@ -1,49 +1,5 @@
 {
 	"extends": [
 		"../../.eslintrc.json"
-	],
-	"settings": {
-		"import/resolver": {
-			"typescript": {
-				"alwaysTryTypes": true,
-				"project": "./tsconfig.eslint.json"
-			}
-		}
-	},
-	"parserOptions": {
-		"ecmaVersion": "latest",
-		"sourceType": "module",
-		"parser": "@typescript-eslint/parser",
-		"project": "./tsconfig.eslint.json",
-		"projectFolderIgnoreList": [
-			"./node_modules",
-			"./.stryker-tmp",
-			"./build",
-			"./reports",
-			"*.js"
-		]
-	},
-	"ignorePatterns": [
-		"dummy-dependency.mjs",
-		"dummy-lib.mjs",
-		"**/tmp/**",
-		"**/build/**",
-		"**/reports/**",
-		"**/stryker-tmp/**"
-	],
-	"rules": {
-		"import/no-extraneous-dependencies": [
-			"error",
-			{
-				"devDependencies": true,
-				"optionalDependencies": true,
-				"peerDependencies": true,
-				"bundledDependencies": true,
-				"packageDir": [
-					"../../",
-					"./"
-				]
-			}
-		]
-	}
+	]
 }

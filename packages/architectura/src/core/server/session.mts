@@ -1,22 +1,9 @@
 import { randomUUID } from "node:crypto";
-
-// import { ExecutionContext } from "../Core/ExecutionContext.mjs";
-
 import { MillisecondEnum } from "../../definition/enum/millisecond.enum.mjs";
-
-// import { CookieEnum } from "./Cookie/CookieEnum.mjs";
-
-// import { Logger } from "./Logger.mjs";
-
 import { CookieService } from "../../service/cookie/cookie.service.mjs";
-
 import { SessionEnum } from "./definition/enum/session.enum.mjs";
-
 import { SessionRegistry } from "./session.registry.mjs";
-
 import type { SessionInstantiationInterface } from "./definition/interface/session-instantiation.interface.mjs";
-
-// import type { SessionInterface } from "./Session/SessionInterface.mjs";
 
 class Session
 {
@@ -24,9 +11,8 @@ class Session
 	private static CookieNameScope: string = "session";
 
 	private readonly id: string;
-	private cookies: Map<string, string> = new Map<string, string>();
-
 	private readonly timeout: NodeJS.Timeout;
+	private readonly cookies: Map<string, string> = new Map<string, string>();
 
 	private constructor(value: SessionInstantiationInterface)
 	{
@@ -48,7 +34,7 @@ class Session
 	public static Create(): Session
 	{
 		const INSTANTIATION_INTERFACE: SessionInstantiationInterface = {
-			id: randomUUID()
+			id: randomUUID(),
 		};
 
 		const INSTANCE: Session = new Session(INSTANTIATION_INTERFACE);
@@ -140,7 +126,12 @@ class Session
 	 */
 	public setCookies(cookies: Map<string, string>): void
 	{
-		this.cookies = cookies;
+		cookies.forEach(
+			(value: string, key: string): void =>
+			{
+				this.setCookie(key, value);
+			}
+		);
 	}
 }
 

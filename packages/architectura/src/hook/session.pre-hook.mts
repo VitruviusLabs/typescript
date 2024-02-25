@@ -1,12 +1,7 @@
-
 import { ExecutionContext } from "../core/execution-context/execution-context.mjs";
-
 import { ExecutionContextRegistry } from "../core/execution-context/execution-context.registry.mjs";
-
 import { Session } from "../core/server/session.mjs";
-
 import { SessionRegistry } from "../core/server/session.registry.mjs";
-
 import { BasePreHook } from "./base.pre-hook.mjs";
 
 abstract class SessionPreHook extends BasePreHook
@@ -39,7 +34,7 @@ abstract class SessionPreHook extends BasePreHook
 		this.initializeExistingSession(SESSION_ID);
 	}
 
-	// eslint-disable-next-line class-methods-use-this -- Stateless
+	// eslint-disable-next-line @typescript-eslint/class-methods-use-this -- Stateless
 	private initializeNewSession(): Session
 	{
 		const NEW_SESSION: Session = Session.Create();

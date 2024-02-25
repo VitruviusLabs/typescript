@@ -1,7 +1,5 @@
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
-
 import type { LoggerService } from "./logger.service.mjs";
-
 
 class LoggerProxy
 {
@@ -64,7 +62,7 @@ class LoggerProxy
 	/**
 	 * Error
 	 */
-	public static Error(message: Error|string, context?: string): void
+	public static Error(message: Error | string, context?: string): void
 	{
 		this.Logger.error(message, context);
 	}

@@ -8,7 +8,7 @@ const enum HTTPMethodEnum
 	CONNECT = "CONNECT",
 	OPTIONS = "OPTIONS",
 	TRACE = "TRACE",
-	PATCH = "PATCH"
+	PATCH = "PATCH",
 }
 
 export { HTTPMethodEnum };
