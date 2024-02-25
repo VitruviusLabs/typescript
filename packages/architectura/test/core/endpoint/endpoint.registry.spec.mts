@@ -2,7 +2,7 @@ import { default as assert } from 'node:assert/strict';
 
 import { describe, it } from 'node:test';
 
-import { BaseEndpoint, EndpointRegistry, HTTPMethodEnum, HelloWorldEndpoint, Singleton } from "../../src/_index.mjs";
+import { BaseEndpoint, EndpointRegistry, HTTPMethodEnum, HelloWorldEndpoint, Singleton } from "../../../src/_index.mjs";
 
 describe(
 	"EndpointRegistry",

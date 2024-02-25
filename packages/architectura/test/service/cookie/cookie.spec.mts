@@ -2,7 +2,7 @@ import { default as assert } from 'node:assert/strict';
 
 import { describe, it } from 'node:test';
 
-import { CookieService } from "../../src/_index.mjs";
+import { CookieService } from "../../../src/_index.mjs";
 
 describe(
 	"CookieService",
