@@ -1,13 +1,9 @@
-import { type Dirent , type ReadStream, type Stats, createReadStream } from "node:fs";
-
+import { type Dirent, type ReadStream, type Stats, createReadStream } from "node:fs";
 import { type FileHandle, open, readFile, readdir, stat } from "node:fs/promises";
-
 import { dirname } from "node:path";
-
 import { fileURLToPath } from "node:url";
-
+import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 import type { FileSystemErrorInterface } from "./definition/interface/file-system-error.interface.mjs";
-
 
 class FileSystemService
 {
@@ -16,8 +12,11 @@ class FileSystemService
 	 */
 	public static IsFileSystemError(error: unknown): error is FileSystemErrorInterface
 	{
-		// @ts-ignore
-		return (error instanceof Error) && (typeof error.code === "string");
+		return (
+			TypeGuard.isInstanceOf(error, Error)
+			&& TypeGuard.hasProperty(error, "code")
+			&& TypeGuard.isString(error.code)
+		);
 	}
 
 	/**

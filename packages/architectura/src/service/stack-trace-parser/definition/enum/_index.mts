@@ -1,1 +1,1 @@
-export * from './stack-trace-parser-service.enum.mjs';
+export * from "./stack-trace-parser-service.enum.mjs";

@@ -1,14 +1,8 @@
-
 import { Singleton } from "../../utility/singleton.mjs";
-
 import { Time } from "../../utility/time.mjs";
-
 import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
-
 import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";
-
 import type { LoggerServiceWriteInterface } from "./definition/interface/logger-service-write.interface.mjs";
-
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
 
 class LoggerService extends Singleton implements LoggerInterface
@@ -27,7 +21,7 @@ class LoggerService extends Singleton implements LoggerInterface
 
 		if (content.context !== undefined)
 		{
-			logLinePrefix += ` [${content.context}]`;
+			logLinePrefix = `${logLinePrefix} [${content.context}]`;
 		}
 
 		const LOG_LINE: string = `${logLinePrefix} - ${content.message}\n`;
@@ -44,7 +38,7 @@ class LoggerService extends Singleton implements LoggerInterface
 		this.write({
 			level: LogLevelEnum.DEBUG,
 			message: message,
-			context: context
+			context: context,
 		});
 	}
 
@@ -56,7 +50,7 @@ class LoggerService extends Singleton implements LoggerInterface
 		this.write({
 			level: LogLevelEnum.INFO,
 			message: message,
-			context: context
+			context: context,
 		});
 	}
 
@@ -76,7 +70,7 @@ class LoggerService extends Singleton implements LoggerInterface
 		this.write({
 			level: LogLevelEnum.NOTICE,
 			message: message,
-			context: context
+			context: context,
 		});
 	}
 
@@ -88,14 +82,14 @@ class LoggerService extends Singleton implements LoggerInterface
 		this.write({
 			level: LogLevelEnum.WARNING,
 			message: message,
-			context: context
+			context: context,
 		});
 	}
 
 	/**
 	 * Error
 	 */
-	public error(content: Error|string, context?: string): void
+	public error(content: Error | string, context?: string): void
 	{
 		if (content instanceof Error)
 		{
@@ -107,7 +101,7 @@ class LoggerService extends Singleton implements LoggerInterface
 		this.write({
 			level: LogLevelEnum.ERROR,
 			message: content,
-			context: context
+			context: context,
 		});
 	}
 
@@ -119,7 +113,7 @@ class LoggerService extends Singleton implements LoggerInterface
 		this.write({
 			level: LogLevelEnum.CRITICAL,
 			message: message,
-			context: context
+			context: context,
 		});
 	}
 
@@ -131,7 +125,7 @@ class LoggerService extends Singleton implements LoggerInterface
 		this.write({
 			level: LogLevelEnum.ALERT,
 			message: message,
-			context: context
+			context: context,
 		});
 	}
 
@@ -143,7 +137,7 @@ class LoggerService extends Singleton implements LoggerInterface
 		this.write({
 			level: LogLevelEnum.EMERGENCY,
 			message: message,
-			context: context
+			context: context,
 		});
 	}
 
@@ -162,7 +156,6 @@ class LoggerService extends Singleton implements LoggerInterface
 			this.error(LINE);
 		}
 	}
-
 }
 
 export { LoggerService };

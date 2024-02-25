@@ -2,7 +2,7 @@ import type { BaseServerInstantiationInterface } from "./base-server-instantiati
 
 interface HTTPServerInstantiationInterface extends BaseServerInstantiationInterface
 {
-    https: false;
+	https: false;
 }
 
 export type { HTTPServerInstantiationInterface };

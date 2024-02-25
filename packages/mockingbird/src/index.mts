@@ -1,5 +1,2 @@
 export * from "./mockingbird.mjs";
-
-export * from "./Type/MockedDependency.mjs";
-
-export * from "./Type/SharedData.mjs";
+export * from "./definition/interface/mocked-dependency.mjs";

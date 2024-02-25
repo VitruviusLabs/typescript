@@ -1,26 +1,17 @@
-import { IncomingMessage } from "node:http";
-
-import { parse as parseQuery } from "node:querystring";
-
+import { type IncomingHttpHeaders, IncomingMessage } from "node:http";
+import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
 import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
-
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
-
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
-
-import type { IncomingHttpHeaders } from "node:http";
-
-import type { ParsedUrlQuery } from "node:querystring";
-
 
 class RichClientRequest extends IncomingMessage
 {
+	private readonly request: ParsedUrlQuery = {};
+	private readonly body: Record<string, unknown> | string = "";
 	private requestedPath: string = "";
 	private pathFragments: Array<string> = [];
 	private query: ParsedUrlQuery = {};
-	private readonly request: ParsedUrlQuery = {};
 	private rawBody: Buffer = Buffer.from("");
-	private readonly body: Record<string, unknown> | string = "";
 	private contentType: string = "";
 	private boundary: string = "";
 	private cookies: Map<string, string> = new Map<string, string>();
@@ -112,7 +103,7 @@ class RichClientRequest extends IncomingMessage
 		return await new Promise(
 			(resolve: (value: Buffer) => void): void =>
 			{
-				let body: Buffer = Buffer.from('');
+				let body: Buffer = Buffer.from("");
 
 				this.addListener(
 					"data",

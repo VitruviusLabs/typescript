@@ -1,6 +1,7 @@
-interface StackTraceParserLineAndPositionInterface {
-    line: number;
-    position: number;
+interface StackTraceParserLineAndPositionInterface
+{
+	line: number;
+	position: number;
 }
 
 export type { StackTraceParserLineAndPositionInterface };

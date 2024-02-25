@@ -1,1 +1,1 @@
-export * from './cookie.service.mjs';
+export * from "./cookie.service.mjs";

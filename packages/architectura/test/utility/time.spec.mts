@@ -1,8 +1,5 @@
-
 import { default as assert } from "node:assert/strict";
-
 import { describe, it } from "node:test";
-
 import { Time, TimeFormattingEnum } from "../../src/_index.mjs";
 
 describe(

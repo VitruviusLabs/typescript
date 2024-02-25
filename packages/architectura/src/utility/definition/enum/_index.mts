@@ -1,1 +1,1 @@
-export * from './time-formatting.enum.mjs';
+export * from "./time-formatting.enum.mjs";

@@ -2,7 +2,7 @@
 class CookieService
 {
 	private static readonly EXTRACTION_REGEXP: RegExp = / ?(?<name>[^=]+)=(?<value>[^;]+);?/g;
-	private static readonly COOKIE_NAME_PREFIX: string = 'architectura';
+	private static readonly COOKIE_NAME_PREFIX: string = "architectura";
 
 	/**
 	 * This static method will extract the cookies in the Cookie header from the request and return

@@ -1,8 +1,6 @@
 import { AsyncLocalStorage } from "node:async_hooks";
-
+import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import { ExecutionContext } from "./execution-context.mjs";
-
-import type { ConstructorOf } from "../../definition/type/constructor-of.type.mjs";
 
 abstract class ExecutionContextRegistry
 {
@@ -32,7 +30,7 @@ abstract class ExecutionContextRegistry
 
 		if (CONTEXT === undefined)
 		{
-			throw new Error('No execution context found.');
+			throw new Error("No execution context found.");
 		}
 
 		if (CONTEXT instanceof custom_class)
@@ -40,7 +38,7 @@ abstract class ExecutionContextRegistry
 			return CONTEXT;
 		}
 
-		throw new Error('Execution context do not inherit from custom class constructor.');
+		throw new Error("Execution context do not inherit from custom class constructor.");
 	}
 
 	public static SetExecutionContext(execution_context: ExecutionContext): void

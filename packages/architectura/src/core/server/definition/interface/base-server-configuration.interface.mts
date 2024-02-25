@@ -2,8 +2,8 @@ import type { ExecutionContext } from "../../../execution-context/execution-cont
 
 interface BaseServerConfigurationInterface
 {
-    port: number;
-    contextConstructor?: typeof ExecutionContext;
+	port: number;
+	contextConstructor?: typeof ExecutionContext;
 }
 
 export type { BaseServerConfigurationInterface };

@@ -1,0 +1,56 @@
+{
+	"name": "@vitruvius-labs/testing-ground",
+	"version": "0.1.0",
+	"description": "Test helpers library",
+	"author": {
+		"name": "VitruviusLabs"
+	},
+	"contributors": [
+		"Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>",
+		"Benjamin Blum <benjamin.blum.98@gmail.com>"
+	],
+	"homepage": "https://github.com/VitruviusLabs/typescript/tree/main/packages/testing-ground#readme",
+	"bugs": "https://github.com/VitruviusLabs/typescript/issues",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/VitruviusLabs/typescript.git"
+	},
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./build/esm/index.mjs",
+			"types": "./build/types/index.d.mts"
+		}
+	},
+	"files": [
+		"build"
+	],
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"scripts": {
+		"clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
+		"compile": "tsc -p tsconfig.build.json",
+		"build": "pnpm clean && pnpm compile",
+		"eslint:check": "eslint ./src",
+		"eslint:fix": "eslint ./src --fix",
+		"test:unit": "pnpm test:unit:build && pnpm test:unit:run",
+		"test:unit:build": "tsc -p tsconfig.test.json",
+		"test:unit:run": "node --test tmp/test-build/test",
+		"test:unit:coverage": "NODE_V8_COVERAGE=./reports/node-coverage node --experimental-test-coverage --test ./tmp/test-build/test",
+		"test:unit:stryker": "pnpm test:unit",
+		"test:mutation": "stryker run",
+		"ts:check": "tsc -p tsconfig.json --noEmit",
+		"spell:check": "cspell -c ../../.vscode/cspell.json .",
+		"ci:lint": "pnpm eslint:check",
+		"ci:ts:check": "pnpm ts:check",
+		"ci:spell:check": "pnpm spell:check",
+		"ci:test:unit": "pnpm test:unit",
+		"ci:full": "pnpm ci:lint && pnpm ci:ts:check && pnpm ci:spell:check && pnpm ci:test:unit",
+		"ci:build": "pnpm build"
+	},
+	"keywords": [
+		"test"
+	]
+}

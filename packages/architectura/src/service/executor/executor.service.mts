@@ -1,5 +1,4 @@
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
-
 import type { ExecutorInstantiationInterface } from "./definition/interface/executor-instantiation.interface.mjs";
 
 class ExecutorService
