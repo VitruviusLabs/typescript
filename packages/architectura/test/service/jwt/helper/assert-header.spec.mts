@@ -8,12 +8,15 @@ describe(
 	(): void =>
 	{
 		it(
-			'should return when given a record with an "alg" property with a string value',
+			'should return when given a record with the required properties "type" and "alg"',
 			(): void =>
 			{
 				const WRAPPER = (): void =>
 				{
-					assertHeader({ alg: "RSA-SHA256" });
+					assertHeader({
+						typ: "JWT",
+						alg: "RSA-SHA256",
+					});
 				};
 
 				doesNotThrow(WRAPPER);
