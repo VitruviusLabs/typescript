@@ -1052,6 +1052,13 @@
 						}
 					}
 				],
+				"@stylistic/js/indent": [
+					"error",
+					"tab",
+					{
+						"SwitchCase": 1
+					}
+				],
 				"@stylistic/js/jsx-quotes": [
 					"error",
 					"prefer-double"

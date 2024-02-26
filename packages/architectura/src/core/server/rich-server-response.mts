@@ -28,7 +28,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 			const SET_COOKIE_HEADER: Array<string> = [];
 
 			for (const [COOKIE_NAME, COOKIE_VALUE] of COOKIES)
-{
+			{
 				SET_COOKIE_HEADER.push(`${COOKIE_NAME}=${COOKIE_VALUE}`);
 			}
 
