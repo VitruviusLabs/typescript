@@ -30,7 +30,6 @@ const INSTANCES: Map<Function, object> = new Map();
  * MySingleton.Clear(MySingleton); // Clears the instance
  *
  * const instance4 = MySingleton.GetInstance(MySingleton); // Returns undefined
- *
  * ```
  */
 abstract class Singleton

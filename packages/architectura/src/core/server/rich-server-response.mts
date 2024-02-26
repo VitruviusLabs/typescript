@@ -5,10 +5,60 @@ import { ExecutionContext } from "../execution-context/execution-context.mjs";
 import type { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
 import type { RichClientRequest } from "./rich-client-request.mjs";
 import type { Session } from "./session.mjs";
+import type { ReplyInterface } from "./definition/interface/reply.interface.mjs";
+import type { JSONReplyInterface } from "./definition/interface/json-reply.interface.mjs";
+import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
 	private content: string = "";
+
+	public replyWith(parameters: HTTPStatusCodeEnum | ReplyInterface): void
+	{
+		if (typeof parameters === "number")
+		{
+			this.statusCode = parameters;
+			this.send();
+
+			return;
+		}
+
+		const contentType: string = parameters.contentType ?? ContentTypeEnum.TEXT_PLAIN;
+
+		this.setHeader("Content-Type", contentType);
+
+		if (parameters.payload instanceof Buffer)
+		{
+			this.send(parameters.payload);
+
+			return;
+		}
+
+		if (parameters.payload instanceof ReadableStream)
+		{
+			parameters.payload.pipe(this);
+
+			return;
+		}
+
+		if (typeof parameters.payload === "string")
+		{
+			this.send(parameters.payload);
+
+			return;
+		}
+
+		this.send(JSON.stringify(parameters.payload));
+	}
+
+	public sendJSON(content: JSONReplyInterface): void
+	{
+		this.replyWith({
+			status: content.status,
+			payload: JSON.stringify(content.payload),
+			contentType: ContentTypeEnum.APPLICATION_JSON,
+		});
+	}
 
 	/**
 	 * send
