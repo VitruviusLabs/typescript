@@ -1,0 +1,101 @@
+{
+	"name": "@vitruvius-labs/functional",
+	"version": "0.1.0",
+	"description": "TypeScript functional library",
+	"author": {
+		"name": "VitruviusLabs"
+	},
+	"contributors": [
+		"Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>",
+		"Benjamin Blum <benjamin.blum.98@gmail.com>"
+	],
+	"homepage": "https://github.com/VitruviusLabs/typescript/tree/main/packages/functional#readme",
+	"bugs": "https://github.com/VitruviusLabs/typescript/issues",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/VitruviusLabs/typescript.git"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": " https://registry.npmjs.org"
+	},
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./build/esm/index.mjs",
+			"types": "./build/types/index.d.mts"
+		},
+		"./helper": {
+			"import": "./build/esm/helper/_index.mjs",
+			"types": "./build/types/helper/_index.d.mts"
+		},
+		"./array": {
+			"import": "./build/esm/monad/array/_index.mjs",
+			"types": "./build/types/monad/array/_index.d.mts"
+		},
+		"./box": {
+			"import": "./build/esm/monad/box/_index.mjs",
+			"types": "./build/types/monad/box/_index.d.mts"
+		},
+		"./either": {
+			"import": "./build/esm/monad/either/_index.mjs",
+			"types": "./build/types/monad/either/_index.d.mts"
+		},
+		"./optional": {
+			"import": "./build/esm/monad/optional/_index.mjs",
+			"types": "./build/types/monad/optional/_index.d.mts"
+		},
+		"./result": {
+			"import": "./build/esm/monad/result/_index.mjs",
+			"types": "./build/types/monad/result/_index.d.mts"
+		},
+		"./validation": {
+			"import": "./build/esm/monad/validation/_index.mjs",
+			"types": "./build/types/monad/validation/_index.d.mts"
+		}
+	},
+	"files": [
+		"build"
+	],
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"scripts": {
+		"clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
+		"compile": "tsc -p tsconfig.build.json",
+		"build": "pnpm clean && pnpm compile",
+		"eslint:check": "eslint ./src ./test",
+		"eslint:fix": "eslint ./src ./test --fix",
+		"test:unit": "pnpm test:unit:build && pnpm test:unit:run",
+		"test:unit:build": "tsc -p tsconfig.test.json",
+		"test:unit:run": "node --test tmp/test-build/test",
+		"test:unit:only": "pnpm test:unit:build && pnpm test:unit:run:only",
+		"test:unit:run:only": "node --test --test-only tmp/test-build/test",
+		"test:unit:coverage": "NODE_V8_COVERAGE=./reports/node-coverage node --experimental-test-coverage --test ./tmp/test-build/test",
+		"test:unit:stryker": "pnpm test:unit",
+		"test:mutation": "stryker run",
+		"ts:check": "tsc -p tsconfig.json --noEmit",
+		"spell:check": "cspell -c ../../.vscode/cspell.json .",
+		"ci:lint": "pnpm eslint:check",
+		"ci:ts:check": "pnpm ts:check",
+		"ci:spell:check": "pnpm spell:check",
+		"ci:test:unit": "pnpm test:unit",
+		"ci:full": "pnpm ci:lint && pnpm ci:ts:check && pnpm ci:spell:check && pnpm ci:test:unit",
+		"ci:publish": "pnpm publish --access public",
+		"ci:publish:dry": "pnpm publish --access public --dry-run --no-git-checks",
+		"ci:build": "pnpm build"
+	},
+	"keywords": [
+		"assert",
+		"assertion",
+		"guard",
+		"predicate",
+		"strict",
+		"ts",
+		"type",
+		"type-guard",
+		"typeguard",
+		"typescript"
+	]
+}

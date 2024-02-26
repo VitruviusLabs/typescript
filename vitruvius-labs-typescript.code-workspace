@@ -19,6 +19,10 @@
 		{
 			"name": "architectura",
 			"path": "./packages/architectura"
+		},
+		{
+			"name": "functional",
+			"path": "./packages/functional"
 		}
 	],
 	"settings": {
