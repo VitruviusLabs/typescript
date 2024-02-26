@@ -14,8 +14,7 @@ function isNumberTest(value: unknown): value is number
 	return typeof value === "number";
 }
 
-const DESCRIPTOR: StructuredDataDescriptor<TestData>
-= {
+const DESCRIPTOR: StructuredDataDescriptor<TestData> = {
 	alpha: {
 		nullable: true,
 		test: isNumberTest,
@@ -26,107 +25,67 @@ const DESCRIPTOR: StructuredDataDescriptor<TestData>
 	},
 };
 
-describe(
-	"TypeGuard.isStructuredData",
-	(): void =>
-	{
-		it(
-			"should return false when the value is not a structured data",
-			(): void =>
-			{
-				const VALUES: Array<unknown> = getInvertedValues(GroupType.RECORD);
+describe("TypeGuard.isStructuredData", (): void => {
+	it("should return false when the value is not a structured data", (): void => {
+		const VALUES: Array<unknown> = getInvertedValues(GroupType.RECORD);
 
-				for (const ITEM of VALUES)
-				{
-					const RESULT: unknown = TypeGuard.isStructuredData(ITEM, DESCRIPTOR);
+		for (const ITEM of VALUES)
+		{
+			const RESULT: unknown = TypeGuard.isStructuredData(ITEM, DESCRIPTOR);
 
-					strictEqual(RESULT, false);
-				}
-			}
+			strictEqual(RESULT, false);
+		}
+	});
+
+	it("should return false when there is an extraneous property", (): void => {
+		const RESULT: unknown = TypeGuard.isStructuredData({ alpha: 1, beta: 2, gamma: 3 }, DESCRIPTOR);
+
+		strictEqual(RESULT, false);
+	});
+
+	it("should return true when there is an extraneous property, but extraneous properties are allowed", (): void => {
+		const RESULT: unknown = TypeGuard.isStructuredData(
+			{ alpha: 1, beta: 2, gamma: 3 },
+			DESCRIPTOR,
+			{ allowExtraneousProperties: true }
 		);
 
-		it(
-			"should return false when there is an extraneous property",
-			(): void =>
-			{
-				const RESULT: unknown = TypeGuard.isStructuredData({ alpha: 1, beta: 2, gamma: 3 }, DESCRIPTOR);
+		strictEqual(RESULT, true);
+	});
 
-				strictEqual(RESULT, false);
-			}
-		);
+	it("should return true when every property of the object is valid", (): void => {
+		const RESULT: unknown = TypeGuard.isStructuredData({ alpha: 1, beta: 2 }, DESCRIPTOR);
 
-		it(
-			"should return true when there is an extraneous property, but extraneous properties are allowed",
-			(): void =>
-			{
-				const RESULT: unknown = TypeGuard.isStructuredData(
-					{ alpha: 1, beta: 2, gamma: 3 },
-					DESCRIPTOR,
-					{ allowExtraneousProperties: true }
-				);
+		strictEqual(RESULT, true);
+	});
 
-				strictEqual(RESULT, true);
-			}
-		);
+	it("should return true when an optional property is missing", (): void => {
+		const RESULT: unknown = TypeGuard.isStructuredData({ alpha: 1 }, DESCRIPTOR);
 
-		it(
-			"should return true when every property of the object is valid",
-			(): void =>
-			{
-				const RESULT: unknown = TypeGuard.isStructuredData({ alpha: 1, beta: 2 }, DESCRIPTOR);
+		strictEqual(RESULT, true);
+	});
 
-				strictEqual(RESULT, true);
-			}
-		);
+	it("should return false when a required property is missing", (): void => {
+		const RESULT: unknown = TypeGuard.isStructuredData({ beta: 2 }, DESCRIPTOR);
 
-		it(
-			"should return true when an optional property is missing",
-			(): void =>
-			{
-				const RESULT: unknown = TypeGuard.isStructuredData({ alpha: 1 }, DESCRIPTOR);
+		strictEqual(RESULT, false);
+	});
 
-				strictEqual(RESULT, true);
-			}
-		);
+	it("should return true when a nullable property is nullish", (): void => {
+		const RESULT: unknown = TypeGuard.isStructuredData({ alpha: undefined, beta: 2 }, DESCRIPTOR);
 
-		it(
-			"should return false when a required property is missing",
-			(): void =>
-			{
-				const RESULT: unknown = TypeGuard.isStructuredData({ beta: 2 }, DESCRIPTOR);
+		strictEqual(RESULT, true);
+	});
 
-				strictEqual(RESULT, false);
-			}
-		);
+	it("should return false when a non-nullable property is nullish", (): void => {
+		const RESULT: unknown = TypeGuard.isStructuredData({ alpha: 1, beta: undefined }, DESCRIPTOR);
 
-		it(
-			"should return true when a nullable property is nullish",
-			(): void =>
-			{
-				const RESULT: unknown = TypeGuard.isStructuredData({ alpha: undefined, beta: 2 }, DESCRIPTOR);
+		strictEqual(RESULT, false);
+	});
 
-				strictEqual(RESULT, true);
-			}
-		);
+	it("should return false when a property value is invalid", (): void => {
+		const RESULT: unknown = TypeGuard.isStructuredData({ alpha: 1, beta: "2" }, DESCRIPTOR);
 
-		it(
-			"should return false when a non-nullable property is nullish",
-			(): void =>
-			{
-				const RESULT: unknown = TypeGuard.isStructuredData({ alpha: 1, beta: undefined }, DESCRIPTOR);
-
-				strictEqual(RESULT, false);
-			}
-		);
-
-		it(
-			"should return false when a property value is invalid",
-			(): void =>
-			{
-				const RESULT: unknown = TypeGuard.isStructuredData({ alpha: 1, beta: "2" }, DESCRIPTOR);
-
-				strictEqual(RESULT, false);
-			}
-		);
-	}
-);
+		strictEqual(RESULT, false);
+	});
+});

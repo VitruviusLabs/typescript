@@ -29,151 +29,111 @@ const DESCRIPTOR: StructuredDataDescriptor<TestData>
 	},
 };
 
-describe(
-	"TypeAssertion.isStructuredData",
-	(): void =>
-	{
-		it(
-			"should throw when the value is not a record",
-			(): void =>
+describe("TypeAssertion.isStructuredData", (): void => {
+	it("should throw when the value is not a record", (): void => {
+		const VALUES: Array<unknown> = getInvertedValues(GroupType.RECORD);
+
+		for (const ITEM of VALUES)
+		{
+			const WRAPPER = (): void =>
 			{
-				const VALUES: Array<unknown> = getInvertedValues(GroupType.RECORD);
+				TypeAssertion.isStructuredData(ITEM, DESCRIPTOR);
+			};
 
-				for (const ITEM of VALUES)
-				{
-					const WRAPPER = (): void =>
-					{
-						TypeAssertion.isStructuredData(ITEM, DESCRIPTOR);
-					};
+			throws(WRAPPER, createErrorTest("The value must be a record."));
+		}
+	});
 
-					throws(WRAPPER, createErrorTest("The value must be a record."));
-				}
-			}
-		);
+	it("should throw when there is an extraneous property", (): void => {
+		const WRAPPER = (): void =>
+		{
+			TypeAssertion.isStructuredData({ alpha: 1, beta: 2, gamma: 3 }, DESCRIPTOR);
+		};
 
-		it(
-			"should throw when there is an extraneous property",
-			(): void =>
-			{
-				const WRAPPER = (): void =>
-				{
-					TypeAssertion.isStructuredData({ alpha: 1, beta: 2, gamma: 3 }, DESCRIPTOR);
-				};
+		throws(WRAPPER, createErrorTest(new AggregateError(
+			[new Error('The value has an extraneous property "gamma".')],
+			"The value is an object, but some properties are incorrect."
+		)));
+	});
 
-				throws(WRAPPER, createErrorTest(new AggregateError(
-					[new Error('The value has an extraneous property "gamma".')],
-					"The value is an object, but some properties are incorrect."
-				)));
-			}
-		);
+	it("should return when there is an extraneous property, but extraneous properties are allowed", (): void => {
+		const WRAPPER = (): void =>
+		{
+			TypeAssertion.isStructuredData(
+				{ alpha: 1, beta: 2, gamma: 3 },
+				DESCRIPTOR,
+				{ allowExtraneousProperties: true }
+			);
+		};
 
-		it(
-			"should return when there is an extraneous property, but extraneous properties are allowed",
-			(): void =>
-			{
-				const WRAPPER = (): void =>
-				{
-					TypeAssertion.isStructuredData(
-						{ alpha: 1, beta: 2, gamma: 3 },
-						DESCRIPTOR,
-						{ allowExtraneousProperties: true }
-					);
-				};
+		doesNotThrow(WRAPPER);
+	});
 
-				doesNotThrow(WRAPPER);
-			}
-		);
+	it("should return when every property of the object is valid", (): void => {
+		const WRAPPER = (): void =>
+		{
+			TypeAssertion.isStructuredData({ alpha: 1, beta: 2 }, DESCRIPTOR);
+		};
 
-		it(
-			"should return when every property of the object is valid",
-			(): void =>
-			{
-				const WRAPPER = (): void =>
-				{
-					TypeAssertion.isStructuredData({ alpha: 1, beta: 2 }, DESCRIPTOR);
-				};
+		doesNotThrow(WRAPPER);
+	});
 
-				doesNotThrow(WRAPPER);
-			}
-		);
+	it("should throw when a property value is invalid", (): void => {
+		const WRAPPER = (): void =>
+		{
+			TypeAssertion.isStructuredData({ alpha: 1, beta: "2" }, DESCRIPTOR);
+		};
 
-		it(
-			"should throw when a property value is invalid",
-			(): void =>
-			{
-				const WRAPPER = (): void =>
-				{
-					TypeAssertion.isStructuredData({ alpha: 1, beta: "2" }, DESCRIPTOR);
-				};
+		throws(WRAPPER, createErrorTest(new AggregateError(
+			[
+				new Error(
+					'The property "beta" has an incorrect value.',
+					{ cause: new Error("value is not a number") }
+				),
+			],
+			"The value is an object, but some properties are incorrect."
+		)));
+	});
 
-				throws(WRAPPER, createErrorTest(new AggregateError(
-					[
-						new Error(
-							'The property "beta" has an incorrect value.',
-							{ cause: new Error("value is not a number") }
-						),
-					],
-					"The value is an object, but some properties are incorrect."
-				)));
-			}
-		);
+	it("should return when an optional property is missing", (): void => {
+		const WRAPPER = (): void =>
+		{
+			TypeAssertion.isStructuredData({ alpha: 1 }, DESCRIPTOR);
+		};
 
-		it(
-			"should return when an optional property is missing",
-			(): void =>
-			{
-				const WRAPPER = (): void =>
-				{
-					TypeAssertion.isStructuredData({ alpha: 1 }, DESCRIPTOR);
-				};
+		doesNotThrow(WRAPPER);
+	});
 
-				doesNotThrow(WRAPPER);
-			}
-		);
+	it("should throw when a required property is missing", (): void => {
+		const WRAPPER = (): void =>
+		{
+			TypeAssertion.isStructuredData({ beta: 2 }, DESCRIPTOR);
+		};
 
-		it(
-			"should throw when a required property is missing",
-			(): void =>
-			{
-				const WRAPPER = (): void =>
-				{
-					TypeAssertion.isStructuredData({ beta: 2 }, DESCRIPTOR);
-				};
+		throws(WRAPPER, createErrorTest(new AggregateError(
+			[new Error('The required property "alpha" is missing.')],
+			"The value is an object, but some properties are incorrect."
+		)));
+	});
 
-				throws(WRAPPER, createErrorTest(new AggregateError(
-					[new Error('The required property "alpha" is missing.')],
-					"The value is an object, but some properties are incorrect."
-				)));
-			}
-		);
+	it("should return when a nullable property is nullish", (): void => {
+		const WRAPPER = (): void =>
+		{
+			TypeAssertion.isStructuredData({ alpha: undefined, beta: 2 }, DESCRIPTOR);
+		};
 
-		it(
-			"should return when a nullable property is nullish",
-			(): void =>
-			{
-				const WRAPPER = (): void =>
-				{
-					TypeAssertion.isStructuredData({ alpha: undefined, beta: 2 }, DESCRIPTOR);
-				};
+		doesNotThrow(WRAPPER);
+	});
 
-				doesNotThrow(WRAPPER);
-			}
-		);
+	it("should throw when a non-nullable property is nullish", (): void => {
+		const WRAPPER = (): void =>
+		{
+			TypeAssertion.isStructuredData({ alpha: 1, beta: undefined }, DESCRIPTOR);
+		};
 
-		it(
-			"should throw when a non-nullable property is nullish",
-			(): void =>
-			{
-				const WRAPPER = (): void =>
-				{
-					TypeAssertion.isStructuredData({ alpha: 1, beta: undefined }, DESCRIPTOR);
-				};
-
-				throws(WRAPPER, createErrorTest(new AggregateError(
-					[new Error('The property "beta" must not have a nullish value (undefined, null, or NaN).')],
-					"The value is an object, but some properties are incorrect."
-				)));
-			}
-		);
-	}
-);
+		throws(WRAPPER, createErrorTest(new AggregateError(
+			[new Error('The property "beta" must not have a nullish value (undefined, null, or NaN).')],
+			"The value is an object, but some properties are incorrect."
+		)));
+	});
+});
