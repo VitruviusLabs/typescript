@@ -24,7 +24,9 @@ describe(
 
 				const SIGNATURE: string = computeSignature(INGREDIENTS);
 
+				// cspell:disable
 				const EXPECTED_SIGNATURE: string = "HMKfUm13aMKBccKPw6DCjsOdwq3Cvh4ewpXCtxogFAI4w4IMRsK8w53Cn8OuTFg";
+				// cspell:enable
 
 				strictEqual(SIGNATURE, EXPECTED_SIGNATURE);
 			}
