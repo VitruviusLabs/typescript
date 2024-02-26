@@ -1,10 +1,10 @@
 import { deepStrictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { JWT } from "../../../src/service/jwt/_index.mjs";
-import { JWTFactory } from "../../../src/service/jwt/jwt.factory.mjs";
+import { JWTService } from "../../../src/service/jwt/jwt.service.mjs";
 
 describe(
-	"JWTFactory",
+	"JWTService",
 	(): void =>
 	{
 		it(
@@ -15,7 +15,7 @@ describe(
 
 				const ENCODED_JWT: string = JWT_OBJECT.toString();
 
-				const PARSED_JWT: JWT = JWTFactory.Parse(ENCODED_JWT, "your-256-bit-secret-here");
+				const PARSED_JWT: JWT = JWTService.Parse(ENCODED_JWT, "your-256-bit-secret-here");
 
 				deepStrictEqual(PARSED_JWT, JWT_OBJECT);
 			}

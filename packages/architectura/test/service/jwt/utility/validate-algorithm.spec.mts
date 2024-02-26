@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import { doesNotThrow, throws } from "node:assert";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
-import { validateAlgorithm } from "../../../../src/service/jwt/helper/validate-algorithm.mjs";
+import { validateAlgorithm } from "../../../../src/service/jwt/utility/validate-algorithm.mjs";
 
 describe(
 	"validateAlgorithm",

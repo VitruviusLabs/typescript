@@ -1,6 +1,6 @@
 import { notStrictEqual, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { Base64URL } from "../../../../src/service/jwt/helper/base64-url.mjs";
+import { Base64URL } from "../../../../src/service/jwt/utility/base64-url.mjs";
 
 describe(
 	"Base64URL",
