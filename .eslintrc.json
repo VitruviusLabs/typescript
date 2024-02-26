@@ -12,10 +12,10 @@
 		"**/reports/**",
 		"**/tmp/**",
 		"**/.stryker-tmp/**",
-		".d.ts",
-		".d.mts",
-		".js",
-		".mjs"
+		"*.d.ts",
+		"*.d.mts",
+		"*.js",
+		"*.mjs"
 	],
 	"settings": {
 		"import/resolver": {
@@ -463,7 +463,7 @@
 		"@typescript-eslint/promise-function-async": [
 			"error",
 			{
-				"allowAny": false,
+				"allowAny": true,
 				"allowedPromiseNames": [],
 				"checkArrowFunctions": true,
 				"checkFunctionDeclarations": true,
@@ -1726,7 +1726,8 @@
 							"y",
 							"z",
 							"id",
-							"to"
+							"to",
+							"up"
 						]
 					}
 				],
