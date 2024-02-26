@@ -363,7 +363,9 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
-        run: pnpm --filter ts-predicate ci:build
+        run: |
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter testing-ground ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura
@@ -393,7 +395,9 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
-        run: pnpm --filter ts-predicate ci:build
+        run: |
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter testing-ground ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura
@@ -423,7 +427,9 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
-        run: pnpm --filter ts-predicate ci:build
+        run: |
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter testing-ground ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura
@@ -472,7 +478,9 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
-        run: pnpm --filter ts-predicate ci:build
+        run: |
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter testing-ground ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura
