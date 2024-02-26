@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import { doesNotThrow, throws } from "node:assert";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
-import { assertToken } from "../../../../src/service/jwt/helper/assert-token.mjs";
+import { assertToken } from "../../../../src/service/jwt/predicate/assert-token.mjs";
 
 describe(
 	"isToken",

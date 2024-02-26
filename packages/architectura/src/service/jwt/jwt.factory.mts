@@ -1,13 +1,13 @@
 import type { TokenType } from "./definition/type/token.type.mjs";
 import type { SecretType } from "./definition/type/secret.type.mjs";
 import type { JWTClaimsInterface } from "./definition/interface/jwt-claims.interface.mjs";
-import { Base64URL } from "./base64-url.mjs";
+import { Base64URL } from "./helper/base64-url.mjs";
 import { JWT } from "./jwt.mjs";
 import { validateSecret } from "./helper/validate-secret.mjs";
-import { assertToken } from "./helper/assert-token.mjs";
-import { assertHeader } from "./helper/assert-header.mjs";
+import { assertToken } from "./predicate/assert-token.mjs";
+import { assertHeader } from "./predicate/assert-header.mjs";
 import { computeSignature } from "./helper/compute-signature.mjs";
-import { assertClaims } from "./helper/assert-claims.mjs";
+import { assertClaims } from "./predicate/assert-claims.mjs";
 
 class JWTFactory
 {

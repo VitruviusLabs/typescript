@@ -26,20 +26,21 @@
 		"hte"
 	],
 	"ignorePaths": [
-		"tsconfig.json",
-		".mocharc.json",
-		".gitignore",
-		"**/*.log",
-		"package.json",
-		"**/node_modules/**",
+		".eslintrc.json",
 		".git/**",
 		".github/CODEOWNERS",
-		"CHANGELOG.md",
-		"pnpm-lock.yaml",
-		".eslintrc.json",
-		"pipeline.yml",
-		"reports/",
+		".gitignore",
+		".mocharc.json",
 		".tmp/",
-		"build/"
+		"**/*.log",
+		"**/node_modules/**",
+		"build/",
+		"CHANGELOG.md",
+		"package.json",
+		"pipeline.yml",
+		"pnpm-lock.yaml",
+		"reports/",
+		"tmp/",
+		"tsconfig.json"
 	]
 }

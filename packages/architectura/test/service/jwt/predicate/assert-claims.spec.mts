@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import { doesNotThrow, throws } from "node:assert";
 import { GroupType, createErrorTest, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { assertClaims } from "../../../../src/service/jwt/helper/assert-claims.mjs";
+import { assertClaims } from "../../../../src/service/jwt/predicate/assert-claims.mjs";
 
 describe(
 	"assertClaims",

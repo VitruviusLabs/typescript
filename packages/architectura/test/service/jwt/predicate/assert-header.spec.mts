@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import { doesNotThrow, throws } from "node:assert";
 import { createErrorTest, getAllValues } from "@vitruvius-labs/testing-ground";
-import { assertHeader } from "../../../../src/service/jwt/helper/assert-header.mjs";
+import { assertHeader } from "../../../../src/service/jwt/predicate/assert-header.mjs";
 
 describe(
 	"assertHeader",

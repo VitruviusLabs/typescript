@@ -1,6 +1,6 @@
 import type { SignatureIngredientsInterface } from "../../../../src/service/jwt/definition/interface/signature-ingredients.interface.mjs";
 import { computeSignature } from "../../../../src/service/jwt/helper/compute-signature.mjs";
-import { Base64URL } from "../../../../src/service/jwt/base64-url.mjs";
+import { Base64URL } from "../../../../src/service/jwt/helper/base64-url.mjs";
 import { describe, it } from "node:test";
 import { strictEqual } from "node:assert";
 
