@@ -13,7 +13,7 @@ jobs:
       require-spell-check: ${{ steps.parse-changed-files.outputs.require-spell-check }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -30,7 +30,7 @@ jobs:
 
       - name: PNPM installation
         # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
@@ -45,7 +45,7 @@ jobs:
 
       - name: PNPM cache configuration
         # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -60,7 +60,7 @@ jobs:
 
       - name: Dependencies caching
         # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -71,17 +71,17 @@ jobs:
     # if: ${{ needs.setup.outputs.require-spell-check == 'true' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: PNPM installation
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
           run_install: false
 
       - name: Dependencies cache unpacking
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -97,17 +97,17 @@ jobs:
     # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: PNPM installation
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
           run_install: false
 
       - name: Dependencies cache unpacking
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -124,17 +124,17 @@ jobs:
     # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: PNPM installation
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
           run_install: false
 
       - name: Dependencies cache unpacking
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -151,17 +151,17 @@ jobs:
     # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: PNPM installation
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
           run_install: false
 
       - name: Dependencies cache unpacking
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -192,7 +192,7 @@ jobs:
     environment: npm
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: actions/setup-node@v3
         with:
@@ -200,14 +200,14 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
           run_install: false
 
       - name: Dependencies cache unpacking
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -232,17 +232,17 @@ jobs:
     # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: PNPM installation
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
           run_install: false
 
       - name: Dependencies cache unpacking
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -264,17 +264,17 @@ jobs:
     # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: PNPM installation
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
           run_install: false
 
       - name: Dependencies cache unpacking
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -302,7 +302,7 @@ jobs:
     environment: npm
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: actions/setup-node@v3
         with:
@@ -310,14 +310,14 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
           run_install: false
 
       - name: Dependencies cache unpacking
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -347,23 +347,25 @@ jobs:
     # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: PNPM installation
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
           run_install: false
 
       - name: Dependencies cache unpacking
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
-        run: pnpm --filter ts-predicate ci:build
+        run: |
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter testing-ground ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura
@@ -377,23 +379,25 @@ jobs:
     # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: PNPM installation
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
           run_install: false
 
       - name: Dependencies cache unpacking
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
-        run: pnpm --filter ts-predicate ci:build
+        run: |
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter testing-ground ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura
@@ -407,23 +411,25 @@ jobs:
     # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: PNPM installation
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
           run_install: false
 
       - name: Dependencies cache unpacking
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
-        run: pnpm --filter ts-predicate ci:build
+        run: |
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter testing-ground ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura
@@ -451,7 +457,7 @@ jobs:
     environment: npm
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: actions/setup-node@v3
         with:
@@ -459,20 +465,22 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
           version: 8
           run_install: false
 
       - name: Dependencies cache unpacking
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
-        run: pnpm --filter ts-predicate ci:build
+        run: |
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter testing-ground ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura

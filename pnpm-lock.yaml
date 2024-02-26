@@ -75,7 +75,7 @@ importers:
   packages/architectura:
     dependencies:
       '@vitruvius-labs/ts-predicate':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ts-predicate
 
   packages/mockingbird:
