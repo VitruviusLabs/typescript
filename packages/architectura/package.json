@@ -46,6 +46,6 @@
 		"ci:build": "pnpm build"
 	},
 	"dependencies": {
-		"@vitruvius-labs/ts-predicate": "workspace:*"
+		"@vitruvius-labs/ts-predicate": "workspace:^"
 	}
 }
