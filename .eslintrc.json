@@ -1052,6 +1052,13 @@
 						}
 					}
 				],
+				"@stylistic/js/indent": [
+					"error",
+					"tab",
+					{
+						"SwitchCase": 1
+					}
+				],
 				"@stylistic/js/jsx-quotes": [
 					"error",
 					"prefer-double"
@@ -1770,6 +1777,7 @@
 			],
 			"rules": {
 				"@stylistic/js/generator-star-spacing": "off",
+				"@stylistic/ts/brace-style": "off",
 				"@typescript-eslint/class-methods-use-this": "off",
 				"@typescript-eslint/dot-notation": [
 					"error",

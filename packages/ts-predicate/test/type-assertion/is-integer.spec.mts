@@ -3,62 +3,46 @@ import { describe, it } from "node:test";
 import { TypeAssertion } from "../../src/index.mjs";
 import { GroupType, createErrorTest, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 
-describe(
-	"TypeAssertion.isInteger",
-	(): void =>
-	{
-		it(
-			"should return when given a safe integer",
-			(): void =>
+describe("TypeAssertion.isInteger", (): void => {
+	it("should return when given a safe integer", (): void => {
+		const VALUES: Array<unknown> = getValues(GroupType.INTEGER);
+
+		for (const ITEM of VALUES)
+		{
+			const WRAPPER = (): void =>
 			{
-				const VALUES: Array<unknown> = getValues(GroupType.INTEGER);
+				TypeAssertion.isInteger(ITEM);
+			};
 
-				for (const ITEM of VALUES)
-				{
-					const WRAPPER = (): void =>
-					{
-						TypeAssertion.isInteger(ITEM);
-					};
+			doesNotThrow(WRAPPER);
+		}
+	});
 
-					doesNotThrow(WRAPPER);
-				}
-			}
-		);
+	it("should throw when given any other number", (): void => {
+		const VALUES: Array<unknown> = getValues(GroupType.REAL, GroupType.INFINITY);
 
-		it(
-			"should throw when given any other number",
-			(): void =>
+		for (const ITEM of VALUES)
+		{
+			const WRAPPER = (): void =>
 			{
-				const VALUES: Array<unknown> = getValues(GroupType.REAL, GroupType.INFINITY);
+				TypeAssertion.isInteger(ITEM);
+			};
 
-				for (const ITEM of VALUES)
-				{
-					const WRAPPER = (): void =>
-					{
-						TypeAssertion.isInteger(ITEM);
-					};
+			throws(WRAPPER, createErrorTest());
+		}
+	});
 
-					throws(WRAPPER, createErrorTest());
-				}
-			}
-		);
+	it("should throw when given anything else", (): void => {
+		const VALUES: Array<unknown> = getInvertedValues(GroupType.NUMBER);
 
-		it(
-			"should throw when given anything else",
-			(): void =>
+		for (const ITEM of VALUES)
+		{
+			const WRAPPER = (): void =>
 			{
-				const VALUES: Array<unknown> = getInvertedValues(GroupType.NUMBER);
+				TypeAssertion.isInteger(ITEM);
+			};
 
-				for (const ITEM of VALUES)
-				{
-					const WRAPPER = (): void =>
-					{
-						TypeAssertion.isInteger(ITEM);
-					};
-
-					throws(WRAPPER, createErrorTest());
-				}
-			}
-		);
-	}
-);
+			throws(WRAPPER, createErrorTest());
+		}
+	});
+});

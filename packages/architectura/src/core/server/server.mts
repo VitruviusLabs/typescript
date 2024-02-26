@@ -121,8 +121,8 @@ class Server
 
 			if (ROUTE_REGEXP.exec(request.getRequestedPath()) !== null)
 			{
-				const FILE_PATH: string = request.getRequestedPath().replace(ROUTE_REGEXP, "")
-.padStart(1, "/");
+				// eslint-disable-next-line @stylistic/js/newline-per-chained-call -- Simple case
+				const FILE_PATH: string = request.getRequestedPath().replace(ROUTE_REGEXP, "").padStart(1, "/");
 
 				if (!await FileSystemService.FileExists(`${DIRECTORY}${FILE_PATH}`))
 				{

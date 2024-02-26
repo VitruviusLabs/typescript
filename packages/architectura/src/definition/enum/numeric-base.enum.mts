@@ -1,5 +1,5 @@
 const enum NumericBaseEnum
-	{
+{
 	BINARY = 2,
 	OCTAL = 8,
 	DECIMAL = 10,
