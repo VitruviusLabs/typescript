@@ -1,5 +1,5 @@
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
-import { ExecutionContext } from "../core/execution-context/execution-context.mjs";
+import type { ExecutionContext } from "../core/execution-context/execution-context.mjs";
 import { ExecutionContextRegistry } from "../core/execution-context/execution-context.registry.mjs";
 import { CookieService } from "../service/cookie/cookie.service.mjs";
 import { BasePreHook } from "./base.pre-hook.mjs";
@@ -19,7 +19,7 @@ abstract class CookiePreHook extends BasePreHook
 			return;
 		}
 
-		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext();
 
 		CONTEXT.getRequest().setCookies(COOKIES);
 	}
@@ -27,7 +27,7 @@ abstract class CookiePreHook extends BasePreHook
 	// eslint-disable-next-line @typescript-eslint/class-methods-use-this -- Stateless
 	private parseCookies(): Map<string, string> | undefined
 	{
-		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext();
 
 		const REQUEST_HEADERS: IncomingHttpHeaders = CONTEXT.getRequest().headers;
 

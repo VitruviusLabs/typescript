@@ -1,7 +1,8 @@
-import { Singleton } from "../../utility/singleton.mjs";
 import type { HTTPMethodEnum } from "./definition/enum/http-method.enum.mjs";
 import type { BasePostHook } from "../../hook/base.post-hook.mjs";
 import type { BasePreHook } from "../../hook/base.pre-hook.mjs";
+import type { ExecutionContext } from "../execution-context/execution-context.mjs";
+import { Singleton } from "../../utility/singleton.mjs";
 
 abstract class BaseEndpoint extends Singleton
 {
@@ -15,7 +16,7 @@ abstract class BaseEndpoint extends Singleton
 	/**
 	 * execute
 	 */
-	public abstract execute(): Promise<void> | void;
+	public abstract execute(context: ExecutionContext): Promise<void> | void;
 
 	/**
 	 * getMethod

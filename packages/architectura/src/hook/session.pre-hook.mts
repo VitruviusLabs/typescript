@@ -1,4 +1,4 @@
-import { ExecutionContext } from "../core/execution-context/execution-context.mjs";
+import type { ExecutionContext } from "../core/execution-context/execution-context.mjs";
 import { ExecutionContextRegistry } from "../core/execution-context/execution-context.registry.mjs";
 import { Session } from "../core/server/session.mjs";
 import { SessionRegistry } from "../core/server/session.registry.mjs";
@@ -11,7 +11,7 @@ abstract class SessionPreHook extends BasePreHook
 	 */
 	public execute(): void
 	{
-		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext();
 
 		const COOKIES: Map<string, string> = CONTEXT.getRequest().getCookies();
 
@@ -44,7 +44,7 @@ abstract class SessionPreHook extends BasePreHook
 		NEW_SESSION.setCookie(`${Session.GetFullCookieName()}:id`, NEW_SESSION.getId());
 		NEW_SESSION.refresh();
 
-		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext();
 
 		CONTEXT.setSession(NEW_SESSION);
 
@@ -62,7 +62,7 @@ abstract class SessionPreHook extends BasePreHook
 
 		existing_session.refresh();
 
-		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext();
 
 		CONTEXT.setSession(existing_session);
 

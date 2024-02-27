@@ -1,8 +1,10 @@
 const enum ContentTypeEnum
 {
-	APPLICATION_JSON = "application/json",
-	MULTIPART_FORM_DATA = "multipart/form-data",
-	TEXT_PLAIN = "text/plain",
+	UNKNOWN = "application/octet-stream",
+	TEXT = "text/plain",
+	// eslint-disable-next-line @typescript-eslint/no-shadow -- Not shadowing anything
+	JSON = "application/json",
+	FORM_DATA = "multipart/form-data",
 }
 
 export { ContentTypeEnum };

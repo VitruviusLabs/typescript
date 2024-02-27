@@ -38,7 +38,7 @@ class RichClientRequest extends IncomingMessage
 		{
 			this.contentType = this.headers["content-type"];
 
-			if (this.contentType.includes(ContentTypeEnum.MULTIPART_FORM_DATA))
+			if (this.contentType.includes(ContentTypeEnum.FORM_DATA))
 			{
 				const SPLITTED_CONTENT_TYPE: Array<string> = this.contentType.split("=");
 
@@ -51,7 +51,7 @@ class RichClientRequest extends IncomingMessage
 					LoggerProxy.Warning(`Received invalid multipart/form-data header: ${this.contentType}.`);
 				}
 
-				this.contentType = ContentTypeEnum.MULTIPART_FORM_DATA;
+				this.contentType = ContentTypeEnum.FORM_DATA;
 			}
 		}
 

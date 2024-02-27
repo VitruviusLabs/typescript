@@ -1,21 +1,45 @@
 import { ServerResponse as HTTPServerResponse } from "node:http";
 import { type Gzip, createGzip } from "node:zlib";
-import { ExecutionContextRegistry } from "../../core/execution-context/execution-context.registry.mjs";
-import { ExecutionContext } from "../execution-context/execution-context.mjs";
-import type { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
+import { TypeGuard } from "@vitruvius-labs/ts-predicate";
+import type { ExecutionContext } from "../execution-context/execution-context.mjs";
 import type { RichClientRequest } from "./rich-client-request.mjs";
 import type { Session } from "./session.mjs";
 import type { ReplyInterface } from "./definition/interface/reply.interface.mjs";
-import type { JSONReplyInterface } from "./definition/interface/json-reply.interface.mjs";
+import type { JSONObjectType } from "../../definition/type/json-object.type.mjs";
+import { ExecutionContextRegistry } from "../../core/execution-context/execution-context.registry.mjs";
+import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
-	private content: string = "";
+	private content: Buffer | string | undefined = undefined;
+
+	public constructor(request: RichClientRequest)
+	{
+		super(request);
+	}
+
+	public json(content: JSONObjectType): void
+	{
+		this.replyWith({
+			status: HTTPStatusCodeEnum.OK,
+			payload: JSON.stringify(content),
+			contentType: ContentTypeEnum.JSON,
+		});
+	}
+
+	public text(content: Buffer | string): void
+	{
+		this.replyWith({
+			status: HTTPStatusCodeEnum.OK,
+			payload: content,
+			contentType: ContentTypeEnum.TEXT,
+		});
+	}
 
 	public replyWith(parameters: HTTPStatusCodeEnum | ReplyInterface): void
 	{
-		if (typeof parameters === "number")
+		if (TypeGuard.isNumber(parameters))
 		{
 			this.statusCode = parameters;
 			this.send();
@@ -23,51 +47,45 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 			return;
 		}
 
-		const contentType: string = parameters.contentType ?? ContentTypeEnum.TEXT_PLAIN;
+		this.statusCode = parameters.status ?? HTTPStatusCodeEnum.OK;
 
-		this.setHeader("Content-Type", contentType);
-
-		if (parameters.payload instanceof Buffer)
+		if (parameters.headers !== undefined)
 		{
-			this.send(parameters.payload);
-
-			return;
+			this.setHeaders(parameters.headers);
 		}
 
-		if (parameters.payload instanceof ReadableStream)
+		if (parameters.contentType === undefined)
 		{
-			parameters.payload.pipe(this);
+			const CONTENT_TYPE: string | undefined = this.resolveContentType(parameters);
 
-			return;
+			if (CONTENT_TYPE !== undefined)
+			{
+				this.setHeader("Content-Type", CONTENT_TYPE);
+			}
+		}
+		else
+		{
+			this.setHeader("Content-Type", parameters.contentType);
 		}
 
-		if (typeof parameters.payload === "string")
+		if (TypeGuard.isRecord(parameters.payload))
 		{
-			this.send(parameters.payload);
-
-			return;
+			this.content = JSON.stringify(parameters.payload);
+		}
+		else
+		{
+			this.content = parameters.payload;
 		}
 
-		this.send(JSON.stringify(parameters.payload));
-	}
-
-	public sendJSON(content: JSONReplyInterface): void
-	{
-		this.replyWith({
-			status: content.status,
-			payload: JSON.stringify(content.payload),
-			contentType: ContentTypeEnum.APPLICATION_JSON,
-		});
+		this.send();
 	}
 
 	/**
 	 * send
 	 */
-	public send(content?: Buffer | string | undefined): void
+	public send(): void
 	{
-		this.setHeader("Content-Encoding", "gzip");
-
-		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext(ExecutionContext);
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext();
 
 		const SESSION: Session | undefined = CONTEXT.getSession();
 
@@ -85,28 +103,74 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 			this.setHeader("Set-Cookie", SET_COOKIE_HEADER);
 		}
 
+		if (this.content === undefined)
+		{
+			this.end();
+
+			return;
+		}
+
+		this.setHeader("Content-Encoding", "gzip");
+
 		// @TODO: Make response compression great again
 		const ENCODER: Gzip = createGzip();
 
 		ENCODER.pipe(this);
-		ENCODER.write(content ?? this.content);
+		ENCODER.write(this.content);
 		ENCODER.end();
+	}
+
+	/**
+	 * areHeadersSent
+	 */
+	public areHeadersSent(): boolean
+	{
+		return this.headersSent;
+	}
+
+	/**
+	 * isDone
+	 */
+	public isDone(): boolean
+	{
+		return this.writableEnded;
+	}
+
+	/**
+	 * isSent
+	 */
+	public isSent(): boolean
+	{
+		return this.writableFinished;
 	}
 
 	/**
 	 * getContent
 	 */
-	public getContent(): string
+	public getContent(): string | undefined
 	{
+		if (this.content instanceof Buffer)
+		{
+			return this.content.toString();
+		}
+
 		return this.content;
 	}
 
 	/**
 	 * setContent
 	 */
-	public setContent(content: string): void
+	public setContent(content: Buffer | string): void
 	{
 		this.content = content;
+	}
+
+	/**
+	 * getStatusCode
+	 */
+	public getStatusCode(): HTTPStatusCodeEnum
+	{
+		return this.statusCode;
 	}
 
 	/**
@@ -115,6 +179,43 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 	public setStatusCode(status_code: HTTPStatusCodeEnum): void
 	{
 		this.statusCode = status_code;
+	}
+
+	/**
+	 * setHeaders
+	 */
+	public setHeaders(headers: Array<[string, string]> | Headers | Map<string, string> | Record<string, string>): void
+	{
+		// @ts-expect-error: Map is a valid initializer for Headers
+		const HEADERS: Headers = new Headers(headers);
+
+		HEADERS.forEach(
+			(value: string, header: string): void =>
+			{
+				this.setHeader(header, value);
+			}
+		);
+	}
+
+	// eslint-disable-next-line @typescript-eslint/class-methods-use-this -- utility method
+	private resolveContentType(parameters: ReplyInterface): string | undefined
+	{
+		if (parameters.payload === undefined)
+		{
+			return undefined;
+		}
+
+		if (parameters.contentType !== undefined)
+		{
+			return parameters.contentType;
+		}
+
+		if (TypeGuard.isRecord(parameters.payload))
+		{
+			return ContentTypeEnum.JSON;
+		}
+
+		return ContentTypeEnum.TEXT;
 	}
 }
 

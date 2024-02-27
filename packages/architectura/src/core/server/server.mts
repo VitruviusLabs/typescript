@@ -1,5 +1,11 @@
-import { Server as HTTPServer, type RequestListener } from "node:http";
-import { Server as HTTPSServer } from "node:https";
+import type { ServerConfigurationType } from "./definition/type/server-configuration.type.mjs";
+import type { ServerInstantiationType } from "./definition/type/server-instantiation.type.mjs";
+import type { BasePostHook } from "../../hook/base.post-hook.mjs";
+import type { BasePreHook } from "../../hook/base.pre-hook.mjs";
+import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
+import { Server as UnsafeServer, type ServerOptions as UnsafeServerOptions } from "node:http";
+import { Server as SecureServer, type ServerOptions as SecureServerOptions } from "node:https";
+import { extname } from "node:path";
 import { Helper, TypeAssertion } from "@vitruvius-labs/ts-predicate";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
@@ -10,11 +16,7 @@ import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs"
 import { PortsEnum } from "./definition/enum/ports.enum.mjs";
 import { RichClientRequest } from "./rich-client-request.mjs";
 import { RichServerResponse } from "./rich-server-response.mjs";
-import type { ServerConfigurationType } from "./definition/type/server-configuration.type.mjs";
-import type { ServerInstantiationType } from "./definition/type/server-instantiation.type.mjs";
-import type { BasePostHook } from "../../hook/base.post-hook.mjs";
-import type { BasePreHook } from "../../hook/base.pre-hook.mjs";
-import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
+import { ContentType } from "../../utility/content-type/content-type.mjs";
 
 class Server
 {
@@ -24,42 +26,47 @@ class Server
 
 	private readonly port: number = PortsEnum.DEFAULT_HTTPS;
 	private readonly https: boolean = false;
-	private readonly server: HTTPServer | HTTPSServer;
+	private readonly nativeServer: (
+		// @ts-expect-error: It can't be incompatible
+		| SecureServer<typeof RichClientRequest, typeof RichServerResponse>
+		// @ts-expect-error: It can't be incompatible
+		| UnsafeServer<typeof RichClientRequest, typeof RichServerResponse>
+	);
 
 	/**
 	 * constructor
 	 */
-	private constructor(options: ServerInstantiationType, listener: RequestListener)
+	private constructor(options: ServerInstantiationType)
 	{
 		Server.ValidatePort(options.port);
 
 		this.https = options.https;
 		this.port = options.port;
 
-		if (options.https)
+		if (!options.https)
 		{
-			this.server = new HTTPSServer(
-				{
-					cert: options.certificate,
-					key: options.key,
-					IncomingMessage: RichClientRequest,
-					// @ts-expect-error: Incorrectly believe the request is not overloaded
-					ServerResponse: RichServerResponse,
-				},
-				listener
-			);
+			// @ts-expect-error: It can't be incompatible
+			const UNSAFE_OPTIONS: UnsafeServerOptions<typeof RichClientRequest, typeof RichServerResponse> = {
+				IncomingMessage: RichClientRequest,
+				ServerResponse: RichServerResponse,
+			};
+
+			// @ts-expect-error: It can't be incompatible
+			this.nativeServer = new UnsafeServer(UNSAFE_OPTIONS);
 
 			return;
 		}
 
-		this.server = new HTTPServer(
-			{
-				IncomingMessage: RichClientRequest,
-				// @ts-expect-error: Incorrectly believe the request is not overloaded
-				ServerResponse: RichServerResponse,
-			},
-			listener
-		);
+		// @ts-expect-error: It can't be incompatible
+		const SECURE_OPTIONS: SecureServerOptions<typeof RichClientRequest, typeof RichServerResponse> = {
+			IncomingMessage: RichClientRequest,
+			ServerResponse: RichServerResponse,
+			cert: options.certificate,
+			key: options.key,
+		};
+
+		// @ts-expect-error: It can't be incompatible
+		this.nativeServer = new SecureServer(SECURE_OPTIONS);
 	}
 
 	/**
@@ -69,97 +76,20 @@ class Server
 	{
 		const CONTEXT_CONSTRUCTOR: typeof ExecutionContext = options.contextConstructor ?? ExecutionContext;
 
-		if (!options.https)
-		{
-			const HTTP_SERVER: Server = new Server(
-				options,
-				// @ts-expect-error - This is a very specific case where TypeScript cannot know that Node.JS will use our custom class instead of IncomingMessage.
-				async (request: RichClientRequest, response: RichServerResponse): void =>
-				{
-					await this.DefaultListener(request, response, CONTEXT_CONSTRUCTOR);
-				}
-			);
+		const OPTIONS: ServerInstantiationType = await this.ComputeServerOptions(options);
 
-			return HTTP_SERVER;
-		}
+		const SERVER: Server = new Server(OPTIONS);
 
-		const CERTIFICATE: string = await FileSystemService.ReadTextFile(options.certificate);
-		const KEY: string = await FileSystemService.ReadTextFile(options.key);
-
-		const HTTPS_SERVER: Server = new Server(
-			{
-				...options,
-				certificate: CERTIFICATE,
-				key: KEY,
-			},
-			// @ts-expect-error - This is a very specific case where TypeScript cannot know that Node.JS will use our custom class instead of IncomingMessage.
-			async (request: RichClientRequest, response: RichServerResponse): void =>
+		SERVER.nativeServer.on(
+			"request",
+			// eslint-disable-next-line @typescript-eslint/no-misused-promises -- Necessary floating promise
+			async (request: RichClientRequest, response: RichServerResponse): Promise<void> =>
 			{
 				await this.DefaultListener(request, response, CONTEXT_CONSTRUCTOR);
 			}
 		);
 
-		return HTTPS_SERVER;
-	}
-
-	public static async DefaultListener(
-		request: RichClientRequest,
-		response: RichServerResponse,
-		context_constructor: typeof ExecutionContext
-	): Promise<void>
-	{
-		request.initialise();
-
-		const CONTEXT: ExecutionContext = new context_constructor({
-			request: request,
-			response: response,
-		});
-
-		for (const [ROUTE, DIRECTORY] of this.PUBLIC_DIRECTORIES)
-		{
-			const ROUTE_REGEXP: RegExp = new RegExp(ROUTE);
-
-			if (ROUTE_REGEXP.exec(request.getRequestedPath()) !== null)
-			{
-				// eslint-disable-next-line @stylistic/js/newline-per-chained-call -- Simple case
-				const FILE_PATH: string = request.getRequestedPath().replace(ROUTE_REGEXP, "").padStart(1, "/");
-
-				if (!await FileSystemService.FileExists(`${DIRECTORY}${FILE_PATH}`))
-				{
-					continue;
-				}
-
-				const FILE: Buffer = await FileSystemService.ReadFileAsBuffer(`${DIRECTORY}${FILE_PATH}`);
-
-				CONTEXT.getResponse().send(FILE);
-
-				return;
-			}
-		}
-
-		ExecutionContextRegistry.SetExecutionContext(CONTEXT);
-
-		const ENDPOINTS: Map<string, BaseEndpoint> = EndpointRegistry.GetEndpoints();
-
-		for (const [, ENDPOINT] of ENDPOINTS)
-		{
-			if (new RegExp(ENDPOINT.getRoute()).test(request.getRequestedPath()))
-			{
-				// @TODO: handle errors
-
-				await this.RunPreHooks(ENDPOINT);
-
-				await ENDPOINT.execute();
-
-				await this.RunPostHooks(ENDPOINT);
-
-				return;
-			}
-		}
-
-		response.statusCode = HTTPStatusCodeEnum.NOT_FOUND;
-		response.write("Not found.");
-		response.end();
+		return SERVER;
 	}
 
 	public static GetPublicDirectories(): Map<string, string>
@@ -205,6 +135,92 @@ class Server
 	public static AddGlobalPostHook(hook: BasePostHook): void
 	{
 		this.GLOBAL_POST_HOOKS.push(hook);
+	}
+
+	private static async ComputeServerOptions(options: ServerConfigurationType): Promise<ServerInstantiationType>
+	{
+		if (!options.https)
+		{
+			return options;
+		}
+
+		const SECURE_OPTIONS: ServerInstantiationType = {
+			...options,
+			certificate: await FileSystemService.ReadTextFile(options.certificate),
+			key: await FileSystemService.ReadTextFile(options.key),
+		};
+
+		return SECURE_OPTIONS;
+	}
+
+	private static async DefaultListener(
+		request: RichClientRequest,
+		response: RichServerResponse,
+		context_constructor: typeof ExecutionContext
+	): Promise<void>
+	{
+		request.initialise();
+
+		const CONTEXT: ExecutionContext = new context_constructor({
+			request: request,
+			response: response,
+		});
+
+		for (const [ROUTE, DIRECTORY] of this.PUBLIC_DIRECTORIES)
+		{
+			const ROUTE_REGEXP: RegExp = new RegExp(ROUTE);
+
+			if (ROUTE_REGEXP.exec(request.getRequestedPath()) !== null)
+			{
+				// eslint-disable-next-line @stylistic/js/newline-per-chained-call -- Simple case
+				const FILE_PATH: string = request.getRequestedPath().replace(ROUTE_REGEXP, "").padStart(1, "/");
+
+				if (!await FileSystemService.FileExists(`${DIRECTORY}${FILE_PATH}`))
+				{
+					continue;
+				}
+
+				const FILE: Buffer = await FileSystemService.ReadFileAsBuffer(`${DIRECTORY}${FILE_PATH}`);
+
+				const CONTENT_TYPE: string = ContentType.Get(extname(FILE_PATH));
+
+				CONTEXT.getResponse().replyWith({
+					payload: FILE,
+					contentType: CONTENT_TYPE,
+				});
+
+				return;
+			}
+		}
+
+		ExecutionContextRegistry.SetExecutionContext(CONTEXT);
+
+		const ENDPOINTS: Map<string, BaseEndpoint> = EndpointRegistry.GetEndpoints();
+
+		for (const [, ENDPOINT] of ENDPOINTS)
+		{
+			if (new RegExp(ENDPOINT.getRoute()).test(request.getRequestedPath()))
+			{
+				// @TODO: handle errors
+
+				await this.RunPreHooks(ENDPOINT);
+
+				await ENDPOINT.execute(CONTEXT);
+
+				await this.RunPostHooks(ENDPOINT);
+
+				if (!response.writableEnded)
+				{
+					response.send();
+				}
+
+				return;
+			}
+		}
+
+		response.statusCode = HTTPStatusCodeEnum.NOT_FOUND;
+		response.write("Not found.");
+		response.end();
 	}
 
 	private static async RunPreHooks(endpoint: BaseEndpoint): Promise<void>
@@ -262,11 +278,14 @@ class Server
 	 */
 	public start(): void
 	{
-		this.server.listen(this.port);
+		this.nativeServer.listen(this.port);
 		LoggerProxy.Informational("Server started.");
 	}
 
-	public getHTTPS(): boolean
+	/**
+	 * isHTTPS
+	 */
+	public isHTTPS(): boolean
 	{
 		return this.https;
 	}
