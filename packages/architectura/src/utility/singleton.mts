@@ -27,7 +27,7 @@ const INSTANCES: Map<Function, object> = new Map();
  *
  * const instance3 = MySingleton.GetInstance(MySingleton); // Returns instance
  *
- * MySingleton.Clear(MySingleton); // Clears the instance
+ * MySingleton.Remove(MySingleton); // Clears the instance
  *
  * const instance4 = MySingleton.GetInstance(MySingleton); // Returns undefined
  * ```
@@ -68,12 +68,31 @@ abstract class Singleton
 	 * ```
 	 *
 	 * @param class_constructor - The constructor of the singleton class.
-	 * @returns The instance of the singleton class.
+	 * @param required - Set to true, it will throw if the instance doesn't exist.
+	 * @returns The instance of the singleton class, or maybe undefined.
 	 */
-	public static GetInstance<T extends Singleton>(class_constructor: ConstructorOf<T>): T | undefined
+	public static GetInstance<T extends Singleton>(class_constructor: ConstructorOf<T>, required: true): T;
+	public static GetInstance<T extends Singleton>(class_constructor: ConstructorOf<T>): T | undefined;
+	public static GetInstance<T extends Singleton>(class_constructor: ConstructorOf<T>, required: boolean = false): T | undefined
 	{
-		// @ts-expect-error: the value has to be an instance of the constructor
-		return INSTANCES.get(class_constructor);
+		const INSTANCE: object | undefined = INSTANCES.get(class_constructor);
+
+		if (INSTANCE instanceof class_constructor)
+		{
+			return INSTANCE;
+		}
+
+		if (!required)
+		{
+			return undefined;
+		}
+
+		if (class_constructor.name === "")
+		{
+			throw new Error("No instance found");
+		}
+
+		throw new Error(`No instance of ${class_constructor.name} found`);
 	}
 
 	/**
@@ -96,14 +115,14 @@ abstract class Singleton
 	 *
 	 * const instance = new MySingleton();
 	 *
-	 * MySingleton.Clear(MySingleton);
+	 * MySingleton.Remove(MySingleton);
 	 *
 	 * const instance2 = MySingleton.GetInstance(MySingleton); // Returns undefined
 	 * ```
 	 *
 	 * @param class_constructor - The constructor of the singleton class.
 	 **/
-	public static Clear<T extends Singleton>(class_constructor: ConstructorOf<T>): void
+	public static Remove<T extends Singleton>(class_constructor: ConstructorOf<T>): void
 	{
 		INSTANCES.delete(class_constructor);
 	}
