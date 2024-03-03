@@ -1,3 +1,4 @@
+export * from "./utils/validation-error.mjs";
 export * from "./has-allowed-keys.mjs";
 export * from "./has-nullable-property.mjs";
 export * from "./has-property.mjs";

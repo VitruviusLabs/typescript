@@ -1,3 +1,4 @@
+import type { StructuredDataDescriptor, StructuredDataOptions } from "../definition/_index.mjs";
 import { buildStructuredDataOptions } from "../utils/build-structured-data-options.mjs";
 import { isStructuredDataPropertyDescriptor } from "../utils/is-structured-data-property-descriptor.mjs";
 import { hasAllowedKeys } from "./has-allowed-keys.mjs";
@@ -5,7 +6,6 @@ import { hasNullableProperty } from "./has-nullable-property.mjs";
 import { isDefined } from "./is-defined.mjs";
 import { isRecord } from "./is-record.mjs";
 import { itemGuard } from "./utils/item-guard.mjs";
-import type { StructuredDataDescriptor, StructuredDataOptions } from "../definition/_index.mjs";
 
 function isStructuredData<Type>(
 	value: unknown,

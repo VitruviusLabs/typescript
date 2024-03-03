@@ -1,7 +1,8 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
-import { type StructuredDataDescriptor, TypeAssertion } from "../../src/index.mjs";
 import { GroupType, createErrorTest, getInvertedValues } from "@vitruvius-labs/testing-ground";
+import { type StructuredDataDescriptor, TypeAssertion } from "../../src/index.mjs";
+import { ValidationError } from "../../src/type-assertion/_index.mjs";
 
 interface TestData
 {
@@ -13,7 +14,7 @@ function isNumberTest(value: unknown): asserts value is number
 {
 	if (typeof value !== "number")
 	{
-		throw new Error("value is not a number");
+		throw new ValidationError("Value is not a number.");
 	}
 }
 
@@ -50,9 +51,9 @@ describe("TypeAssertion.isStructuredData", (): void => {
 			TypeAssertion.isStructuredData({ alpha: 1, beta: 2, gamma: 3 }, DESCRIPTOR);
 		};
 
-		throws(WRAPPER, createErrorTest(new AggregateError(
-			[new Error('The value has an extraneous property "gamma".')],
-			"The value is an object, but some properties are incorrect."
+		throws(WRAPPER, createErrorTest(new ValidationError(
+			"The value is an object, but some properties are incorrect.",
+			[new ValidationError('The value has an extraneous property "gamma".')]
 		)));
 	});
 
@@ -84,14 +85,14 @@ describe("TypeAssertion.isStructuredData", (): void => {
 			TypeAssertion.isStructuredData({ alpha: 1, beta: "2" }, DESCRIPTOR);
 		};
 
-		throws(WRAPPER, createErrorTest(new AggregateError(
+		throws(WRAPPER, createErrorTest(new ValidationError(
+			"The value is an object, but some properties are incorrect.",
 			[
-				new Error(
+				new ValidationError(
 					'The property "beta" has an incorrect value.',
-					{ cause: new Error("value is not a number") }
+					[new ValidationError("Value is not a number.")]
 				),
-			],
-			"The value is an object, but some properties are incorrect."
+			]
 		)));
 	});
 
@@ -110,9 +111,9 @@ describe("TypeAssertion.isStructuredData", (): void => {
 			TypeAssertion.isStructuredData({ beta: 2 }, DESCRIPTOR);
 		};
 
-		throws(WRAPPER, createErrorTest(new AggregateError(
-			[new Error('The required property "alpha" is missing.')],
-			"The value is an object, but some properties are incorrect."
+		throws(WRAPPER, createErrorTest(new ValidationError(
+			"The value is an object, but some properties are incorrect.",
+			[new ValidationError('The required property "alpha" is missing.')]
 		)));
 	});
 
@@ -131,9 +132,9 @@ describe("TypeAssertion.isStructuredData", (): void => {
 			TypeAssertion.isStructuredData({ alpha: 1, beta: undefined }, DESCRIPTOR);
 		};
 
-		throws(WRAPPER, createErrorTest(new AggregateError(
-			[new Error('The property "beta" must not have a nullish value (undefined, null, or NaN).')],
-			"The value is an object, but some properties are incorrect."
+		throws(WRAPPER, createErrorTest(new ValidationError(
+			"The value is an object, but some properties are incorrect.",
+			[new ValidationError('The property "beta" must not have a nullish value (undefined, null, or NaN).')]
 		)));
 	});
 });

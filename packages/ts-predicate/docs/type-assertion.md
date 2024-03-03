@@ -226,6 +226,13 @@ interface StructuredDataOptions
 
 If `allowExtraneousProperties` is set to `true`, it'll allow properties that are not listed in the descriptor.
 
+# ValidationError
+
+To distinguish between unexpected errors and validation errors, you can check that the caught error is an instance of `ValidationError`.
+
+Any custom assertion must throw a `ValidationError` unless an unexpected error occurred.
+
+
 # UnknownError
 
 When a provided callable throws anything but an instance of `Error`, an instance of `UnknownError` will be created.

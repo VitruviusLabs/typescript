@@ -1,5 +1,6 @@
-import { toError } from "./to-error.mjs";
 import type { NormalizedError } from "../definition/_index.mjs";
+import { ValidationError } from "../type-assertion/utils/validation-error.mjs";
+import { toError } from "./to-error.mjs";
 
 function normalizeErrorTree(error: Error): NormalizedError
 {
@@ -14,7 +15,7 @@ function normalizeErrorTree(error: Error): NormalizedError
 
 function getCauses(error: Error): Array<NormalizedError>
 {
-	if (error instanceof AggregateError)
+	if (error instanceof AggregateError || error instanceof ValidationError)
 	{
 		return error.errors.map(
 			(cause: unknown): NormalizedError =>

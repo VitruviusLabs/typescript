@@ -1,9 +1,10 @@
-import { toError } from "../helper/to-error.mjs";
+import type { StructuredDataDescriptor, StructuredDataOptions } from "../definition/_index.mjs";
 import { buildStructuredDataOptions } from "../utils/build-structured-data-options.mjs";
 import { isStructuredDataPropertyDescriptor } from "../utils/is-structured-data-property-descriptor.mjs";
 import { isRecord } from "./is-record.mjs";
 import { validateProperty } from "./utils/validate-property.mjs";
-import type { StructuredDataDescriptor, StructuredDataOptions } from "../definition/_index.mjs";
+import { ValidationError } from "./_index.mjs";
+import { rethrowUnexpectedError } from "../utils/rethrow-unexpected-error.mjs";
 
 function isStructuredData<Type>(
 	value: unknown,
@@ -17,7 +18,7 @@ function isStructuredData<Type>(
 
 	const DESCRIPTOR_KEYS: Array<string> = Object.keys(descriptor);
 
-	const ERRORS: Array<Error> = [];
+	const ERRORS: Array<ValidationError> = [];
 
 	if (!OPTIONS.allowExtraneousProperties)
 	{
@@ -26,7 +27,7 @@ function isStructuredData<Type>(
 			{
 				if (!DESCRIPTOR_KEYS.includes(key))
 				{
-					ERRORS.push(new Error(`The value has an extraneous property "${key}".`));
+					ERRORS.push(new ValidationError(`The value has an extraneous property "${key}".`));
 				}
 			}
 		);
@@ -46,14 +47,16 @@ function isStructuredData<Type>(
 			}
 			catch (error: unknown)
 			{
-				ERRORS.push(toError(error));
+				rethrowUnexpectedError(error);
+
+				ERRORS.push(error);
 			}
 		}
 	);
 
 	if (ERRORS.length > 0)
 	{
-		throw new AggregateError(ERRORS, "The value is an object, but some properties are incorrect.");
+		throw new ValidationError("The value is an object, but some properties are incorrect.", ERRORS);
 	}
 }
 

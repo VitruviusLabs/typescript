@@ -2,6 +2,7 @@ import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { TypeAssertion } from "../../src/index.mjs";
 import { GroupType, createErrorTest, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
+import { ValidationError } from "../../src/type-assertion/_index.mjs";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -75,14 +76,14 @@ describe("TypeAssertion.isRecord", (): void => {
 			TypeAssertion.isRecord({ alpha: 1, beta: 2, gamma: Symbol("anomaly") }, { itemTest: isNumberTest });
 		};
 
-		throws(WRAPPER, createErrorTest(new AggregateError(
+		throws(WRAPPER, createErrorTest(new ValidationError(
+			"The value is a record, but some properties are incorrect.",
 			[
-				new Error(
+				new ValidationError(
 					'The property "gamma" has an incorrect value.',
-					{ cause: new Error("There is no information on why the value is incorrect.") }
+					[new ValidationError("There is no information on why the value is incorrect.")]
 				),
-			],
-			"The value is a record, but some properties are incorrect."
+			]
 		)));
 	});
 
@@ -101,14 +102,14 @@ describe("TypeAssertion.isRecord", (): void => {
 			TypeAssertion.isRecord({ alpha: 1, beta: 2, gamma: Symbol("anomaly") }, isNumberTest);
 		};
 
-		throws(WRAPPER, createErrorTest(new AggregateError(
+		throws(WRAPPER, createErrorTest(new ValidationError(
+			"The value is a record, but some properties are incorrect.",
 			[
-				new Error(
+				new ValidationError(
 					'The property "gamma" has an incorrect value.',
-					{ cause: new Error("There is no information on why the value is incorrect.") }
+					[new ValidationError("There is no information on why the value is incorrect.")]
 				),
-			],
-			"The value is a record, but some properties are incorrect."
+			]
 		)));
 	});
 });

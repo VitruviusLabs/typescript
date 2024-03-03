@@ -1,14 +1,15 @@
-import { toError } from "../helper/to-error.mjs";
+import type { RecordConstraints, Test } from "../definition/_index.mjs";
 import { isRecord as guard } from "../type-guard/is-record.mjs";
 import { buildRecordConstraints } from "../utils/build-record-constraints.mjs";
+import { rethrowUnexpectedError } from "../utils/rethrow-unexpected-error.mjs";
 import { itemAssertion } from "./utils/item-assertion.mjs";
-import type { RecordConstraints, Test } from "../definition/_index.mjs";
+import { ValidationError } from "./utils/validation-error.mjs";
 
 function isRecord<Type>(value: unknown, constraints?: RecordConstraints<Type> | Test<Type>): asserts value is Record<string, Type>
 {
 	if (!guard(value))
 	{
-		throw new Error("The value must be a record.");
+		throw new ValidationError("The value must be a record.");
 	}
 
 	const CONSTRAINTS: RecordConstraints<Type> | undefined = buildRecordConstraints(constraints);
@@ -20,7 +21,7 @@ function isRecord<Type>(value: unknown, constraints?: RecordConstraints<Type> | 
 
 	if (CONSTRAINTS.itemTest !== undefined)
 	{
-		const ERRORS: Array<Error> = [];
+		const ERRORS: Array<ValidationError> = [];
 
 		const GUARD: Test<Type> = CONSTRAINTS.itemTest;
 
@@ -35,10 +36,12 @@ function isRecord<Type>(value: unknown, constraints?: RecordConstraints<Type> | 
 				}
 				catch (error: unknown)
 				{
+					rethrowUnexpectedError(error);
+
 					ERRORS.push(
-						new Error(
+						new ValidationError(
 							`The property "${key}" has an incorrect value.`,
-							{ cause: toError(error) }
+							[error]
 						)
 					);
 				}
@@ -47,7 +50,7 @@ function isRecord<Type>(value: unknown, constraints?: RecordConstraints<Type> | 
 
 		if (ERRORS.length > 0)
 		{
-			throw new AggregateError(ERRORS, "The value is a record, but some properties are incorrect.");
+			throw new ValidationError("The value is a record, but some properties are incorrect.", ERRORS);
 		}
 	}
 }

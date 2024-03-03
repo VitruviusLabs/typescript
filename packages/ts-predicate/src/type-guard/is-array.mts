@@ -1,6 +1,6 @@
+import type { ArrayConstraints, Test } from "../definition/_index.mjs";
 import { buildArrayConstraints } from "../utils/build-array-constraints.mjs";
 import { itemGuard } from "./utils/item-guard.mjs";
-import type { ArrayConstraints, Test } from "../definition/_index.mjs";
 
 function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type> | Test<Type>): value is Array<Type>
 {

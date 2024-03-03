@@ -5,6 +5,7 @@ class UnknownError extends Error
 	public constructor(message: string, reason: unknown, options?: ErrorOptions)
 	{
 		super(message, options);
+		this.name = UnknownError.name;
 		this.reason = reason;
 	}
 }
