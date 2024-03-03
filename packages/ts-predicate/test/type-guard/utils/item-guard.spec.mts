@@ -1,6 +1,7 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { itemGuard } from "../../../src/type-guard/utils/item-guard.mjs";
+import { ValidationError } from "../../../src/type-assertion/_index.mjs";
 
 describe("TypeAssertion / utils / itemGuard", (): void => {
 	it("should return true when given a type guard and a valid value", (): void => {
@@ -44,7 +45,7 @@ describe("TypeAssertion / utils / itemGuard", (): void => {
 		{
 			if (typeof value !== "number")
 			{
-				throw new Error("not a number");
+				throw new ValidationError("not a number");
 			}
 		};
 
@@ -65,7 +66,7 @@ describe("TypeAssertion / utils / itemGuard", (): void => {
 		{
 			if (typeof value !== "number")
 			{
-				throw new Error("not a number");
+				throw new ValidationError("not a number");
 			}
 		};
 

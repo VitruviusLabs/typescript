@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
-import { type StructuredDataDescriptor, TypeAssertion } from "../../src/index.mjs";
 import { GroupType, createErrorTest, getInvertedValues } from "@vitruvius-labs/testing-ground";
+import { type StructuredDataDescriptor, TypeAssertion } from "../../src/index.mjs";
 import { ValidationError } from "../../src/type-assertion/_index.mjs";
 
 interface TestData
@@ -14,7 +14,7 @@ function isNumberTest(value: unknown): asserts value is number
 {
 	if (typeof value !== "number")
 	{
-		throw new Error("value is not a number");
+		throw new ValidationError("Value is not a number.");
 	}
 }
 
@@ -90,7 +90,7 @@ describe("TypeAssertion.isStructuredData", (): void => {
 			[
 				new ValidationError(
 					'The property "beta" has an incorrect value.',
-					[new Error("value is not a number")]
+					[new ValidationError("Value is not a number.")]
 				),
 			]
 		)));

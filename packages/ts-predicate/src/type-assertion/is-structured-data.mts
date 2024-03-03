@@ -1,10 +1,10 @@
 import type { StructuredDataDescriptor, StructuredDataOptions } from "../definition/_index.mjs";
-import { toError } from "../helper/to-error.mjs";
 import { buildStructuredDataOptions } from "../utils/build-structured-data-options.mjs";
 import { isStructuredDataPropertyDescriptor } from "../utils/is-structured-data-property-descriptor.mjs";
 import { isRecord } from "./is-record.mjs";
 import { validateProperty } from "./utils/validate-property.mjs";
 import { ValidationError } from "./_index.mjs";
+import { rethrowUnexpectedError } from "../utils/rethrow-unexpected-error.mjs";
 
 function isStructuredData<Type>(
 	value: unknown,
@@ -18,7 +18,7 @@ function isStructuredData<Type>(
 
 	const DESCRIPTOR_KEYS: Array<string> = Object.keys(descriptor);
 
-	const ERRORS: Array<Error> = [];
+	const ERRORS: Array<ValidationError> = [];
 
 	if (!OPTIONS.allowExtraneousProperties)
 	{
@@ -47,7 +47,9 @@ function isStructuredData<Type>(
 			}
 			catch (error: unknown)
 			{
-				ERRORS.push(toError(error));
+				rethrowUnexpectedError(error);
+
+				ERRORS.push(error);
 			}
 		}
 	);

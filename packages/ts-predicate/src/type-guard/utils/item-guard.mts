@@ -1,4 +1,5 @@
 import type { Test } from "../../definition/_index.mjs";
+import { rethrowUnexpectedError } from "../../utils/rethrow-unexpected-error.mjs";
 
 function itemGuard<Type>(value: unknown, callable: Test<Type>): value is Type
 {
@@ -7,8 +8,10 @@ function itemGuard<Type>(value: unknown, callable: Test<Type>): value is Type
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- assertion return undefined
 		return callable(value) ?? true;
 	}
-	catch
+	catch (error: unknown)
 	{
+		rethrowUnexpectedError(error);
+
 		return false;
 	}
 }

@@ -1,9 +1,9 @@
 import type { StructuredDataPropertyDescriptor } from "../../definition/_index.mjs";
-import { toError } from "../../helper/to-error.mjs";
 import { hasNullableProperty } from "../../type-guard/has-nullable-property.mjs";
 import { isDefined } from "../../type-guard/is-defined.mjs";
 import { itemAssertion } from "./item-assertion.mjs";
 import { ValidationError } from "./validation-error.mjs";
+import { rethrowUnexpectedError } from "../../utils/rethrow-unexpected-error.mjs";
 
 function validateProperty(value: object, key: string, property_descriptor: StructuredDataPropertyDescriptor<unknown>): void
 {
@@ -33,9 +33,11 @@ function validateProperty(value: object, key: string, property_descriptor: Struc
 	}
 	catch (error: unknown)
 	{
+		rethrowUnexpectedError(error);
+
 		throw new ValidationError(
 			`The property "${key}" has an incorrect value.`,
-			[toError(error)]
+			[error]
 		);
 	}
 }

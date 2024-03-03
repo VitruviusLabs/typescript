@@ -1,9 +1,9 @@
 import type { ArrayConstraints, Test } from "../definition/_index.mjs";
-import { toError } from "../helper/to-error.mjs";
 import { isArray as guard } from "../type-guard/is-array.mjs";
 import { buildArrayConstraints } from "../utils/build-array-constraints.mjs";
 import { itemAssertion } from "./utils/item-assertion.mjs";
 import { ValidationError } from "./utils/validation-error.mjs";
+import { rethrowUnexpectedError } from "../utils/rethrow-unexpected-error.mjs";
 
 function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type> | Test<Type>): asserts value is Array<Type>
 {
@@ -19,7 +19,7 @@ function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type> | Te
 		return;
 	}
 
-	const ERRORS: Array<Error> = [];
+	const ERRORS: Array<ValidationError> = [];
 
 	if (CONSTRAINTS.minLength !== undefined && value.length < CONSTRAINTS.minLength)
 	{
@@ -50,10 +50,12 @@ function isArray<Type>(value: unknown, constraints?: ArrayConstraints<Type> | Te
 				}
 				catch (error: unknown)
 				{
+					rethrowUnexpectedError(error);
+
 					ERRORS.push(
 						new ValidationError(
 							`The value at index ${index.toFixed(0)} is incorrect.`,
-							[toError(error)]
+							[error]
 						)
 					);
 				}
