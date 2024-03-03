@@ -2,6 +2,7 @@ import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { TypeAssertion } from "../../src/index.mjs";
 import { GroupType, createErrorTest, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
+import { ValidationError } from "../../src/type-assertion/_index.mjs";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -83,14 +84,14 @@ describe("TypeAssertion.isArray", (): void => {
 			TypeAssertion.isArray([1, 2, 3], { minLength: 4 });
 		};
 
-		throws(WRAPPER_EMPTY, createErrorTest(new AggregateError(
-			[new Error("It must not be empty.")],
-			"The value is an array, but its content is incorrect."
+		throws(WRAPPER_EMPTY, createErrorTest(new ValidationError(
+			"The value is an array, but its content is incorrect.",
+			[new ValidationError("It must not be empty.")]
 		)));
 
-		throws(WRAPPER_SMALL_LENGTH, createErrorTest(new AggregateError(
-			[new Error("It must have at least 4 items.")],
-			"The value is an array, but its content is incorrect."
+		throws(WRAPPER_SMALL_LENGTH, createErrorTest(new ValidationError(
+			"The value is an array, but its content is incorrect.",
+			[new ValidationError("It must have at least 4 items.")]
 		)));
 	});
 
@@ -115,14 +116,14 @@ describe("TypeAssertion.isArray", (): void => {
 			TypeAssertion.isArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
 		};
 
-		throws(WRAPPER, createErrorTest(new AggregateError(
+		throws(WRAPPER, createErrorTest(new ValidationError(
+			"The value is an array, but its content is incorrect.",
 			[
-				new Error(
+				new ValidationError(
 					"The value at index 3 is incorrect.",
-					{ cause: new Error("There is no information on why the value is incorrect.") }
+					[new ValidationError("There is no information on why the value is incorrect.")]
 				),
-			],
-			"The value is an array, but its content is incorrect."
+			]
 		)));
 	});
 
@@ -147,14 +148,14 @@ describe("TypeAssertion.isArray", (): void => {
 			TypeAssertion.isArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
 		};
 
-		throws(WRAPPER, createErrorTest(new AggregateError(
+		throws(WRAPPER, createErrorTest(new ValidationError(
+			"The value is an array, but its content is incorrect.",
 			[
-				new Error(
+				new ValidationError(
 					"The value at index 3 is incorrect.",
-					{ cause: new Error("There is no information on why the value is incorrect.") }
+					[new ValidationError("There is no information on why the value is incorrect.")]
 				),
-			],
-			"The value is an array, but its content is incorrect."
+			]
 		)));
 	});
 });

@@ -1,5 +1,5 @@
-import { TypeGuard } from "../index.mjs";
 import type { StructuredDataPropertyDescriptor } from "../definition/_index.mjs";
+import { TypeGuard } from "../index.mjs";
 
 function isStructuredDataPropertyDescriptor(value: unknown, property_name: string): asserts value is StructuredDataPropertyDescriptor<unknown>
 {

@@ -1,8 +1,9 @@
+import type { StructuredDataPropertyDescriptor } from "../../definition/_index.mjs";
 import { toError } from "../../helper/to-error.mjs";
 import { hasNullableProperty } from "../../type-guard/has-nullable-property.mjs";
 import { isDefined } from "../../type-guard/is-defined.mjs";
 import { itemAssertion } from "./item-assertion.mjs";
-import type { StructuredDataPropertyDescriptor } from "../../definition/_index.mjs";
+import { ValidationError } from "./validation-error.mjs";
 
 function validateProperty(value: object, key: string, property_descriptor: StructuredDataPropertyDescriptor<unknown>): void
 {
@@ -13,7 +14,7 @@ function validateProperty(value: object, key: string, property_descriptor: Struc
 			return;
 		}
 
-		throw new Error(`The required property "${key}" is missing.`);
+		throw new ValidationError(`The required property "${key}" is missing.`);
 	}
 
 	if (!isDefined(value[key]))
@@ -23,7 +24,7 @@ function validateProperty(value: object, key: string, property_descriptor: Struc
 			return;
 		}
 
-		throw new Error(`The property "${key}" must not have a nullish value (undefined, null, or NaN).`);
+		throw new ValidationError(`The property "${key}" must not have a nullish value (undefined, null, or NaN).`);
 	}
 
 	try
@@ -32,9 +33,9 @@ function validateProperty(value: object, key: string, property_descriptor: Struc
 	}
 	catch (error: unknown)
 	{
-		throw new Error(
+		throw new ValidationError(
 			`The property "${key}" has an incorrect value.`,
-			{ cause: toError(error) }
+			[toError(error)]
 		);
 	}
 }

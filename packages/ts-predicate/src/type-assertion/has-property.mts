@@ -1,6 +1,7 @@
+import type { ObjectWithProperty } from "../definition/_index.mjs";
 import { isDefined as guard } from "../type-guard/is-defined.mjs";
 import { hasNullableProperty } from "./has-nullable-property.mjs";
-import type { ObjectWithProperty } from "../definition/_index.mjs";
+import { ValidationError } from "./utils/validation-error.mjs";
 
 function hasProperty<O extends object, K extends string>(
 	value: O,
@@ -11,7 +12,7 @@ function hasProperty<O extends object, K extends string>(
 
 	if (!guard(value[property]))
 	{
-		throw new Error(`The property "${property}" must not have a nullish value (undefined, null, or NaN).`);
+		throw new ValidationError(`The property "${property}" must not have a nullish value (undefined, null, or NaN).`);
 	}
 }
 

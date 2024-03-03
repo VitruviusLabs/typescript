@@ -1,5 +1,5 @@
-import { normalizeErrorTree } from "./normalize-error-tree.mjs";
 import type { NormalizedError } from "../definition/_index.mjs";
+import { normalizeErrorTree } from "./normalize-error-tree.mjs";
 
 const enum TreeStructure
 {

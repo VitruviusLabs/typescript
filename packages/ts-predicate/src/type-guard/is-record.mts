@@ -1,7 +1,7 @@
+import type { RecordConstraints, Test } from "../definition/_index.mjs";
 import { buildRecordConstraints } from "../utils/build-record-constraints.mjs";
 import { isObject } from "./is-object.mjs";
 import { itemGuard } from "./utils/item-guard.mjs";
-import type { RecordConstraints, Test } from "../definition/_index.mjs";
 
 function isRecord<Type>(value: unknown, constraints?: RecordConstraints<Type> | Test<Type>): value is Record<string, Type>
 {

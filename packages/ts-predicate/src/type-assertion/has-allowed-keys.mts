@@ -1,3 +1,5 @@
+import { ValidationError } from "./utils/validation-error.mjs";
+
 function hasAllowedKeys(value: Record<string, unknown>, allowed_keys: Array<string>): void
 {
 	const FORBIDDEN_PROPERTIES: Array<string> = Object.keys(value).filter(
@@ -9,7 +11,7 @@ function hasAllowedKeys(value: Record<string, unknown>, allowed_keys: Array<stri
 
 	if (FORBIDDEN_PROPERTIES.length > 0)
 	{
-		throw new Error(`The value must not have the properties "${FORBIDDEN_PROPERTIES.join('", "')}".`);
+		throw new ValidationError(`The value must not have the properties "${FORBIDDEN_PROPERTIES.join('", "')}".`);
 	}
 }
 

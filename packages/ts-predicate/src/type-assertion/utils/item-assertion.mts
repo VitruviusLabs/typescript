@@ -1,4 +1,5 @@
 import type { Test } from "../../definition/_index.mjs";
+import { ValidationError } from "./validation-error.mjs";
 
 function itemAssertion<Type>(value: unknown, callable: Test<Type>): asserts value is Type
 {
@@ -7,7 +8,7 @@ function itemAssertion<Type>(value: unknown, callable: Test<Type>): asserts valu
 
 	if (!SUCCESS)
 	{
-		throw new Error("There is no information on why the value is incorrect.");
+		throw new ValidationError("There is no information on why the value is incorrect.");
 	}
 }
 
