@@ -41,7 +41,7 @@
 		"ci:spell:check": "pnpm spell:check",
 		"ci:test:unit": "pnpm test:unit",
 		"ci:full": "pnpm ci:lint && pnpm ci:ts:check && pnpm ci:spell:check && pnpm ci:test:unit",
-		"ci:publish": "pnpm publish --access public",
+		"ci:publish": "pnpm publish --access public --no-git-checks",
 		"ci:publish:dry": "pnpm publish --access public --dry-run --no-git-checks",
 		"ci:build": "pnpm build"
 	},
