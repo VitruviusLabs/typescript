@@ -1,4 +1,5 @@
-import type { ArrayConstraints, Test } from "../index.mjs";
+import type { ArrayConstraints } from "../definition/interface/array-constraints.mjs";
+import type { Test } from "../definition/type/test.mjs";
 
 function buildArrayConstraints<Type>(constraints: ArrayConstraints<Type> | Test<Type> | undefined): ArrayConstraints<Type> | undefined
 {

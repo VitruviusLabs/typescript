@@ -1,6 +1,6 @@
 import { strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
-import { Helper } from "../../src/index.mjs";
+import { Helper } from "../../src/_index.mjs";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
 
 describe("Helper.getConstructorOf", (): void => {

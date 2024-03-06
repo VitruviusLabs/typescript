@@ -1,6 +1,6 @@
 import { throws } from "node:assert";
 import { describe, it } from "node:test";
-import { TypeAssertion } from "../../src/index.mjs";
+import { TypeAssertion } from "../../src/_index.mjs";
 import { createErrorTest, getAllValues } from "@vitruvius-labs/testing-ground";
 
 describe("TypeAssertion.isInstanceOf", (): void => {

@@ -1,6 +1,6 @@
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { mockingbird } from "../src/index.mjs";
+import { mockingbird } from "../src/_index.mjs";
 import type * as DummyModule from "./dummy/dummy-lib.mjs";
 
 describe("mockingbird", (): void => {

@@ -1,6 +1,6 @@
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { TypeGuard } from "../../src/index.mjs";
+import { TypeGuard } from "../../src/_index.mjs";
 
 describe("TypeGuard.hasAllowedKeys", (): void => {
 	it("should return true when testing an empty object against an empty array of allowed keys", (): void => {

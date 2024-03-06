@@ -1,6 +1,6 @@
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { TypeHint } from "../../src/index.mjs";
+import { TypeHint } from "../../src/_index.mjs";
 import { GroupType, type OldClassInstance, Values, getValues } from "@vitruvius-labs/testing-ground";
 
 describe("TypeHint.getName", (): void => {

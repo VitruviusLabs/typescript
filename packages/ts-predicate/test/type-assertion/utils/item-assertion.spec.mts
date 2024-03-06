@@ -1,8 +1,8 @@
 import { doesNotThrow, strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
-import { itemAssertion } from "../../../src/type-assertion/utils/item-assertion.mjs";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
-import { ValidationError } from "../../../src/type-assertion/_index.mjs";
+import { itemAssertion } from "../../../src/type-assertion/utils/item-assertion.mjs";
+import { ValidationError } from "../../../src/_index.mjs";
 
 describe("TypeAssertion / utils / itemAssertion", (): void => {
 	it("should return when given a type guard and a valid value", (): void => {

@@ -1,6 +1,6 @@
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { Helper } from "../../src/index.mjs";
+import { Helper } from "../../src/_index.mjs";
 import { GroupType, getAllValues, getInvertedValues } from "@vitruvius-labs/testing-ground";
 
 describe("Helper.isSimilar", (): void => {
