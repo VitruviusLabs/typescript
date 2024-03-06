@@ -19,8 +19,8 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"import": "./build/esm/index.mjs",
-			"types": "./build/types/index.d.mts"
+			"import": "./build/esm/_index.mjs",
+			"types": "./build/types/_index.d.mts"
 		}
 	},
 	"files": [

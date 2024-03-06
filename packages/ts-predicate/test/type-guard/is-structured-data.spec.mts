@@ -1,6 +1,6 @@
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { type StructuredDataDescriptor, TypeGuard } from "../../src/index.mjs";
+import { type StructuredDataDescriptor, TypeGuard } from "../../src/_index.mjs";
 import { GroupType, getInvertedValues } from "@vitruvius-labs/testing-ground";
 
 interface TestData

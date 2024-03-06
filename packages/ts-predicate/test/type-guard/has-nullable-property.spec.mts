@@ -1,6 +1,6 @@
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { TypeGuard } from "../../src/index.mjs";
+import { TypeGuard } from "../../src/_index.mjs";
 
 describe("TypeGuard.hasNullableProperty", (): void => {
 	it("should return false when given an object without the property", (): void => {

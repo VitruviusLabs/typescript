@@ -1,6 +1,6 @@
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { TypeGuard } from "../../src/index.mjs";
+import { TypeGuard } from "../../src/_index.mjs";
 import { GroupType, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 
 describe("TypeGuard.isFiniteNumber", (): void => {

@@ -1,8 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
-import { TypeAssertion } from "../../src/index.mjs";
+import { TypeAssertion, ValidationError } from "../../src/_index.mjs";
 import { GroupType, createErrorTest, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { ValidationError } from "../../src/type-assertion/_index.mjs";
 
 function isNumberTest(value: unknown): value is number
 {

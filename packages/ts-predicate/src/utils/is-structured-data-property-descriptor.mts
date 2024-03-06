@@ -1,9 +1,9 @@
-import type { StructuredDataPropertyDescriptor } from "../definition/_index.mjs";
-import { TypeGuard } from "../index.mjs";
+import type { StructuredDataPropertyDescriptor } from "../definition/interface/structured-data-property-descriptor.mjs";
+import { isRecord } from "../type-guard/is-record.mjs";
 
 function isStructuredDataPropertyDescriptor(value: unknown, property_name: string): asserts value is StructuredDataPropertyDescriptor<unknown>
 {
-	if (!TypeGuard.isRecord(value))
+	if (!isRecord(value))
 	{
 		throw new Error(`There is an invalid property descriptor for "${property_name}".`);
 	}

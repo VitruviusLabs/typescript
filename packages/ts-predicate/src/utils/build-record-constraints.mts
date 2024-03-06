@@ -1,4 +1,5 @@
-import type { RecordConstraints, Test } from "../index.mjs";
+import type { RecordConstraints } from "../definition/interface/record-constraints.mjs";
+import type { Test } from "../definition/type/test.mjs";
 
 function buildRecordConstraints<Type>(constraints: RecordConstraints<Type> | Test<Type> | undefined): RecordConstraints<Type> | undefined
 {

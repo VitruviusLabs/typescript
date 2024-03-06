@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-labs/architectura",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "A light weight strongly typed Node.JS framework providing isolated context for each request.",
 	"author": {
 		"name": "VitruviusLabs"
@@ -17,8 +17,8 @@
 	],
 	"exports": {
 		".": {
-			"import": "./build/esm/index.mjs",
-			"types": "./build/types/index.d.mts"
+			"import": "./build/esm/_index.mjs",
+			"types": "./build/types/_index.d.mts"
 		}
 	},
 	"scripts": {

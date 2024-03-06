@@ -1,6 +1,6 @@
 import { deepStrictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { Helper, type NormalizedError } from "../../src/index.mjs";
+import { Helper, type NormalizedError } from "../../src/_index.mjs";
 
 // cspell:ignore lorem ipsum dolor sit amet consectetur adipiscing elit
 

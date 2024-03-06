@@ -1,8 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, createErrorTest, getInvertedValues } from "@vitruvius-labs/testing-ground";
-import { type StructuredDataDescriptor, TypeAssertion } from "../../src/index.mjs";
-import { ValidationError } from "../../src/type-assertion/_index.mjs";
+import { type StructuredDataDescriptor, TypeAssertion, ValidationError } from "../../src/_index.mjs";
 
 interface TestData
 {

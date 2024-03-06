@@ -1,6 +1,6 @@
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { TypeGuard } from "../../src/index.mjs";
+import { TypeGuard } from "../../src/_index.mjs";
 import { getAllValues } from "@vitruvius-labs/testing-ground";
 
 describe("TypeGuard.isInstanceOf", (): void => {

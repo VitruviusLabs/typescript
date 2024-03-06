@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
-import { UnknownError, ValidationError } from "../../src/index.mjs";
+import { UnknownError, ValidationError } from "../../src/_index.mjs";
 import { rethrowUnexpectedError } from "../../src/utils/rethrow-unexpected-error.mjs";
 
 describe("rethrowUnexpectedError", (): void => {
