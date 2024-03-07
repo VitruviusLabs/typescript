@@ -74,7 +74,7 @@ describe("Singleton", (): void => {
 
 			MySingleton.Remove(MySingleton);
 
-			const INSTANCE2: MySingleton | undefined = MySingleton.GetInstance(MySingleton);
+			const INSTANCE2: MySingleton | undefined = MySingleton.FindInstance(MySingleton);
 
 			assert.strictEqual(INSTANCE2, undefined);
 		});
