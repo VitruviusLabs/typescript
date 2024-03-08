@@ -1,3 +1,4 @@
+import type { Socket } from "node:net";
 import { type IncomingHttpHeaders, IncomingMessage } from "node:http";
 import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
 import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
@@ -6,33 +7,31 @@ import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 
 class RichClientRequest extends IncomingMessage
 {
-	private readonly request: ParsedUrlQuery = {};
-	private readonly body: Record<string, unknown> | string = "";
-	private requestedPath: string = "";
-	private pathFragments: Array<string> = [];
-	private query: ParsedUrlQuery = {};
-	private rawBody: Buffer = Buffer.from("");
-	private contentType: string = "";
-	private boundary: string = "";
-	private cookies: Map<string, string> = new Map<string, string>();
+	private requestedPath: string;
+	private pathFragments: Array<string>;
+	private query: ParsedUrlQuery;
+	private rawBody: Buffer;
+	private contentType: string;
+	private boundary: string;
+	private cookies: Map<string, string>;
 
-	/**
-	 * getRawBody
-	 */
-	public async getRawBody(): Promise<Buffer>
+	public constructor(socket: Socket)
 	{
-		if (!this.complete)
-		{
-			this.rawBody = await this.listenForContent();
-		}
+		super(socket);
 
-		return this.rawBody;
+		this.requestedPath = "";
+		this.pathFragments = [];
+		this.query = {};
+		this.rawBody = Buffer.from("");
+		this.contentType = "";
+		this.boundary = "";
+		this.cookies = new Map();
 	}
 
 	/**
 	 * initialise
 	 */
-	public initialise(): void
+	public initialize(): void
 	{
 		if (this.headers["content-type"] !== undefined)
 		{
@@ -103,7 +102,7 @@ class RichClientRequest extends IncomingMessage
 		return await new Promise(
 			(resolve: (value: Buffer) => void): void =>
 			{
-				let body: Buffer = Buffer.from("");
+				let body: Buffer = Buffer.alloc(0);
 
 				this.addListener(
 					"data",
@@ -126,13 +125,21 @@ class RichClientRequest extends IncomingMessage
 	}
 
 	/**
-	 * getBody
+	 * getRawBody
 	 */
-	public getBody(): Record<string, unknown> | string
+	public async getRawBody(): Promise<Buffer>
 	{
-		return this.body;
+		if (!this.complete)
+		{
+			this.rawBody = await this.listenForContent();
+		}
+
+		return this.rawBody;
 	}
 
+	/**
+	 * getBodyAsString
+	 */
 	public async getBodyAsString(): Promise<string>
 	{
 		const RAW_BODY: Buffer = await this.getRawBody();
@@ -141,6 +148,9 @@ class RichClientRequest extends IncomingMessage
 		return BODY_AS_STRING;
 	}
 
+	/**
+	 * getBodyAsJSON
+	 */
 	public async getBodyAsJSON(): Promise<Record<string, unknown>>
 	{
 		const BODY_AS_STRING: string = await this.getBodyAsString();
@@ -227,14 +237,6 @@ class RichClientRequest extends IncomingMessage
 	}
 
 	/**
-	 * getRequest
-	 */
-	public getRequest(): ParsedUrlQuery
-	{
-		return this.request;
-	}
-
-	/**
 	 * setCookie
 	 */
 	public setCookie(key: string, value: string): void
@@ -271,9 +273,29 @@ class RichClientRequest extends IncomingMessage
 	/**
 	 * getCookies
 	 */
-	public getCookies(): Map<string, string>
+	public getCookies(): ReadonlyMap<string, string>
 	{
 		return this.cookies;
+	}
+
+	/**
+	 * getNormalizedHeader
+	 */
+	public getNormalizedHeader(name: string): Array<string>
+	{
+		const HEADER: Array<string> | string | null = this.getHeader(name);
+
+		if (HEADER === null)
+		{
+			return [];
+		}
+
+		if (Array.isArray(HEADER))
+		{
+			return HEADER;
+		}
+
+		return [HEADER];
 	}
 }
 

@@ -1,7 +1,8 @@
 import type { ServerConfigurationType } from "./definition/type/server-configuration.type.mjs";
 import type { ServerInstantiationType } from "./definition/type/server-instantiation.type.mjs";
-import type { BasePostHook } from "../../hook/base.post-hook.mjs";
 import type { BasePreHook } from "../../hook/base.pre-hook.mjs";
+import type { BasePostHook } from "../../hook/base.post-hook.mjs";
+import type { BaseErrorHook } from "../../hook/base.error-hook.mjs";
 import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
 import { Server as UnsafeServer, type ServerOptions as UnsafeServerOptions } from "node:http";
 import { Server as SecureServer, type ServerOptions as SecureServerOptions } from "node:https";
@@ -23,6 +24,7 @@ class Server
 	private static readonly PUBLIC_DIRECTORIES: Map<string, string> = new Map<string, string>();
 	private static readonly GLOBAL_PRE_HOOKS: Array<BasePreHook> = [];
 	private static readonly GLOBAL_POST_HOOKS: Array<BasePostHook> = [];
+	private static readonly GLOBAL_ERROR_HOOKS: Array<BaseErrorHook> = [];
 
 	private readonly port: number = PortsEnum.DEFAULT_HTTPS;
 	private readonly https: boolean = false;
@@ -74,18 +76,23 @@ class Server
 	 */
 	public static async Create(options: ServerConfigurationType): Promise<Server>
 	{
-		const CONTEXT_CONSTRUCTOR: typeof ExecutionContext = options.contextConstructor ?? ExecutionContext;
-
 		const OPTIONS: ServerInstantiationType = await this.ComputeServerOptions(options);
 
 		const SERVER: Server = new Server(OPTIONS);
 
-		SERVER.nativeServer.on(
+		SERVER.nativeServer.addListener(
 			"request",
-			// eslint-disable-next-line @typescript-eslint/no-misused-promises -- Necessary floating promise
+			// eslint-disable-next-line @typescript-eslint/no-misused-promises -- Asynchronous event listener
 			async (request: RichClientRequest, response: RichServerResponse): Promise<void> =>
 			{
-				await this.DefaultListener(request, response, CONTEXT_CONSTRUCTOR);
+				try
+				{
+					await this.DefaultListener(request, response);
+				}
+				catch (error: unknown)
+				{
+					await this.HandleError(error);
+				}
 			}
 		);
 
@@ -137,6 +144,27 @@ class Server
 		this.GLOBAL_POST_HOOKS.push(hook);
 	}
 
+	/**
+	 * AddGlobalErrorHook
+	 */
+	public static AddGlobalErrorHook(hook: BaseErrorHook): void
+	{
+		this.GLOBAL_ERROR_HOOKS.push(hook);
+	}
+
+	/**
+	 * HandleError
+	 */
+	public static async HandleError(error: unknown): Promise<void>
+	{
+		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext();
+
+		for (const HOOK of this.GLOBAL_ERROR_HOOKS)
+		{
+			await HOOK.execute(CONTEXT, error);
+		}
+	}
+
 	private static async ComputeServerOptions(options: ServerConfigurationType): Promise<ServerInstantiationType>
 	{
 		if (!options.https)
@@ -153,27 +181,48 @@ class Server
 		return SECURE_OPTIONS;
 	}
 
-	private static async DefaultListener(
-		request: RichClientRequest,
-		response: RichServerResponse,
-		context_constructor: typeof ExecutionContext
-	): Promise<void>
+	private static async DefaultListener(request: RichClientRequest, response: RichServerResponse): Promise<void>
 	{
-		request.initialise();
+		request.initialize();
 
-		const CONTEXT: ExecutionContext = new context_constructor({
+		const CONTEXT: ExecutionContext = new ExecutionContext({
 			request: request,
 			response: response,
 		});
+
+		const IS_PUBLIC_ASSET: boolean = await this.HandlePublicAssets(CONTEXT);
+
+		if (IS_PUBLIC_ASSET)
+		{
+			return;
+		}
+
+		ExecutionContextRegistry.SetExecutionContext(CONTEXT);
+
+		const IS_ENDPOINT: boolean = await this.HandleEndpoints(CONTEXT);
+
+		if (IS_ENDPOINT)
+		{
+			return;
+		}
+
+		response.writeHead(HTTPStatusCodeEnum.NOT_FOUND);
+		response.write("404 - Not found.");
+		response.end();
+	}
+
+	private static async HandlePublicAssets(context: ExecutionContext): Promise<boolean>
+	{
+		const REQUEST_PATH: string = context.getRequest().getRequestedPath();
 
 		for (const [ROUTE, DIRECTORY] of this.PUBLIC_DIRECTORIES)
 		{
 			const ROUTE_REGEXP: RegExp = new RegExp(ROUTE);
 
-			if (ROUTE_REGEXP.exec(request.getRequestedPath()) !== null)
+			if (ROUTE_REGEXP.exec(REQUEST_PATH) !== null)
 			{
 				// eslint-disable-next-line @stylistic/js/newline-per-chained-call -- Simple case
-				const FILE_PATH: string = request.getRequestedPath().replace(ROUTE_REGEXP, "").padStart(1, "/");
+				const FILE_PATH: string = REQUEST_PATH.replace(ROUTE_REGEXP, "").padStart(1, "/");
 
 				if (!await FileSystemService.FileExists(`${DIRECTORY}${FILE_PATH}`))
 				{
@@ -184,46 +233,52 @@ class Server
 
 				const CONTENT_TYPE: string = ContentType.Get(extname(FILE_PATH));
 
-				CONTEXT.getResponse().replyWith({
+				context.getResponse().replyWith({
 					payload: FILE,
 					contentType: CONTENT_TYPE,
 				});
 
-				return;
+				return true;
 			}
 		}
 
-		ExecutionContextRegistry.SetExecutionContext(CONTEXT);
+		return false;
+	}
 
+	private static async HandleEndpoints(context: ExecutionContext): Promise<boolean>
+	{
+		const REQUEST_PATH: string = context.getRequest().getRequestedPath();
+		const RESPONSE: RichServerResponse = context.getResponse();
 		const ENDPOINTS: Map<string, BaseEndpoint> = EndpointRegistry.GetEndpoints();
 
 		for (const [, ENDPOINT] of ENDPOINTS)
 		{
-			if (new RegExp(ENDPOINT.getRoute()).test(request.getRequestedPath()))
+			if (new RegExp(ENDPOINT.getRoute()).test(REQUEST_PATH))
 			{
-				// @TODO: handle errors
-
-				await this.RunPreHooks(ENDPOINT);
-
-				await ENDPOINT.execute(CONTEXT);
-
-				await this.RunPostHooks(ENDPOINT);
-
-				if (!response.writableEnded)
+				try
 				{
-					response.send();
+					await this.RunPreHooks(ENDPOINT, context);
+					await ENDPOINT.execute(context);
+					await this.RunPostHooks(ENDPOINT, context);
+
+					if (!RESPONSE.writableEnded)
+					{
+						RESPONSE.send();
+					}
+				}
+				catch (error: unknown)
+				{
+					await this.RunErrorHooks(ENDPOINT, context, error);
 				}
 
-				return;
+				return true;
 			}
 		}
 
-		response.statusCode = HTTPStatusCodeEnum.NOT_FOUND;
-		response.write("Not found.");
-		response.end();
+		return false;
 	}
 
-	private static async RunPreHooks(endpoint: BaseEndpoint): Promise<void>
+	private static async RunPreHooks(endpoint: BaseEndpoint, context: ExecutionContext): Promise<void>
 	{
 		for (const HOOK of this.GLOBAL_PRE_HOOKS)
 		{
@@ -232,16 +287,16 @@ class Server
 				continue;
 			}
 
-			await HOOK.execute();
+			await HOOK.execute(context);
 		}
 
 		for (const HOOK of endpoint.getPreHooks())
 		{
-			await HOOK.execute();
+			await HOOK.execute(context);
 		}
 	}
 
-	private static async RunPostHooks(endpoint: BaseEndpoint): Promise<void>
+	private static async RunPostHooks(endpoint: BaseEndpoint, context: ExecutionContext): Promise<void>
 	{
 		for (const HOOK of this.GLOBAL_POST_HOOKS)
 		{
@@ -250,18 +305,33 @@ class Server
 				continue;
 			}
 
-			await HOOK.execute();
+			await HOOK.execute(context);
 		}
 
 		for (const HOOK of endpoint.getPostHooks())
 		{
-			await HOOK.execute();
+			await HOOK.execute(context);
 		}
 	}
 
-	/**
-	 * ValidatePort
-	 */
+	private static async RunErrorHooks(endpoint: BaseEndpoint, context: ExecutionContext, error: unknown): Promise<void>
+	{
+		for (const HOOK of this.GLOBAL_ERROR_HOOKS)
+		{
+			if (endpoint.getExcludedGlobalErrorHooks().includes(Helper.getConstructorOf(HOOK)))
+			{
+				continue;
+			}
+
+			await HOOK.execute(context, error);
+		}
+
+		for (const HOOK of endpoint.getErrorHooks())
+		{
+			await HOOK.execute(context, error);
+		}
+	}
+
 	private static ValidatePort(port: number): void
 	{
 		TypeAssertion.isInteger(port);

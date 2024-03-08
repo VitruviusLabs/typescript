@@ -1,22 +1,25 @@
+import { TLSSocket } from "node:tls";
 import { ServerResponse as HTTPServerResponse } from "node:http";
 import { type Gzip, createGzip } from "node:zlib";
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
-import type { ExecutionContext } from "../execution-context/execution-context.mjs";
 import type { RichClientRequest } from "./rich-client-request.mjs";
-import type { Session } from "./session.mjs";
 import type { ReplyInterface } from "./definition/interface/reply.interface.mjs";
 import type { JSONObjectType } from "../../definition/type/json-object.type.mjs";
-import { ExecutionContextRegistry } from "../../core/execution-context/execution-context.registry.mjs";
+import type { CookieDescriptorInterface } from "./definition/interface/cookie-descriptor.interface.mjs";
 import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
+import { CookieSameSiteEnum } from "./definition/enum/cookie-same-site.enum.mjs";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
+	private readonly cookies: Map<string, CookieDescriptorInterface>;
 	private content: Buffer | string | undefined = undefined;
 
 	public constructor(request: RichClientRequest)
 	{
 		super(request);
+
+		this.cookies = new Map();
 	}
 
 	public json(content: JSONObjectType): void
@@ -51,7 +54,25 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 		if (parameters.headers !== undefined)
 		{
-			this.setHeaders(parameters.headers);
+			// @ts-expect-error: Map is a valid initializer for Headers
+			const HEADERS: Headers = new Headers(parameters.headers);
+
+			HEADERS.forEach(
+				(value: string, header: string): void =>
+				{
+					this.setHeader(header, value);
+				}
+			);
+		}
+
+		if (parameters.cookies !== undefined)
+		{
+			parameters.cookies.forEach(
+				(descriptor: CookieDescriptorInterface): void =>
+				{
+					this.setCookie(descriptor);
+				}
+			);
 		}
 
 		if (parameters.contentType === undefined)
@@ -85,22 +106,22 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 	 */
 	public send(): void
 	{
-		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext();
-
-		const SESSION: Session | undefined = CONTEXT.getSession();
-
-		if (SESSION !== undefined)
+		if (this.cookies.size > 0)
 		{
-			const COOKIES: Map<string, string> = SESSION.getCookies();
+			const COOKIE_HEADER: Array<string> = [];
 
-			const SET_COOKIE_HEADER: Array<string> = [];
+			this.cookies.forEach(
+				(descriptor: CookieDescriptorInterface): void =>
+				{
+					const ATTRIBUTES: string = this.computeCookieAttributes(descriptor);
 
-			for (const [COOKIE_NAME, COOKIE_VALUE] of COOKIES)
-			{
-				SET_COOKIE_HEADER.push(`${COOKIE_NAME}=${COOKIE_VALUE}`);
-			}
+					const COOKIE: string = `${descriptor.name}=${descriptor.value}${ATTRIBUTES}`;
 
-			this.setHeader("Set-Cookie", SET_COOKIE_HEADER);
+					COOKIE_HEADER.push(COOKIE);
+				}
+			);
+
+			this.setHeader("Set-Cookie", COOKIE_HEADER);
 		}
 
 		if (this.content === undefined)
@@ -182,19 +203,104 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 	}
 
 	/**
-	 * setHeaders
+	 * getNormalizedHeader
 	 */
-	public setHeaders(headers: Array<[string, string]> | Headers | Map<string, string> | Record<string, string>): void
+	public getNormalizedHeader(name: string): Array<string>
 	{
-		// @ts-expect-error: Map is a valid initializer for Headers
-		const HEADERS: Headers = new Headers(headers);
+		const HEADER: Array<string> | number | string | undefined = this.getHeader(name);
 
-		HEADERS.forEach(
-			(value: string, header: string): void =>
-			{
-				this.setHeader(header, value);
-			}
-		);
+		if (HEADER === undefined)
+		{
+			return [];
+		}
+
+		if (Array.isArray(HEADER))
+		{
+			return HEADER;
+		}
+
+		if (typeof HEADER === "number")
+		{
+			return [HEADER.toString()];
+		}
+
+		return [HEADER];
+	}
+
+	/**
+	 * setCookie
+	 */
+	public setCookie(descriptor: CookieDescriptorInterface): void
+	{
+		if (descriptor.expires !== undefined && descriptor.maxAge !== undefined)
+		{
+			throw new Error("A cookie can't have both an expires and max-age attribute.");
+		}
+
+		if (descriptor.sameSite === CookieSameSiteEnum.None && !(descriptor.secure ?? this.isSecure()))
+		{
+			throw new Error("A cookie can't have the attribute SameSite equals to None without the attribute Secure.");
+		}
+
+		this.cookies.set(descriptor.name, descriptor);
+	}
+
+	// eslint-disable-next-line @typescript-eslint/class-methods-use-this -- Utility method
+	private computeCookieAttributes(descriptor: CookieDescriptorInterface): string
+	{
+		const ATTRIBUTES: Array<string> = [];
+
+		if (descriptor.httpOnly ?? true)
+		{
+			ATTRIBUTES.push("HttpOnly");
+		}
+
+		if (descriptor.secure ?? this.isSecure())
+		{
+			ATTRIBUTES.push("Secure");
+		}
+
+		if (descriptor.expires !== undefined)
+		{
+			ATTRIBUTES.push(`Expires=${descriptor.expires.toUTCString()}`);
+		}
+
+		if (descriptor.maxAge !== undefined)
+		{
+			ATTRIBUTES.push(`Max-Age=${descriptor.maxAge.toString()}`);
+		}
+
+		if (descriptor.sameSite !== undefined)
+		{
+			ATTRIBUTES.push(`SameSite=${descriptor.sameSite}`);
+		}
+
+		if (descriptor.domain !== undefined)
+		{
+			ATTRIBUTES.push(`Domain=${descriptor.domain}`);
+		}
+
+		if (descriptor.path !== undefined)
+		{
+			ATTRIBUTES.push(`Path=${descriptor.path}`);
+		}
+
+		if (descriptor.partitioned ?? false)
+		{
+			ATTRIBUTES.push("Partitioned");
+		}
+
+		if (ATTRIBUTES.length === 0)
+		{
+			return "";
+		}
+
+		return `; ${ATTRIBUTES.join("; ")}`;
+	}
+
+	private isSecure(): boolean
+	{
+		return this.req.socket instanceof TLSSocket;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/class-methods-use-this -- utility method
