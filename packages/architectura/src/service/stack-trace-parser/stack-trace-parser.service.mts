@@ -155,17 +155,11 @@ class StackTraceParserService
 		return `${StackTraceParserService.TableLineBottomLeftSeparator}${METHOD_COLUMN_LINE}${StackTraceParserService.TableLineBottomSeparator}${LINE_COLUMN_LINE}${StackTraceParserService.TableLineBottomSeparator}${POSITION_COLUMN_LINE}${StackTraceParserService.TableLineBottomSeparator}${MODULE_COLUMN_LINE}${StackTraceParserService.TableLineBottomRightSeparator}`;
 	}
 
-	/**
-	 * getMessage
-	 */
 	public getMessage(): string
 	{
 		return this.message;
 	}
 
-	/**
-	 * getLines
-	 */
 	public getLines(): Array<StackTraceLineParsingResultInterface>
 	{
 		return this.lines;

@@ -1,13 +1,13 @@
 import type { ServerConfigurationType } from "./definition/type/server-configuration.type.mjs";
 import type { ServerInstantiationType } from "./definition/type/server-instantiation.type.mjs";
+import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
 import type { BasePreHook } from "../../hook/base.pre-hook.mjs";
 import type { BasePostHook } from "../../hook/base.post-hook.mjs";
 import type { BaseErrorHook } from "../../hook/base.error-hook.mjs";
-import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
 import { Server as UnsafeServer, type ServerOptions as UnsafeServerOptions } from "node:http";
 import { Server as SecureServer, type ServerOptions as SecureServerOptions } from "node:https";
 import { extname } from "node:path";
-import { Helper, TypeAssertion } from "@vitruvius-labs/ts-predicate";
+import { Helper, TypeAssertion, TypeGuard } from "@vitruvius-labs/ts-predicate";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { EndpointRegistry } from "../endpoint/endpoint.registry.mjs";
@@ -18,14 +18,11 @@ import { PortsEnum } from "./definition/enum/ports.enum.mjs";
 import { RichClientRequest } from "./rich-client-request.mjs";
 import { RichServerResponse } from "./rich-server-response.mjs";
 import { ContentType } from "../../utility/content-type/content-type.mjs";
+import { GlobalConfiguration } from "./global-configuration.mjs";
+import { BaseDomain } from "../../ddd/base.domain.mjs";
 
 class Server
 {
-	private static readonly PUBLIC_DIRECTORIES: Map<string, string> = new Map<string, string>();
-	private static readonly GLOBAL_PRE_HOOKS: Array<BasePreHook> = [];
-	private static readonly GLOBAL_POST_HOOKS: Array<BasePostHook> = [];
-	private static readonly GLOBAL_ERROR_HOOKS: Array<BaseErrorHook> = [];
-
 	private readonly port: number = PortsEnum.DEFAULT_HTTPS;
 	private readonly https: boolean = false;
 	private readonly nativeServer: (
@@ -35,9 +32,6 @@ class Server
 		| UnsafeServer<typeof RichClientRequest, typeof RichServerResponse>
 	);
 
-	/**
-	 * constructor
-	 */
 	private constructor(options: ServerInstantiationType)
 	{
 		Server.ValidatePort(options.port);
@@ -71,9 +65,6 @@ class Server
 		this.nativeServer = new SecureServer(SECURE_OPTIONS);
 	}
 
-	/**
-	 * Create
-	 */
 	public static async Create(options: ServerConfigurationType): Promise<Server>
 	{
 		const OPTIONS: ServerInstantiationType = await this.ComputeServerOptions(options);
@@ -96,70 +87,39 @@ class Server
 			}
 		);
 
+		await this.Initialize();
+
 		return SERVER;
 	}
 
-	public static GetPublicDirectories(): Map<string, string>
+	public static async Initialize(): Promise<void>
 	{
-		return this.PUBLIC_DIRECTORIES;
-	}
+		const DOMAIN_DIRECTORIES: Array<string> = GlobalConfiguration.GetDomainDirectories().slice();
 
-	/**
-	 * AddPublicDirectory
-	 */
-	public static async AddPublicDirectory(route: string, directory: string): Promise<void>
-	{
-		if (!await FileSystemService.DirectoryExists(directory))
+		for (const DIRECTORY_PATH of DOMAIN_DIRECTORIES)
 		{
-			throw new Error(`Impossible to add directory ${directory} as a public directory as it does not exist.`);
-		}
+			const EXPORTS: unknown = await import(DIRECTORY_PATH);
 
-		this.PUBLIC_DIRECTORIES.set(route, directory);
-	}
+			if (TypeGuard.isRecord(EXPORTS))
+			{
+				for (const [, domain] of Object.entries(EXPORTS))
+				{
+					if (this.IsDomainConstructor(domain))
+					{
+						await domain.Initialize();
 
-	/**
-	 * SetPublicDirectories
-	 */
-	public static async SetPublicDirectories(directories: Map<string, string>): Promise<void>
-	{
-		for (const [ROUTE, DIRECTORY] of directories)
-		{
-			await this.AddPublicDirectory(ROUTE, DIRECTORY);
+						return;
+					}
+				}
+			}
 		}
 	}
 
-	/**
-	 * AddGlobalPreHook
-	 */
-	public static AddGlobalPreHook(hook: BasePreHook): void
-	{
-		this.GLOBAL_PRE_HOOKS.push(hook);
-	}
-
-	/**
-	 * AddGlobalPostHook
-	 */
-	public static AddGlobalPostHook(hook: BasePostHook): void
-	{
-		this.GLOBAL_POST_HOOKS.push(hook);
-	}
-
-	/**
-	 * AddGlobalErrorHook
-	 */
-	public static AddGlobalErrorHook(hook: BaseErrorHook): void
-	{
-		this.GLOBAL_ERROR_HOOKS.push(hook);
-	}
-
-	/**
-	 * HandleError
-	 */
 	public static async HandleError(error: unknown): Promise<void>
 	{
 		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext();
 
-		for (const HOOK of this.GLOBAL_ERROR_HOOKS)
+		for (const HOOK of GlobalConfiguration.GetGlobalErrorHooks())
 		{
 			await HOOK.execute(CONTEXT, error);
 		}
@@ -215,7 +175,7 @@ class Server
 	{
 		const REQUEST_PATH: string = context.getRequest().getRequestedPath();
 
-		for (const [ROUTE, DIRECTORY] of this.PUBLIC_DIRECTORIES)
+		for (const [ROUTE, DIRECTORY] of GlobalConfiguration.GetPublicAssetDirectories())
 		{
 			const ROUTE_REGEXP: RegExp = new RegExp(ROUTE);
 
@@ -249,7 +209,7 @@ class Server
 	{
 		const REQUEST_PATH: string = context.getRequest().getRequestedPath();
 		const RESPONSE: RichServerResponse = context.getResponse();
-		const ENDPOINTS: Map<string, BaseEndpoint> = EndpointRegistry.GetEndpoints();
+		const ENDPOINTS: ReadonlyMap<string, BaseEndpoint> = EndpointRegistry.GetEndpoints();
 
 		for (const [, ENDPOINT] of ENDPOINTS)
 		{
@@ -280,9 +240,11 @@ class Server
 
 	private static async RunPreHooks(endpoint: BaseEndpoint, context: ExecutionContext): Promise<void>
 	{
-		for (const HOOK of this.GLOBAL_PRE_HOOKS)
+		const EXCLUDED_HOOKS: Array<typeof BasePreHook> = endpoint.getExcludedGlobalPreHooks();
+
+		for (const HOOK of GlobalConfiguration.GetGlobalPreHooks())
 		{
-			if (endpoint.getExcludedGlobalPreHooks().includes(Helper.getConstructorOf(HOOK)))
+			if (EXCLUDED_HOOKS.includes(Helper.getConstructorOf(HOOK)))
 			{
 				continue;
 			}
@@ -298,9 +260,11 @@ class Server
 
 	private static async RunPostHooks(endpoint: BaseEndpoint, context: ExecutionContext): Promise<void>
 	{
-		for (const HOOK of this.GLOBAL_POST_HOOKS)
+		const EXCLUDED_HOOKS: Array<typeof BasePostHook> = endpoint.getExcludedGlobalPostHooks();
+
+		for (const HOOK of GlobalConfiguration.GetGlobalPostHooks())
 		{
-			if (endpoint.getExcludedGlobalPostHooks().includes(Helper.getConstructorOf(HOOK)))
+			if (EXCLUDED_HOOKS.includes(Helper.getConstructorOf(HOOK)))
 			{
 				continue;
 			}
@@ -316,9 +280,11 @@ class Server
 
 	private static async RunErrorHooks(endpoint: BaseEndpoint, context: ExecutionContext, error: unknown): Promise<void>
 	{
-		for (const HOOK of this.GLOBAL_ERROR_HOOKS)
+		const EXCLUDED_HOOKS: Array<typeof BaseErrorHook> = endpoint.getExcludedGlobalErrorHooks();
+
+		for (const HOOK of GlobalConfiguration.GetGlobalErrorHooks())
 		{
-			if (endpoint.getExcludedGlobalErrorHooks().includes(Helper.getConstructorOf(HOOK)))
+			if (EXCLUDED_HOOKS.includes(Helper.getConstructorOf(HOOK)))
 			{
 				continue;
 			}
@@ -332,6 +298,11 @@ class Server
 		}
 	}
 
+	private static IsDomainConstructor(value: unknown): value is typeof BaseDomain
+	{
+		return TypeGuard.isFunction(value) && value.prototype instanceof BaseDomain;
+	}
+
 	private static ValidatePort(port: number): void
 	{
 		TypeAssertion.isInteger(port);
@@ -343,18 +314,12 @@ class Server
 		}
 	}
 
-	/**
-	 * start
-	 */
 	public start(): void
 	{
 		this.nativeServer.listen(this.port);
 		LoggerProxy.Informational("Server started.");
 	}
 
-	/**
-	 * isHTTPS
-	 */
 	public isHTTPS(): boolean
 	{
 		return this.https;

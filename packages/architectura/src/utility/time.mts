@@ -3,10 +3,7 @@ import { TimeFormattingEnum } from "./definition/enum/time-formatting.enum.mjs";
 
 class Time extends Date
 {
-	/**
-	 * format
-	 * @TODO: Could be improved and expanded.
-	 */
+	// @TODO: Could be improved and expanded.
 	public format(expected_format: string): string
 	{
 		let output: string = expected_format;
@@ -28,9 +25,6 @@ class Time extends Date
 		return output;
 	}
 
-	/**
-	 * getDaysBetween
-	 */
 	public getNumberOfDaysBetween(date: Date): number
 	{
 		const MILLISECONDS_DIFFERENCE: number = this.getTime() - date.getTime();

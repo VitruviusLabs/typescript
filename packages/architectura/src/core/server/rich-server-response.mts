@@ -101,9 +101,6 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		this.send();
 	}
 
-	/**
-	 * send
-	 */
 	public send(): void
 	{
 		if (this.cookies.size > 0)
@@ -141,33 +138,21 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		ENCODER.end();
 	}
 
-	/**
-	 * areHeadersSent
-	 */
 	public areHeadersSent(): boolean
 	{
 		return this.headersSent;
 	}
 
-	/**
-	 * isDone
-	 */
 	public isDone(): boolean
 	{
 		return this.writableEnded;
 	}
 
-	/**
-	 * isSent
-	 */
 	public isSent(): boolean
 	{
 		return this.writableFinished;
 	}
 
-	/**
-	 * getContent
-	 */
 	public getContent(): string | undefined
 	{
 		if (this.content instanceof Buffer)
@@ -178,33 +163,21 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		return this.content;
 	}
 
-	/**
-	 * setContent
-	 */
 	public setContent(content: Buffer | string): void
 	{
 		this.content = content;
 	}
 
-	/**
-	 * getStatusCode
-	 */
 	public getStatusCode(): HTTPStatusCodeEnum
 	{
 		return this.statusCode;
 	}
 
-	/**
-	 * setStatusCode
-	 */
 	public setStatusCode(status_code: HTTPStatusCodeEnum): void
 	{
 		this.statusCode = status_code;
 	}
 
-	/**
-	 * getNormalizedHeader
-	 */
 	public getNormalizedHeader(name: string): Array<string>
 	{
 		const HEADER: Array<string> | number | string | undefined = this.getHeader(name);
@@ -227,9 +200,6 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		return [HEADER];
 	}
 
-	/**
-	 * setCookie
-	 */
 	public setCookie(descriptor: CookieDescriptorInterface): void
 	{
 		if (descriptor.expires !== undefined && descriptor.maxAge !== undefined)

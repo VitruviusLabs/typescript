@@ -22,15 +22,12 @@ class RichClientRequest extends IncomingMessage
 		this.requestedPath = "";
 		this.pathFragments = [];
 		this.query = {};
-		this.rawBody = Buffer.from("");
+		this.rawBody = Buffer.alloc(0);
 		this.contentType = "";
 		this.boundary = "";
 		this.cookies = new Map();
 	}
 
-	/**
-	 * initialise
-	 */
 	public initialize(): void
 	{
 		if (this.headers["content-type"] !== undefined)
@@ -89,9 +86,6 @@ class RichClientRequest extends IncomingMessage
 		this.pathFragments = PATH_FRAGMENTS;
 	}
 
-	/**
-	 * listenForContent
-	 */
 	public async listenForContent(): Promise<Buffer>
 	{
 		if (this.complete)
@@ -124,9 +118,6 @@ class RichClientRequest extends IncomingMessage
 		);
 	}
 
-	/**
-	 * getRawBody
-	 */
 	public async getRawBody(): Promise<Buffer>
 	{
 		if (!this.complete)
@@ -137,9 +128,6 @@ class RichClientRequest extends IncomingMessage
 		return this.rawBody;
 	}
 
-	/**
-	 * getBodyAsString
-	 */
 	public async getBodyAsString(): Promise<string>
 	{
 		const RAW_BODY: Buffer = await this.getRawBody();
@@ -148,9 +136,6 @@ class RichClientRequest extends IncomingMessage
 		return BODY_AS_STRING;
 	}
 
-	/**
-	 * getBodyAsJSON
-	 */
 	public async getBodyAsJSON(): Promise<Record<string, unknown>>
 	{
 		const BODY_AS_STRING: string = await this.getBodyAsString();
@@ -161,33 +146,21 @@ class RichClientRequest extends IncomingMessage
 		return PARSED_BODY;
 	}
 
-	/**
-	 * getBoundary
-	 */
 	public getBoundary(): string
 	{
 		return this.boundary;
 	}
 
-	/**
-	 * getContentType
-	 */
 	public getContentType(): string
 	{
 		return this.contentType;
 	}
 
-	/**
-	 * getHeaders
-	 */
 	public getHeaders(): IncomingHttpHeaders
 	{
 		return this.headers;
 	}
 
-	/**
-	 * getHeader
-	 */
 	public getHeader(name: keyof IncomingHttpHeaders): Array<string> | string | null
 	{
 		let scoped_name: string = name.toString();
@@ -204,57 +177,36 @@ class RichClientRequest extends IncomingMessage
 		return null;
 	}
 
-	/**
-	 * getQuery
-	 */
 	public getQuery(): ParsedUrlQuery
 	{
 		return this.query;
 	}
 
-	/**
-	 * setQuery
-	 */
 	public setQuery(query: ParsedUrlQuery): void
 	{
 		this.query = query;
 	}
 
-	/**
-	 * getRequestedPath
-	 */
 	public getRequestedPath(): string
 	{
 		return this.requestedPath;
 	}
 
-	/**
-	 * getPathFragments
-	 */
 	public getPathFragments(): Array<string>
 	{
 		return this.pathFragments;
 	}
 
-	/**
-	 * setCookie
-	 */
 	public setCookie(key: string, value: string): void
 	{
 		this.cookies.set(key, value);
 	}
 
-	/**
-	 * getCookie
-	 */
 	public getCookie(key: string): string | undefined
 	{
 		return this.cookies.get(key);
 	}
 
-	/**
-	 * setCookies
-	 */
 	public setCookies(cookies: Map<string, string> | Record<string, string>): void
 	{
 		if (cookies instanceof Map)
@@ -270,17 +222,11 @@ class RichClientRequest extends IncomingMessage
 		}
 	}
 
-	/**
-	 * getCookies
-	 */
 	public getCookies(): ReadonlyMap<string, string>
 	{
 		return this.cookies;
 	}
 
-	/**
-	 * getNormalizedHeader
-	 */
 	public getNormalizedHeader(name: string): Array<string>
 	{
 		const HEADER: Array<string> | string | null = this.getHeader(name);

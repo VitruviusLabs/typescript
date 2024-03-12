@@ -16,70 +16,43 @@ abstract class BaseEndpoint extends Singleton
 	protected readonly errorHooks: Array<BaseErrorHook> = [];
 	protected readonly excludedGlobalErrorHooks: Array<typeof BaseErrorHook> = [];
 
-	/**
-	 * execute
-	 */
 	public abstract execute(context: ExecutionContext): Promise<void> | void;
 
-	/**
-	 * getMethod
-	 */
 	public getMethod(): HTTPMethodEnum
 	{
 		return this.method;
 	}
 
-	/**
-	 * getRoute
-	 */
 	public getRoute(): string
 	{
 		return this.route;
 	}
 
-	/**
-	 * getPreHooks
-	 */
 	public getPreHooks(): Array<BasePreHook>
 	{
 		return this.preHooks;
 	}
 
-	/**
-	 * getExcludedGlobalPreHooks
-	 */
 	public getExcludedGlobalPreHooks(): Array<typeof BasePreHook>
 	{
 		return this.excludedGlobalPreHooks;
 	}
 
-	/**
-	 * getPostHooks
-	 */
 	public getPostHooks(): Array<BasePostHook>
 	{
 		return this.postHooks;
 	}
 
-	/**
-	 * getExcludedGlobalPostHooks
-	 */
 	public getExcludedGlobalPostHooks(): Array<typeof BasePostHook>
 	{
 		return this.excludedGlobalPostHooks;
 	}
 
-	/**
-	 * getExcludedGlobalErrorHooks
-	 */
 	public getExcludedGlobalErrorHooks(): Array<typeof BaseErrorHook>
 	{
 		return this.excludedGlobalErrorHooks;
 	}
 
-	/**
-	 * getErrorHooks
-	 */
 	public getErrorHooks(): Array<BaseErrorHook>
 	{
 		return this.errorHooks;

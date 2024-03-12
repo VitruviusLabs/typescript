@@ -9,9 +9,6 @@ class LoggerService extends Singleton implements LoggerInterface
 {
 	protected readonly dateFormat: string = "Y-m-d H:i:s";
 
-	/**
-	 * Write
-	 */
 	public write(content: LoggerServiceWriteInterface): void
 	{
 		const LEVEL: string = content.level.toUpperCase();
@@ -30,9 +27,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		console.log(LOG_LINE);
 	}
 
-	/**
-	 * Debug
-	 */
 	public debug(message: string, context?: string): void
 	{
 		this.write({
@@ -42,9 +36,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Informational
-	 */
 	public informational(message: string, context?: string): void
 	{
 		this.write({
@@ -54,17 +45,11 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Info
-	 */
 	public info(message: string, context?: string): void
 	{
 		this.informational(message, context);
 	}
 
-	/**
-	 * Notice
-	 */
 	public notice(message: string, context?: string): void
 	{
 		this.write({
@@ -74,9 +59,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Warning
-	 */
 	public warning(message: string, context?: string): void
 	{
 		this.write({
@@ -86,9 +68,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Error
-	 */
 	public error(content: Error | string, context?: string): void
 	{
 		if (content instanceof Error)
@@ -105,9 +84,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Critical
-	 */
 	public critical(message: string, context?: string): void
 	{
 		this.write({
@@ -117,9 +93,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Alert
-	 */
 	public alert(message: string, context?: string): void
 	{
 		this.write({
@@ -129,9 +102,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Emergency
-	 */
 	public emergency(message: string, context?: string): void
 	{
 		this.write({
@@ -141,9 +111,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * LogError
-	 */
 	private logError(error: Error): void
 	{
 		const STACK_TRACE_PARSER: StackTraceParserService = new StackTraceParserService(error);

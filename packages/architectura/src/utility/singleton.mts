@@ -137,7 +137,7 @@ abstract class Singleton
 	 * ```
 	 *
 	 * @param class_constructor - The constructor of the singleton class.
-	 **/
+	 */
 	public static Remove<T extends Singleton>(class_constructor: ConstructorOf<T>): void
 	{
 		INSTANCES.delete(class_constructor);

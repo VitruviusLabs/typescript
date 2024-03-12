@@ -20,9 +20,6 @@ class ExecutorService
 		}
 	}
 
-	/**
-	 * Create
-	 */
 	public static Create(value: ExecutorInstantiationInterface): ExecutorService
 	{
 		return new ExecutorService(value);

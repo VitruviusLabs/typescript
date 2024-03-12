@@ -20,26 +20,17 @@ class Session
 		this.refresh();
 	}
 
-	/**
-	 * save
-	 */
 	public async save(): Promise<void>
 	{
 		await this.delegate.saveData(this.uuid, this.data);
 	}
 
-	/**
-	 * clear
-	 */
 	public async clear(): Promise<void>
 	{
 		await this.delegate.removeData(this.uuid);
 		this.data = {};
 	}
 
-	/**
-	 * refresh
-	 */
 	public refresh(): void
 	{
 		const TTL: number = SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE;
@@ -47,33 +38,21 @@ class Session
 		this.expirationTime = Date.now() + TTL;
 	}
 
-	/**
-	 * isExpired
-	 */
 	public isExpired(): boolean
 	{
 		return this.expirationTime < Date.now();
 	}
 
-	/**
-	 * getUUID
-	 */
 	public getUUID(): string
 	{
 		return this.uuid;
 	}
 
-	/**
-	 * getData
-	 */
 	public getData(): JSONObjectType
 	{
 		return this.data;
 	}
 
-	/**
-	 * setData
-	 */
 	public setData(data: JSONObjectType): void
 	{
 		this.data = data;

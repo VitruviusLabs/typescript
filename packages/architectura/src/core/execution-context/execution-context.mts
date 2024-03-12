@@ -16,33 +16,21 @@ class ExecutionContext
 		this.session = undefined;
 	}
 
-	/**
-	 * getRequest
-	 */
 	public getRequest(): RichClientRequest
 	{
 		return this.request;
 	}
 
-	/**
-	 * getResponse
-	 */
 	public getResponse(): RichServerResponse
 	{
 		return this.response;
 	}
 
-	/**
-	 * getSession
-	 */
 	public getSession(): Session | undefined
 	{
 		return this.session;
 	}
 
-	/**
-	 * setSession
-	 */
 	public setSession(session: Session): void
 	{
 		this.session = session;

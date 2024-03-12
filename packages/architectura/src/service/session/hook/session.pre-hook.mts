@@ -46,9 +46,6 @@ class SessionPreHook extends BasePreHook
 		TIMER.unref();
 	}
 
-	/**
-	 * execute
-	 */
 	public execute(context: ExecutionContext): void
 	{
 		let session: Session | undefined = undefined;

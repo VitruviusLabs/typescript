@@ -5,9 +5,6 @@ import { BasePreHook } from "./base.pre-hook.mjs";
 
 abstract class CookiePreHook extends BasePreHook
 {
-	/**
-	 * Execute
-	 */
 	public execute(context: ExecutionContext): void
 	{
 		const COOKIES: Map<string, string> | undefined = this.parseCookies(context);
