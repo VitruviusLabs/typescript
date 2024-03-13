@@ -9,7 +9,6 @@ import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 import { CookieSameSiteEnum } from "./definition/enum/cookie-same-site.enum.mjs";
-import { resolveContentType } from "./utility/resolve-content-type.mjs";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
@@ -53,90 +52,19 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 		this.statusCode = parameters.status ?? HTTPStatusCodeEnum.OK;
 
-		if (parameters.headers !== undefined)
-		{
-			// @ts-expect-error: Map is a valid initializer for Headers
-			const HEADERS: Headers = new Headers(parameters.headers);
-
-			HEADERS.forEach(
-				(value: string, header: string): void =>
-				{
-					this.setHeader(header, value);
-				}
-			);
-		}
-
-		if (parameters.cookies !== undefined)
-		{
-			parameters.cookies.forEach(
-				(descriptor: CookieDescriptorInterface): void =>
-				{
-					this.setCookie(descriptor);
-				}
-			);
-		}
-
-		if (parameters.contentType === undefined)
-		{
-			const CONTENT_TYPE: string | undefined = resolveContentType(parameters);
-
-			if (CONTENT_TYPE !== undefined)
-			{
-				this.setHeader("Content-Type", CONTENT_TYPE);
-			}
-		}
-		else
-		{
-			this.setHeader("Content-Type", parameters.contentType);
-		}
-
-		if (TypeGuard.isRecord(parameters.payload))
-		{
-			this.content = JSON.stringify(parameters.payload);
-		}
-		else
-		{
-			this.content = parameters.payload;
-		}
+		this.processHeaders(parameters);
+		this.processCookies(parameters);
+		this.processContentType(parameters);
+		this.processPayload(parameters);
 
 		this.send();
 	}
 
 	public send(): void
 	{
-		if (this.cookies.size > 0)
-		{
-			const COOKIE_HEADER: Array<string> = [];
-
-			this.cookies.forEach(
-				(descriptor: CookieDescriptorInterface): void =>
-				{
-					const ATTRIBUTES: string = this.computeCookieAttributes(descriptor);
-
-					const COOKIE: string = `${descriptor.name}=${descriptor.value}${ATTRIBUTES}`;
-
-					COOKIE_HEADER.push(COOKIE);
-				}
-			);
-
-			this.setHeader("Set-Cookie", COOKIE_HEADER);
-		}
-
-		if (this.content === undefined)
-		{
-			this.end();
-
-			return;
-		}
-
-		this.setHeader("Content-Encoding", "gzip");
-
-		// @TODO: Make response compression great again
-		const ENCODER: Gzip = createGzip();
-
-		ENCODER.pipe(this);
-		ENCODER.write(this.content);
-		ENCODER.end();
+		this.setCookieHeader();
+		this.writePayload();
+		this.end();
 	}
 
 	public areHeadersSent(): boolean
@@ -271,6 +199,115 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		}
 
 		return `; ${ATTRIBUTES.join("; ")}`;
+	}
+
+	private processHeaders(parameters: ReplyInterface): void
+	{
+		if (parameters.headers === undefined)
+		{
+			return;
+		}
+
+		// @ts-expect-error: Map is a valid initializer for Headers
+		const HEADERS: Headers = new Headers(parameters.headers);
+
+		HEADERS.forEach(
+			(value: string, header: string): void =>
+			{
+				this.setHeader(header, value);
+			}
+		);
+	}
+
+	private processCookies(parameters: ReplyInterface): void
+	{
+		if (parameters.cookies === undefined)
+		{
+			return;
+		}
+
+		parameters.cookies.forEach(
+			(descriptor: CookieDescriptorInterface): void =>
+			{
+				this.setCookie(descriptor);
+			}
+		);
+	}
+
+	private processContentType(parameters: ReplyInterface): void
+	{
+		if (parameters.payload === undefined)
+		{
+			return;
+		}
+
+		if (parameters.contentType !== undefined)
+		{
+			this.setHeader("Content-Type", parameters.contentType);
+
+			return;
+		}
+
+		if (TypeGuard.isRecord(parameters.payload))
+		{
+			this.setHeader("Content-Type", ContentTypeEnum.JSON);
+
+			return;
+		}
+
+		this.setHeader("Content-Type", ContentTypeEnum.TEXT);
+	}
+
+	private processPayload(parameters: ReplyInterface): void
+	{
+		if (TypeGuard.isRecord(parameters.payload))
+		{
+			this.content = JSON.stringify(parameters.payload);
+
+			return;
+		}
+
+		this.content = parameters.payload;
+	}
+
+	private setCookieHeader(): void
+	{
+		if (this.cookies.size === 0)
+		{
+			return;
+		}
+
+		const COOKIE_HEADER: Array<string> = [];
+
+		this.cookies.forEach(
+			(descriptor: CookieDescriptorInterface): void =>
+			{
+				const ATTRIBUTES: string = this.computeCookieAttributes(descriptor);
+
+				const COOKIE: string = `${descriptor.name}=${descriptor.value}${ATTRIBUTES}`;
+
+				COOKIE_HEADER.push(COOKIE);
+			}
+		);
+
+		this.setHeader("Set-Cookie", COOKIE_HEADER);
+	}
+
+	private writePayload(): void
+	{
+		if (this.content === undefined)
+		{
+			return;
+		}
+
+		this.setHeader("Content-Encoding", "gzip");
+
+		// @TODO: Make response compression great again
+		const ENCODER: Gzip = createGzip();
+
+		ENCODER.pipe(this);
+		ENCODER.write(this.content);
+		ENCODER.end();
 	}
 }
 

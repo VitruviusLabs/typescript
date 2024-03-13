@@ -1,11 +1,11 @@
-import type { SecretType } from "./definition/type/secret.type.mjs";
-import type { JWTHeaderInterface } from "./definition/interface/jwt-header.interface.mjs";
-import type { JWTClaimsInterface } from "./definition/interface/jwt-claims.interface.mjs";
-import { Base64URL } from "./utility/base64-url.mjs";
-import { validateAlgorithm } from "./utility/validate-algorithm.mjs";
-import { validateSecret } from "./utility/validate-secret.mjs";
-import { validateClaims } from "./utility/validate-claims.mjs";
-import { computeSignature } from "./utility/compute-signature.mjs";
+import type { SecretType } from "../definition/type/secret.type.mjs";
+import type { JWTHeaderInterface } from "../definition/interface/jwt-header.interface.mjs";
+import type { JWTClaimsInterface } from "../definition/interface/jwt-claims.interface.mjs";
+import { Base64URL } from "../utility/base64-url.mjs";
+import { validateAlgorithm } from "../utility/validate-algorithm.mjs";
+import { validateSecret } from "../utility/validate-secret.mjs";
+import { validateClaims } from "../utility/validate-claims.mjs";
+import { computeSignature } from "../utility/compute-signature.mjs";
 
 class JWT
 {
