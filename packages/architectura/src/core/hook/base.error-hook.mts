@@ -1,4 +1,4 @@
-import type { ExecutionContext } from "../core/execution-context/execution-context.mjs";
+import type { ExecutionContext } from "../execution-context/execution-context.mjs";
 
 abstract class BaseErrorHook
 {

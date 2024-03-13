@@ -1,19 +1,18 @@
-import { Singleton } from "../../utility/singleton.mjs";
-import { Time } from "../../utility/time.mjs";
-import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
-import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";
 import type { LoggerServiceWriteInterface } from "./definition/interface/logger-service-write.interface.mjs";
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
+import { Singleton } from "../../utility/singleton.mjs";
+import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
+import { DateEnum } from "../../definition/enum/date.enum.mjs";
+import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";
 
 class LoggerService extends Singleton implements LoggerInterface
 {
-	protected readonly dateFormat: string = "Y-m-d H:i:s";
-
 	public write(content: LoggerServiceWriteInterface): void
 	{
 		const LEVEL: string = content.level.toUpperCase();
-		const DATE: Time = new Time();
-		const FORMATTED_DATE: string = DATE.format(this.dateFormat);
+		const DATE: Date = new Date();
+		const FORMATTED_DATE: string = DATE.toISOString().slice(0, DateEnum.ISO_DATETIME_LENGTH).replace("T", " ");
+
 		let logLinePrefix: string = `[${FORMATTED_DATE}] [${LEVEL}]`;
 
 		if (content.context !== undefined)

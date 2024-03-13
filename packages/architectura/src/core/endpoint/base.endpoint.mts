@@ -1,7 +1,7 @@
 import type { HTTPMethodEnum } from "./definition/enum/http-method.enum.mjs";
-import type { BasePreHook } from "../../hook/base.pre-hook.mjs";
-import type { BasePostHook } from "../../hook/base.post-hook.mjs";
-import type { BaseErrorHook } from "../../hook/base.error-hook.mjs";
+import type { BasePreHook } from "../hook/base.pre-hook.mjs";
+import type { BasePostHook } from "../hook/base.post-hook.mjs";
+import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import type { ExecutionContext } from "../execution-context/execution-context.mjs";
 import { Singleton } from "../../utility/singleton.mjs";
 

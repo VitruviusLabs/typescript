@@ -1,14 +1,15 @@
-import { TLSSocket } from "node:tls";
-import { ServerResponse as HTTPServerResponse } from "node:http";
-import { type Gzip, createGzip } from "node:zlib";
-import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 import type { RichClientRequest } from "./rich-client-request.mjs";
 import type { ReplyInterface } from "./definition/interface/reply.interface.mjs";
 import type { JSONObjectType } from "../../definition/type/json-object.type.mjs";
 import type { CookieDescriptorInterface } from "./definition/interface/cookie-descriptor.interface.mjs";
+import { TLSSocket } from "node:tls";
+import { ServerResponse as HTTPServerResponse } from "node:http";
+import { type Gzip, createGzip } from "node:zlib";
+import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 import { CookieSameSiteEnum } from "./definition/enum/cookie-same-site.enum.mjs";
+import { resolveContentType } from "./utility/resolve-content-type.mjs";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
@@ -77,7 +78,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 		if (parameters.contentType === undefined)
 		{
-			const CONTENT_TYPE: string | undefined = this.resolveContentType(parameters);
+			const CONTENT_TYPE: string | undefined = resolveContentType(parameters);
 
 			if (CONTENT_TYPE !== undefined)
 			{
@@ -215,7 +216,11 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		this.cookies.set(descriptor.name, descriptor);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this -- Utility method
+	private isSecure(): boolean
+	{
+		return this.req.socket instanceof TLSSocket;
+	}
+
 	private computeCookieAttributes(descriptor: CookieDescriptorInterface): string
 	{
 		const ATTRIBUTES: Array<string> = [];
@@ -266,32 +271,6 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		}
 
 		return `; ${ATTRIBUTES.join("; ")}`;
-	}
-
-	private isSecure(): boolean
-	{
-		return this.req.socket instanceof TLSSocket;
-	}
-
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this -- utility method
-	private resolveContentType(parameters: ReplyInterface): string | undefined
-	{
-		if (parameters.payload === undefined)
-		{
-			return undefined;
-		}
-
-		if (parameters.contentType !== undefined)
-		{
-			return parameters.contentType;
-		}
-
-		if (TypeGuard.isRecord(parameters.payload))
-		{
-			return ContentTypeEnum.JSON;
-		}
-
-		return ContentTypeEnum.TEXT;
 	}
 }
 

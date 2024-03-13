@@ -1,7 +1,7 @@
 import type { Dirent } from "node:fs";
-import type { BasePreHook } from "../../hook/base.pre-hook.mjs";
-import type { BasePostHook } from "../../hook/base.post-hook.mjs";
-import type { BaseErrorHook } from "../../hook/base.error-hook.mjs";
+import type { BasePreHook } from "../hook/base.pre-hook.mjs";
+import type { BasePostHook } from "../hook/base.post-hook.mjs";
+import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import { readdir } from "node:fs/promises";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 

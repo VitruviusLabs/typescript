@@ -7,8 +7,7 @@ class HelloWorldEndpoint extends BaseEndpoint
 	protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
 	protected readonly route: string = "^.*$";
 
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this -- Does nothing much
-	public execute(context: ExecutionContext): void
+	public override execute(context: ExecutionContext): void
 	{
 		context.getResponse().text("Hello World!");
 	}

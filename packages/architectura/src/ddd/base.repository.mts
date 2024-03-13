@@ -16,6 +16,22 @@ abstract class BaseRepository<
 		this.factory = factory;
 	}
 
+	private static SetImmutableFields(model: BaseModel, data: ModelMetadataInterface): void
+	{
+		Reflect.set(model, "id", data.id);
+		Reflect.set(model, "createdAt", data.createdAt);
+		Reflect.set(model, "updatedAt", data.updatedAt);
+		Reflect.set(model, "deletedAt", data.deletedAt);
+	}
+
+	private static ClearImmutableFields(model: BaseModel): void
+	{
+		Reflect.set(model, "id", undefined);
+		Reflect.set(model, "createdAt", undefined);
+		Reflect.set(model, "updatedAt", undefined);
+		Reflect.set(model, "deletedAt", undefined);
+	}
+
 	protected abstract fetchByUUID(uuid: string): Promise<(I & ModelMetadataInterface) | undefined>;
 	protected abstract fetchById(id: number): Promise<(I & ModelMetadataInterface) | undefined>;
 	protected abstract register(model: T): Promise<ModelMetadataInterface>;
@@ -33,7 +49,7 @@ abstract class BaseRepository<
 
 		const model: T = this.factory.create(data);
 
-		this.setImmutableFields(model, data);
+		BaseRepository.SetImmutableFields(model, data);
 
 		return model;
 	}
@@ -61,7 +77,7 @@ abstract class BaseRepository<
 
 		const model: T = this.factory.create(data);
 
-		this.setImmutableFields(model, data);
+		BaseRepository.SetImmutableFields(model, data);
 
 		return model;
 	}
@@ -85,39 +101,21 @@ abstract class BaseRepository<
 			// eslint-disable-next-line @typescript-eslint/no-shadow -- Harmless shadowing
 			const metadata: ModelMetadataInterface = await this.update(model);
 
-			this.setImmutableFields(model, metadata);
+			BaseRepository.SetImmutableFields(model, metadata);
 
 			return;
 		}
 
 		const metadata: ModelMetadataInterface = await this.register(model);
 
-		this.setImmutableFields(model, metadata);
+		BaseRepository.SetImmutableFields(model, metadata);
 	}
 
 	public async delete(model: T): Promise<void>
 	{
 		await this.destroy(model.getId());
 
-		this.clearImmutableFields(model);
-	}
-
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this -- Keep the rest clean
-	private setImmutableFields(model: T, data: ModelMetadataInterface): void
-	{
-		Reflect.set(model, "id", data.id);
-		Reflect.set(model, "createdAt", data.createdAt);
-		Reflect.set(model, "updatedAt", data.updatedAt);
-		Reflect.set(model, "deletedAt", data.deletedAt);
-	}
-
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this -- Keep the rest clean
-	private clearImmutableFields(model: T): void
-	{
-		Reflect.set(model, "id", undefined);
-		Reflect.set(model, "createdAt", undefined);
-		Reflect.set(model, "updatedAt", undefined);
-		Reflect.set(model, "deletedAt", undefined);
+		BaseRepository.ClearImmutableFields(model);
 	}
 }
 

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { ExecutionContext } from "../../../core/execution-context/execution-context.mjs";
 import type { SessionDelegate } from "../entity/session.delegate.mjs";
-import { BasePreHook } from "../../../hook/base.pre-hook.mjs";
+import { BasePreHook } from "../../../core/hook/base.pre-hook.mjs";
 import { Server } from "../../../core/server/server.mjs";
 import { Session } from "../entity/session.model.mjs";
 import { SessionRegistry } from "../entity/session.registry.mjs";

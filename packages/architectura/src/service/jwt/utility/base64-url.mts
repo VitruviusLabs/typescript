@@ -4,7 +4,6 @@ class Base64URL
 	{
 		const BUFFER: Buffer = Buffer.from(value, "utf8");
 		const BASE64: string = BUFFER.toString("base64");
-		// eslint-disable-next-line @stylistic/js/newline-per-chained-call -- simple enough
 		const ENCODED_VALUE: string = BASE64.replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "");
 
 		return ENCODED_VALUE;

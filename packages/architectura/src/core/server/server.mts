@@ -1,9 +1,9 @@
 import type { ServerConfigurationType } from "./definition/type/server-configuration.type.mjs";
 import type { ServerInstantiationType } from "./definition/type/server-instantiation.type.mjs";
 import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
-import type { BasePreHook } from "../../hook/base.pre-hook.mjs";
-import type { BasePostHook } from "../../hook/base.post-hook.mjs";
-import type { BaseErrorHook } from "../../hook/base.error-hook.mjs";
+import type { BasePreHook } from "../hook/base.pre-hook.mjs";
+import type { BasePostHook } from "../hook/base.post-hook.mjs";
+import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import { Server as UnsafeServer, type ServerOptions as UnsafeServerOptions } from "node:http";
 import { Server as SecureServer, type ServerOptions as SecureServerOptions } from "node:https";
 import { extname } from "node:path";
@@ -181,7 +181,6 @@ class Server
 
 			if (ROUTE_REGEXP.exec(REQUEST_PATH) !== null)
 			{
-				// eslint-disable-next-line @stylistic/js/newline-per-chained-call -- Simple case
 				const FILE_PATH: string = REQUEST_PATH.replace(ROUTE_REGEXP, "").padStart(1, "/");
 
 				if (!await FileSystemService.FileExists(`${DIRECTORY}${FILE_PATH}`))
@@ -307,7 +306,7 @@ class Server
 	{
 		TypeAssertion.isInteger(port);
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- range boundaries
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Range boundaries
 		if (port < PortsEnum.LOWEST_AVAILABLE || PortsEnum.HIGHEST_AVAILABLE < port)
 		{
 			throw new Error(`"port" parameter isn't within range of valid ports. It must be an integer between ${PortsEnum.LOWEST_AVAILABLE.toString()} and ${PortsEnum.HIGHEST_AVAILABLE.toString()}`);

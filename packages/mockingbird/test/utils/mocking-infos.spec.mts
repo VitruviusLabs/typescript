@@ -46,7 +46,6 @@ describe("MockingInfos", (): void => {
 
 			const WRAPPER_TRUNCATED = (): void =>
 			{
-				// eslint-disable-next-line @stylistic/js/newline-per-chained-call -- Simple test scenario
 				const ENCODED: string = Buffer.from(JSON.stringify(FAKE_INFOS), "utf-8").toString("base64").slice(1);
 
 				decodeInfos(ENCODED);

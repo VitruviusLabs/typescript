@@ -117,7 +117,7 @@
 			"error",
 			{
 				"enforceForClassFields": true,
-				"ignoreOverrideMethods": false,
+				"ignoreOverrideMethods": true,
 				"ignoreClassesThatImplementAnInterface": "public-fields",
 				"exceptMethods": []
 			}
@@ -1100,7 +1100,7 @@
 					"error",
 					{
 						/*"consistent": true,*/
-						"ignoreChainWithDepth": 2
+						"ignoreChainWithDepth": 3
 					}
 				],
 				"@stylistic/js/no-floating-decimal": "error",

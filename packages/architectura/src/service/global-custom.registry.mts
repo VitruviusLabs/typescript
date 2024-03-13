@@ -2,7 +2,7 @@ import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 
 class GlobalCustomRegistry
 {
-	// eslint-disable-next-line @typescript-eslint/ban-types -- Generic constructor
+	// eslint-disable-next-line @typescript-eslint/ban-types -- Generic constructor type
 	private static readonly REGISTRY: Map<Function, WeakMap<object, object>> = new Map();
 
 	private constructor() {}
