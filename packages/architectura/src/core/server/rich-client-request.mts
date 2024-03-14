@@ -1,3 +1,4 @@
+import type { Socket } from "node:net";
 import { type IncomingHttpHeaders, IncomingMessage } from "node:http";
 import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
 import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
@@ -6,39 +7,34 @@ import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 
 class RichClientRequest extends IncomingMessage
 {
-	private readonly request: ParsedUrlQuery = {};
-	private readonly body: Record<string, unknown> | string = "";
-	private requestedPath: string = "";
-	private pathFragments: Array<string> = [];
-	private query: ParsedUrlQuery = {};
-	private rawBody: Buffer = Buffer.from("");
-	private contentType: string = "";
-	private boundary: string = "";
-	private cookies: Map<string, string> = new Map<string, string>();
+	private requestedPath: string;
+	private pathFragments: Array<string>;
+	private query: ParsedUrlQuery;
+	private rawBody: Buffer;
+	private contentType: string;
+	private boundary: string;
+	private cookies: Map<string, string>;
 
-	/**
-	 * getRawBody
-	 */
-	public async getRawBody(): Promise<Buffer>
+	public constructor(socket: Socket)
 	{
-		if (!this.complete)
-		{
-			this.rawBody = await this.listenForContent();
-		}
+		super(socket);
 
-		return this.rawBody;
+		this.requestedPath = "";
+		this.pathFragments = [];
+		this.query = {};
+		this.rawBody = Buffer.alloc(0);
+		this.contentType = "";
+		this.boundary = "";
+		this.cookies = new Map();
 	}
 
-	/**
-	 * initialise
-	 */
-	public initialise(): void
+	public initialize(): void
 	{
 		if (this.headers["content-type"] !== undefined)
 		{
 			this.contentType = this.headers["content-type"];
 
-			if (this.contentType.includes(ContentTypeEnum.MULTIPART_FORM_DATA))
+			if (this.contentType.includes(ContentTypeEnum.FORM_DATA))
 			{
 				const SPLITTED_CONTENT_TYPE: Array<string> = this.contentType.split("=");
 
@@ -51,7 +47,7 @@ class RichClientRequest extends IncomingMessage
 					LoggerProxy.Warning(`Received invalid multipart/form-data header: ${this.contentType}.`);
 				}
 
-				this.contentType = ContentTypeEnum.MULTIPART_FORM_DATA;
+				this.contentType = ContentTypeEnum.FORM_DATA;
 			}
 		}
 
@@ -90,9 +86,6 @@ class RichClientRequest extends IncomingMessage
 		this.pathFragments = PATH_FRAGMENTS;
 	}
 
-	/**
-	 * listenForContent
-	 */
 	public async listenForContent(): Promise<Buffer>
 	{
 		if (this.complete)
@@ -103,7 +96,7 @@ class RichClientRequest extends IncomingMessage
 		return await new Promise(
 			(resolve: (value: Buffer) => void): void =>
 			{
-				let body: Buffer = Buffer.from("");
+				let body: Buffer = Buffer.alloc(0);
 
 				this.addListener(
 					"data",
@@ -125,12 +118,14 @@ class RichClientRequest extends IncomingMessage
 		);
 	}
 
-	/**
-	 * getBody
-	 */
-	public getBody(): Record<string, unknown> | string
+	public async getRawBody(): Promise<Buffer>
 	{
-		return this.body;
+		if (!this.complete)
+		{
+			this.rawBody = await this.listenForContent();
+		}
+
+		return this.rawBody;
 	}
 
 	public async getBodyAsString(): Promise<string>
@@ -151,33 +146,21 @@ class RichClientRequest extends IncomingMessage
 		return PARSED_BODY;
 	}
 
-	/**
-	 * getBoundary
-	 */
 	public getBoundary(): string
 	{
 		return this.boundary;
 	}
 
-	/**
-	 * getContentType
-	 */
 	public getContentType(): string
 	{
 		return this.contentType;
 	}
 
-	/**
-	 * getHeaders
-	 */
 	public getHeaders(): IncomingHttpHeaders
 	{
 		return this.headers;
 	}
 
-	/**
-	 * getHeader
-	 */
 	public getHeader(name: keyof IncomingHttpHeaders): Array<string> | string | null
 	{
 		let scoped_name: string = name.toString();
@@ -194,65 +177,36 @@ class RichClientRequest extends IncomingMessage
 		return null;
 	}
 
-	/**
-	 * getQuery
-	 */
 	public getQuery(): ParsedUrlQuery
 	{
 		return this.query;
 	}
 
-	/**
-	 * setQuery
-	 */
 	public setQuery(query: ParsedUrlQuery): void
 	{
 		this.query = query;
 	}
 
-	/**
-	 * getRequestedPath
-	 */
 	public getRequestedPath(): string
 	{
 		return this.requestedPath;
 	}
 
-	/**
-	 * getPathFragments
-	 */
 	public getPathFragments(): Array<string>
 	{
 		return this.pathFragments;
 	}
 
-	/**
-	 * getRequest
-	 */
-	public getRequest(): ParsedUrlQuery
-	{
-		return this.request;
-	}
-
-	/**
-	 * setCookie
-	 */
 	public setCookie(key: string, value: string): void
 	{
 		this.cookies.set(key, value);
 	}
 
-	/**
-	 * getCookie
-	 */
 	public getCookie(key: string): string | undefined
 	{
 		return this.cookies.get(key);
 	}
 
-	/**
-	 * setCookies
-	 */
 	public setCookies(cookies: Map<string, string> | Record<string, string>): void
 	{
 		if (cookies instanceof Map)
@@ -268,12 +222,26 @@ class RichClientRequest extends IncomingMessage
 		}
 	}
 
-	/**
-	 * getCookies
-	 */
-	public getCookies(): Map<string, string>
+	public getCookies(): ReadonlyMap<string, string>
 	{
 		return this.cookies;
+	}
+
+	public getNormalizedHeader(name: string): Array<string>
+	{
+		const HEADER: Array<string> | string | null = this.getHeader(name);
+
+		if (HEADER === null)
+		{
+			return [];
+		}
+
+		if (Array.isArray(HEADER))
+		{
+			return HEADER;
+		}
+
+		return [HEADER];
 	}
 }
 

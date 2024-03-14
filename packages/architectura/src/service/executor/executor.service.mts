@@ -1,28 +1,27 @@
-import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 import type { ExecutorInstantiationInterface } from "./definition/interface/executor-instantiation.interface.mjs";
+import { setTimeout as timeout } from "node:timers/promises";
+import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
 class ExecutorService
 {
 	private readonly maxTries: number;
-	private readonly baseDelay: number;
+	private readonly retryDelay: number;
 	private readonly callback: (() => Promise<void> | void);
+	private readonly customComputeDelay: ((tries: number, retry_delay: number) => number) | undefined;
 
 	protected constructor(value: ExecutorInstantiationInterface)
 	{
 		this.maxTries = value.maxTries;
-		this.baseDelay = value.baseDelay;
+		this.retryDelay = value.retryDelay;
 
 		this.callback = value.callback;
 
-		if (TypeGuard.hasProperty(value, "customDelayCalculator") && TypeGuard.isFunction(value.customDelayCalculator))
+		if (TypeGuard.isFunction(value.customDelayComputor))
 		{
-			this.calculateDelay = value.customDelayCalculator;
+			this.customComputeDelay = value.customDelayComputor;
 		}
 	}
 
-	/**
-	 * Create
-	 */
 	public static Create(value: ExecutorInstantiationInterface): ExecutorService
 	{
 		return new ExecutorService(value);
@@ -30,10 +29,7 @@ class ExecutorService
 
 	public async execute(): Promise<void>
 	{
-		let tries: number = 0;
-		let delay: number = this.baseDelay;
-
-		while (tries < this.maxTries)
+		for (let tries: number = 0; tries < this.maxTries; ++tries)
 		{
 			try
 			{
@@ -43,31 +39,19 @@ class ExecutorService
 			}
 			catch
 			{
-				++tries;
-				delay = await this.wait(delay);
+				await timeout(this.computeDelay(tries + 1));
 			}
 		}
 	}
 
-	private calculateDelay(previous_delay: number): number
+	private computeDelay(failed_tries: number): number
 	{
-		return previous_delay + this.baseDelay;
-	}
+		if (this.customComputeDelay === undefined)
+		{
+			return this.retryDelay * failed_tries;
+		}
 
-	private async wait(delay: number): Promise<number>
-	{
-		const NEW_DELAY: number = this.calculateDelay(delay);
-
-		await new Promise(
-			(resolve: (value: unknown) => void): NodeJS.Timeout =>
-			{
-				// @TODO: We may be able to avoid this situation.
-				// eslint-disable-next-line no-promise-executor-return -- This is a WIP.
-				return setTimeout(resolve, NEW_DELAY);
-			}
-		);
-
-		return NEW_DELAY;
+		return this.customComputeDelay(failed_tries, this.retryDelay);
 	}
 }
 

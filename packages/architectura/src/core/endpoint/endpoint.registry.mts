@@ -1,5 +1,4 @@
 import type { Dirent } from "node:fs";
-import { basename } from "node:path";
 import { type ConstructorOf, TypeGuard } from "@vitruvius-labs/ts-predicate";
 import { HelloWorldEndpoint } from "../../endpoint/hello-world.endpoint.mjs";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
@@ -11,10 +10,7 @@ class EndpointRegistry
 	private static readonly ENDPOINTS_DIRECTORIES: Array<string> = [];
 	private static readonly ENDPOINTS: Map<string, BaseEndpoint> = new Map();
 
-	/**
-	 * GetEndpoints
-	 */
-	public static GetEndpoints(): Map<string, BaseEndpoint>
+	public static GetEndpoints(): ReadonlyMap<string, BaseEndpoint>
 	{
 		if (this.ENDPOINTS.size === 0)
 		{
@@ -28,9 +24,6 @@ class EndpointRegistry
 		return this.ENDPOINTS;
 	}
 
-	/**
-	 * AddEndpoint
-	 */
 	public static AddEndpoint(endpoint: BaseEndpoint): void
 	{
 		const METHOD: string = endpoint.getMethod();
@@ -56,9 +49,6 @@ class EndpointRegistry
 		this.ENDPOINTS_DIRECTORIES.push(directory);
 	}
 
-	/**
-	 * RegisterEndpoints
-	 */
 	public static async RegisterEndpoints(): Promise<void>
 	{
 		for (const DIRECTORY of this.ENDPOINTS_DIRECTORIES)
@@ -97,15 +87,8 @@ class EndpointRegistry
 
 			if (TypeGuard.isRecord(EXPORTS))
 			{
-				const KEYS: Array<string> = [
-					basename(path, ".mjs"),
-					"endpoint",
-				];
-
-				for (const KEY of KEYS)
+				for (let [, endpoint] of Object.entries(EXPORTS))
 				{
-					let endpoint: unknown = EXPORTS[KEY];
-
 					if (this.IsEndpointConstructor(endpoint))
 					{
 						endpoint = new endpoint();

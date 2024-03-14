@@ -1,9 +1,9 @@
 interface ExecutorInstantiationInterface
 {
 	maxTries: number;
-	baseDelay: number;
+	retryDelay: number;
 	callback: () => Promise<void>;
-	customDelayCalculator?: (previous_delay: number) => number;
+	customDelayComputor?: (failed_tries: number, retry_delay: number) => number;
 }
 
 export type { ExecutorInstantiationInterface };

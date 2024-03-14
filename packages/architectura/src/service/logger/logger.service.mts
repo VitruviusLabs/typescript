@@ -1,22 +1,18 @@
-import { Singleton } from "../../utility/singleton.mjs";
-import { Time } from "../../utility/time.mjs";
-import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
-import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";
 import type { LoggerServiceWriteInterface } from "./definition/interface/logger-service-write.interface.mjs";
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
+import { Singleton } from "../../utility/singleton.mjs";
+import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
+import { DateEnum } from "../../definition/enum/date.enum.mjs";
+import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";
 
 class LoggerService extends Singleton implements LoggerInterface
 {
-	protected readonly dateFormat: string = "Y-m-d H:i:s";
-
-	/**
-	 * Write
-	 */
 	public write(content: LoggerServiceWriteInterface): void
 	{
 		const LEVEL: string = content.level.toUpperCase();
-		const DATE: Time = new Time();
-		const FORMATTED_DATE: string = DATE.format(this.dateFormat);
+		const DATE: Date = new Date();
+		const FORMATTED_DATE: string = DATE.toISOString().slice(0, DateEnum.ISO_DATETIME_LENGTH).replace("T", " ");
+
 		let logLinePrefix: string = `[${FORMATTED_DATE}] [${LEVEL}]`;
 
 		if (content.context !== undefined)
@@ -30,9 +26,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		console.log(LOG_LINE);
 	}
 
-	/**
-	 * Debug
-	 */
 	public debug(message: string, context?: string): void
 	{
 		this.write({
@@ -42,9 +35,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Informational
-	 */
 	public informational(message: string, context?: string): void
 	{
 		this.write({
@@ -54,17 +44,11 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Info
-	 */
 	public info(message: string, context?: string): void
 	{
 		this.informational(message, context);
 	}
 
-	/**
-	 * Notice
-	 */
 	public notice(message: string, context?: string): void
 	{
 		this.write({
@@ -74,9 +58,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Warning
-	 */
 	public warning(message: string, context?: string): void
 	{
 		this.write({
@@ -86,9 +67,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Error
-	 */
 	public error(content: Error | string, context?: string): void
 	{
 		if (content instanceof Error)
@@ -105,9 +83,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Critical
-	 */
 	public critical(message: string, context?: string): void
 	{
 		this.write({
@@ -117,9 +92,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Alert
-	 */
 	public alert(message: string, context?: string): void
 	{
 		this.write({
@@ -129,9 +101,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * Emergency
-	 */
 	public emergency(message: string, context?: string): void
 	{
 		this.write({
@@ -141,9 +110,6 @@ class LoggerService extends Singleton implements LoggerInterface
 		});
 	}
 
-	/**
-	 * LogError
-	 */
 	private logError(error: Error): void
 	{
 		const STACK_TRACE_PARSER: StackTraceParserService = new StackTraceParserService(error);

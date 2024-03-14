@@ -1,6 +1,7 @@
 const enum JWTConstantEnum
 {
-	TokenParts = 3,
+	TOKEN_PARTS = 3,
+	BEARER_PREFIX = "Bearer ",
 }
 
 export { JWTConstantEnum };

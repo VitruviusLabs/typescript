@@ -222,7 +222,6 @@ declare const Request: {
 
   type RequestInfo = Request | string;
 
-  // eslint-disable-next-line @typescript-eslint/no-shadow
 declare function fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 
 interface ReadableStreamDefaultReader<R = unknown> extends ReadableStreamGenericReader
@@ -425,7 +424,6 @@ interface FormData
 	getAll: (name: string) => Array<FormDataEntryValue>;
 	has: (name: string) => boolean;
 	set: (name: string, value: Blob | string, fileName?: string) => void;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	forEach: (callbackfn: (value: FormDataEntryValue, key: string, parent: FormData) => void, thisArg?: any) => void;
 }
 

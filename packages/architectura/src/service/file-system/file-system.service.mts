@@ -7,9 +7,6 @@ import type { FileSystemErrorInterface } from "./definition/interface/file-syste
 
 class FileSystemService
 {
-	/**
-	 * IsFileSystemError
-	 */
 	public static IsFileSystemError(error: unknown): error is FileSystemErrorInterface
 	{
 		return (
@@ -19,9 +16,6 @@ class FileSystemService
 		);
 	}
 
-	/**
-	 * ComputeRootDirectory
-	 */
 	public static ComputeRootDirectory(): string
 	{
 		const FILE_PATH: string = fileURLToPath(import.meta.url);
@@ -31,9 +25,6 @@ class FileSystemService
 		return GRANDPARENT_DIRECTORY;
 	}
 
-	/**
-	 * FileExists
-	 */
 	public static async FileExists(file_path: string): Promise<boolean>
 	{
 		try
@@ -108,9 +99,6 @@ class FileSystemService
 		return false;
 	}
 
-	/**
-	 * ReadFile
-	 */
 	public static async ReadFile(file_path: string): Promise<Buffer | string>
 	{
 		const EXISTS: boolean = await FileSystemService.FileExists(file_path);
@@ -125,9 +113,6 @@ class FileSystemService
 		return FILE;
 	}
 
-	/**
-	 * ReadFileAsBuffer
-	 */
 	public static async ReadFileAsBuffer(file_path: string): Promise<Buffer>
 	{
 		const FILE: Buffer | string = await FileSystemService.ReadFile(file_path);
@@ -147,9 +132,6 @@ class FileSystemService
 		return STREAM;
 	}
 
-	/**
-	 * ReadTextFile
-	 */
 	public static async ReadTextFile(file_path: string): Promise<string>
 	{
 		const EXISTS: boolean = await FileSystemService.FileExists(file_path);
@@ -164,9 +146,6 @@ class FileSystemService
 		return FILE;
 	}
 
-	/**
-	 * OpenFile
-	 */
 	public static async OpenFile(file_path: string, flags: string): Promise<FileHandle>
 	{
 		const EXISTS: boolean = await FileSystemService.FileExists(file_path);
@@ -181,9 +160,6 @@ class FileSystemService
 		return FILE;
 	}
 
-	/**
-	 * ReadDirectory
-	 */
 	public static async ReadDirectory(directory: string): Promise<Array<Dirent>>
 	{
 		return await readdir(directory, { encoding: "utf-8", withFileTypes: true });
