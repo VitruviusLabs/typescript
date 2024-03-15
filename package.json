@@ -16,15 +16,15 @@
 	"license": "UNLICENSED",
 	"type": "module",
 	"devDependencies": {
-		"@stryker-mutator/core": "^8.2.4",
-		"@stryker-mutator/typescript-checker": "^8.2.4",
-		"@stylistic/eslint-plugin": "^1.6.2",
-		"@types/node": "^20.11.19",
-		"@typescript-eslint/eslint-plugin": "^7.0.2",
-		"@typescript-eslint/parser": "^7.0.2",
+		"@stryker-mutator/core": "^8.2.6",
+		"@stryker-mutator/typescript-checker": "^8.2.6",
+		"@stylistic/eslint-plugin": "^1.7.0",
+		"@types/node": "^20.11.28",
+		"@typescript-eslint/eslint-plugin": "^7.2.0",
+		"@typescript-eslint/parser": "^7.2.0",
 		"@vitruvius-labs/testing-ground": "workspace:^",
 		"c8": "^9.1.0",
-		"cspell": "^8.4.0",
+		"cspell": "^8.6.0",
 		"eslint": "^8.57.0",
 		"eslint-import-resolver-typescript": "^3.6.1",
 		"eslint-plugin-eslint-comments": "^3.2.0",
@@ -36,6 +36,6 @@
 		"eslint-plugin-unused-imports": "^3.1.0",
 		"husky": "^9.0.11",
 		"lint-staged": "^15.2.2",
-		"typescript": "^5.3.3"
+		"typescript": "^5.4.2"
 	}
 }

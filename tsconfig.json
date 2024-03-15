@@ -2,7 +2,6 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"compileOnSave": false,
 	"compilerOptions": {
-		"baseUrl": ".",
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
 		"skipLibCheck": true,
