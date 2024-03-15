@@ -1,0 +1,22 @@
+{
+	"src": "./src",
+	"exclude": [
+		"**/__tests__/**",
+		"src/Core/ExecutionContext/ExecutionContextInstantiationInterface.mts",
+		"src/Service/FileSystem/FileSystemErrorInterface.mts"
+	],
+	"extension": [
+		".mts"
+	],
+	"reporter": [
+		"html"
+	],
+	"report-dir": "./coverage",
+	"skip-full": true,
+	"check-coverage": true,
+	"all": true,
+	"statements": 100,
+	"branches": 100,
+	"functions": 100,
+	"lines": 100
+}
