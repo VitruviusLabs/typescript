@@ -8,8 +8,6 @@ import type { SignatureInstantiationInterface } from "./definitions/interfaces/s
 
 class Signature
 {
-	private readonly algorithm: string = "AWS4-HMAC-SHA256";
-
 	private readonly accessKeyId: string;
 	private readonly accessSecret: string;
 	private readonly region: string;
@@ -28,7 +26,7 @@ class Signature
 	private signedHeadersString: string = "";
 	private canonicalQueryString: string = "";
 	private canonicalRequest: string = "";
-	private signingKey: Buffer = Buffer.from("");
+	private signingKey: Buffer = Buffer.alloc(0);
 	private credentialScope: string = "";
 	private stringToSign: string = "";
 	private signature: string = "";
@@ -76,7 +74,7 @@ class Signature
 		return this.body;
 	}
 
-	public getCanonicalUri(): string
+	public getCanonicalURI(): string
 	{
 		return this.url.pathname;
 	}
@@ -156,6 +154,7 @@ class Signature
 		this.generateBodyHash();
 		this.generateAMZDate();
 		this.generateComputedHeaders();
+		this.appendAuthorizationHeaderMethodHeaders();
 		this.generateSignedHeaders();
 		this.generateCanonicalQueryString();
 		this.generateCanonicalRequest();
@@ -176,27 +175,18 @@ class Signature
 
 	public getPresignedURL(expires: number): string
 	{
-		// const signature: SignatureInterface = this.generate();
+		const previous_method: HTTPMethodEnum = this.method;
+		const previous_body: NodeBuffer | string = this.body;
+		const previous_headers: Headers = this.headers;
 
-		this.method = HTTPMethodEnum.GET;
-		this.body = "";
-		this.headers = new Headers();
-		this.headers.append("host", this.url.host);
-
-		this.generateBodyHash();
+		this.resetForPresigned();
 		this.generateAMZDate();
 		this.generateComputedHeaders();
 		this.generateSignedHeaders();
-
-		this.url.searchParams.append("X-Amz-Algorithm", this.algorithm);
-		this.url.searchParams.append("X-Amz-Credential", `${this.accessKeyId}/${this.credentialScope}`);
-		this.url.searchParams.append("X-Amz-Date", this.amzFullDate);
-		this.url.searchParams.append("X-Amz-Expires", expires.toString());
-		this.url.searchParams.append("X-Amz-SignedHeaders", this.signedHeadersString);
-
-		this.generateCanonicalQueryString();
-		this.generateCanonicalRequestForPresigned();
 		this.generateCredentialScope();
+		this.appendParametersForPresigned(expires);
+		this.generateCanonicalQueryString();
+		this.generateCanonicalRequest();
 		this.generateStringToSign();
 		this.getSignatureKey();
 		this.generateSignature();
@@ -206,12 +196,25 @@ class Signature
 
 		presignedURL.searchParams.append("X-Amz-Signature", this.signature);
 
+		this.method = previous_method;
+		this.body = previous_body;
+		this.headers = previous_headers;
+
 		return presignedURL.toString();
+	}
+
+	private resetForPresigned(): void
+	{
+		this.method = HTTPMethodEnum.GET;
+		this.body = SignatureEnum.PRESIGNED_METHOD_BODY;
+		this.bodyHash = SignatureEnum.PRESIGNED_METHOD_BODY;
+		this.headers = new Headers();
+		this.headers.append("host", this.url.host);
 	}
 
 	private generateBodyHash(): void
 	{
-		this.bodyHash = createHash("sha256").update(this.body)
+		this.bodyHash = createHash(SignatureEnum.CRYPTO_ALGORITHM).update(this.body)
 			.digest("hex");
 	}
 
@@ -240,16 +243,26 @@ class Signature
 	private generateComputedHeaders(): void
 	{
 		this.computedHeaders = new Headers(this.headers);
+	}
+
+	private appendAuthorizationHeaderMethodHeaders(): void
+	{
 		this.computedHeaders.append("x-amz-content-sha256", this.bodyHash);
 		this.computedHeaders.append("x-amz-date", this.amzFullDate);
+	}
+
+	private appendParametersForPresigned(expires: number): void
+	{
+		this.url.searchParams.append("X-Amz-Algorithm", SignatureEnum.AWS_ALGORITHM);
+		this.url.searchParams.append("X-Amz-Credential", `${this.accessKeyId}/${this.credentialScope}`);
+		this.url.searchParams.append("X-Amz-Date", this.amzFullDate);
+		this.url.searchParams.append("X-Amz-Expires", expires.toString());
+		this.url.searchParams.append("X-Amz-SignedHeaders", this.signedHeadersString);
 	}
 
 	private generateSignedHeaders(): void
 	{
 		const canonicalHeaders: Array<string> = [];
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
-		// const headersKeys: Array<string> = Array.from(this.computedHeaders.keys());
-
 		const headerNames: Array<string> = [];
 
 		for (const [name, value] of this.computedHeaders.entries())
@@ -261,7 +274,7 @@ class Signature
 		const canonicalHeadersString: string = canonicalHeaders.join("\n");
 		const signedHeaders: string = headerNames.join(";");
 
-		this.canonicalHeadersString = canonicalHeadersString;
+		this.canonicalHeadersString = `${canonicalHeadersString}\n`;
 		this.signedHeadersString = signedHeaders;
 	}
 
@@ -276,27 +289,11 @@ class Signature
 	{
 		const canonicalRequest: Array<string> = [
 			this.method,
-			this.getCanonicalUri(),
+			this.getCanonicalURI(),
 			this.canonicalQueryString,
 			this.canonicalHeadersString,
-			"",
 			this.signedHeadersString,
 			this.bodyHash,
-		];
-
-		this.canonicalRequest = canonicalRequest.join("\n");
-	}
-
-	private generateCanonicalRequestForPresigned(): void
-	{
-		const canonicalRequest: Array<string> = [
-			this.method,
-			this.getCanonicalUri(),
-			this.canonicalQueryString,
-			this.canonicalHeadersString,
-			"",
-			this.signedHeadersString,
-			"UNSIGNED-PAYLOAD",
 		];
 
 		this.canonicalRequest = canonicalRequest.join("\n");
@@ -309,11 +306,11 @@ class Signature
 
 	private generateStringToSign(): void
 	{
-		const elementsToSign: Array<string> = [
-			this.algorithm,
+		const elementsToSign: Array<SignatureEnum | string> = [
+			SignatureEnum.AWS_ALGORITHM,
 			this.amzFullDate,
 			this.credentialScope,
-			createHash("sha256").update(this.canonicalRequest)
+			createHash(SignatureEnum.CRYPTO_ALGORITHM).update(this.canonicalRequest)
 				.digest("hex"),
 		];
 
@@ -322,13 +319,13 @@ class Signature
 
 	private getSignatureKey(): void
 	{
-		const dateBuffer: Buffer = createHmac("sha256", `AWS4${this.accessSecret}`).update(this.amzShortDate)
+		const dateBuffer: Buffer = createHmac(SignatureEnum.CRYPTO_ALGORITHM, `AWS4${this.accessSecret}`).update(this.amzShortDate)
 			.digest();
-		const regionBuffer: Buffer = createHmac("sha256", dateBuffer).update(this.region)
+		const regionBuffer: Buffer = createHmac(SignatureEnum.CRYPTO_ALGORITHM, dateBuffer).update(this.region)
 			.digest();
-		const serviceBuffer: Buffer = createHmac("sha256", regionBuffer).update(this.service)
+		const serviceBuffer: Buffer = createHmac(SignatureEnum.CRYPTO_ALGORITHM, regionBuffer).update(this.service)
 			.digest();
-		const signingBuffer: Buffer = createHmac("sha256", serviceBuffer).update("aws4_request")
+		const signingBuffer: Buffer = createHmac(SignatureEnum.CRYPTO_ALGORITHM, serviceBuffer).update("aws4_request")
 			.digest();
 
 		this.signingKey = signingBuffer;
@@ -336,14 +333,14 @@ class Signature
 
 	private generateSignature(): void
 	{
-		this.signature = createHmac("sha256", this.signingKey).update(this.stringToSign)
+		this.signature = createHmac(SignatureEnum.CRYPTO_ALGORITHM, this.signingKey).update(this.stringToSign)
 			.digest("hex");
 	}
 
 	private generateAuthorizationHeader(): void
 	{
 		this.authorizationHeader = [
-			this.algorithm,
+			SignatureEnum.AWS_ALGORITHM,
 			`Credential=${this.accessKeyId}/${this.credentialScope},`,
 			`SignedHeaders=${this.signedHeadersString},`,
 			`Signature=${this.signature}`,

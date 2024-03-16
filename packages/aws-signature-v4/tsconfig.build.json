@@ -4,7 +4,6 @@
 		"outDir": "./build/esm",
 		"declarationDir": "./build/types",
 		"rootDir": "./src",
-		"baseUrl": ".",
 		"declaration": true,
 		"declarationMap": false,
 		"removeComments": false,
