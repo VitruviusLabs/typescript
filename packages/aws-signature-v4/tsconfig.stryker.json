@@ -1,0 +1,15 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"sourceMap": true
+	},
+	"include": [
+		"./src/**/*",
+		"./test/**/*",
+		"./mocks/**/*"
+	],
+	"ts-node": {
+	  "files": true,
+	  "swc": true
+	}
+}

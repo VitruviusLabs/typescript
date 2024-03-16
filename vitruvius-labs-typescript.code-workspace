@@ -1,7 +1,7 @@
 {
 	"folders": [
 		{
-			"name": "nx-workspace",
+			"name": "pnpm-workspace",
 			"path": "."
 		},
 		{
@@ -19,6 +19,10 @@
 		{
 			"name": "architectura",
 			"path": "./packages/architectura"
+		},
+		{
+			"name": "aws-signature-v4",
+			"path": "./packages/aws-signature-v4"
 		},
 		{
 			"name": "functional",
@@ -55,6 +59,12 @@
 		"js/ts.implicitProjectConfig.target": "ESNext",
 		"typescript.tsdk": "./node_modules/typescript/bin",
 		"typescript.tsserver.maxTsServerMemory": 4096,
-		"typescript.preferences.quoteStyle": "double"
+		"typescript.preferences.quoteStyle": "double",
+		"editor.detectIndentation": false,
+		"editor.indentSize": "tabSize",
+		"editor.insertSpaces": false,
+		"[yaml]": {
+			"editor.insertSpaces": true,
+		}
 	}
 }

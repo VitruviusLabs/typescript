@@ -6,7 +6,8 @@
 	},
 	"include": [
 		"./src",
-		"./test"
+		"./test",
+		"./mocks"
 	],
 	"exclude": [
 		"./node_modules"
