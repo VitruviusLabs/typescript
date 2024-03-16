@@ -29,10 +29,13 @@
 	"jsonReporter": {
 		"fileName": "./reports/stryker/mutation.json"
 	},
-	"commandRunner": {
-		"command": "pnpm test:unit:stryker"
-	},
+	"buildCommand": "tsc -b tsconfig.stryker.json",
 	"coverageAnalysis": "perTest",
+  "mochaOptions": {
+    "config": ".mocharc.json",
+    "spec": [ "./build/**/*.spec.jts"]
+  },
 	"ignoreStatic": true,
-	"tsconfigFile": "tsconfig.stryker.json"
+	"tsconfigFile": "tsconfig.stryker.json",
+  "testRunner": "mocha"
 }
