@@ -1,1 +1,1 @@
-export * from "./enum/_index.mjs";
+export * from "./enum/http-method.enum.mjs";

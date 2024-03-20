@@ -1,7 +1,7 @@
 {
 	"folders": [
 		{
-			"name": "nx-workspace",
+			"name": "pnpm-workspace",
 			"path": "."
 		},
 		{
@@ -26,8 +26,20 @@
 		}
 	],
 	"settings": {
-		// Linters & prettier extensions settings
+		// Formatting
 		"files.trimTrailingWhitespace": true,
+		"files.insertFinalNewline": true,
+		"editor.detectIndentation": false,
+		"editor.indentSize": "tabSize",
+		"editor.insertSpaces": false,
+		// Formatting overrides
+		"[yaml]": {
+			"editor.insertSpaces": true
+		},
+		"[shellscript]": {
+			"editor.insertSpaces": true
+		},
+		// Linters & prettier extensions settings
 		"eslint.validate": [
 			"javascript",
 			"typescript"
@@ -55,6 +67,6 @@
 		"js/ts.implicitProjectConfig.target": "ESNext",
 		"typescript.tsdk": "./node_modules/typescript/bin",
 		"typescript.tsserver.maxTsServerMemory": 4096,
-		"typescript.preferences.quoteStyle": "double"
+		"typescript.preferences.quoteStyle": "double",
 	}
 }
