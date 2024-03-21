@@ -1439,6 +1439,15 @@
 					{
 						"blankLine": "any",
 						"prev": [
+							"case"
+						],
+						"next": [
+							"case"
+						]
+					},
+					{
+						"blankLine": "any",
+						"prev": [
 							"import"
 						],
 						"next": [
