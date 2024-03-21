@@ -1,4 +1,4 @@
-import type { HTTPMethodEnum } from "./definition/enum/http-method.enum.mjs";
+import type { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 import type { BasePreHook } from "../hook/base.pre-hook.mjs";
 import type { BasePostHook } from "../hook/base.post-hook.mjs";
 import type { BaseErrorHook } from "../hook/base.error-hook.mjs";

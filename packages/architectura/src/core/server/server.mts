@@ -20,6 +20,7 @@ import { RichServerResponse } from "./rich-server-response.mjs";
 import { ContentType } from "../../utility/content-type/content-type.mjs";
 import { GlobalConfiguration } from "./global-configuration.mjs";
 import { BaseDomain } from "../../ddd/base.domain.mjs";
+import { HTTPMethodEnum } from "../_index.mjs";
 
 class Server
 {
@@ -173,7 +174,33 @@ class Server
 
 	private static async HandlePublicAssets(context: ExecutionContext): Promise<boolean>
 	{
-		const REQUEST_PATH: string = context.getRequest().getRequestedPath();
+		if (context.getRequest().method !== HTTPMethodEnum.GET)
+		{
+			return false;
+		}
+
+		const FILE_PATH: string | undefined = await this.FindPublicAsset(context.getRequest());
+
+		if (FILE_PATH === undefined)
+		{
+			return false;
+		}
+
+		const FILE: Buffer = await FileSystemService.ReadFileAsBuffer(FILE_PATH);
+
+		const CONTENT_TYPE: string = ContentType.Get(extname(FILE_PATH));
+
+		context.getResponse().replyWith({
+			payload: FILE,
+			contentType: CONTENT_TYPE,
+		});
+
+		return true;
+	}
+
+	private static async FindPublicAsset(request: RichClientRequest): Promise<string | undefined>
+	{
+		const REQUEST_PATH: string = request.getRequestedPath();
 
 		for (const [ROUTE, DIRECTORY] of GlobalConfiguration.GetPublicAssetDirectories())
 		{
@@ -183,58 +210,61 @@ class Server
 			{
 				const FILE_PATH: string = REQUEST_PATH.replace(ROUTE_REGEXP, "").padStart(1, "/");
 
-				if (!await FileSystemService.FileExists(`${DIRECTORY}${FILE_PATH}`))
+				if (await FileSystemService.FileExists(`${DIRECTORY}${FILE_PATH}`))
 				{
-					continue;
+					return `${DIRECTORY}${FILE_PATH}`;
 				}
-
-				const FILE: Buffer = await FileSystemService.ReadFileAsBuffer(`${DIRECTORY}${FILE_PATH}`);
-
-				const CONTENT_TYPE: string = ContentType.Get(extname(FILE_PATH));
-
-				context.getResponse().replyWith({
-					payload: FILE,
-					contentType: CONTENT_TYPE,
-				});
-
-				return true;
 			}
 		}
 
-		return false;
+		return undefined;
 	}
 
 	private static async HandleEndpoints(context: ExecutionContext): Promise<boolean>
 	{
-		const REQUEST_PATH: string = context.getRequest().getRequestedPath();
-		const RESPONSE: RichServerResponse = context.getResponse();
+		const ENDPOINT: BaseEndpoint | undefined = this.FindMatchingEndpoint(context.getRequest());
+
+		if (ENDPOINT === undefined)
+		{
+			return false;
+		}
+
+		try
+		{
+			await this.RunPreHooks(ENDPOINT, context);
+			await ENDPOINT.execute(context);
+			await this.RunPostHooks(ENDPOINT, context);
+
+			const RESPONSE: RichServerResponse = context.getResponse();
+
+			if (!RESPONSE.isDone())
+			{
+				RESPONSE.send();
+			}
+		}
+		catch (error: unknown)
+		{
+			await this.RunErrorHooks(ENDPOINT, context, error);
+		}
+
+		return true;
+	}
+
+	private static FindMatchingEndpoint(request: RichClientRequest): BaseEndpoint | undefined
+	{
+		const REQUEST_METHOD: string | undefined = request.method;
+		const REQUEST_PATH: string = request.getRequestedPath();
 		const ENDPOINTS: ReadonlyMap<string, BaseEndpoint> = EndpointRegistry.GetEndpoints();
 
 		for (const [, ENDPOINT] of ENDPOINTS)
 		{
-			if (new RegExp(ENDPOINT.getRoute()).test(REQUEST_PATH))
+			if (ENDPOINT.getMethod() === REQUEST_METHOD && new RegExp(ENDPOINT.getRoute()).test(REQUEST_PATH))
 			{
-				try
-				{
-					await this.RunPreHooks(ENDPOINT, context);
-					await ENDPOINT.execute(context);
-					await this.RunPostHooks(ENDPOINT, context);
-
-					if (!RESPONSE.writableEnded)
-					{
-						RESPONSE.send();
-					}
-				}
-				catch (error: unknown)
-				{
-					await this.RunErrorHooks(ENDPOINT, context, error);
-				}
-
-				return true;
+				return ENDPOINT;
 			}
 		}
 
-		return false;
+		return undefined;
 	}
 
 	private static async RunPreHooks(endpoint: BaseEndpoint, context: ExecutionContext): Promise<void>
