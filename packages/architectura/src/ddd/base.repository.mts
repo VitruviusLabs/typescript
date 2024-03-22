@@ -18,7 +18,7 @@ abstract class BaseRepository<
 
 	private static SetImmutableFields(model: BaseModel, data: ModelMetadataInterface): void
 	{
-		Reflect.set(model, "id", data.id);
+		Reflect.set(model, "id", BigInt(data.id));
 		Reflect.set(model, "createdAt", data.createdAt);
 		Reflect.set(model, "updatedAt", data.updatedAt);
 		Reflect.set(model, "deletedAt", data.deletedAt);
@@ -33,10 +33,10 @@ abstract class BaseRepository<
 	}
 
 	protected abstract fetchByUUID(uuid: string): Promise<(I & ModelMetadataInterface) | undefined>;
-	protected abstract fetchById(id: number): Promise<(I & ModelMetadataInterface) | undefined>;
+	protected abstract fetchById(id: bigint): Promise<(I & ModelMetadataInterface) | undefined>;
 	protected abstract register(model: T): Promise<ModelMetadataInterface>;
 	protected abstract update(model: T): Promise<ModelMetadataInterface>;
-	protected abstract destroy(id: number): Promise<void>;
+	protected abstract destroy(id: bigint): Promise<void>;
 
 	public async findByUUID(uuid: string): Promise<T | undefined>
 	{
@@ -66,7 +66,7 @@ abstract class BaseRepository<
 		return model;
 	}
 
-	public async findById(id: number): Promise<T | undefined>
+	public async findById(id: bigint): Promise<T | undefined>
 	{
 		const data: (I & ModelMetadataInterface) | undefined = await this.fetchById(id);
 
@@ -82,7 +82,7 @@ abstract class BaseRepository<
 		return model;
 	}
 
-	public async getById(id: number): Promise<T>
+	public async getById(id: bigint): Promise<T>
 	{
 		const model: T | undefined = await this.findById(id);
 

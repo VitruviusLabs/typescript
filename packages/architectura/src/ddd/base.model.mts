@@ -4,7 +4,7 @@ import type { BaseModelInstantiationInterface } from "./definition/interface/bas
 
 abstract class BaseModel
 {
-	protected readonly id: number | undefined;
+	protected readonly id: bigint | undefined;
 	protected readonly uuid: string;
 	protected readonly createdAt: Date | undefined;
 	protected readonly updatedAt: Date | undefined;
@@ -23,7 +23,7 @@ abstract class BaseModel
 		return this.id !== undefined;
 	}
 
-	public getId(): number
+	public getId(): bigint
 	{
 		if (this.id === undefined)
 		{
