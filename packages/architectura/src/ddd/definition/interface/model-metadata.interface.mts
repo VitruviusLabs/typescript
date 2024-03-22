@@ -1,6 +1,6 @@
 interface ModelMetadataInterface
 {
-	id: number;
+	id: bigint | number | string;
 	uuid: string;
 	createdAt: Date;
 	updatedAt: Date;
