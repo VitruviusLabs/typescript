@@ -1,5 +1,5 @@
 import type { Buffer as NodeBuffer } from "node:buffer";
-import type { HTTPMethodEnum } from "../enums/http-method.enum.mjs";
+import type { HTTPMethodEnum } from "../enum/http-method.enum.mjs";
 
 interface SignatureInstantiationInterface
 {
