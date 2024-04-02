@@ -9,7 +9,7 @@
 		"./mocks/**/*"
 	],
 	"ts-node": {
-	  "files": true,
-	  "swc": true
+		"files": true,
+		"swc": true
 	}
 }
