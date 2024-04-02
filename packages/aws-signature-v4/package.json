@@ -6,7 +6,8 @@
 		"name": "VitruviusLabs"
 	},
 	"contributors": [
-		"Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>"
+		"Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>",
+		"Benjamin Blum <benjamin.blum.98@gmail.com>"
 	],
 	"homepage": "https://github.com/VitruviusLabs/typescript/tree/main/packages/aws-signature-v4#readme",
 	"bugs": "https://github.com/VitruviusLabs/typescript/issues",
@@ -40,7 +41,7 @@
 		"eslint:fix": "eslint ./src ./test --fix",
 		"test:unit": "TS_NODE_PROJECT=./tsconfig.mocha.json c8 mocha --parallel",
 		"test:unit:stryker": "pnpm test:unit",
-		"test:mutation": "stryker run",
+		"test:mutation": "stryker run --fileLogLevel trace",
 		"ts:check": "tsc -p tsconfig.json --noEmit",
 		"spell:check": "cspell -c ../../.vscode/cspell.json .",
 		"ci:lint": "pnpm eslint:check",
