@@ -31,11 +31,11 @@
 	},
 	"buildCommand": "tsc -b tsconfig.stryker.json",
 	"coverageAnalysis": "perTest",
-  "mochaOptions": {
-    "config": ".mocharc.json",
-    "spec": [ "./build/**/*.spec.jts"]
-  },
+	"mochaOptions": {
+		"config": ".mocharc.json",
+		"spec": [ "./build/**/*.spec.jts"]
+	},
 	"ignoreStatic": true,
 	"tsconfigFile": "tsconfig.stryker.json",
-  "testRunner": "mocha"
+	"testRunner": "mocha"
 }
