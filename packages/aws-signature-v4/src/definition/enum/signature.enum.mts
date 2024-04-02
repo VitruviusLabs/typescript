@@ -1,0 +1,9 @@
+const enum SignatureEnum
+{
+	TIME_PAD_LENGTH = 2,
+	PRESIGNED_METHOD_BODY = "UNSIGNED-PAYLOAD",
+	AWS_ALGORITHM = "AWS4-HMAC-SHA256",
+	CRYPTO_ALGORITHM = "sha256",
+}
+
+export { SignatureEnum };

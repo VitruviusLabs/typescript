@@ -21,6 +21,10 @@
 			"path": "./packages/architectura"
 		},
 		{
+			"name": "aws-signature-v4",
+			"path": "./packages/aws-signature-v4"
+		},
+		{
 			"name": "functional",
 			"path": "./packages/functional"
 		}
