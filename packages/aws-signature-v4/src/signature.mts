@@ -1,10 +1,10 @@
 import { createHash, createHmac } from "node:crypto";
 import type { Buffer as NodeBuffer } from "node:buffer";
 
-import { SignatureEnum } from "./definitions/enums/signature.enum.mjs";
-import type { SignatureInterface } from "./definitions/interfaces/signature.interface.mjs";
-import { HTTPMethodEnum } from "./definitions/enums/http-method.enum.mjs";
-import type { SignatureInstantiationInterface } from "./definitions/interfaces/signature-instantiation.interface.mjs";
+import { SignatureEnum } from "./definition/enum/signature.enum.mjs";
+import type { SignatureInterface } from "./definition/interface/signature.interface.mjs";
+import { HTTPMethodEnum } from "./definition/enum/http-method.enum.mjs";
+import type { SignatureInstantiationInterface } from "./definition/interface/signature-instantiation.interface.mjs";
 
 class Signature
 {
