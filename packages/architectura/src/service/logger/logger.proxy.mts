@@ -1,13 +1,13 @@
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
-import type { LoggerService } from "./logger.service.mjs";
+import { LoggerService } from "./logger.service.mjs";
 
 class LoggerProxy
 {
 	protected static Initialised: boolean = false;
 
-	protected static Logger: LoggerInterface;
+	protected static Logger: LoggerInterface = new LoggerService();
 
-	public static Initialise(loggerService: LoggerService): void
+	public static Initialise(loggerService: LoggerInterface): void
 	{
 		if (this.Initialised)
 		{

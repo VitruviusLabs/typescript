@@ -118,7 +118,21 @@ class Server
 
 	public static async HandleError(error: unknown): Promise<void>
 	{
-		const CONTEXT: ExecutionContext = ExecutionContextRegistry.GetExecutionContext();
+		const CONTEXT: ExecutionContext | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext();
+
+		if (CONTEXT === undefined)
+		{
+			if (error instanceof Error)
+			{
+				LoggerProxy.Error(error);
+
+				return;
+			}
+
+			LoggerProxy.Error("An unknown error occurred.");
+
+			return;
+		}
 
 		for (const HOOK of GlobalConfiguration.GetGlobalErrorHooks())
 		{
@@ -151,14 +165,14 @@ class Server
 			response: response,
 		});
 
+		ExecutionContextRegistry.SetExecutionContext(CONTEXT);
+
 		const IS_PUBLIC_ASSET: boolean = await this.HandlePublicAssets(CONTEXT);
 
 		if (IS_PUBLIC_ASSET)
 		{
 			return;
 		}
-
-		ExecutionContextRegistry.SetExecutionContext(CONTEXT);
 
 		const IS_ENDPOINT: boolean = await this.HandleEndpoints(CONTEXT);
 
