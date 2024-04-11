@@ -1,4 +1,4 @@
-import type { JSONObjectType } from "../../../definition/type/json-object.type.mjs";
+import type { JSONObjectType } from "../../../utility/json/_index.mjs";
 
 abstract class SessionDelegate
 {

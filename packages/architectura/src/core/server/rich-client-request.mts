@@ -1,9 +1,11 @@
 import type { Socket } from "node:net";
+import type { JSONObjectType, JSONValueType } from "../../utility/json/_index.mjs";
 import { type IncomingHttpHeaders, IncomingMessage } from "node:http";
 import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
 import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
+import { JSONUtility } from "../../utility/json/json-utility.mjs";
 
 class RichClientRequest extends IncomingMessage
 {
@@ -136,10 +138,10 @@ class RichClientRequest extends IncomingMessage
 		return BODY_AS_STRING;
 	}
 
-	public async getBodyAsJSON(): Promise<Record<string, unknown>>
+	public async getBodyAsJSON(): Promise<JSONObjectType>
 	{
 		const BODY_AS_STRING: string = await this.getBodyAsString();
-		const PARSED_BODY: unknown = JSON.parse(BODY_AS_STRING);
+		const PARSED_BODY: JSONValueType = JSONUtility.Parse(BODY_AS_STRING);
 
 		TypeAssertion.isRecord(PARSED_BODY);
 

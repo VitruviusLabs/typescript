@@ -1,6 +1,5 @@
 import type { RichClientRequest } from "./rich-client-request.mjs";
 import type { ReplyInterface } from "./definition/interface/reply.interface.mjs";
-import type { JSONObjectType } from "../../definition/type/json-object.type.mjs";
 import type { CookieDescriptorInterface } from "./definition/interface/cookie-descriptor.interface.mjs";
 import { TLSSocket } from "node:tls";
 import { ServerResponse as HTTPServerResponse } from "node:http";
@@ -9,6 +8,7 @@ import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 import { CookieSameSiteEnum } from "./definition/enum/cookie-same-site.enum.mjs";
+import { JSONUtility } from "../../utility/json/json-utility.mjs";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
@@ -22,11 +22,11 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		this.cookies = new Map();
 	}
 
-	public json(content: JSONObjectType): void
+	public json(content: unknown): void
 	{
 		this.replyWith({
 			status: HTTPStatusCodeEnum.OK,
-			payload: JSON.stringify(content),
+			payload: content,
 			contentType: ContentTypeEnum.JSON,
 		});
 	}
@@ -260,14 +260,14 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 	private processPayload(parameters: ReplyInterface): void
 	{
-		if (TypeGuard.isRecord(parameters.payload))
+		if (TypeGuard.isString(parameters.payload) || parameters.payload instanceof Buffer)
 		{
-			this.content = JSON.stringify(parameters.payload);
+			this.content = parameters.payload;
 
 			return;
 		}
 
-		this.content = parameters.payload;
+		this.content = JSONUtility.Encode(parameters.payload);
 	}
 
 	private setCookieHeader(): void

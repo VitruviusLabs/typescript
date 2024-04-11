@@ -8,6 +8,7 @@ import { assertHeader } from "../predicate/assert-header.mjs";
 import { computeSignature } from "../utility/compute-signature.mjs";
 import { assertClaims } from "../predicate/assert-claims.mjs";
 import { JWT } from "./jwt.mjs";
+import { JSONUtility } from "../../../utility/json/json-utility.mjs";
 
 class JWTFactory
 {
@@ -47,7 +48,7 @@ class JWTFactory
 			throw new Error("Invalid token signature.");
 		}
 
-		const CLAIMS: unknown = JSON.parse(Base64URL.Decode(ENCODED_CLAIMS));
+		const CLAIMS: unknown = JSONUtility.Parse(Base64URL.Decode(ENCODED_CLAIMS));
 
 		assertClaims(CLAIMS);
 
