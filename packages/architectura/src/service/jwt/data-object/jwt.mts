@@ -6,6 +6,7 @@ import { validateAlgorithm } from "../utility/validate-algorithm.mjs";
 import { validateSecret } from "../utility/validate-secret.mjs";
 import { validateClaims } from "../utility/validate-claims.mjs";
 import { computeSignature } from "../utility/compute-signature.mjs";
+import { JSONUtility } from "../../../utility/json/json-utility.mjs";
 
 class JWT
 {
@@ -48,7 +49,7 @@ class JWT
 	{
 		validateClaims(this.claims);
 		const HEADER: string = Base64URL.Encode(JSON.stringify(this.header));
-		const CLAIMS: string = Base64URL.Encode(JSON.stringify(this.claims));
+		const CLAIMS: string = Base64URL.Encode(JSONUtility.Encode(this.claims));
 
 		const SIGNATURE: string = computeSignature({
 			algorithm: this.header.alg,

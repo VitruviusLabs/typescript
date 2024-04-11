@@ -1,5 +1,6 @@
 type JSONValueType = (
 	| Array<JSONValueType>
+	| bigint
 	| boolean
 	| number
 	| string
