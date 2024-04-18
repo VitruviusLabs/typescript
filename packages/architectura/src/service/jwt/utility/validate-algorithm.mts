@@ -1,5 +1,6 @@
 import { getHashes } from "node:crypto";
 
+// @internal
 function validateAlgorithm(algorithm: string): void
 {
 	if (algorithm === "none")

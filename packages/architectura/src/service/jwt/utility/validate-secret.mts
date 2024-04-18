@@ -1,6 +1,7 @@
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 import type { SecretType } from "../definition/type/secret.type.mjs";
 
+// @internal
 function validateSecret(secret: SecretType): void
 {
 	if (TypeGuard.isString(secret))
