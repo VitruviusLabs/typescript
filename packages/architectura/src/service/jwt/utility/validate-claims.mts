@@ -1,6 +1,7 @@
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 import type { JWTClaimsInterface } from "../_index.mjs";
 
+// @internal
 function validateClaims(claims: JWTClaimsInterface, check_active: boolean = true): void
 {
 	const NOW: number = Date.now();
