@@ -9,7 +9,7 @@ import { JSONUtility } from "../../utility/json/json-utility.mjs";
 
 class RichClientRequest extends IncomingMessage
 {
-	private requestedPath: string;
+	private path: string;
 	private pathFragments: Array<string>;
 	private query: ParsedUrlQuery;
 	private rawBody: Buffer;
@@ -21,7 +21,7 @@ class RichClientRequest extends IncomingMessage
 	{
 		super(socket);
 
-		this.requestedPath = "";
+		this.path = "";
 		this.pathFragments = [];
 		this.query = {};
 		this.rawBody = Buffer.alloc(0);
@@ -65,7 +65,7 @@ class RichClientRequest extends IncomingMessage
 			throw new Error("Unexpected error with URL splitting.");
 		}
 
-		this.requestedPath = SPLITTED_URL[0];
+		this.path = SPLITTED_URL[0];
 
 		if (SPLITTED_URL[1] !== undefined)
 		{
@@ -73,7 +73,7 @@ class RichClientRequest extends IncomingMessage
 		}
 
 		const PATH_FRAGMENTS: Array<string> = [];
-		const SPLITTED_REQUESTED_PATH: Array<string> = this.requestedPath.split("/");
+		const SPLITTED_REQUESTED_PATH: Array<string> = this.path.split("/");
 
 		for (const FRAGMENT of SPLITTED_REQUESTED_PATH)
 		{
@@ -189,9 +189,9 @@ class RichClientRequest extends IncomingMessage
 		this.query = query;
 	}
 
-	public getRequestedPath(): string
+	public getPath(): string
 	{
-		return this.requestedPath;
+		return this.path;
 	}
 
 	public getPathFragments(): Array<string>
