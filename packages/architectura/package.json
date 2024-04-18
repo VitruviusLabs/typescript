@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-labs/architectura",
-	"version": "0.1.11",
+	"version": "0.2.0",
 	"description": "A light weight strongly typed Node.JS framework providing isolated context for each request.",
 	"author": {
 		"name": "VitruviusLabs"

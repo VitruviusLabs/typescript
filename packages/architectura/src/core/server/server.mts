@@ -214,7 +214,7 @@ class Server
 
 	private static async FindPublicAsset(request: RichClientRequest): Promise<string | undefined>
 	{
-		const REQUEST_PATH: string = request.getRequestedPath();
+		const REQUEST_PATH: string = request.getPath();
 
 		for (const [ROUTE, DIRECTORY] of GlobalConfiguration.GetPublicAssetDirectories())
 		{
@@ -267,7 +267,7 @@ class Server
 	private static FindMatchingEndpoint(request: RichClientRequest): BaseEndpoint | undefined
 	{
 		const REQUEST_METHOD: string | undefined = request.method;
-		const REQUEST_PATH: string = request.getRequestedPath();
+		const REQUEST_PATH: string = request.getPath();
 		const ENDPOINTS: ReadonlyMap<string, BaseEndpoint> = EndpointRegistry.GetEndpoints();
 
 		for (const [, ENDPOINT] of ENDPOINTS)
