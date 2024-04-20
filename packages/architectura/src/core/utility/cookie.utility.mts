@@ -1,6 +1,3 @@
-import type { ExecutionContext } from "../../core/execution-context/execution-context.mjs";
-import { TypeGuard } from "@vitruvius-labs/ts-predicate";
-
 class CookieUtility
 {
 	public static ParseCookies(serialized_cookies: string): Map<string, string>
@@ -30,18 +27,6 @@ class CookieUtility
 		}
 
 		return COOKIES;
-	}
-
-	public static ExtractCookies(context: ExecutionContext): Map<string, string> | undefined
-	{
-		const COOKIE_HEADER: unknown = context.getRequest().getHeader("Cookie");
-
-		if (!TypeGuard.isString(COOKIE_HEADER))
-		{
-			return undefined;
-		}
-
-		return this.ParseCookies(COOKIE_HEADER);
 	}
 }
 

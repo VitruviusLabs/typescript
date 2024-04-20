@@ -188,7 +188,7 @@ class Server
 
 	private static async HandlePublicAssets(context: ExecutionContext): Promise<boolean>
 	{
-		if (context.getRequest().method !== HTTPMethodEnum.GET)
+		if (context.getRequest().getMethod() !== HTTPMethodEnum.GET)
 		{
 			return false;
 		}
@@ -266,7 +266,7 @@ class Server
 
 	private static FindMatchingEndpoint(request: RichClientRequest): BaseEndpoint | undefined
 	{
-		const REQUEST_METHOD: string | undefined = request.method;
+		const REQUEST_METHOD: string | undefined = request.getMethod();
 		const REQUEST_PATH: string = request.getPath();
 		const ENDPOINTS: ReadonlyMap<string, BaseEndpoint> = EndpointRegistry.GetEndpoints();
 
