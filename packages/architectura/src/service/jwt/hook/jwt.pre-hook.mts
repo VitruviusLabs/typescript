@@ -1,6 +1,5 @@
 import type { ExecutionContext } from "../../../core/execution-context/execution-context.mjs";
 import type { SecretType } from "../definition/type/secret.type.mjs";
-import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 import { BasePreHook } from "../../../core/hook/base.pre-hook.mjs";
 import { GlobalCustomRegistry } from "../../global-custom.registry.mjs";
 import { JWTConstantEnum } from "../definition/enum/jwt-constant.enum.mjs";
@@ -19,9 +18,9 @@ class JWTPreHook extends BasePreHook
 
 	public override execute(context: ExecutionContext): void
 	{
-		const JWT_HEADER: unknown = context.getRequest().getHeader("Authorization");
+		const JWT_HEADER: string | undefined = context.getRequest().getHeader("Authorization");
 
-		if (!TypeGuard.isString(JWT_HEADER) || !JWT_HEADER.startsWith(JWTConstantEnum.BEARER_PREFIX))
+		if (JWT_HEADER === undefined || !JWT_HEADER.startsWith(JWTConstantEnum.BEARER_PREFIX))
 		{
 			return;
 		}

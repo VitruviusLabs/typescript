@@ -2,17 +2,19 @@ import type { Socket } from "node:net";
 import type { JSONObjectType, JSONValueType } from "../../utility/json/_index.mjs";
 import { type IncomingHttpHeaders, IncomingMessage } from "node:http";
 import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
-import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
-import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
+import { isRecord as assertRecord } from "@vitruvius-labs/ts-predicate/type-assertion";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 import { JSONUtility } from "../../utility/json/json-utility.mjs";
+import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
+import { CookieUtility } from "../utility/cookie.utility.mjs";
 
 class RichClientRequest extends IncomingMessage
 {
+	private initialized: boolean;
 	private path: string;
 	private pathFragments: Array<string>;
 	private query: ParsedUrlQuery;
-	private rawBody: Buffer;
+	private rawBody: Promise<Buffer>;
 	private contentType: string;
 	private boundary: string;
 	private cookies: Map<string, string>;
@@ -21,86 +23,24 @@ class RichClientRequest extends IncomingMessage
 	{
 		super(socket);
 
+		this.initialized = false;
 		this.path = "";
 		this.pathFragments = [];
 		this.query = {};
-		this.rawBody = Buffer.alloc(0);
+		this.rawBody = Promise.resolve(Buffer.alloc(0));
 		this.contentType = "";
 		this.boundary = "";
 		this.cookies = new Map();
 	}
 
-	public initialize(): void
+	private static async ListenForContent(message: IncomingMessage): Promise<Buffer>
 	{
-		if (this.headers["content-type"] !== undefined)
-		{
-			this.contentType = this.headers["content-type"];
-
-			if (this.contentType.includes(ContentTypeEnum.FORM_DATA))
-			{
-				const SPLITTED_CONTENT_TYPE: Array<string> = this.contentType.split("=");
-
-				if (SPLITTED_CONTENT_TYPE[0] !== undefined && SPLITTED_CONTENT_TYPE[1] !== undefined)
-				{
-					this.boundary = `--${SPLITTED_CONTENT_TYPE[1]}`;
-				}
-				else
-				{
-					LoggerProxy.Warning(`Received invalid multipart/form-data header: ${this.contentType}.`);
-				}
-
-				this.contentType = ContentTypeEnum.FORM_DATA;
-			}
-		}
-
-		if (this.url === undefined)
-		{
-			this.url = "";
-		}
-
-		const SPLITTED_URL: Array<string> = this.url.split("?");
-
-		if (SPLITTED_URL[0] === undefined)
-		{
-			throw new Error("Unexpected error with URL splitting.");
-		}
-
-		this.path = SPLITTED_URL[0];
-
-		if (SPLITTED_URL[1] !== undefined)
-		{
-			this.query = parseQuery(SPLITTED_URL[1]);
-		}
-
-		const PATH_FRAGMENTS: Array<string> = [];
-		const SPLITTED_REQUESTED_PATH: Array<string> = this.path.split("/");
-
-		for (const FRAGMENT of SPLITTED_REQUESTED_PATH)
-		{
-			if (FRAGMENT.length === 0)
-			{
-				continue;
-			}
-
-			PATH_FRAGMENTS.push(FRAGMENT);
-		}
-
-		this.pathFragments = PATH_FRAGMENTS;
-	}
-
-	public async listenForContent(): Promise<Buffer>
-	{
-		if (this.complete)
-		{
-			return this.rawBody;
-		}
-
 		return await new Promise(
-			(resolve: (value: Buffer) => void): void =>
+			(resolve: (value: Buffer) => void, reject: (reason: Error) => void): void =>
 			{
 				let body: Buffer = Buffer.alloc(0);
 
-				this.addListener(
+				message.addListener(
 					"data",
 					(chunk: Buffer): void =>
 					{
@@ -108,26 +48,206 @@ class RichClientRequest extends IncomingMessage
 					}
 				);
 
-				this.addListener(
+				message.addListener(
 					"end",
 					(): void =>
 					{
-						this.complete = true;
+						if (!message.complete)
+						{
+							reject(new Error("The connection was terminated while the message was still being sent."));
+
+							return;
+						}
+
 						resolve(body);
+					}
+				);
+
+				message.addListener(
+					"error",
+					(error: Error): void =>
+					{
+						reject(error);
 					}
 				);
 			}
 		);
 	}
 
-	public async getRawBody(): Promise<Buffer>
+	/**
+	* @internal
+	*/
+	public initialize(): void
 	{
-		if (!this.complete)
+		if (this.initialized)
 		{
-			this.rawBody = await this.listenForContent();
+			throw new Error("The request has already been initialized.");
 		}
 
-		return this.rawBody;
+		this.initialized = true;
+
+		const CONTENT_TYPE_HEADER: string | undefined = this.getHeader("Content-Type");
+
+		if (CONTENT_TYPE_HEADER !== undefined)
+		{
+			this.contentType = CONTENT_TYPE_HEADER;
+
+			if (this.contentType.startsWith("multipart/form-data; boundary="))
+			{
+				this.contentType = ContentTypeEnum.FORM_DATA;
+
+				const BOUNDARY_IDENTIFIER: string = this.contentType.replace("multipart/form-data; boundary=", "");
+
+				if (BOUNDARY_IDENTIFIER.length === 0)
+				{
+					throw new Error(`Received invalid multipart/form-data header: ${this.contentType}.`);
+				}
+
+				this.boundary = `--${BOUNDARY_IDENTIFIER}`;
+			}
+		}
+
+		const COOKIE_HEADER: string | undefined = this.getHeader("Cookie");
+
+		if (COOKIE_HEADER !== undefined)
+		{
+			this.cookies = CookieUtility.ParseCookies(COOKIE_HEADER);
+		}
+
+		if (this.url !== undefined)
+		{
+			const SPLITTED_URL: Array<string> = this.url.split("?");
+
+			if (SPLITTED_URL[0] === undefined)
+			{
+				throw new Error("Unexpected error with URL splitting.");
+			}
+
+			this.path = SPLITTED_URL[0];
+
+			if (SPLITTED_URL[1] !== undefined)
+			{
+				this.query = parseQuery(SPLITTED_URL[1]);
+			}
+
+			const PATH_FRAGMENTS: Array<string> = [];
+			const SPLITTED_REQUESTED_PATH: Array<string> = this.path.split("/");
+
+			for (const FRAGMENT of SPLITTED_REQUESTED_PATH)
+			{
+				if (FRAGMENT.length === 0)
+				{
+					continue;
+				}
+
+				PATH_FRAGMENTS.push(FRAGMENT);
+			}
+
+			this.pathFragments = PATH_FRAGMENTS;
+		}
+
+		this.rawBody = RichClientRequest.ListenForContent(this);
+	}
+
+	public getMethod(): string | undefined
+	{
+		return this.method;
+	}
+
+	public getStandardMethod(): HTTPMethodEnum | undefined
+	{
+		switch (this.method)
+		{
+			case HTTPMethodEnum.GET:
+			case HTTPMethodEnum.HEAD:
+			case HTTPMethodEnum.POST:
+			case HTTPMethodEnum.PUT:
+			case HTTPMethodEnum.DELETE:
+			case HTTPMethodEnum.CONNECT:
+			case HTTPMethodEnum.OPTIONS:
+			case HTTPMethodEnum.TRACE:
+			case HTTPMethodEnum.PATCH:
+				return this.method;
+
+			default:
+				return undefined;
+		}
+	}
+
+	public getURL(): string | undefined
+	{
+		return this.url;
+	}
+
+	public getPath(): string
+	{
+		return this.path;
+	}
+
+	public getPathFragments(): Array<string>
+	{
+		return this.pathFragments;
+	}
+
+	public getQuery(): ParsedUrlQuery
+	{
+		return this.query;
+	}
+
+	public getHeaders(): IncomingHttpHeaders
+	{
+		return structuredClone(this.headers);
+	}
+
+	public getRawHeader(name: string): Array<string> | string | undefined
+	{
+		const NORMALIZED_NAME: string = name.toString().toLowerCase();
+
+		return this.headers[NORMALIZED_NAME];
+	}
+
+	public getHeader(name: string): string | undefined
+	{
+		const HEADER: Array<string> | string | undefined = this.getRawHeader(name);
+
+		if (Array.isArray(HEADER))
+		{
+			return HEADER[0];
+		}
+
+		return HEADER;
+	}
+
+	public getNormalizedHeader(name: string): Array<string>
+	{
+		const NORMALIZED_NAME: string = name.toString().toLowerCase();
+
+		return this.headersDistinct[NORMALIZED_NAME] ?? [];
+	}
+
+	public getCookie(key: string): string | undefined
+	{
+		return this.cookies.get(key);
+	}
+
+	public getCookies(): ReadonlyMap<string, string>
+	{
+		return this.cookies;
+	}
+
+	public getBoundary(): string
+	{
+		return this.boundary;
+	}
+
+	public getContentType(): string
+	{
+		return this.contentType;
+	}
+
+	public async getRawBody(): Promise<Buffer>
+	{
+		return await this.rawBody;
 	}
 
 	public async getBodyAsString(): Promise<string>
@@ -143,107 +263,9 @@ class RichClientRequest extends IncomingMessage
 		const BODY_AS_STRING: string = await this.getBodyAsString();
 		const PARSED_BODY: JSONValueType = JSONUtility.Parse(BODY_AS_STRING);
 
-		TypeAssertion.isRecord(PARSED_BODY);
+		assertRecord(PARSED_BODY);
 
 		return PARSED_BODY;
-	}
-
-	public getBoundary(): string
-	{
-		return this.boundary;
-	}
-
-	public getContentType(): string
-	{
-		return this.contentType;
-	}
-
-	public getHeaders(): IncomingHttpHeaders
-	{
-		return this.headers;
-	}
-
-	public getHeader(name: keyof IncomingHttpHeaders): Array<string> | string | null
-	{
-		let scoped_name: string = name.toString();
-
-		scoped_name = scoped_name.toLowerCase();
-
-		const HEADER: Array<string> | string | undefined = this.headers[scoped_name];
-
-		if (HEADER !== undefined)
-		{
-			return HEADER;
-		}
-
-		return null;
-	}
-
-	public getQuery(): ParsedUrlQuery
-	{
-		return this.query;
-	}
-
-	public setQuery(query: ParsedUrlQuery): void
-	{
-		this.query = query;
-	}
-
-	public getPath(): string
-	{
-		return this.path;
-	}
-
-	public getPathFragments(): Array<string>
-	{
-		return this.pathFragments;
-	}
-
-	public setCookie(key: string, value: string): void
-	{
-		this.cookies.set(key, value);
-	}
-
-	public getCookie(key: string): string | undefined
-	{
-		return this.cookies.get(key);
-	}
-
-	public setCookies(cookies: Map<string, string> | Record<string, string>): void
-	{
-		if (cookies instanceof Map)
-		{
-			this.cookies = cookies;
-
-			return;
-		}
-
-		for (const [KEY, VALUE] of Object.entries(cookies))
-		{
-			this.cookies.set(KEY, VALUE);
-		}
-	}
-
-	public getCookies(): ReadonlyMap<string, string>
-	{
-		return this.cookies;
-	}
-
-	public getNormalizedHeader(name: string): Array<string>
-	{
-		const HEADER: Array<string> | string | null = this.getHeader(name);
-
-		if (HEADER === null)
-		{
-			return [];
-		}
-
-		if (Array.isArray(HEADER))
-		{
-			return HEADER;
-		}
-
-		return [HEADER];
 	}
 }
 
