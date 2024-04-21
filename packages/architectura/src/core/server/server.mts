@@ -272,9 +272,32 @@ class Server
 
 		for (const [, ENDPOINT] of ENDPOINTS)
 		{
-			if (ENDPOINT.getMethod() === REQUEST_METHOD && new RegExp(ENDPOINT.getRoute()).test(REQUEST_PATH))
+			if (ENDPOINT.getMethod() !== REQUEST_METHOD)
 			{
-				return ENDPOINT;
+				continue;
+			}
+
+			const ROUTE: RegExp | string = ENDPOINT.getRoute();
+
+			if (typeof ROUTE === "string")
+			{
+				if (ROUTE === REQUEST_PATH)
+				{
+					return ENDPOINT;
+				}
+			}
+			else
+			{
+				const REGEXP: RegExp = new RegExp(ROUTE);
+
+				const MATCHES: RegExpExecArray | null = REGEXP.exec(REQUEST_PATH);
+
+				if (MATCHES !== null)
+				{
+					Reflect.set(request, "pathMatchGroups", MATCHES.groups);
+
+					return ENDPOINT;
+				}
 			}
 		}
 

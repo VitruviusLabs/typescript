@@ -10,6 +10,7 @@ import { CookieUtility } from "../utility/cookie.utility.mjs";
 
 class RichClientRequest extends IncomingMessage
 {
+	private readonly pathMatchGroups: Record<string, string> | undefined;
 	private initialized: boolean;
 	private path: string;
 	private pathFragments: Array<string>;
@@ -26,6 +27,7 @@ class RichClientRequest extends IncomingMessage
 		this.initialized = false;
 		this.path = "";
 		this.pathFragments = [];
+		this.pathMatchGroups = undefined;
 		this.query = {};
 		this.rawBody = Promise.resolve(Buffer.alloc(0));
 		this.contentType = "";
@@ -187,6 +189,11 @@ class RichClientRequest extends IncomingMessage
 	public getPathFragments(): Array<string>
 	{
 		return this.pathFragments;
+	}
+
+	public getPathMatchGroups(): Record<string, string> | undefined
+	{
+		return this.pathMatchGroups;
 	}
 
 	public getQuery(): ParsedUrlQuery

@@ -27,7 +27,7 @@ class EndpointRegistry
 	public static AddEndpoint(endpoint: BaseEndpoint): void
 	{
 		const METHOD: string = endpoint.getMethod();
-		const ROUTE: string = endpoint.getRoute();
+		const ROUTE: string = endpoint.getRoute().toString();
 
 		const IDENTIFIER: string = `${METHOD}::${ROUTE}`;
 
