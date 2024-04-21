@@ -23,8 +23,14 @@ abstract class BaseEndpoint extends Singleton
 		return this.method;
 	}
 
-	public getRoute(): RegExp | string
+	public getRoute(): RegExp
 	{
+		if (typeof this.route === "string")
+		{
+			// @ts-expect-error: Optimization
+			this.route = new RegExp(this.route);
+		}
+
 		return this.route;
 	}
 

@@ -277,25 +277,15 @@ class Server
 				continue;
 			}
 
-			const ROUTE: RegExp | string = ENDPOINT.getRoute();
+			const ROUTE: RegExp = ENDPOINT.getRoute();
 
-			if (typeof ROUTE === "string")
+			const MATCHES: RegExpMatchArray | null = REQUEST_PATH.match(ROUTE);
+
+			if (MATCHES !== null)
 			{
-				if (ROUTE === REQUEST_PATH)
-				{
-					return ENDPOINT;
-				}
-			}
-			else
-			{
-				const MATCHES: RegExpMatchArray | null = REQUEST_PATH.match(ROUTE);
+				Reflect.set(request, "pathMatchGroups", MATCHES.groups);
 
-				if (MATCHES !== null)
-				{
-					Reflect.set(request, "pathMatchGroups", MATCHES.groups);
-
-					return ENDPOINT;
-				}
+				return ENDPOINT;
 			}
 		}
 
