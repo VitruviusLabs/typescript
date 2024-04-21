@@ -288,9 +288,7 @@ class Server
 			}
 			else
 			{
-				const REGEXP: RegExp = new RegExp(ROUTE);
-
-				const MATCHES: RegExpExecArray | null = REGEXP.exec(REQUEST_PATH);
+				const MATCHES: RegExpMatchArray | null = REQUEST_PATH.match(ROUTE);
 
 				if (MATCHES !== null)
 				{
