@@ -272,8 +272,19 @@ class Server
 
 		for (const [, ENDPOINT] of ENDPOINTS)
 		{
-			if (ENDPOINT.getMethod() === REQUEST_METHOD && new RegExp(ENDPOINT.getRoute()).test(REQUEST_PATH))
+			if (ENDPOINT.getMethod() !== REQUEST_METHOD)
 			{
+				continue;
+			}
+
+			const ROUTE: RegExp = ENDPOINT.getRoute();
+
+			const MATCHES: RegExpMatchArray | null = REQUEST_PATH.match(ROUTE);
+
+			if (MATCHES !== null)
+			{
+				Reflect.set(request, "pathMatchGroups", MATCHES.groups);
+
 				return ENDPOINT;
 			}
 		}

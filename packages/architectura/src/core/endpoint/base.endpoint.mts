@@ -8,7 +8,7 @@ import { Singleton } from "../../utility/singleton.mjs";
 abstract class BaseEndpoint extends Singleton
 {
 	protected abstract readonly method: HTTPMethodEnum;
-	protected abstract readonly route: string;
+	protected abstract readonly route: RegExp | string;
 	protected readonly preHooks: Array<BasePreHook> = [];
 	protected readonly excludedGlobalPreHooks: Array<typeof BasePreHook> = [];
 	protected readonly postHooks: Array<BasePostHook> = [];
@@ -23,8 +23,14 @@ abstract class BaseEndpoint extends Singleton
 		return this.method;
 	}
 
-	public getRoute(): string
+	public getRoute(): RegExp
 	{
+		if (typeof this.route === "string")
+		{
+			// @ts-expect-error: Optimization
+			this.route = new RegExp(this.route);
+		}
+
 		return this.route;
 	}
 
