@@ -72,7 +72,7 @@ class EndpointRegistry
 				continue;
 			}
 
-			if (ENTITY.isFile() && ENTITY.name.endsWith(".mjs"))
+			if (ENTITY.isFile() && ENTITY.name.includes(".endpoint."))
 			{
 				await this.ExtractEndpoint(FILEPATH);
 			}
