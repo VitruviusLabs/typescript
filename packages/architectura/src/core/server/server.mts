@@ -131,7 +131,8 @@ class Server
 			{
 				if (ENTITY.isFile() && ENTITY.name.includes(".domain."))
 				{
-					const EXPORTS: unknown = await import(DIRECTORY_PATH);
+					const FILE_PATH: string = `${DIRECTORY_PATH}/${ENTITY.name}`;
+					const EXPORTS: unknown = await import(FILE_PATH);
 
 					if (TypeGuard.isRecord(EXPORTS))
 					{
