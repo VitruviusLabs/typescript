@@ -1,3 +1,4 @@
+import type { Dirent } from "node:fs";
 import type { ServerConfigurationType } from "./definition/type/server-configuration.type.mjs";
 import type { ServerInstantiationType } from "./definition/type/server-instantiation.type.mjs";
 import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
@@ -6,6 +7,7 @@ import type { BasePostHook } from "../hook/base.post-hook.mjs";
 import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import { Server as UnsafeServer, type ServerOptions as UnsafeServerOptions } from "node:http";
 import { Server as SecureServer, type ServerOptions as SecureServerOptions } from "node:https";
+import { readdir } from "node:fs/promises";
 import { extname } from "node:path";
 import { Helper, TypeAssertion, TypeGuard } from "@vitruvius-labs/ts-predicate";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
@@ -88,32 +90,9 @@ class Server
 			}
 		);
 
-		await this.Initialize();
+		await this.InitializeDomains();
 
 		return SERVER;
-	}
-
-	public static async Initialize(): Promise<void>
-	{
-		const DOMAIN_DIRECTORIES: Array<string> = GlobalConfiguration.GetDomainDirectories().slice();
-
-		for (const DIRECTORY_PATH of DOMAIN_DIRECTORIES)
-		{
-			const EXPORTS: unknown = await import(DIRECTORY_PATH);
-
-			if (TypeGuard.isRecord(EXPORTS))
-			{
-				for (const [, domain] of Object.entries(EXPORTS))
-				{
-					if (this.IsDomainConstructor(domain))
-					{
-						await domain.Initialize();
-
-						return;
-					}
-				}
-			}
-		}
 	}
 
 	public static async HandleError(error: unknown): Promise<void>
@@ -137,6 +116,37 @@ class Server
 		for (const HOOK of GlobalConfiguration.GetGlobalErrorHooks())
 		{
 			await HOOK.execute(CONTEXT, error);
+		}
+	}
+
+	private static async InitializeDomains(): Promise<void>
+	{
+		const DOMAIN_DIRECTORIES: ReadonlyArray<string> = GlobalConfiguration.GetDomainDirectories();
+
+		for (const DIRECTORY_PATH of DOMAIN_DIRECTORIES)
+		{
+			const ENTITIES: Array<Dirent> = await readdir(DIRECTORY_PATH, { withFileTypes: true });
+
+			for (const ENTITY of ENTITIES)
+			{
+				if (ENTITY.isFile() && ENTITY.name.includes(".domain."))
+				{
+					const EXPORTS: unknown = await import(DIRECTORY_PATH);
+
+					if (TypeGuard.isRecord(EXPORTS))
+					{
+						for (const [, EXPORT] of Object.entries(EXPORTS))
+						{
+							if (this.IsDomainConstructor(EXPORT))
+							{
+								await EXPORT.Initialize();
+
+								return;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
