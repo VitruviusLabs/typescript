@@ -32,7 +32,7 @@ class JSONUtility
 			{
 				if (typeof value === "string" && /^\d+n$/.test(value))
 				{
-					return BigInt(value.replace("n", ""));
+					return BigInt(value.slice(0, -1));
 				}
 
 				return value;

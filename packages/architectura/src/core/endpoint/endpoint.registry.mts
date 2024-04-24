@@ -7,13 +7,14 @@ import { BaseEndpoint } from "./base.endpoint.mjs";
 
 class EndpointRegistry
 {
-	private static readonly ENDPOINTS_DIRECTORIES: Array<string> = [];
 	private static readonly ENDPOINTS: Map<string, BaseEndpoint> = new Map();
 
 	public static GetEndpoints(): ReadonlyMap<string, BaseEndpoint>
 	{
 		if (this.ENDPOINTS.size === 0)
 		{
+			LoggerProxy.Warning("No endpoints have been added. Default endpoint.");
+
 			const MAP: Map<string, BaseEndpoint> = new Map();
 
 			MAP.set("GET::^.*$", new HelloWorldEndpoint());
@@ -36,25 +37,16 @@ class EndpointRegistry
 			throw new Error(`An endpoint is already added for method ${METHOD} and route "${ROUTE}".`);
 		}
 
+		LoggerProxy.Debug(`Endpoint added ${METHOD} ${ROUTE}.`);
+
 		this.ENDPOINTS.set(IDENTIFIER, endpoint);
 	}
 
 	public static async AddEndpointsDirectory(directory: string): Promise<void>
 	{
-		if (!await FileSystemService.DirectoryExists(directory))
-		{
-			throw new Error(`Impossible to add directory ${directory} as an endpoint directory as it does not exist.`);
-		}
+		await FileSystemService.ConfirmDirectoryExistence(directory);
 
-		this.ENDPOINTS_DIRECTORIES.push(directory);
-	}
-
-	public static async RegisterEndpoints(): Promise<void>
-	{
-		for (const DIRECTORY of this.ENDPOINTS_DIRECTORIES)
-		{
-			await EndpointRegistry.ParseDirectoryForEndpoints(DIRECTORY);
-		}
+		await EndpointRegistry.ParseDirectoryForEndpoints(directory);
 	}
 
 	private static async ParseDirectoryForEndpoints(directory: string): Promise<void>
