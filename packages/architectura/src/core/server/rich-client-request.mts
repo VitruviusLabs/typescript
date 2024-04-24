@@ -127,6 +127,11 @@ class RichClientRequest extends IncomingMessage
 
 			this.path = SPLITTED_URL[0];
 
+			if (this.path.length > 1 && this.path.endsWith("/"))
+			{
+				this.path = this.path.slice(0, -1);
+			}
+
 			if (SPLITTED_URL[1] !== undefined)
 			{
 				this.query = parseQuery(SPLITTED_URL[1]);
