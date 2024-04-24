@@ -7,7 +7,7 @@ import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import { Server as UnsafeServer, type ServerOptions as UnsafeServerOptions } from "node:http";
 import { Server as SecureServer, type ServerOptions as SecureServerOptions } from "node:https";
 import { extname } from "node:path";
-import { Helper, TypeAssertion } from "@vitruvius-labs/ts-predicate";
+import { Helper, TypeAssertion, TypeGuard } from "@vitruvius-labs/ts-predicate";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { EndpointRegistry } from "../endpoint/endpoint.registry.mjs";
@@ -112,6 +112,8 @@ class Server
 		{
 			await HOOK.execute(CONTEXT, error);
 		}
+
+		this.FinalizeResponse(CONTEXT, true);
 	}
 
 	private static async ComputeServerOptions(options: ServerConfigurationType): Promise<ServerInstantiationType>
@@ -229,16 +231,22 @@ class Server
 			await ENDPOINT.execute(context);
 			await this.RunPostHooks(ENDPOINT, context);
 
-			const RESPONSE: RichServerResponse = context.getResponse();
-
-			if (!RESPONSE.isDone())
-			{
-				RESPONSE.send();
-			}
+			this.FinalizeResponse(context, false);
 		}
 		catch (error: unknown)
 		{
+			if (TypeGuard.isString(error) || error instanceof Error)
+			{
+				LoggerProxy.Error(error);
+			}
+			else
+			{
+				LoggerProxy.Error("Non-Error thrown.");
+			}
+
 			await this.RunErrorHooks(ENDPOINT, context, error);
+
+			this.FinalizeResponse(context, true);
 		}
 
 		return true;
@@ -329,6 +337,27 @@ class Server
 		for (const HOOK of endpoint.getErrorHooks())
 		{
 			await HOOK.execute(context, error);
+		}
+	}
+
+	private static FinalizeResponse(context: ExecutionContext, is_error: boolean): void
+	{
+		const RESPONSE: RichServerResponse = context.getResponse();
+
+		if (!RESPONSE.areHeadersSent())
+		{
+			LoggerProxy.Error(is_error ? "Unhandled server error." : "Unhandled response.");
+			RESPONSE.writeHead(HTTPStatusCodeEnum.INTERNAL_SERVER_ERROR);
+			RESPONSE.write("500 - Internal Server Error.");
+			RESPONSE.end();
+
+			return;
+		}
+
+		if (!RESPONSE.isDone())
+		{
+			LoggerProxy.Error("Unfinished server response.");
+			RESPONSE.end();
 		}
 	}
 
