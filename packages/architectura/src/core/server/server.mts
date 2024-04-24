@@ -1,4 +1,3 @@
-import type { Dirent } from "node:fs";
 import type { ServerConfigurationType } from "./definition/type/server-configuration.type.mjs";
 import type { ServerInstantiationType } from "./definition/type/server-instantiation.type.mjs";
 import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
@@ -7,9 +6,8 @@ import type { BasePostHook } from "../hook/base.post-hook.mjs";
 import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import { Server as UnsafeServer, type ServerOptions as UnsafeServerOptions } from "node:http";
 import { Server as SecureServer, type ServerOptions as SecureServerOptions } from "node:https";
-import { readdir } from "node:fs/promises";
 import { extname } from "node:path";
-import { Helper, TypeAssertion, TypeGuard } from "@vitruvius-labs/ts-predicate";
+import { Helper, TypeAssertion } from "@vitruvius-labs/ts-predicate";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { EndpointRegistry } from "../endpoint/endpoint.registry.mjs";
@@ -21,8 +19,7 @@ import { RichClientRequest } from "./rich-client-request.mjs";
 import { RichServerResponse } from "./rich-server-response.mjs";
 import { ContentType } from "../../utility/content-type/content-type.mjs";
 import { GlobalConfiguration } from "./global-configuration.mjs";
-import { BaseDomain } from "../../ddd/base.domain.mjs";
-import { HTTPMethodEnum } from "../_index.mjs";
+import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
 class Server
 {
@@ -90,8 +87,6 @@ class Server
 			}
 		);
 
-		await this.InitializeDomains();
-
 		return SERVER;
 	}
 
@@ -119,38 +114,6 @@ class Server
 		}
 	}
 
-	private static async InitializeDomains(): Promise<void>
-	{
-		const DOMAIN_DIRECTORIES: ReadonlyArray<string> = GlobalConfiguration.GetDomainDirectories();
-
-		for (const DIRECTORY_PATH of DOMAIN_DIRECTORIES)
-		{
-			const ENTITIES: Array<Dirent> = await readdir(DIRECTORY_PATH, { withFileTypes: true });
-
-			for (const ENTITY of ENTITIES)
-			{
-				if (ENTITY.isFile() && ENTITY.name.includes(".domain."))
-				{
-					const FILE_PATH: string = `${DIRECTORY_PATH}/${ENTITY.name}`;
-					const EXPORTS: unknown = await import(FILE_PATH);
-
-					if (TypeGuard.isRecord(EXPORTS))
-					{
-						for (const [, EXPORT] of Object.entries(EXPORTS))
-						{
-							if (this.IsDomainConstructor(EXPORT))
-							{
-								await EXPORT.Initialize();
-
-								return;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
 	private static async ComputeServerOptions(options: ServerConfigurationType): Promise<ServerInstantiationType>
 	{
 		if (!options.https)
@@ -169,6 +132,8 @@ class Server
 
 	private static async DefaultListener(request: RichClientRequest, response: RichServerResponse): Promise<void>
 	{
+		LoggerProxy.Debug(`Incoming request "${request.url ?? ""}".`);
+
 		request.initialize();
 
 		const CONTEXT: ExecutionContext = new ExecutionContext({
@@ -210,6 +175,8 @@ class Server
 		{
 			return false;
 		}
+
+		LoggerProxy.Debug(`Public asset found "${FILE_PATH}".`);
 
 		const FILE: Buffer = await FileSystemService.ReadFileAsBuffer(FILE_PATH);
 
@@ -253,6 +220,8 @@ class Server
 		{
 			return false;
 		}
+
+		LoggerProxy.Debug(`Matching endpoint found: ${ENDPOINT.constructor.name}.`);
 
 		try
 		{
@@ -361,11 +330,6 @@ class Server
 		{
 			await HOOK.execute(context, error);
 		}
-	}
-
-	private static IsDomainConstructor(value: unknown): value is typeof BaseDomain
-	{
-		return TypeGuard.isFunction(value) && value.prototype instanceof BaseDomain;
 	}
 
 	private static ValidatePort(port: number): void
