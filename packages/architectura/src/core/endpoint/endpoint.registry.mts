@@ -59,9 +59,9 @@ class EndpointRegistry
 
 	private static async ParseDirectoryForEndpoints(directory: string): Promise<void>
 	{
-		const CONTENTS: Array<Dirent> = await FileSystemService.ReadDirectory(directory);
+		const ENTITIES: Array<Dirent> = await FileSystemService.ReadDirectory(directory);
 
-		for (const ENTITY of CONTENTS)
+		for (const ENTITY of ENTITIES)
 		{
 			const FILE_PATH: string = `${directory}/${ENTITY.name}`;
 

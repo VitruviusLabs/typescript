@@ -4,6 +4,7 @@ import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 import type { FileSystemErrorInterface } from "./definition/interface/file-system-error.interface.mjs";
+import { LoggerProxy } from "../_index.mjs";
 
 class FileSystemService
 {
@@ -25,78 +26,49 @@ class FileSystemService
 		return GRANDPARENT_DIRECTORY;
 	}
 
-	public static async FileExists(file_path: string): Promise<boolean>
-	{
-		try
-		{
-			const STAT: Stats = await stat(file_path);
-
-			return STAT.isFile();
-		}
-		catch (error: unknown)
-		{
-			if (FileSystemService.IsFileSystemError(error))
-			{
-				switch (error.code)
-				{
-					case "ENOENT":
-						return false;
-
-					case "EACCES":
-						// @TODO: Remove the use to console.
-						// eslint-disable-next-line no-console -- This is a WIP.
-						console.log(`Requested file ${file_path} cannot be loaded. File exists but reader got denied permissions. Error code: EACCES.`);
-
-						return false;
-
-					default:
-						// @TODO: Remove the use to console.
-						// eslint-disable-next-line no-console -- This is a WIP.
-						console.log(`Requested file ${file_path} could not be loaded due to an unhandled error. Error code: ${error.code}.`);
-
-						return false;
-				}
-			}
-		}
-
-		return false;
-	}
-
 	public static async DirectoryExists(directory_path: string): Promise<boolean>
 	{
-		try
+		const STAT: Stats | undefined = await FileSystemService.GetStats(directory_path);
+
+		if (STAT === undefined)
 		{
-			const STAT: Stats = await stat(directory_path);
-
-			return STAT.isDirectory();
-		}
-		catch (error: unknown)
-		{
-			if (FileSystemService.IsFileSystemError(error))
-			{
-				switch (error.code)
-				{
-					case "ENOENT":
-						return false;
-
-					case "EACCES":
-						// @TODO: Remove the use to console.
-						// eslint-disable-next-line no-console -- This is a WIP.
-						console.log(`Requested file ${directory_path} cannot be loaded. File exists but reader got denied permissions. Error code: EACCES.`);
-
-						return false;
-
-					default:
-						// @TODO: Remove the use to console.
-						// eslint-disable-next-line no-console -- This is a WIP.
-						console.log(`Requested file ${directory_path} could not be loaded due to an unhandled error. Error code: ${error.code}.`);
-
-						return false;
-				}
-			}
+			return false;
 		}
 
-		return false;
+		return STAT.isDirectory();
+	}
+
+	public static async ConfirmDirectoryExistence(directory_path: string): Promise<void>
+	{
+		if (!await FileSystemService.DirectoryExists(directory_path))
+		{
+			throw new Error(`Impossible to find directory ${directory_path}, check that the directory exists, it's readable, and the path is correct.`);
+		}
+	}
+
+	public static async ReadDirectory(directory: string): Promise<Array<Dirent>>
+	{
+		return await readdir(directory, { encoding: "utf-8", withFileTypes: true });
+	}
+
+	public static async FileExists(file_path: string): Promise<boolean>
+	{
+		const STAT: Stats | undefined = await FileSystemService.GetStats(file_path);
+
+		if (STAT === undefined)
+		{
+			return false;
+		}
+
+		return STAT.isFile();
+	}
+
+	public static async ConfirmFileExistence(file_path: string): Promise<void>
+	{
+		if (!await FileSystemService.FileExists(file_path))
+		{
+			throw new Error(`Impossible to find file ${file_path}, check that the file exists, it's readable, and the path is correct.`);
+		}
 	}
 
 	public static async ReadFile(file_path: string): Promise<Buffer | string>
@@ -160,9 +132,32 @@ class FileSystemService
 		return FILE;
 	}
 
-	public static async ReadDirectory(directory: string): Promise<Array<Dirent>>
+	private static async GetStats(path: string): Promise<Stats | undefined>
 	{
-		return await readdir(directory, { encoding: "utf-8", withFileTypes: true });
+		try
+		{
+			return await stat(path);
+		}
+		catch (error: unknown)
+		{
+			if (FileSystemService.IsFileSystemError(error))
+			{
+				switch (error.code)
+				{
+					case "ENOENT":
+						break;
+
+					case "EACCES":
+						LoggerProxy.Warning(`Requested file ${path} cannot be loaded. File exists but reader got denied permissions. Error code: EACCES.`);
+						break;
+
+					default:
+						LoggerProxy.Warning(`Requested file ${path} could not be loaded due to an unhandled error. Error code: ${error.code}.`);
+				}
+			}
+
+			return undefined;
+		}
 	}
 }
 
