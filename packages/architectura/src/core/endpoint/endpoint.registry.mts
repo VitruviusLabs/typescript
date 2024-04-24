@@ -63,18 +63,18 @@ class EndpointRegistry
 
 		for (const ENTITY of CONTENTS)
 		{
-			const FILEPATH: string = `${directory}/${ENTITY.name}`;
+			const FILE_PATH: string = `${directory}/${ENTITY.name}`;
 
 			if (ENTITY.isDirectory())
 			{
-				await this.ParseDirectoryForEndpoints(FILEPATH);
+				await this.ParseDirectoryForEndpoints(FILE_PATH);
 
 				continue;
 			}
 
 			if (ENTITY.isFile() && ENTITY.name.includes(".endpoint."))
 			{
-				await this.ExtractEndpoint(FILEPATH);
+				await this.ExtractEndpoint(FILE_PATH);
 			}
 		}
 	}
