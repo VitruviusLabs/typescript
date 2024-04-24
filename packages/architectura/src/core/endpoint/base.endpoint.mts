@@ -27,8 +27,20 @@ abstract class BaseEndpoint extends Singleton
 	{
 		if (typeof this.route === "string")
 		{
+			let route: string = this.route;
+
+			if (!route.startsWith("^"))
+			{
+				route = `^${route}`;
+			}
+
+			if (!route.endsWith("$"))
+			{
+				route = `${route}$`;
+			}
+
 			// @ts-expect-error: Optimization
-			this.route = new RegExp(this.route);
+			this.route = new RegExp(route);
 		}
 
 		return this.route;

@@ -20,7 +20,7 @@ class LoggerService extends Singleton implements LoggerInterface
 			logLinePrefix = `${logLinePrefix} [${content.context}]`;
 		}
 
-		const LOG_LINE: string = `${logLinePrefix} - ${content.message}\n`;
+		const LOG_LINE: string = `${logLinePrefix} - ${content.message}`;
 
 		// eslint-disable-next-line no-console -- This is a logger, it should log to the console.
 		console.log(LOG_LINE);
