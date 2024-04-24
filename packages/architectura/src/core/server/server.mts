@@ -19,8 +19,7 @@ import { RichClientRequest } from "./rich-client-request.mjs";
 import { RichServerResponse } from "./rich-server-response.mjs";
 import { ContentType } from "../../utility/content-type/content-type.mjs";
 import { GlobalConfiguration } from "./global-configuration.mjs";
-import { HTTPMethodEnum } from "../_index.mjs";
-import { DomainRegistry } from "../../ddd/domain.registry.mjs";
+import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
 class Server
 {
@@ -87,8 +86,6 @@ class Server
 				}
 			}
 		);
-
-		await DomainRegistry.Load();
 
 		return SERVER;
 	}

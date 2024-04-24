@@ -1,20 +1,22 @@
 import type { Dirent } from "node:fs";
 import { BaseDomain, FileSystemService, LoggerProxy } from "../_index.mjs";
-import { TypeAssertion, TypeGuard } from "@vitruvius-labs/ts-predicate";
+import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 
-class DomainRegistry
+class DomainService
 {
-	private static readonly DOMAIN_DIRECTORIES: Array<string> = [];
-	private static lastLoadedIndex: number = 0;
-
-	public static async AddDomainDirectory(directory_path: string): Promise<void>
+	public static async LoadFromDirectory(directory_path: string): Promise<void>
 	{
 		await FileSystemService.ConfirmDirectoryExistence(directory_path);
 
-		this.DOMAIN_DIRECTORIES.push(directory_path);
+		const FOUND: boolean = await this.Load(directory_path);
+
+		if (!FOUND)
+		{
+			throw new Error(`No domain found in directory ${directory_path}.`);
+		}
 	}
 
-	public static async AddDomainRootDirectory(directory_path: string): Promise<void>
+	public static async LoadMultipleFromRootDirectory(directory_path: string): Promise<void>
 	{
 		await FileSystemService.ConfirmDirectoryExistence(directory_path);
 
@@ -24,26 +26,14 @@ class DomainRegistry
 		{
 			if (ENTITY.isDirectory())
 			{
-				this.DOMAIN_DIRECTORIES.push(`${directory_path}/${ENTITY.name}`);
+				await this.Load(`${directory_path}/${ENTITY.name}`);
 			}
 		}
 	}
 
-	public static async Load(): Promise<void>
+	private static async Load(directory_path: string): Promise<boolean>
 	{
-		for (; this.lastLoadedIndex < this.DOMAIN_DIRECTORIES.length; ++this.lastLoadedIndex)
-		{
-			const DIRECTORY_PATH: string | undefined = this.DOMAIN_DIRECTORIES[this.lastLoadedIndex];
-
-			TypeAssertion.isString(DIRECTORY_PATH);
-
-			await this.InitializeDomain(DIRECTORY_PATH);
-		}
-	}
-
-	private static async InitializeDomain(directory_path: string): Promise<void>
-	{
-		LoggerProxy.Debug(`Loading domain from ${directory_path}.`);
+		LoggerProxy.Debug(`Looking for domain in directory ${directory_path}.`);
 
 		const ENTITIES: Array<Dirent> = await FileSystemService.ReadDirectory(directory_path);
 
@@ -53,8 +43,7 @@ class DomainRegistry
 			{
 				LoggerProxy.Debug(`Found domain file ${ENTITY.name}.`);
 
-				const FILE_PATH: string = `${directory_path}/${ENTITY.name}`;
-				const EXPORTS: unknown = await import(FILE_PATH);
+				const EXPORTS: unknown = await import(`${directory_path}/${ENTITY.name}`);
 
 				if (TypeGuard.isRecord(EXPORTS))
 				{
@@ -66,12 +55,14 @@ class DomainRegistry
 
 							await EXPORT.Initialize();
 
-							return;
+							return true;
 						}
 					}
 				}
 			}
 		}
+
+		return false;
 	}
 
 	private static IsDomainConstructor(value: unknown): value is typeof BaseDomain
@@ -80,4 +71,4 @@ class DomainRegistry
 	}
 }
 
-export { DomainRegistry };
+export { DomainService };
