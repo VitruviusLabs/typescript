@@ -184,7 +184,7 @@ class Server
 
 		const CONTENT_TYPE: string = ContentType.Get(extname(FILE_PATH));
 
-		context.getResponse().replyWith({
+		await context.getResponse().replyWith({
 			payload: FILE,
 			contentType: CONTENT_TYPE,
 		});
@@ -347,6 +347,14 @@ class Server
 		if (!RESPONSE.areHeadersSent())
 		{
 			LoggerProxy.Error(is_error ? "Unhandled server error." : "Unhandled response.");
+
+			RESPONSE.getHeaderNames().forEach(
+				(header: string): void =>
+				{
+					RESPONSE.removeHeader(header);
+				}
+			);
+
 			RESPONSE.writeHead(HTTPStatusCodeEnum.INTERNAL_SERVER_ERROR);
 			RESPONSE.write("500 - Internal Server Error.");
 			RESPONSE.end();
