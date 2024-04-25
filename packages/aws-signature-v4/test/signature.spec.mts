@@ -852,7 +852,7 @@ describe("Signature", (): void => {
 	});
 
 	describe("generateCanonicalQueryString", (): void => {
-		it("should compute the canonicalQueryString property when called", (): void => {
+		it("should immediately return when the method is not GET or HEAD", (): void => {
 			const mocked_instantiation_interface: SignatureInstantiationInterface = {
 				...mockSignatureInstantiationInterface(),
 				method: HTTPMethodEnum.POST,
@@ -870,7 +870,7 @@ describe("Signature", (): void => {
 			expect(signature.canonicalQueryString).to.deep.equal(expected_canonical_query_string, "Signature canonicalQueryString is not equal to the expected value after generateCanonicalQueryString has been called.");
 		});
 
-		it("should immediately return when the method is not GET or HEAD", (): void => {
+		it("should compute the canonicalQueryString property when called", (): void => {
 			const mocked_instantiation_interface: SignatureInstantiationInterface = {
 				...mockSignatureInstantiationInterface(),
 				method: HTTPMethodEnum.GET,
