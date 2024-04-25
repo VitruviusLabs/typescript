@@ -2,6 +2,7 @@ import type { RichClientRequest } from "./rich-client-request.mjs";
 import type { ReplyInterface } from "./definition/interface/reply.interface.mjs";
 import type { CookieDescriptorInterface } from "./definition/interface/cookie-descriptor.interface.mjs";
 import { TLSSocket } from "node:tls";
+import { pipeline } from "node:stream/promises";
 import { ServerResponse as HTTPServerResponse } from "node:http";
 import { type Gzip, createGzip } from "node:zlib";
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
@@ -22,30 +23,30 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		this.cookies = new Map();
 	}
 
-	public json(content: unknown): void
+	public async json(content: unknown): Promise<void>
 	{
-		this.replyWith({
+		await this.replyWith({
 			status: HTTPStatusCodeEnum.OK,
 			payload: content,
 			contentType: ContentTypeEnum.JSON,
 		});
 	}
 
-	public text(content: Buffer | string): void
+	public async text(content: Buffer | string): Promise<void>
 	{
-		this.replyWith({
+		await this.replyWith({
 			status: HTTPStatusCodeEnum.OK,
 			payload: content,
 			contentType: ContentTypeEnum.TEXT,
 		});
 	}
 
-	public replyWith(parameters: HTTPStatusCodeEnum | ReplyInterface): void
+	public async replyWith(parameters: HTTPStatusCodeEnum | ReplyInterface): Promise<void>
 	{
 		if (TypeGuard.isNumber(parameters))
 		{
 			this.statusCode = parameters;
-			this.send();
+			await this.send();
 
 			return;
 		}
@@ -57,14 +58,13 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		this.processContentType(parameters);
 		this.processPayload(parameters);
 
-		this.send();
+		await this.send();
 	}
 
-	public send(): void
+	public async send(): Promise<void>
 	{
 		this.setCookieHeader();
-		this.writePayload();
-		this.end();
+		await this.writePayload();
 	}
 
 	public areHeadersSent(): boolean
@@ -293,21 +293,28 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		this.setHeader("Set-Cookie", COOKIE_HEADER);
 	}
 
-	private writePayload(): void
+	private async writePayload(): Promise<void>
 	{
 		if (this.content === undefined)
 		{
+			this.end();
+
 			return;
 		}
 
-		this.setHeader("Content-Encoding", "gzip");
-
 		// @TODO: Make response compression great again
+		this.setHeader("Content-Encoding", "gzip");
 		const ENCODER: Gzip = createGzip();
+		// End of compression algorithm choice
 
-		ENCODER.pipe(this);
+		this.writeHead(this.statusCode);
+
+		const PROMISE: Promise<void> = pipeline(ENCODER, this);
+
 		ENCODER.write(this.content);
 		ENCODER.end();
+
+		await PROMISE;
 	}
 }
 
