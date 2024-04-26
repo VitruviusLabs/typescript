@@ -9,7 +9,7 @@ abstract class BaseRepository<
 	C extends new (arg: I) => T
 >
 {
-	protected readonly factory: BaseFactory<T, I, C>;
+	private readonly factory: BaseFactory<T, I, C>;
 
 	public constructor(factory: BaseFactory<T, I, C>)
 	{
@@ -47,9 +47,7 @@ abstract class BaseRepository<
 			return undefined;
 		}
 
-		const model: T = this.factory.create(data);
-
-		BaseRepository.SetImmutableFields(model, data);
+		const model: T = this.create(data);
 
 		return model;
 	}
@@ -75,9 +73,7 @@ abstract class BaseRepository<
 			return undefined;
 		}
 
-		const model: T = this.factory.create(data);
-
-		BaseRepository.SetImmutableFields(model, data);
+		const model: T = this.create(data);
 
 		return model;
 	}
@@ -98,17 +94,16 @@ abstract class BaseRepository<
 	{
 		if (model.hasId())
 		{
-			// eslint-disable-next-line @typescript-eslint/no-shadow -- Harmless shadowing
-			const metadata: ModelMetadataInterface = await this.update(model);
+			const update_metadata: ModelMetadataInterface = await this.update(model);
 
-			BaseRepository.SetImmutableFields(model, metadata);
+			BaseRepository.SetImmutableFields(model, update_metadata);
 
 			return;
 		}
 
-		const metadata: ModelMetadataInterface = await this.register(model);
+		const register_metadata: ModelMetadataInterface = await this.register(model);
 
-		BaseRepository.SetImmutableFields(model, metadata);
+		BaseRepository.SetImmutableFields(model, register_metadata);
 	}
 
 	public async delete(model: T): Promise<void>
@@ -116,6 +111,15 @@ abstract class BaseRepository<
 		await this.destroy(model.getId());
 
 		BaseRepository.ClearImmutableFields(model);
+	}
+
+	protected create(parameters: I & ModelMetadataInterface): T
+	{
+		const model: T = this.factory.create(parameters);
+
+		BaseRepository.SetImmutableFields(model, parameters);
+
+		return model;
 	}
 }
 
