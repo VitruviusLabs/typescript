@@ -1,5 +1,4 @@
 import type { BaseModelInstantiationInterface } from "./definition/interface/base-model-instantiation.interface.mjs";
-
 import type { BaseModel } from "./base.model.mjs";
 
 abstract class BaseFactory<
@@ -17,9 +16,7 @@ abstract class BaseFactory<
 
 	public create(parameters: I): T
 	{
-		const model: T = new this.ClassConstructor(parameters);
-
-		return model;
+		return new this.ClassConstructor(parameters);
 	}
 }
 
