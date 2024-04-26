@@ -373,7 +373,6 @@ class Server
 	{
 		TypeAssertion.isInteger(port);
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Range boundaries
 		if (port < PortsEnum.LOWEST_AVAILABLE || PortsEnum.HIGHEST_AVAILABLE < port)
 		{
 			throw new Error(`"port" parameter isn't within range of valid ports. It must be an integer between ${PortsEnum.LOWEST_AVAILABLE.toString()} and ${PortsEnum.HIGHEST_AVAILABLE.toString()}`);

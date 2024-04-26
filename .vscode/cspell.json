@@ -20,7 +20,8 @@
 		"Zamralik",
 		"vars",
 		"sonarjs",
-		"traefik"
+		"traefik",
+		"brotli"
 	],
 	"flagWords": [
 		"hte"

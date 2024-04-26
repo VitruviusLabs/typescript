@@ -1,14 +1,16 @@
+import type { Transform } from "node:stream";
 import type { RichClientRequest } from "./rich-client-request.mjs";
 import type { ReplyInterface } from "./definition/interface/reply.interface.mjs";
 import type { CookieDescriptorInterface } from "./definition/interface/cookie-descriptor.interface.mjs";
 import { TLSSocket } from "node:tls";
 import { pipeline } from "node:stream/promises";
 import { ServerResponse as HTTPServerResponse } from "node:http";
-import { type Gzip, createGzip } from "node:zlib";
+import { createBrotliCompress, createDeflate, createGzip } from "node:zlib";
 import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 import { CookieSameSiteEnum } from "./definition/enum/cookie-same-site.enum.mjs";
+import { ContentEncodingEnum } from "./definition/enum/content-encoding.enum.mjs";
 import { JSONUtility } from "../../utility/json/json-utility.mjs";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
@@ -21,6 +23,21 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		super(request);
 
 		this.cookies = new Map();
+	}
+
+	private static GetEncoder(encoding: ContentEncodingEnum): Transform
+	{
+		switch (encoding)
+		{
+			case ContentEncodingEnum.GZIP:
+				return createGzip();
+
+			case ContentEncodingEnum.BROTLI:
+				return createBrotliCompress();
+
+			case ContentEncodingEnum.DEFLATE:
+				return createDeflate();
+		}
 	}
 
 	public async json(content: unknown): Promise<void>
@@ -295,6 +312,8 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 	private async writePayload(): Promise<void>
 	{
+		this.writeHead(this.statusCode);
+
 		if (this.content === undefined)
 		{
 			this.end();
@@ -302,12 +321,18 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 			return;
 		}
 
-		// @TODO: Make response compression great again
-		this.setHeader("Content-Encoding", "gzip");
-		const ENCODER: Gzip = createGzip();
-		// End of compression algorithm choice
+		const ENCODING: ContentEncodingEnum | undefined = this.pickEncoding();
 
-		this.writeHead(this.statusCode);
+		if (ENCODING === undefined)
+		{
+			this.write(this.content);
+			this.end();
+
+			return;
+		}
+
+		this.setHeader("Content-Encoding", ENCODING);
+		const ENCODER: Transform = RichServerResponse.GetEncoder(ENCODING);
 
 		const PROMISE: Promise<void> = pipeline(ENCODER, this);
 
@@ -315,6 +340,40 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		ENCODER.end();
 
 		await PROMISE;
+	}
+
+	private pickEncoding(): ContentEncodingEnum | undefined
+	{
+		const ACCEPT_ENCODING_HEADER: string | undefined = this.req.getHeader("accept-encoding");
+
+		if (ACCEPT_ENCODING_HEADER === undefined)
+		{
+			return undefined;
+		}
+
+		const ACCEPTED_ENCODINGS: Array<string> = ACCEPT_ENCODING_HEADER.split(", ");
+
+		for (const RAW_ACCEPTED_ENCODING of ACCEPTED_ENCODINGS)
+		{
+			const ACCEPTED_ENCODING: string | undefined = RAW_ACCEPTED_ENCODING.split(";")[0];
+
+			if (ACCEPTED_ENCODING === ContentEncodingEnum.GZIP)
+			{
+				return ContentEncodingEnum.GZIP;
+			}
+
+			if (ACCEPTED_ENCODING === ContentEncodingEnum.BROTLI)
+			{
+				return ContentEncodingEnum.BROTLI;
+			}
+
+			if (ACCEPTED_ENCODING === ContentEncodingEnum.DEFLATE)
+			{
+				return ContentEncodingEnum.DEFLATE;
+			}
+		}
+
+		return undefined;
 	}
 }
 
