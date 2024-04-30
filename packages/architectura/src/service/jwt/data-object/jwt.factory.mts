@@ -9,6 +9,7 @@ import { computeSignature } from "../utility/compute-signature.mjs";
 import { assertClaims } from "../predicate/assert-claims.mjs";
 import { JWT } from "./jwt.mjs";
 import { JSONUtility } from "../../../utility/json/json-utility.mjs";
+import { validateAlgorithm } from "../utility/validate-algorithm.mjs";
 
 class JWTFactory
 {
@@ -35,6 +36,8 @@ class JWTFactory
 		const HEADER: unknown = JSON.parse(Base64URL.Decode(ENCODED_HEADER));
 
 		assertHeader(HEADER);
+
+		validateAlgorithm(HEADER.alg);
 
 		const SIGNATURE: string = computeSignature({
 			algorithm: HEADER.alg,

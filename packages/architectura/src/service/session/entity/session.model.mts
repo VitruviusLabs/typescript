@@ -2,8 +2,9 @@ import type { JSONObjectType } from "../../../utility/json/_index.mjs";
 import type { SessionDelegate } from "./session.delegate.mjs";
 import { SessionConstantEnum } from "../definition/enum/session-constant.enum.mjs";
 import { MillisecondEnum } from "../../../definition/enum/millisecond.enum.mjs";
+import { ContextualStorage } from "../../../core/utility/contextual-storage.mjs";
 
-class Session
+class Session extends ContextualStorage
 {
 	private readonly uuid: string;
 	private readonly delegate: SessionDelegate;
@@ -12,6 +13,8 @@ class Session
 
 	public constructor(uuid: string, delegate: SessionDelegate)
 	{
+		super();
+
 		this.uuid = uuid;
 		this.delegate = delegate;
 		this.expirationTime = 0;
