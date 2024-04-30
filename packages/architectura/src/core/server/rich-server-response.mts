@@ -312,8 +312,6 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 	private async writePayload(): Promise<void>
 	{
-		this.writeHead(this.statusCode);
-
 		if (this.content === undefined)
 		{
 			this.end();
