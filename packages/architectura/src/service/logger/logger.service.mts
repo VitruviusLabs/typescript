@@ -1,5 +1,7 @@
 import type { LoggerServiceWriteInterface } from "./definition/interface/logger-service-write.interface.mjs";
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
+import { ValidationError } from "@vitruvius-labs/ts-predicate";
+import { stringifyErrorTree } from "@vitruvius-labs/ts-predicate/helper";
 import { Singleton } from "../../utility/singleton.mjs";
 import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
 import { DateEnum } from "../../definition/enum/date.enum.mjs";
@@ -115,7 +117,19 @@ class LoggerService extends Singleton implements LoggerInterface
 		const STACK_TRACE_PARSER: StackTraceParserService = new StackTraceParserService(error);
 		const FORMATTED_STACK_TRACE: Array<string> = STACK_TRACE_PARSER.getStackTraceAsTable();
 
-		this.error(error.message);
+		if (error instanceof ValidationError)
+		{
+			const FORMATTED_VALIDATION_ISSUES: Array<string> = stringifyErrorTree(error).split("\n");
+
+			for (const LINE of FORMATTED_VALIDATION_ISSUES)
+			{
+				this.error(LINE);
+			}
+		}
+		else
+		{
+			this.error(error.message);
+		}
 
 		for (const LINE of FORMATTED_STACK_TRACE)
 		{
