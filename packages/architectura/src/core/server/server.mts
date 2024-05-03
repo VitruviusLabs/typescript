@@ -7,7 +7,9 @@ import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import { Server as UnsafeServer, type ServerOptions as UnsafeServerOptions } from "node:http";
 import { Server as SecureServer, type ServerOptions as SecureServerOptions } from "node:https";
 import { extname } from "node:path";
-import { Helper, TypeAssertion, TypeGuard } from "@vitruvius-labs/ts-predicate";
+import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
+import { assertInteger } from "@vitruvius-labs/ts-predicate/type-assertion";
+import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { EndpointRegistry } from "../endpoint/endpoint.registry.mjs";
@@ -235,7 +237,7 @@ class Server
 		}
 		catch (error: unknown)
 		{
-			if (TypeGuard.isString(error) || error instanceof Error)
+			if (isString(error) || error instanceof Error)
 			{
 				LoggerProxy.Error(error);
 			}
@@ -286,7 +288,7 @@ class Server
 
 		for (const HOOK of GlobalConfiguration.GetGlobalPreHooks())
 		{
-			if (EXCLUDED_HOOKS.includes(Helper.getConstructorOf(HOOK)))
+			if (EXCLUDED_HOOKS.includes(getConstructorOf(HOOK)))
 			{
 				continue;
 			}
@@ -306,7 +308,7 @@ class Server
 
 		for (const HOOK of GlobalConfiguration.GetGlobalPostHooks())
 		{
-			if (EXCLUDED_HOOKS.includes(Helper.getConstructorOf(HOOK)))
+			if (EXCLUDED_HOOKS.includes(getConstructorOf(HOOK)))
 			{
 				continue;
 			}
@@ -326,7 +328,7 @@ class Server
 
 		for (const HOOK of GlobalConfiguration.GetGlobalErrorHooks())
 		{
-			if (EXCLUDED_HOOKS.includes(Helper.getConstructorOf(HOOK)))
+			if (EXCLUDED_HOOKS.includes(getConstructorOf(HOOK)))
 			{
 				continue;
 			}
@@ -371,7 +373,7 @@ class Server
 
 	private static ValidatePort(port: number): void
 	{
-		TypeAssertion.isInteger(port);
+		assertInteger(port);
 
 		if (port < PortsEnum.LOWEST_AVAILABLE || PortsEnum.HIGHEST_AVAILABLE < port)
 		{

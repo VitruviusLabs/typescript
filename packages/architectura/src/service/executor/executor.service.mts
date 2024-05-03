@@ -1,6 +1,6 @@
 import type { ExecutorInstantiationInterface } from "./definition/interface/executor-instantiation.interface.mjs";
 import { setTimeout as timeout } from "node:timers/promises";
-import { TypeGuard } from "@vitruvius-labs/ts-predicate";
+import { isFunction } from "@vitruvius-labs/ts-predicate/type-guard";
 
 class ExecutorService
 {
@@ -16,7 +16,7 @@ class ExecutorService
 
 		this.callback = value.callback;
 
-		if (TypeGuard.isFunction(value.customDelayComputor))
+		if (isFunction(value.customDelayComputor))
 		{
 			this.customComputeDelay = value.customDelayComputor;
 		}

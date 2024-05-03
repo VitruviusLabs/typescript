@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-labs/mockingbird",
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"description": "Module mocking library",
 	"author": {
 		"name": "VitruviusLabs"

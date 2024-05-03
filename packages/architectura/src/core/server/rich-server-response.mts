@@ -6,7 +6,7 @@ import { TLSSocket } from "node:tls";
 import { pipeline } from "node:stream/promises";
 import { ServerResponse as HTTPServerResponse } from "node:http";
 import { createBrotliCompress, createDeflate, createGzip } from "node:zlib";
-import { TypeGuard } from "@vitruvius-labs/ts-predicate";
+import { isNumber, isRecord, isString } from "@vitruvius-labs/ts-predicate/type-guard";
 import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 import { CookieSameSiteEnum } from "./definition/enum/cookie-same-site.enum.mjs";
@@ -60,7 +60,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 	public async replyWith(parameters: HTTPStatusCodeEnum | ReplyInterface): Promise<void>
 	{
-		if (TypeGuard.isNumber(parameters))
+		if (isNumber(parameters))
 		{
 			this.statusCode = parameters;
 			await this.send();
@@ -265,7 +265,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 			return;
 		}
 
-		if (TypeGuard.isRecord(parameters.payload))
+		if (isRecord(parameters.payload))
 		{
 			this.setHeader("Content-Type", ContentTypeEnum.JSON);
 
@@ -277,7 +277,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 	private processPayload(parameters: ReplyInterface): void
 	{
-		if (TypeGuard.isString(parameters.payload) || parameters.payload instanceof Buffer)
+		if (isString(parameters.payload) || parameters.payload instanceof Buffer)
 		{
 			this.content = parameters.payload;
 

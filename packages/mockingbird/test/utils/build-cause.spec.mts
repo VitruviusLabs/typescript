@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { getInvertedValues } from "@vitruvius-labs/testing-ground";
 import { buildCause } from "../../src/utils/build-cause.mjs";
 
-describe("TypeAssertion / utils / buildCause", (): void => {
+describe("utils / buildCause", (): void => {
 	it("should return an ErrorOptions when given an Error", (): void => {
 		const ERROR: Error = new Error("lorem ipsum");
 

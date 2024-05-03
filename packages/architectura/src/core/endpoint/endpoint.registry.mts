@@ -1,11 +1,10 @@
 import type { Dirent } from "node:fs";
-import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
-import { type ConstructorOf, TypeGuard } from "@vitruvius-labs/ts-predicate";
+import { isFunction, isRecord, isString } from "@vitruvius-labs/ts-predicate/type-guard";
+import { type ConstructorOf, getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 import { HelloWorldEndpoint } from "../../endpoint/hello-world.endpoint.mjs";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { BaseEndpoint } from "./base.endpoint.mjs";
-import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 import { HTTPMethodEnum } from "../_index.mjs";
 
 class EndpointRegistry
@@ -78,7 +77,7 @@ class EndpointRegistry
 	{
 		const EXPORTS: unknown = await import(path);
 
-		if (TypeGuard.isRecord(EXPORTS))
+		if (isRecord(EXPORTS))
 		{
 			for (let [, endpoint] of Object.entries(EXPORTS))
 			{
@@ -99,7 +98,7 @@ class EndpointRegistry
 
 	private static IsEndpointConstructor(value: unknown): value is ConstructorOf<BaseEndpoint>
 	{
-		return TypeGuard.isFunction(value) && value.prototype instanceof BaseEndpoint;
+		return isFunction(value) && value.prototype instanceof BaseEndpoint;
 	}
 
 	private static IsConcreteEndpoint(value: unknown): value is BaseEndpoint

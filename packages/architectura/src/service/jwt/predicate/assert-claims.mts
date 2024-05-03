@@ -1,9 +1,9 @@
-import { TypeGuard } from "@vitruvius-labs/ts-predicate";
 import type { JWTClaimsInterface } from "../_index.mjs";
+import { isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
 
 function assertClaims(claims: unknown): asserts claims is JWTClaimsInterface
 {
-	if (!TypeGuard.isRecord(claims))
+	if (!isRecord(claims))
 	{
 		throw new Error("Invalid claims.");
 	}
