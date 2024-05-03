@@ -1,6 +1,6 @@
-import type { StructuredDataDescriptor, StructuredDataOptions } from "../definition/_index.mjs";
+import type { StructuredDataDescriptor, StructuredDataOptions, StructuredDataPropertyDescriptor } from "../definition/_index.mjs";
 import { buildStructuredDataOptions } from "../utils/build-structured-data-options.mjs";
-import { isStructuredDataPropertyDescriptor } from "../utils/is-structured-data-property-descriptor.mjs";
+import { getStructuredDataPropertyDescriptor } from "../utils/get-structured-data-property-descriptor.mjs";
 import { hasAllowedKeys } from "./has-allowed-keys.mjs";
 import { hasNullableProperty } from "./has-nullable-property.mjs";
 import { isDefined } from "./is-defined.mjs";
@@ -30,10 +30,12 @@ function isStructuredData<Type>(
 	return DESCRIPTOR_KEYS.every(
 		(key: string): boolean =>
 		{
-			// @ts-expect-error -- Key mapping
-			const PROPERTY_DESCRIPTOR: unknown = descriptor[key];
+			const PROPERTY_DESCRIPTOR: StructuredDataPropertyDescriptor<unknown> = getStructuredDataPropertyDescriptor(descriptor, key);
 
-			isStructuredDataPropertyDescriptor(PROPERTY_DESCRIPTOR, key);
+			if (PROPERTY_DESCRIPTOR.ignore ?? false)
+			{
+				return true;
+			}
 
 			if (!hasNullableProperty(value, key))
 			{

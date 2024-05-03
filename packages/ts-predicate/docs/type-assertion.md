@@ -1,65 +1,75 @@
 # TypeAssertion
 
-## isDefined
+## AssertDefined
 
 ```ts
-isDefined(value: unknown): void
+assertDefined(value: unknown): void
 ```
 
 Asserts that the value is not nullish.
 
-## IsBoolean
+## AssertBoolean
 
 ```ts
-isBoolean(value: unknown): void
+assertBoolean(value: unknown): void
 ```
 
 Asserts that the value is a boolean.
 
-## IsNumber
+## AssertNumber
 
 ```ts
-isNumber(value: unknown): void
+assertNumber(value: unknown): void
 ```
 
 Asserts that the value is a number, but not NaN.
 
-## IsInteger
+## AssertInteger
 
 ```ts
-isInteger(value: unknown): void
+assertInteger(value: unknown): void
 ```
 
 Asserts that the value is a safe integer.
 
-## IsFiniteNumber
+## AssertFiniteNumber
 
 ```ts
-isFiniteNumber(value: unknown): void
+assertFiniteNumber(value: unknown): void
 ```
 
 Asserts that the value is a number, but not NaN nor +/-Infinity.
 
-## IsBigInt
+## AssertBigInt
 
 ```ts
-isBigInt(value: unknown): void
+assertBigInt(value: unknown): void
 ```
 
 Asserts that the value is a big integer.
 
-## IsString
+## AssertString
 
 ```ts
-isString(value: unknown): void
+assertString(value: unknown): void
 ```
 
 Asserts that the value is a string.
 
-## IsArray
+## AssertEnumValue
 
 ```ts
-isArray(value: unknown, constraints?: ArrayConstraints | Test): void
+assertEnumValue(value: unknown, enum_values: Array<string|number>, enum_name?: string): void
+```
+
+Asserts that the value is among a list.
+
+The optional parameter `enum_name` let you provide the actual enum name.
+
+## AssertArray
+
+```ts
+assertArray(value: unknown, constraints?: ArrayConstraints | Test): void
 ```
 
 Asserts that the value is an array.
@@ -83,18 +93,18 @@ If `minLength` is provided, it'll asserts that the value has at least that many 
 
 If `itemTest` is provided, it'll asserts that the predicate hold true for every item.
 
-## IsPopulatedArray
+## AssertPopulatedArray
 
 ```ts
-isPopulatedArray(value: unknown, constraints?: ArrayConstraints | Test): void
+assertPopulatedArray(value: unknown, constraints?: ArrayConstraints | Test): void
 ```
 
-Like `isArray`, but asserts that the array is never empty too.
+Like `assertArray`, but asserts that the array is never empty too.
 
-## IsRecord
+## AssertRecord
 
 ```ts
-isRecord(value: unknown, constraints?: RecordConstraints | Test): void
+assertRecord(value: unknown, constraints?: RecordConstraints | Test): void
 ```
 
 Asserts that the value is a record: a direct instance of Object.
@@ -117,68 +127,68 @@ type Test<T> =
 
 If `itemTest` is provided, it'll asserts that the predicate hold true for every item.
 
-## IsObject
+## AssertObject
 
 ```ts
-isObject(value: unknown): void
+assertObject(value: unknown): void
 ```
 
 Asserts that the value is an object.
 
-## IsInstanceOf
+## AssertInstanceOf
 
 ```ts
-isInstanceOf(value: unknown, constructor_class: ConstructorFunction): void
+assertInstanceOf(value: unknown, constructor_class: ConstructorFunction): void
 ```
 
 Asserts that the value is an instance of that class.
 
-## IsFunction
+## AssertFunction
 
 ```ts
-isFunction(value: unknown): void
+assertFunction(value: unknown): void
 ```
 
 Asserts that the value is a function, generator function, method, or class.
 
-## IsCallable
+## AssertCallable
 
 ```ts
-isCallable(value: unknown): void
+assertCallable(value: unknown): void
 ```
 
 Asserts that the value is a function, but not a constructible one
 (it cannot create an object by using `new`).
 
-## HasAllowedKeys
+## AssertAllowedKeys
 
 ```ts
-hasAllowedKeys(value: object, allowed_keys: Array<string>): void
+assertAllowedKeys(value: object, allowed_keys: Array<string>): void
 ```
 
 Asserts that the value only has allowed keys.
 
-## HasNullableProperty
+## AssertNullableProperty
 
 ```ts
-hasNullableProperty(value: object, property: string): void
+assertNullableProperty(value: object, property: string): void
 ```
 
 Asserts that the value is an object with the property defined, though it may be
 nullish.
 
-## HasProperty
+## AssertProperty
 
 ```ts
-hasProperty(value: object, property: string): void
+assertProperty(value: object, property: string): void
 ```
 
 Asserts that the value is an object with the property defined.
 
-## IsStructuredData
+## AssertStructuredData
 
 ```ts
-isStructuredData<T>(value: object, descriptor: StructuredDataDescriptor<T>, options?: StructuredDataOptions): void
+assertStructuredData<T>(value: object, descriptor: StructuredDataDescriptor<T>, options?: StructuredDataOptions): void
 ```
 
 Asserts that the value is specifically a structured data object.
@@ -197,19 +207,19 @@ interface ICat
 	tagId: string | undefined;
 }
 
-isStructuredData(
+assertStructuredData(
 	value,
 	{
 		name: {
-			test: isString,
+			test: assertString,
 		},
 		birthTimestamp: {
 			optional: true,
-			test: isNumber,
+			test: assertNumber,
 		},
 		tagId: {
 			nullable: true,
-			test: isString,
+			test: assertString,
 		},
 	},
 );
@@ -226,6 +236,14 @@ interface StructuredDataOptions
 
 If `allowExtraneousProperties` is set to `true`, it'll allow properties that are not listed in the descriptor.
 
+## AssertUnion
+
+```ts
+assertUnion(value: unknown, tests: Array<TestFunction>): void
+```
+
+Test a value against the union of different test functions. As long as one pass, it passes.
+
 # ValidationError
 
 To distinguish between unexpected errors and validation errors, you can check that the caught error is an instance of `ValidationError`.
@@ -238,3 +256,11 @@ Any custom assertion must throw a `ValidationError` unless an unexpected error o
 When a provided callable throws anything but an instance of `Error`, an instance of `UnknownError` will be created.
 
 You can get the original thrown value from the `reason` property.
+
+# WrapTest
+
+```ts
+wrapTest(test_function: ((value: unknown, options: Options) => void), ...parameters: Array<Options>): ((value: unknown) => void)
+```
+
+Helper function for creating closures of test functions.
