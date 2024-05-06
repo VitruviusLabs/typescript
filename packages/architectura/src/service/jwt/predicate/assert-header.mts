@@ -1,22 +1,16 @@
-import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
 import type { JWTHeaderInterface } from "../definition/interface/jwt-header.interface.mjs";
+import { assertEnumValue, assertString, assertStructuredData, wrapTest } from "@vitruvius-labs/ts-predicate/type-assertion";
 
 function assertHeader(header: unknown): asserts header is JWTHeaderInterface
 {
-	TypeAssertion.isStructuredData(
+	assertStructuredData(
 		header,
 		{
 			typ: {
-				test: (value: unknown): asserts value is "JWT" =>
-				{
-					if (value !== "JWT")
-					{
-						throw new Error('"typ" must be "JWT".');
-					}
-				},
+				test: wrapTest(assertEnumValue, ["JWT"]),
 			},
 			alg: {
-				test: TypeAssertion.isString,
+				test: assertString,
 			},
 		},
 		{

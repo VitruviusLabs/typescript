@@ -1,6 +1,6 @@
 import type { Dirent } from "node:fs";
 import { BaseDomain, FileSystemService, LoggerProxy } from "../_index.mjs";
-import { TypeGuard } from "@vitruvius-labs/ts-predicate";
+import { isFunction, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
 
 class DomainService
 {
@@ -45,7 +45,7 @@ class DomainService
 
 				const EXPORTS: unknown = await import(`${directory_path}/${ENTITY.name}`);
 
-				if (TypeGuard.isRecord(EXPORTS))
+				if (isRecord(EXPORTS))
 				{
 					for (const [, EXPORT] of Object.entries(EXPORTS))
 					{
@@ -67,7 +67,7 @@ class DomainService
 
 	private static IsDomainConstructor(value: unknown): value is typeof BaseDomain
 	{
-		return TypeGuard.isFunction(value) && value.prototype instanceof BaseDomain;
+		return isFunction(value) && value.prototype instanceof BaseDomain;
 	}
 }
 

@@ -1,21 +1,21 @@
-import { TypeAssertion } from "@vitruvius-labs/ts-predicate";
+import { assertArray, assertString, assertStructuredData } from "@vitruvius-labs/ts-predicate/type-assertion";
 import type { MockingInfos } from "../definition/interface/mocking-infos.mjs";
 
 function isMockingInfos(value: unknown): asserts value is MockingInfos
 {
-	TypeAssertion.isStructuredData<MockingInfos>(
+	assertStructuredData<MockingInfos>(
 		value,
 		{
 			token: {
-				test: TypeAssertion.isString,
+				test: assertString,
 			},
 			moduleIdentifier: {
-				test: TypeAssertion.isString,
+				test: assertString,
 			},
 			dependencyIdentifiers: {
 				test: (scoped_value: unknown): asserts scoped_value is Array<string> =>
 				{
-					TypeAssertion.isArray(scoped_value, { itemTest: TypeAssertion.isString });
+					assertArray(scoped_value, { itemTest: assertString });
 				},
 			},
 		}

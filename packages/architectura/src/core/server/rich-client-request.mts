@@ -2,7 +2,7 @@ import type { Socket } from "node:net";
 import type { JSONObjectType, JSONValueType } from "../../utility/json/_index.mjs";
 import { type IncomingHttpHeaders, IncomingMessage } from "node:http";
 import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
-import { isRecord as assertRecord } from "@vitruvius-labs/ts-predicate/type-assertion";
+import { assertRecord } from "@vitruvius-labs/ts-predicate/type-assertion";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 import { JSONUtility } from "../../utility/json/json-utility.mjs";
 import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";

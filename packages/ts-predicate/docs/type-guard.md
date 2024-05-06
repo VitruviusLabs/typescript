@@ -64,6 +64,14 @@ isString(value: unknown): boolean
 
 Narrow down the value to being a string.
 
+## IsEnumValue
+
+```ts
+isEnumValue(value: unknown, enum_values: Array<string|number>): boolean
+```
+
+Asserts that the value is among a list.
+
 ## IsArray
 
 ```ts
@@ -232,3 +240,19 @@ interface StructuredDataOptions
 ```
 
 If `allowExtraneousProperties` is set to `true`, it'll allow properties that are not listed in the descriptor.
+
+## IsUnion
+
+```ts
+isUnion(value: unknown, tests: Array<TestFunction>): boolean
+```
+
+Test a value against the union of different test functions. As long as one pass, it passes.
+
+# WrapTest
+
+```ts
+wrapTest(test_function: ((value: unknown, options: Options) => boolean), ...parameters: Array<Options>): ((value: unknown) => boolean)
+```
+
+Helper function for creating closures of test functions.

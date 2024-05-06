@@ -1,4 +1,4 @@
-import type { StructuredDataPropertyDescriptor } from "../../definition/_index.mjs";
+import type { StructuredDataPropertyDescriptor } from "../../definition/type/structured-data-property-descriptor.mjs";
 import { hasNullableProperty } from "../../type-guard/has-nullable-property.mjs";
 import { isDefined } from "../../type-guard/is-defined.mjs";
 import { itemAssertion } from "./item-assertion.mjs";
@@ -7,6 +7,11 @@ import { rethrowUnexpectedError } from "../../utils/rethrow-unexpected-error.mjs
 
 function validateProperty(value: object, key: string, property_descriptor: StructuredDataPropertyDescriptor<unknown>): void
 {
+	if (property_descriptor.ignore ?? false)
+	{
+		return;
+	}
+
 	if (!hasNullableProperty(value, key))
 	{
 		if (property_descriptor.optional ?? false)
