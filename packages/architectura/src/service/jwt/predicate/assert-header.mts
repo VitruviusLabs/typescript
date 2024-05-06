@@ -3,7 +3,7 @@ import { assertEnumValue, assertString, assertStructuredData, wrapTest } from "@
 
 function assertHeader(header: unknown): asserts header is JWTHeaderInterface
 {
-	assertStructuredData(
+	assertStructuredData<JWTHeaderInterface>(
 		header,
 		{
 			typ: {

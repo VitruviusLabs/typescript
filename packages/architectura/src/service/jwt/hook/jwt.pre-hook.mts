@@ -1,7 +1,6 @@
 import type { ExecutionContext } from "../../../core/execution-context/execution-context.mjs";
 import type { SecretType } from "../definition/type/secret.type.mjs";
 import { BasePreHook } from "../../../core/hook/base.pre-hook.mjs";
-import { GlobalCustomRegistry } from "../../global-custom.registry.mjs";
 import { JWTConstantEnum } from "../definition/enum/jwt-constant.enum.mjs";
 import { JWTFactory } from "../data-object/jwt.factory.mjs";
 import { JWT } from "../data-object/jwt.mjs";
@@ -27,7 +26,7 @@ class JWTPreHook extends BasePreHook
 
 		const TOKEN: JWT = JWTFactory.Parse(JWT_HEADER.slice(JWTConstantEnum.BEARER_PREFIX.length), this.secret);
 
-		GlobalCustomRegistry.Set(JWT, context, TOKEN);
+		context.setContextualItem(JWT, TOKEN);
 	}
 }
 
