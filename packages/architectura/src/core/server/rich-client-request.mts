@@ -1,12 +1,13 @@
 import type { Socket } from "node:net";
 import type { JSONObjectType, JSONValueType } from "../../utility/json/_index.mjs";
+import type { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 import { type IncomingHttpHeaders, IncomingMessage } from "node:http";
 import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
 import { assertRecord } from "@vitruvius-labs/ts-predicate/type-assertion";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 import { JSONUtility } from "../../utility/json/json-utility.mjs";
-import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 import { CookieUtility } from "../utility/cookie.utility.mjs";
+import { isHTTPMethodEnum } from "../predicate/is-http-method-enum.mjs";
 
 class RichClientRequest extends IncomingMessage
 {
@@ -156,33 +157,48 @@ class RichClientRequest extends IncomingMessage
 		this.rawBody = RichClientRequest.ListenForContent(this);
 	}
 
-	public getMethod(): string | undefined
+	public getUnsafeMethod(): string | undefined
 	{
 		return this.method;
 	}
 
-	public getStandardMethod(): HTTPMethodEnum | undefined
+	public hasStandardMethod(): boolean
 	{
-		switch (this.method)
-		{
-			case HTTPMethodEnum.GET:
-			case HTTPMethodEnum.HEAD:
-			case HTTPMethodEnum.POST:
-			case HTTPMethodEnum.PUT:
-			case HTTPMethodEnum.DELETE:
-			case HTTPMethodEnum.CONNECT:
-			case HTTPMethodEnum.OPTIONS:
-			case HTTPMethodEnum.TRACE:
-			case HTTPMethodEnum.PATCH:
-				return this.method;
-
-			default:
-				return undefined;
-		}
+		return isHTTPMethodEnum(this.method);
 	}
 
-	public getURL(): string | undefined
+	public getMethod(): HTTPMethodEnum
 	{
+		if (isHTTPMethodEnum(this.method))
+		{
+			return this.method;
+		}
+
+		if (this.method === undefined)
+		{
+			throw new Error("This request has no method.");
+		}
+
+		throw new Error(`Non standard HTTP method: ${this.method}.`);
+	}
+
+	public getUnsafeURL(): string | undefined
+	{
+		return this.url;
+	}
+
+	public hasURL(): boolean
+	{
+		return this.url !== undefined;
+	}
+
+	public getURL(): string
+	{
+		if (this.url === undefined)
+		{
+			throw new Error("This request has no URL.");
+		}
+
 		return this.url;
 	}
 
@@ -196,9 +212,9 @@ class RichClientRequest extends IncomingMessage
 		return this.pathFragments;
 	}
 
-	public getPathMatchGroups(): Record<string, string> | undefined
+	public getPathMatchGroups(): Record<string, string>
 	{
-		return this.pathMatchGroups;
+		return this.pathMatchGroups ?? {};
 	}
 
 	public getQuery(): ParsedUrlQuery

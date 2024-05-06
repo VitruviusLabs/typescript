@@ -99,14 +99,39 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		return this.writableFinished;
 	}
 
-	public getContent(): string | undefined
+	public hasContent(): boolean
+	{
+		return this.content !== undefined;
+	}
+
+	public getUnsafeContent(): Buffer | string | undefined
+	{
+		return this.content;
+	}
+
+	public getRawContent(): Buffer
+	{
+		if (this.content instanceof Buffer)
+		{
+			return this.content;
+		}
+
+		if (this.content === undefined)
+		{
+			return Buffer.alloc(0);
+		}
+
+		return Buffer.from(this.content);
+	}
+
+	public getContent(): string
 	{
 		if (this.content instanceof Buffer)
 		{
 			return this.content.toString();
 		}
 
-		return this.content;
+		return this.content ?? "";
 	}
 
 	public setContent(content: Buffer | string): void
