@@ -38,18 +38,33 @@ abstract class BaseModel
 		return this.uuid;
 	}
 
-	public getCreatedAt(): Date | undefined
+	public getCreatedAt(): Date
 	{
+		if (this.createdAt === undefined)
+		{
+			throw new Error("You must save this entity for it to have a creation date.");
+		}
+
 		return this.createdAt;
 	}
 
-	public getUpdatedAt(): Date | undefined
+	public getUpdatedAt(): Date
 	{
+		if (this.updatedAt === undefined)
+		{
+			throw new Error("You must save this entity for it to have an update date.");
+		}
+
 		return this.updatedAt;
 	}
 
 	public getDeletedAt(): Date | undefined
 	{
+		if (this.id === undefined)
+		{
+			throw new Error("You must save this entity for it to maybe have a deletion date.");
+		}
+
 		return this.deletedAt;
 	}
 }

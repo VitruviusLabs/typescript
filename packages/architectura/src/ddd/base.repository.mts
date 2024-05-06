@@ -21,7 +21,7 @@ abstract class BaseRepository<
 		Reflect.set(model, "id", BigInt(data.id));
 		Reflect.set(model, "createdAt", data.createdAt);
 		Reflect.set(model, "updatedAt", data.updatedAt);
-		Reflect.set(model, "deletedAt", data.deletedAt);
+		Reflect.set(model, "deletedAt", data.deletedAt ?? undefined);
 	}
 
 	private static ClearImmutableFields(model: BaseModel): void

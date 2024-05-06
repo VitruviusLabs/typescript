@@ -60,7 +60,7 @@ class SessionPreHook extends BasePreHook
 		if (session !== undefined)
 		{
 			session.refresh();
-			context.setSession(session);
+			context.setContextualItem(Session, session);
 
 			return;
 		}
@@ -68,7 +68,7 @@ class SessionPreHook extends BasePreHook
 		session = new Session(SESSION_ID ?? randomUUID(), this.delegate);
 
 		SessionRegistry.AddSession(session);
-		context.setSession(session);
+		context.setContextualItem(Session, session);
 
 		if (SESSION_ID === undefined)
 		{
