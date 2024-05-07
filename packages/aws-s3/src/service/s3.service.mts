@@ -185,11 +185,7 @@ class S3Service
 		parameters.append("partNumber", request.partNumber.toString());
 		parameters.append("uploadId", request.uploadId);
 
-		const address: string = `${this.protocol}://${request.bucket}.${
-			this.host
-		}/${request.key}?partNumber=${request.partNumber.toString()}&uploadId=${
-			request.uploadId
-		}`;
+		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}?partNumber=${request.partNumber.toString()}&uploadId=${request.uploadId}`;
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
