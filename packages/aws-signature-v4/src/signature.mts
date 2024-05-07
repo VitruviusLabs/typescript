@@ -280,11 +280,6 @@ class Signature
 
 	private generateCanonicalQueryString(): void
 	{
-		if (this.method !== HTTPMethodEnum.GET && this.method !== HTTPMethodEnum.HEAD)
-		{
-			return;
-		}
-
 		this.url.searchParams.sort();
 
 		this.canonicalQueryString = this.url.searchParams.toString();

@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-labs/aws-signature-v4",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "A simple library to generate AWS Signature V4",
 	"author": {
 		"name": "VitruviusLabs"
@@ -53,6 +53,5 @@
 		"ci:publish:dry": "pnpm publish --access public --dry-run --no-git-checks",
 		"ci:build": "pnpm build"
 	},
-	"keywords": [
-	]
+	"keywords": []
 }
