@@ -1,15 +1,13 @@
-import type { Blob as NodeBlob } from "node:buffer";
-// eslint-disable-next-line no-duplicate-imports
-import { Buffer as NodeBuffer } from "node:buffer";
 import type { S3ServiceInstantiationInterface } from "../definition/interface/s3-service-instantiation.interface.mjs";
 import type { S3RequestInterface } from "../definition/interface/s3-request.interface.mjs";
-import { HTTPMethodEnum, Signature } from "@vitruvius-labs/aws-signature-v4";
 import type { S3PutObjectRequestInterface } from "../definition/interface/s3-put-object-request.interface.mjs";
 import type { S3UploadPartRequestInterface } from "../definition/interface/s3-upload-part-request.interface.mjs";
 import type { S3CompleteMultipartUploadRequestInterface } from "../definition/interface/s3-complete-multipart-upload-request.interface.mjs";
-import { HTTPStatusCodeEnum } from "../definition/enum/http-status-code.enum.mjs";
 import type { S3AbortMultipartUploadRequestInterface } from "../definition/interface/s3-abort-multipart-upload-request.interface.mjs";
 import type { S3GetPresignedUrlRequestInterface } from "../definition/interface/s3-get-presigned-url-request.interface.mjs";
+import { type Blob as NodeBlob, Buffer as NodeBuffer } from "node:buffer";
+import { HTTPMethodEnum, Signature } from "@vitruvius-labs/aws-signature-v4";
+import { HTTPStatusCodeEnum } from "../definition/enum/http-status-code.enum.mjs";
 
 class S3Service
 {
@@ -60,8 +58,7 @@ class S3Service
 		});
 
 		const responseBlob: NodeBlob = await response.blob();
-		const responseArrayBuffer: ArrayBuffer
-			= await responseBlob.arrayBuffer();
+		const responseArrayBuffer: ArrayBuffer = await responseBlob.arrayBuffer();
 		const content: NodeBuffer = NodeBuffer.from(responseArrayBuffer);
 
 		return content;
@@ -167,8 +164,7 @@ class S3Service
 			throw new Error("Unable to create multipart upload.");
 		}
 
-		const uploadIdMatches: RegExpMatchArray | null
-			= /<UploadId>(?<uploadId>[^<]+)<\/UploadId>/.exec(responseText);
+		const uploadIdMatches: RegExpMatchArray | null = /<UploadId>(?<uploadId>[^<]+)<\/UploadId>/.exec(responseText);
 
 		if (uploadIdMatches?.groups?.["uploadId"] === undefined)
 		{
@@ -185,7 +181,7 @@ class S3Service
 		parameters.append("partNumber", request.partNumber.toString());
 		parameters.append("uploadId", request.uploadId);
 
-		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}?partNumber=${request.partNumber.toString()}&uploadId=${request.uploadId}`;
+		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}?${parameters.toString()}`;
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
@@ -235,8 +231,7 @@ class S3Service
 
 		parameters.append("uploadId", request.uploadId);
 
-		const bodyHeader: string
-			= '<CompleteMultipartUpload xmlns="http://s3.amazonaws.com/doc/2006-03-01/">';
+		const bodyHeader: string = '<CompleteMultipartUpload xmlns="http://s3.amazonaws.com/doc/2006-03-01/">';
 		const bodyFooter: string = "</CompleteMultipartUpload>";
 		const bodyParts: Array<string> = [];
 
@@ -251,7 +246,7 @@ class S3Service
 		const joinedParts: string = bodyParts.join("");
 		const body: string = `${bodyHeader}${joinedParts}${bodyFooter}`;
 
-		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}?uploadId=${request.uploadId}`;
+		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}?${parameters.toString()}`;
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
@@ -289,7 +284,9 @@ class S3Service
 	{
 		const parameters: URLSearchParams = new URLSearchParams();
 
-		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}?uploadId=${request.uploadId}`;
+		parameters.append("uploadId", request.uploadId);
+
+		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}?${parameters.toString()}`;
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
@@ -301,7 +298,7 @@ class S3Service
 			headers: {
 				Host: `${request.bucket}.${this.host}`,
 			},
-			body: parameters.toString(),
+			body: "",
 		});
 
 		signature.generate();
