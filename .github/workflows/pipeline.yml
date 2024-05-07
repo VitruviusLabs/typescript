@@ -383,7 +383,11 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
-        run: pnpm --filter testing-ground ci:build
+        run: |
+          pnpm --filter aws-signature-v4 ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter aws-s3
 
       - name: Lint with ESlint
         run: pnpm --filter aws-s3 ci:lint
@@ -410,7 +414,11 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
-        run: pnpm --filter testing-ground ci:build
+        run: |
+          pnpm --filter aws-signature-v4 ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter aws-s3
 
       - name: Check TypeScript syntax
         run: pnpm --filter aws-s3 ci:ts:check
@@ -437,7 +445,11 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
-        run: pnpm --filter testing-ground ci:build
+        run: |
+          pnpm --filter aws-signature-v4 ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter aws-s3
 
       - name: Test with Node Test runner
         run: pnpm --filter aws-s3 ci:test:unit
@@ -483,7 +495,11 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
-        run: pnpm --filter testing-ground ci:build
+        run: |
+          pnpm --filter aws-signature-v4 ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter aws-s3
 
       - name: Package build
         run: pnpm --filter aws-s3 ci:build
