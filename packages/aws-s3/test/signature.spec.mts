@@ -3,7 +3,7 @@ import { after, beforeEach, describe, it } from "mocha";
 import { use as chaiUse, expect } from "chai";
 import { type SinonSpy, type SinonStub, spy, stub } from "sinon";
 import { S3Service, type S3ServiceInstantiationInterface } from "../src/_index.mjs";
-import { mockS3ServiceInstantiationInterface } from "../mocks/definitions/interfaces/s3-service-instantiation.interface.mjs";
+import { mockS3ServiceInstantiationInterface } from "../mocks/definition/interface/s3-service-instantiation.interface.mjs";
 import { Signature } from "@vitruvius-labs/aws-signature-v4";
 
 import { default as chaiAsPromised } from "chai-as-promised";

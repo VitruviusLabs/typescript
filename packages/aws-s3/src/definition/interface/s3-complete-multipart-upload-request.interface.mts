@@ -3,8 +3,8 @@ import type { S3RequestInterface } from "./s3-request.interface.mjs";
 
 interface S3CompleteMultipartUploadRequestInterface extends S3RequestInterface
 {
-  uploadId: string;
-  parts: Array<S3CompletedPartInterface>;
+	uploadId: string;
+	parts: Array<S3CompletedPartInterface>;
 }
 
 export type { S3CompleteMultipartUploadRequestInterface };
