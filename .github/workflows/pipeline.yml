@@ -224,7 +224,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm --filter ts-predicate ci:publish
 
-  ## TS Predicate
+  ## AWS Signature v4
 
   lint-aws-signature-v4:
     needs: setup
@@ -358,6 +358,141 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm --filter aws-signature-v4 ci:publish
+
+  ## AWS S3
+
+  lint-aws-s3:
+    needs: setup
+    runs-on: ubuntu-latest
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: PNPM installation
+        uses: pnpm/action-setup@v3
+        id: pnpm-install
+        with:
+          version: 8
+          run_install: false
+
+      - name: Dependencies cache unpacking
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Building workspace dependencies
+        run: pnpm --filter testing-ground ci:build
+
+      - name: Lint with ESlint
+        run: pnpm --filter aws-s3 ci:lint
+
+  typescript-syntax-check-aws-s3:
+    needs: setup
+    runs-on: ubuntu-latest
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: PNPM installation
+        uses: pnpm/action-setup@v3
+        id: pnpm-install
+        with:
+          version: 8
+          run_install: false
+
+      - name: Dependencies cache unpacking
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Building workspace dependencies
+        run: pnpm --filter testing-ground ci:build
+
+      - name: Check TypeScript syntax
+        run: pnpm --filter aws-s3 ci:ts:check
+
+  test-aws-s3:
+    needs: setup
+    runs-on: ubuntu-latest
+    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: PNPM installation
+        uses: pnpm/action-setup@v3
+        id: pnpm-install
+        with:
+          version: 8
+          run_install: false
+
+      - name: Dependencies cache unpacking
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Building workspace dependencies
+        run: pnpm --filter testing-ground ci:build
+
+      - name: Test with Node Test runner
+        run: pnpm --filter aws-s3 ci:test:unit
+
+      - name: Upload reports as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: reports
+          path: |
+            reports/*
+
+  publish-aws-s3:
+    if: ${{ github.ref == 'refs/heads/main' && ! failure() && ! cancelled() && github.event_name == 'push' }}
+    needs:
+      [
+        spell-check-global,
+        lint-aws-s3,
+        typescript-syntax-check-aws-s3,
+        test-aws-s3,
+      ]
+    runs-on: ubuntu-latest
+    environment: npm
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: PNPM installation
+        uses: pnpm/action-setup@v3
+        id: pnpm-install
+        with:
+          version: 8
+          run_install: false
+
+      - name: Dependencies cache unpacking
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Building workspace dependencies
+        run: pnpm --filter testing-ground ci:build
+
+      - name: Package build
+        run: pnpm --filter aws-s3 ci:build
+
+      - name: Publish package
+        id: package-version
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm --filter aws-s3 ci:publish
 
   ## Mockingbird
 
