@@ -1,0 +1,21 @@
+{
+	"src": "./src",
+	"exclude": [
+		"**/test/**",
+		"**/mocks/**"
+	],
+	"extension": [
+		".mts"
+	],
+	"reporter": [
+		"html"
+	],
+	"report-dir": "./coverage",
+	"skip-full": true,
+	"check-coverage": true,
+	"all": true,
+	"statements": 32,
+	"branches": 50,
+	"functions": 18,
+	"lines": 32
+}

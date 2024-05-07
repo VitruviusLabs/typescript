@@ -25,6 +25,10 @@
 			"path": "./packages/aws-signature-v4"
 		},
 		{
+			"name": "aws-s3",
+			"path": "./packages/aws-s3"
+		},
+		{
 			"name": "functional",
 			"path": "./packages/functional"
 		}
@@ -50,6 +54,8 @@
 		],
 		"eslint.workingDirectories": [
 			"./packages/ts-predicate",
+			"./packages/aws-signature-v4",
+			"./packages/aws-s3",
 			"./packages/mockingbird"
 		],
 		"editor.formatOnSave": true,
@@ -72,5 +78,6 @@
 		"typescript.tsdk": "./node_modules/typescript/bin",
 		"typescript.tsserver.maxTsServerMemory": 4096,
 		"typescript.preferences.quoteStyle": "double",
+		"prettier.enable": false,
 	}
 }

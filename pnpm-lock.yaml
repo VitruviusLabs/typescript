@@ -26,6 +26,9 @@ importers:
       '@types/chai':
         specifier: ^4.3.12
         version: 4.3.12
+      '@types/chai-as-promised':
+        specifier: ^7.1.8
+        version: 7.1.8
       '@types/mocha':
         specifier: ^10.0.6
         version: 10.0.6
@@ -50,6 +53,9 @@ importers:
       chai:
         specifier: ^5.1.0
         version: 5.1.0
+      chai-as-promised:
+        specifier: ^7.1.1
+        version: 7.1.1(chai@5.1.0)
       cspell:
         specifier: ^8.6.0
         version: 8.6.0
@@ -104,6 +110,21 @@ importers:
       '@vitruvius-labs/ts-predicate':
         specifier: workspace:^
         version: link:../ts-predicate
+
+  packages/architectura-test:
+    dependencies:
+      '@vitruvius-labs/architectura':
+        specifier: workspace:^
+        version: link:../architectura
+      '@vitruvius-labs/ts-predicate':
+        specifier: workspace:^
+        version: link:../ts-predicate
+
+  packages/aws-s3:
+    dependencies:
+      '@vitruvius-labs/aws-signature-v4':
+        specifier: workspace:^
+        version: link:../aws-signature-v4
 
   packages/aws-signature-v4: {}
 
@@ -1265,6 +1286,12 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
+  /@types/chai-as-promised@7.1.8:
+    resolution: {integrity: sha512-ThlRVIJhr69FLlh6IctTXFkmhtP3NpMZ2QGq69StYLyKZFp/HOp1VdKZj7RvfNWYYcJ1xlbLGLLWj1UvP5u/Gw==}
+    dependencies:
+      '@types/chai': 4.3.12
+    dev: true
+
   /@types/chai@4.3.12:
     resolution: {integrity: sha512-zNKDHG/1yxm8Il6uCCVsm+dRdEsJlFoDu73X17y09bId6UwoYww+vFBsAcRzl8knM1sab3Dp1VRikFQwDOtDDw==}
     dev: true
@@ -1825,6 +1852,15 @@ packages:
     resolution: {integrity: sha512-7LjJvmQU6Sj7bL0j5b5WY/3n7utXUJvAe1lxhsHDbLmwX9mdL86Yjtr+5SRCyf8qME4M7pU2hswj0FpyBVCv9w==}
     dev: true
 
+  /chai-as-promised@7.1.1(chai@5.1.0):
+    resolution: {integrity: sha512-azL6xMoi+uxu6z4rhWQ1jbdUhOMhis2PvscD/xjLqNMkv3BPPp2JyyuTHOrf9BOosGpNQ11v6BKv/g57RXbiaA==}
+    peerDependencies:
+      chai: '>= 2.1.2 < 5'
+    dependencies:
+      chai: 5.1.0
+      check-error: 1.0.3
+    dev: true
+
   /chai@5.1.0:
     resolution: {integrity: sha512-kDZ7MZyM6Q1DhR9jy7dalKohXQ2yrlXkk59CR52aRKxJrobmlBNqnFQxX9xOX8w+4mz8SYlKJa/7D7ddltFXCw==}
     engines: {node: '>=12'}
@@ -1867,6 +1903,12 @@ packages:
 
   /chardet@0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
+    dev: true
+
+  /check-error@1.0.3:
+    resolution: {integrity: sha512-iKEoDYaRmd1mxM90a2OEfWhjsjPpYPuQ+lMYsoxB126+t8fw7ySEO48nmDg5COTjxDI65/Y2OWpeEHk3ZOe8zg==}
+    dependencies:
+      get-func-name: 2.0.2
     dev: true
 
   /check-error@2.0.0:
