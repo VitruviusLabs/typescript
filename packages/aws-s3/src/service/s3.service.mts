@@ -30,9 +30,7 @@ class S3Service
 		this.protocol = this.https ? "https" : "http";
 	}
 
-	public async getObject(
-		request: S3RequestInterface
-	): Promise<NodeBuffer>
+	public async getObject(request: S3RequestInterface): Promise<NodeBuffer>
 	{
 		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}`;
 
@@ -69,9 +67,7 @@ class S3Service
 		return content;
 	}
 
-	public async putObject(
-		request: S3PutObjectRequestInterface
-	): Promise<void>
+	public async putObject(request: S3PutObjectRequestInterface): Promise<void>
 	{
 		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}`;
 
@@ -131,9 +127,7 @@ class S3Service
 		return url;
 	}
 
-	public async createMultipartUpload(
-		request: S3RequestInterface
-	): Promise<string>
+	public async createMultipartUpload(request: S3RequestInterface): Promise<string>
 	{
 		const parameters: URLSearchParams = new URLSearchParams();
 
@@ -184,9 +178,7 @@ class S3Service
 		return uploadIdMatches.groups["uploadId"];
 	}
 
-	public async uploadPart(
-		request: S3UploadPartRequestInterface
-	): Promise<string>
+	public async uploadPart(request: S3UploadPartRequestInterface): Promise<string>
 	{
 		const parameters: URLSearchParams = new URLSearchParams();
 
@@ -241,9 +233,7 @@ class S3Service
 		return eTagHeader;
 	}
 
-	public async completeMultipartUpload(
-		request: S3CompleteMultipartUploadRequestInterface
-	): Promise<void>
+	public async completeMultipartUpload(request: S3CompleteMultipartUploadRequestInterface): Promise<void>
 	{
 		const parameters: URLSearchParams = new URLSearchParams();
 
@@ -299,9 +289,7 @@ class S3Service
 		}
 	}
 
-	public async abortMultipartUpload(
-		request: S3AbortMultipartUploadRequestInterface
-	): Promise<void>
+	public async abortMultipartUpload(request: S3AbortMultipartUploadRequestInterface): Promise<void>
 	{
 		const parameters: URLSearchParams = new URLSearchParams();
 
