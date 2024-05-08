@@ -1,3 +1,4 @@
+import { isDefined } from "@vitruvius-labs/ts-predicate/type-guard";
 import type { MessageInterface } from "../definition/interface/message.interface.mjs";
 import type { ReceiveMessageResultInterface } from "../definition/interface/receive-message-result.interface.mjs";
 
@@ -11,12 +12,12 @@ class ReceiveMessageResult
 	{
 		let messages: Array<MessageInterface> = [];
 
-		if (parameters.messages !== undefined && parameters.messages !== null)
+		if (isDefined(parameters.messages))
 		{
 			messages = parameters.messages;
 		}
 
-		if (parameters.Message !== undefined && parameters.Message !== null)
+		if (isDefined(parameters.Message))
 		{
 			messages = [parameters.Message];
 		}
