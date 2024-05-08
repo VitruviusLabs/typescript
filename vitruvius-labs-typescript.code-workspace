@@ -29,6 +29,10 @@
 			"path": "./packages/aws-s3"
 		},
 		{
+			"name": "aws-sqs",
+			"path": "./packages/aws-sqs"
+		},
+		{
 			"name": "functional",
 			"path": "./packages/functional"
 		}
