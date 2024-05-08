@@ -128,6 +128,15 @@ importers:
 
   packages/aws-signature-v4: {}
 
+  packages/aws-sqs:
+    dependencies:
+      '@vitruvius-labs/aws-signature-v4':
+        specifier: workspace:^
+        version: link:../aws-signature-v4
+      '@vitruvius-labs/ts-predicate':
+        specifier: workspace:^
+        version: link:../ts-predicate
+
   packages/functional: {}
 
   packages/mockingbird:

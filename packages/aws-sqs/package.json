@@ -1,0 +1,61 @@
+{
+	"name": "@vitruvius-labs/aws-sqs",
+	"version": "0.1.0",
+	"description": "A simple library to interact with AWS SQS",
+	"author": {
+		"name": "VitruviusLabs"
+	},
+	"contributors": [
+		"Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>",
+		"Benjamin Blum <benjamin.blum.98@gmail.com>"
+	],
+	"homepage": "https://github.com/VitruviusLabs/typescript/tree/main/packages/aws-sqs#readme",
+	"bugs": "https://github.com/VitruviusLabs/typescript/issues",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/VitruviusLabs/typescript.git"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": " https://registry.npmjs.org"
+	},
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./build/esm/_index.mjs",
+			"types": "./build/types/_index.d.mts"
+		}
+	},
+	"files": [
+		"build"
+	],
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"scripts": {
+		"clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
+		"compile": "tsc -p tsconfig.build.json",
+		"build": "pnpm clean && pnpm compile",
+		"eslint:check": "eslint ./src ./test",
+		"eslint:fix": "eslint ./src ./test --fix",
+		"test:unit": "TS_NODE_PROJECT=./tsconfig.mocha.json c8 mocha --parallel",
+		"test:unit:stryker": "pnpm test:unit",
+		"test:mutation": "stryker run --fileLogLevel trace",
+		"ts:check": "tsc -p tsconfig.json --noEmit",
+		"spell:check": "cspell -c ../../.vscode/cspell.json .",
+		"ci:lint": "pnpm eslint:check",
+		"ci:ts:check": "pnpm ts:check",
+		"ci:spell:check": "pnpm spell:check",
+		"ci:test:unit": "pnpm test:unit",
+		"ci:full": "pnpm ci:lint && pnpm ci:ts:check && pnpm ci:spell:check && pnpm ci:test:unit",
+		"ci:publish": "pnpm publish --access public",
+		"ci:publish:dry": "pnpm publish --access public --dry-run --no-git-checks",
+		"ci:build": "pnpm build"
+	},
+	"keywords": [],
+	"dependencies": {
+		"@vitruvius-labs/aws-signature-v4": "workspace:^",
+		"@vitruvius-labs/ts-predicate": "workspace:^"
+	}
+}
