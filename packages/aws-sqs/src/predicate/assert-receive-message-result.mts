@@ -8,7 +8,7 @@ function assertReceiveMessageResult(value: unknown): asserts value is ReceiveMes
 {
 	assertStructuredData<ReceiveMessageResultInterface>(value, {
 		messages: {
-			test: (scopedValue: unknown): asserts scopedValue is Array<MessageInterface> | null =>
+			test: (scopedValue: unknown): asserts scopedValue is Array<MessageInterface> =>
 			{
 				assertArray(scopedValue, {
 					itemTest: assertMessageInterface,

@@ -3,6 +3,7 @@ import { type Hash, createHash } from "node:crypto";
 import type { SQSServiceInstantiationInterface } from "../definition/interface/sqs-service-instantiation.interface.mjs";
 import { HTTPMethodEnum, Signature } from "@vitruvius-labs/aws-signature-v4";
 import { ResponseEnvelope } from "../entity/response-envelope.mjs";
+import { assertResponseEnvelope } from "../predicate/assert-response-envelope.mjs";
 
 class SQSService
 {
@@ -14,14 +15,14 @@ class SQSService
 	private readonly https: boolean;
 	private readonly protocol: "http" | "https";
 
-	public constructor(instantiationInterface: SQSServiceInstantiationInterface)
+	public constructor(parameters: SQSServiceInstantiationInterface)
 	{
-		this.accessKeyId = instantiationInterface.accessKeyId;
-		this.accessSecret = instantiationInterface.accessSecret;
-		this.region = instantiationInterface.region;
-		this.host = instantiationInterface.host;
-		this.accountId = instantiationInterface.accountId;
-		this.https = instantiationInterface.https;
+		this.accessKeyId = parameters.accessKeyId;
+		this.accessSecret = parameters.accessSecret;
+		this.region = parameters.region;
+		this.host = parameters.host;
+		this.accountId = parameters.accountId;
+		this.https = parameters.https;
 		this.protocol = this.https ? "https" : "http";
 	}
 
@@ -66,7 +67,9 @@ class SQSService
 		const responseText: string = await response.text();
 		const responseJSON: unknown = JSON.parse(responseText);
 
-		const envelope: ResponseEnvelope = ResponseEnvelope.Create(responseJSON);
+		assertResponseEnvelope(responseJSON);
+
+		const envelope: ResponseEnvelope = new ResponseEnvelope(responseJSON);
 
 		return envelope;
 	}
@@ -163,7 +166,8 @@ class SQSService
 			keepalive: true,
 		});
 
-		const responseJson: unknown = await response.json();
+		const responseText: string = await response.text();
+		const responseJson: unknown = JSON.parse(responseText);
 
 		return responseJson;
 	}

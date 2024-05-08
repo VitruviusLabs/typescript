@@ -2,13 +2,13 @@ import type { MessageAttributeInterface } from "./message-attribute.interface.mj
 
 interface MessageInterface
 {
-  Attributes?: Array<MessageAttributeInterface>;
-  MessageId: string;
-  ReceiptHandle: string;
-  Body: string;
-  MD5OfBody: string;
-  MD5OfMessageAttributes?: string;
-  MessageAttributes?: Record<string, unknown>;
+	Attributes?: Array<MessageAttributeInterface> | null;
+	MessageId: string;
+	ReceiptHandle: string;
+	Body: string;
+	MD5OfBody: string;
+	MD5OfMessageAttributes?: string | null;
+	MessageAttributes?: Record<string, unknown> | null;
 }
 
 export type { MessageInterface };

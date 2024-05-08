@@ -7,21 +7,21 @@ class ReceiveMessageResult
 {
 	private readonly messages: Array<Message> = [];
 
-	public constructor(value: ReceiveMessageResultInterface)
+	public constructor(parameters: ReceiveMessageResultInterface)
 	{
 		let messages: Array<MessageInterface> = [];
 
-		if (value.messages !== undefined && value.messages !== null)
+		if (parameters.messages !== undefined && parameters.messages !== null)
 		{
-			messages = value.messages;
+			messages = parameters.messages;
 		}
 
-		if (value.Message !== undefined && value.Message !== null)
+		if (parameters.Message !== undefined && parameters.Message !== null)
 		{
-			messages = [value.Message];
+			messages = [parameters.Message];
 		}
 
-		if (value.messages === undefined && value.Message === undefined)
+		if (parameters.messages === undefined && parameters.Message === undefined)
 		{
 			throw new Error("The ReceiveMessageResultInterface must contain either a messages property or a Message property.");
 		}

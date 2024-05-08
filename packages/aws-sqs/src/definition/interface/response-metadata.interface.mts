@@ -1,6 +1,6 @@
 interface ResponseMetadataInterface
 {
-  RequestId: string;
+	RequestId: string;
 }
 
 export type { ResponseMetadataInterface };

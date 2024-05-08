@@ -1,7 +1,7 @@
 interface MessageAttributeInterface
 {
-  Name: string;
-  Value: string;
+	Name: string;
+	Value: string;
 }
 
 export type { MessageAttributeInterface };

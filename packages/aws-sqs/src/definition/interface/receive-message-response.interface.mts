@@ -3,8 +3,8 @@ import type { ResponseMetadataInterface } from "./response-metadata.interface.mj
 
 interface ReceiveMessageResponseInterface
 {
-  ReceiveMessageResult: ReceiveMessageResultInterface | null;
-  ResponseMetadata: ResponseMetadataInterface;
+	ReceiveMessageResult: ReceiveMessageResultInterface | null;
+	ResponseMetadata: ResponseMetadataInterface;
 }
 
 export type { ReceiveMessageResponseInterface };

@@ -7,18 +7,18 @@ class Message
 	private readonly body: string;
 	private readonly md5OfBody: string;
 
-	public constructor(value: MessageInterface)
+	public constructor(parameters: MessageInterface)
 	{
-		this.messageId = value.MessageId;
-		this.receiptHandle = value.ReceiptHandle;
+		this.messageId = parameters.MessageId;
+		this.receiptHandle = parameters.ReceiptHandle;
 
 		// This is an unforunate hack that is necessary to circumvent a bug in LocalStack.
 		// See: https://github.com/localstack/localstack/issues/8451
 		/* c8 ignore next */
-		const cleanedBody: string = value.Body.replaceAll(/(?:__marker__\\?)/g, "");
+		const cleanedBody: string = parameters.Body.replaceAll(/(?:__marker__\\?)/g, "");
 
 		this.body = cleanedBody;
-		this.md5OfBody = value.MD5OfBody;
+		this.md5OfBody = parameters.MD5OfBody;
 	}
 
 	public getMessageId(): string

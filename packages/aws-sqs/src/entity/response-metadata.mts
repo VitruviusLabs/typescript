@@ -4,9 +4,9 @@ class ResponseMetadata
 {
 	private readonly requestId: string;
 
-	public constructor(value: ResponseMetadataInterface)
+	public constructor(paarameters: ResponseMetadataInterface)
 	{
-		this.requestId = value.RequestId;
+		this.requestId = paarameters.RequestId;
 	}
 
 	public getRequestId(): string

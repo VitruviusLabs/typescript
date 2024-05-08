@@ -2,7 +2,7 @@ import type { ReceiveMessageResponseInterface } from "./receive-message-response
 
 interface ResponseEnvelopeInterface
 {
-  ReceiveMessageResponse: ReceiveMessageResponseInterface;
+	ReceiveMessageResponse: ReceiveMessageResponseInterface;
 }
 
 export type { ResponseEnvelopeInterface };
