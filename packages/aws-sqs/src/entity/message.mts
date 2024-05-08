@@ -31,7 +31,7 @@ class Message
 		return this.receiptHandle;
 	}
 
-	public getBody(): unknown
+	public getBody(): string
 	{
 		return this.body;
 	}
