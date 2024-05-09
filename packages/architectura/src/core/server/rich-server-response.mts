@@ -12,17 +12,21 @@ import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 import { CookieSameSiteEnum } from "./definition/enum/cookie-same-site.enum.mjs";
 import { ContentEncodingEnum } from "./definition/enum/content-encoding.enum.mjs";
 import { JSONUtility } from "../../utility/json/json-utility.mjs";
+import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
 	private readonly cookies: Map<string, CookieDescriptorInterface>;
-	private content: Buffer | string | undefined = undefined;
+	private content: Buffer | string | undefined;
+	private locked: boolean;
 
 	public constructor(request: RichClientRequest)
 	{
 		super(request);
 
 		this.cookies = new Map();
+		this.content = undefined;
+		this.locked = false;
 	}
 
 	private static GetEncoder(encoding: ContentEncodingEnum): Transform
@@ -60,10 +64,15 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 	public async replyWith(parameters: HTTPStatusCodeEnum | ReplyInterface): Promise<void>
 	{
+		this.assertUnlocked();
+
+		this.locked = true;
+
 		if (isNumber(parameters))
 		{
 			this.statusCode = parameters;
-			await this.send();
+			this.setCookieHeader();
+			await this.writePayload();
 
 			return;
 		}
@@ -74,29 +83,18 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		this.processCookies(parameters);
 		this.processContentType(parameters);
 		this.processPayload(parameters);
-
-		await this.send();
-	}
-
-	public async send(): Promise<void>
-	{
 		this.setCookieHeader();
 		await this.writePayload();
 	}
 
-	public areHeadersSent(): boolean
+	public isLocked(): boolean
 	{
-		return this.headersSent;
-	}
-
-	public isDone(): boolean
-	{
-		return this.writableEnded;
+		return this.locked || this.headersSent || this.writableEnded || this.writableFinished;
 	}
 
 	public isSent(): boolean
 	{
-		return this.writableFinished;
+		return this.headersSent && this.writableEnded && this.writableFinished;
 	}
 
 	public hasContent(): boolean
@@ -136,6 +134,8 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 	public setContent(content: Buffer | string): void
 	{
+		this.assertUnlocked();
+
 		this.content = content;
 	}
 
@@ -146,12 +146,24 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 	public setStatusCode(status_code: HTTPStatusCodeEnum): void
 	{
+		this.assertUnlocked();
+
 		this.statusCode = status_code;
+	}
+
+	public getUnsafeHeader(name: string): Array<string> | number | string | undefined
+	{
+		return super.getHeader(name.toLowerCase());
+	}
+
+	public override getHeader(name: string): string | undefined
+	{
+		return this.getNormalizedHeader(name)[0];
 	}
 
 	public getNormalizedHeader(name: string): Array<string>
 	{
-		const HEADER: Array<string> | number | string | undefined = this.getHeader(name);
+		const HEADER: Array<string> | number | string | undefined = this.getUnsafeHeader(name);
 
 		if (HEADER === undefined)
 		{
@@ -173,6 +185,8 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 	public setCookie(descriptor: CookieDescriptorInterface): void
 	{
+		this.assertUnlocked();
+
 		if (descriptor.expires !== undefined && descriptor.maxAge !== undefined)
 		{
 			throw new Error("A cookie can't have both an expires and max-age attribute.");
@@ -184,6 +198,14 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		}
 
 		this.cookies.set(descriptor.name, descriptor);
+	}
+
+	private assertUnlocked(): void
+	{
+		if (this.locked)
+		{
+			throw new Error("This response is locked and will no longer accept changes.");
+		}
 	}
 
 	private isSecure(): boolean
@@ -314,6 +336,8 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 	private setCookieHeader(): void
 	{
+		this.assertUnlocked();
+
 		if (this.cookies.size === 0)
 		{
 			return;
@@ -344,7 +368,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 			return;
 		}
 
-		const ENCODING: ContentEncodingEnum | undefined = this.pickEncoding();
+		const ENCODING: ContentEncodingEnum | undefined = this.findAcceptedEncoding();
 
 		if (ENCODING === undefined)
 		{
@@ -362,10 +386,21 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		ENCODER.write(this.content);
 		ENCODER.end();
 
-		await PROMISE;
+		try
+		{
+			// @TODO: Investigate premature close
+			// If the response stream end before the encoder stream does,
+			// the promise will reject with an ERR_STREAM_PREMATURE_CLOSE error.
+			// This try/catch is a temporary workaround until we find a better solution
+			await PROMISE;
+		}
+		catch (error: unknown)
+		{
+			LoggerProxy.Error(error);
+		}
 	}
 
-	private pickEncoding(): ContentEncodingEnum | undefined
+	private findAcceptedEncoding(): ContentEncodingEnum | undefined
 	{
 		const ACCEPT_ENCODING_HEADER: string | undefined = this.req.getHeader("accept-encoding");
 

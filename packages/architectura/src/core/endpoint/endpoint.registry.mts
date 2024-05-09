@@ -5,7 +5,8 @@ import { HelloWorldEndpoint } from "../../endpoint/hello-world.endpoint.mjs";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { BaseEndpoint } from "./base.endpoint.mjs";
-import { HTTPMethodEnum } from "../_index.mjs";
+import { isHTTPMethodEnum } from "../predicate/is-http-method-enum.mjs";
+import { Singleton } from "../../utility/singleton.mjs";
 
 class EndpointRegistry
 {
@@ -19,7 +20,14 @@ class EndpointRegistry
 
 			const MAP: Map<string, BaseEndpoint> = new Map();
 
-			MAP.set("GET::^.*$", new HelloWorldEndpoint());
+			let endpoint: HelloWorldEndpoint | undefined = Singleton.FindInstance(HelloWorldEndpoint);
+
+			if (endpoint === undefined)
+			{
+				endpoint = new HelloWorldEndpoint();
+			}
+
+			MAP.set("GET::/^.*$/", endpoint);
 
 			return MAP;
 		}
@@ -75,7 +83,7 @@ class EndpointRegistry
 
 	private static async ExtractEndpoint(path: string): Promise<void>
 	{
-		const EXPORTS: unknown = await import(path);
+		const EXPORTS: unknown = await FileSystemService.Import(path);
 
 		if (isRecord(EXPORTS))
 		{
@@ -117,26 +125,9 @@ class EndpointRegistry
 			return false;
 		}
 
-		if (!isString(method))
+		if (!isHTTPMethodEnum(method))
 		{
-			throw new Error(`${getConstructorOf(value).name} method must be an HTTPMethodEnum`);
-		}
-
-		switch (method)
-		{
-			case HTTPMethodEnum.GET:
-			case HTTPMethodEnum.HEAD:
-			case HTTPMethodEnum.POST:
-			case HTTPMethodEnum.PUT:
-			case HTTPMethodEnum.DELETE:
-			case HTTPMethodEnum.CONNECT:
-			case HTTPMethodEnum.OPTIONS:
-			case HTTPMethodEnum.TRACE:
-			case HTTPMethodEnum.PATCH:
-				break;
-
-			default:
-				throw new Error(`${getConstructorOf(value).name} method must be an HTTPMethodEnum.`);
+			throw new Error(`${getConstructorOf(value).name} method must be an HTTPMethodEnum.`);
 		}
 
 		if (!isString(route) && !(route instanceof RegExp))

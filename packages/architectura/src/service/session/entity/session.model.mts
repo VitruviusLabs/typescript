@@ -1,4 +1,4 @@
-import type { JSONObjectType } from "../../../utility/json/_index.mjs";
+import type { JSONObjectType } from "../../../utility/json/definition/type/json-object.type.mjs";
 import type { SessionDelegate } from "./session.delegate.mjs";
 import { SessionConstantEnum } from "../definition/enum/session-constant.enum.mjs";
 import { MillisecondEnum } from "../../../definition/enum/millisecond.enum.mjs";

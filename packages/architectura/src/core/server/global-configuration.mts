@@ -10,11 +10,9 @@ class GlobalConfiguration
 	private static readonly GLOBAL_ERROR_HOOKS: Array<BaseErrorHook> = [];
 	private static readonly PUBLIC_ASSET_DIRECTORIES: Map<string, string> = new Map<string, string>();
 
-	private constructor() {}
+	private constructor() { }
 
-	/**
-	 * @internal
-	 */
+	/** @internal */
 	public static GetGlobalPreHooks(): ReadonlyArray<BasePreHook>
 	{
 		return this.GLOBAL_PRE_HOOKS;
@@ -25,9 +23,7 @@ class GlobalConfiguration
 		this.GLOBAL_PRE_HOOKS.push(hook);
 	}
 
-	/**
-	 * @internal
-	 */
+	/** @internal */
 	public static GetGlobalPostHooks(): ReadonlyArray<BasePostHook>
 	{
 		return this.GLOBAL_POST_HOOKS;
@@ -38,9 +34,7 @@ class GlobalConfiguration
 		this.GLOBAL_POST_HOOKS.push(hook);
 	}
 
-	/**
-	 * @internal
-	 */
+	/** @internal */
 	public static GetGlobalErrorHooks(): ReadonlyArray<BaseErrorHook>
 	{
 		return this.GLOBAL_ERROR_HOOKS;
@@ -51,9 +45,7 @@ class GlobalConfiguration
 		this.GLOBAL_ERROR_HOOKS.push(hook);
 	}
 
-	/**
-	 * @internal
-	 */
+	/** @internal */
 	public static GetPublicAssetDirectories(): ReadonlyMap<string, string>
 	{
 		return this.PUBLIC_ASSET_DIRECTORIES;
@@ -64,14 +56,6 @@ class GlobalConfiguration
 		await FileSystemService.ConfirmDirectoryExistence(directory_path);
 
 		this.PUBLIC_ASSET_DIRECTORIES.set(route, directory_path);
-	}
-
-	public static async SetPublicAssetDirectories(directory_paths: Map<string, string>): Promise<void>
-	{
-		for (const [ROUTE, DIRECTORY_PATH] of directory_paths)
-		{
-			await this.AddPublicAssetDirectory(ROUTE, DIRECTORY_PATH);
-		}
 	}
 }
 

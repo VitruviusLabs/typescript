@@ -1,29 +1,18 @@
 import { type Dirent, type ReadStream, type Stats, createReadStream } from "node:fs";
 import { type FileHandle, open, readFile, readdir, stat } from "node:fs/promises";
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import { hasProperty, isInstanceOf, isString } from "@vitruvius-labs/ts-predicate/type-guard";
 import type { FileSystemErrorInterface } from "./definition/interface/file-system-error.interface.mjs";
-import { LoggerProxy } from "../_index.mjs";
+import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 
 class FileSystemService
 {
-	public static IsFileSystemError(error: unknown): error is FileSystemErrorInterface
+	public static IsFileSystemError(this: void, error: unknown): error is FileSystemErrorInterface
 	{
 		return (
 			isInstanceOf(error, Error)
 			&& hasProperty(error, "code")
 			&& isString(error.code)
 		);
-	}
-
-	public static ComputeRootDirectory(): string
-	{
-		const FILE_PATH: string = fileURLToPath(import.meta.url);
-
-		const GRANDPARENT_DIRECTORY: string = dirname(dirname(FILE_PATH));
-
-		return GRANDPARENT_DIRECTORY;
 	}
 
 	public static async DirectoryExists(directory_path: string): Promise<boolean>
@@ -118,7 +107,7 @@ class FileSystemService
 		return FILE;
 	}
 
-	public static async OpenFile(file_path: string, flags: string): Promise<FileHandle>
+	public static async OpenFile(this: void, file_path: string, flags: string): Promise<FileHandle>
 	{
 		const EXISTS: boolean = await FileSystemService.FileExists(file_path);
 
@@ -132,7 +121,7 @@ class FileSystemService
 		return FILE;
 	}
 
-	private static async GetStats(path: string): Promise<Stats | undefined>
+	public static async GetStats(this: void, path: string): Promise<Stats | undefined>
 	{
 		try
 		{
@@ -155,9 +144,23 @@ class FileSystemService
 						LoggerProxy.Warning(`Requested file ${path} could not be loaded due to an unhandled error. Error code: ${error.code}.`);
 				}
 			}
+			else
+			{
+				LoggerProxy.Error(error);
+			}
 
 			return undefined;
 		}
+	}
+
+	/**
+	* This dynamic import proxy method allows mocking dynamic imports in your tests.
+	*/
+	public static async Import(this: void, path: string): Promise<unknown>
+	{
+		const MODULE: unknown = await import(path);
+
+		return MODULE;
 	}
 }
 

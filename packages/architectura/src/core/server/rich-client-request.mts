@@ -1,5 +1,6 @@
 import type { Socket } from "node:net";
-import type { JSONObjectType, JSONValueType } from "../../utility/json/_index.mjs";
+import type { JSONObjectType } from "../../utility/json/definition/type/json-object.type.mjs";
+import type { JSONValueType } from "../../utility/json/definition/type/json-value.type.mjs";
 import type { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 import { type IncomingHttpHeaders, IncomingMessage } from "node:http";
 import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
@@ -13,27 +14,27 @@ class RichClientRequest extends IncomingMessage
 {
 	private readonly pathMatchGroups: Record<string, string> | undefined;
 	private initialized: boolean;
+	private cookies: Map<string, string>;
 	private path: string;
 	private pathFragments: Array<string>;
 	private query: ParsedUrlQuery;
-	private rawBody: Promise<Buffer>;
 	private contentType: string;
 	private boundary: string;
-	private cookies: Map<string, string>;
+	private rawBody: Promise<Buffer>;
 
 	public constructor(socket: Socket)
 	{
 		super(socket);
 
+		this.pathMatchGroups = undefined;
 		this.initialized = false;
+		this.cookies = new Map();
 		this.path = "";
 		this.pathFragments = [];
-		this.pathMatchGroups = undefined;
 		this.query = {};
-		this.rawBody = Promise.resolve(Buffer.alloc(0));
 		this.contentType = "";
 		this.boundary = "";
-		this.cookies = new Map();
+		this.rawBody = Promise.resolve(Buffer.alloc(0));
 	}
 
 	private static async ListenForContent(message: IncomingMessage): Promise<Buffer>
@@ -77,9 +78,7 @@ class RichClientRequest extends IncomingMessage
 		);
 	}
 
-	/**
-	* @internal
-	*/
+	/** @internal */
 	public initialize(): void
 	{
 		if (this.initialized)
@@ -227,7 +226,7 @@ class RichClientRequest extends IncomingMessage
 		return structuredClone(this.headers);
 	}
 
-	public getRawHeader(name: string): Array<string> | string | undefined
+	public getUnsafeHeader(name: string): Array<string> | string | undefined
 	{
 		const NORMALIZED_NAME: string = name.toString().toLowerCase();
 
@@ -236,7 +235,7 @@ class RichClientRequest extends IncomingMessage
 
 	public getHeader(name: string): string | undefined
 	{
-		const HEADER: Array<string> | string | undefined = this.getRawHeader(name);
+		const HEADER: Array<string> | string | undefined = this.getUnsafeHeader(name);
 
 		if (Array.isArray(HEADER))
 		{

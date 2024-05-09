@@ -1,4 +1,4 @@
-import type { JSONValueType } from "./definition/_index.mjs";
+import type { JSONValueType } from "./definition/type/json-value.type.mjs";
 
 class JSONUtility
 {

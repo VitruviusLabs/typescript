@@ -1,4 +1,4 @@
-// @internal
+/** @internal */
 const enum JWTConstantEnum
 {
 	TOKEN_PARTS = 3,

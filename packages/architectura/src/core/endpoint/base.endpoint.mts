@@ -18,11 +18,13 @@ abstract class BaseEndpoint extends Singleton
 
 	public abstract execute(context: ExecutionContext): Promise<void> | void;
 
+	/** @sealed */
 	public getMethod(): HTTPMethodEnum
 	{
 		return this.method;
 	}
 
+	/** @sealed */
 	public getRoute(): RegExp
 	{
 		if (typeof this.route === "string")
@@ -66,14 +68,14 @@ abstract class BaseEndpoint extends Singleton
 		return this.excludedGlobalPostHooks;
 	}
 
-	public getExcludedGlobalErrorHooks(): Array<typeof BaseErrorHook>
-	{
-		return this.excludedGlobalErrorHooks;
-	}
-
 	public getErrorHooks(): Array<BaseErrorHook>
 	{
 		return this.errorHooks;
+	}
+
+	public getExcludedGlobalErrorHooks(): Array<typeof BaseErrorHook>
+	{
+		return this.excludedGlobalErrorHooks;
 	}
 }
 
