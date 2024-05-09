@@ -9,7 +9,6 @@ import { Server as SecureServer, type ServerOptions as SecureServerOptions } fro
 import { extname } from "node:path";
 import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 import { assertInteger } from "@vitruvius-labs/ts-predicate/type-assertion";
-import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { EndpointRegistry } from "../endpoint/endpoint.registry.mjs";
@@ -115,7 +114,7 @@ class Server
 			await HOOK.execute(CONTEXT, error);
 		}
 
-		this.FinalizeResponse(CONTEXT, true);
+		await this.FinalizeResponse(CONTEXT, true);
 	}
 
 	private static async ComputeServerOptions(options: ServerConfigurationType): Promise<ServerInstantiationType>
@@ -161,9 +160,10 @@ class Server
 			return;
 		}
 
-		response.writeHead(HTTPStatusCodeEnum.NOT_FOUND);
-		response.write("404 - Not found.");
-		response.end();
+		await response.replyWith({
+			status: HTTPStatusCodeEnum.NOT_FOUND,
+			payload: "404 - Not found.",
+		});
 	}
 
 	private static async HandlePublicAssets(context: ExecutionContext): Promise<boolean>
@@ -227,28 +227,25 @@ class Server
 
 		LoggerProxy.Debug(`Matching endpoint found: ${ENDPOINT.constructor.name}.`);
 
+		let has_error_occurred: boolean = true;
+
 		try
 		{
 			await this.RunPreHooks(ENDPOINT, context);
 			await ENDPOINT.execute(context);
 			await this.RunPostHooks(ENDPOINT, context);
 
-			this.FinalizeResponse(context, false);
+			has_error_occurred = false;
 		}
 		catch (error: unknown)
 		{
-			if (isString(error) || error instanceof Error)
-			{
-				LoggerProxy.Error(error);
-			}
-			else
-			{
-				LoggerProxy.Error("Non-Error thrown.");
-			}
+			LoggerProxy.Error(error);
 
 			await this.RunErrorHooks(ENDPOINT, context, error);
-
-			this.FinalizeResponse(context, true);
+		}
+		finally
+		{
+			await this.FinalizeResponse(context, has_error_occurred);
 		}
 
 		return true;
@@ -342,13 +339,13 @@ class Server
 		}
 	}
 
-	private static FinalizeResponse(context: ExecutionContext, is_error: boolean): void
+	private static async FinalizeResponse(context: ExecutionContext, has_error_occurred: boolean): Promise<void>
 	{
 		const RESPONSE: RichServerResponse = context.getResponse();
 
-		if (!RESPONSE.areHeadersSent())
+		if (!RESPONSE.isLocked())
 		{
-			LoggerProxy.Error(is_error ? "Unhandled server error." : "Unhandled response.");
+			LoggerProxy.Error(has_error_occurred ? "Unhandled server error." : "Unhandled response.");
 
 			RESPONSE.getHeaderNames().forEach(
 				(header: string): void =>
@@ -357,17 +354,17 @@ class Server
 				}
 			);
 
-			RESPONSE.writeHead(HTTPStatusCodeEnum.INTERNAL_SERVER_ERROR);
-			RESPONSE.write("500 - Internal Server Error.");
-			RESPONSE.end();
+			await RESPONSE.replyWith({
+				status: HTTPStatusCodeEnum.NOT_FOUND,
+				payload: "404 - Not found.",
+			});
 
 			return;
 		}
 
-		if (!RESPONSE.isDone())
+		if (!RESPONSE.isSent())
 		{
-			LoggerProxy.Error("Unfinished server response.");
-			RESPONSE.end();
+			LoggerProxy.Warning("Unfinished server response.");
 		}
 	}
 

@@ -1,4 +1,4 @@
-// @internal
+/** @internal */
 class Base64URL
 {
 	public static Encode(value: string): string

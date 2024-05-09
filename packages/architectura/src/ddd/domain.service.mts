@@ -1,6 +1,8 @@
 import type { Dirent } from "node:fs";
-import { BaseDomain, FileSystemService, LoggerProxy } from "../_index.mjs";
 import { isFunction, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
+import { FileSystemService } from "../service/file-system/file-system.service.mjs";
+import { LoggerProxy } from "../service/logger/logger.proxy.mjs";
+import { BaseDomain } from "./base.domain.mjs";
 
 class DomainService
 {
@@ -43,7 +45,7 @@ class DomainService
 			{
 				LoggerProxy.Debug(`Found domain file ${ENTITY.name}.`);
 
-				const EXPORTS: unknown = await import(`${directory_path}/${ENTITY.name}`);
+				const EXPORTS: unknown = await FileSystemService.Import(`${directory_path}/${ENTITY.name}`);
 
 				if (isRecord(EXPORTS))
 				{

@@ -6,35 +6,35 @@
 		},
 		{
 			"name": "testing-ground",
-			"path": "./packages/testing-ground"
+			"path": "packages/testing-ground"
 		},
 		{
 			"name": "ts-predicate",
-			"path": "./packages/ts-predicate"
+			"path": "packages/ts-predicate"
 		},
 		{
 			"name": "mockingbird",
-			"path": "./packages/mockingbird"
+			"path": "packages/mockingbird"
 		},
 		{
 			"name": "architectura",
-			"path": "./packages/architectura"
+			"path": "packages/architectura"
 		},
 		{
 			"name": "aws-signature-v4",
-			"path": "./packages/aws-signature-v4"
+			"path": "packages/aws-signature-v4"
 		},
 		{
 			"name": "aws-s3",
-			"path": "./packages/aws-s3"
+			"path": "packages/aws-s3"
 		},
 		{
 			"name": "aws-sqs",
-			"path": "./packages/aws-sqs"
+			"path": "packages/aws-sqs"
 		},
 		{
 			"name": "functional",
-			"path": "./packages/functional"
+			"path": "packages/functional"
 		}
 	],
 	"settings": {

@@ -1,5 +1,5 @@
 import { isEnumValue } from "@vitruvius-labs/ts-predicate/type-guard";
-import { HTTPMethodEnum } from "../_index.mjs";
+import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
 function isHTTPMethodEnum(value: unknown): value is HTTPMethodEnum
 {

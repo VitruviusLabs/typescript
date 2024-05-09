@@ -5,7 +5,7 @@ import type { ExecutionContext } from "../core/execution-context/execution-conte
 class HelloWorldEndpoint extends BaseEndpoint
 {
 	protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
-	protected readonly route: string = "^.*$";
+	protected readonly route: RegExp = /^.*$/;
 
 	public override async execute(context: ExecutionContext): Promise<void>
 	{

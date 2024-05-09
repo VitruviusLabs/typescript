@@ -1,5 +1,7 @@
+import { toError } from "@vitruvius-labs/ts-predicate/helper";
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
 import { LoggerService } from "./logger.service.mjs";
+import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
 
 class LoggerProxy
 {
@@ -44,9 +46,11 @@ class LoggerProxy
 		this.Logger.warning(message, context);
 	}
 
-	public static Error(message: Error | string, context?: string): void
+	public static Error(message: unknown, context?: string): void
 	{
-		this.Logger.error(message, context);
+		const NORMALIZED_ERROR: Error | string = isString(message) ? message : toError(message);
+
+		this.Logger.error(NORMALIZED_ERROR, context);
 	}
 
 	public static Critical(message: string, context?: string): void
