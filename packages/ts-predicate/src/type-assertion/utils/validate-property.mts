@@ -5,6 +5,7 @@ import { itemAssertion } from "./item-assertion.mjs";
 import { ValidationError } from "./validation-error.mjs";
 import { rethrowUnexpectedError } from "../../utils/rethrow-unexpected-error.mjs";
 
+/** @internal */
 function validateProperty(value: object, key: string, property_descriptor: StructuredDataPropertyDescriptor<unknown>): void
 {
 	if (property_descriptor.ignore ?? false)
