@@ -249,10 +249,10 @@ isUnion(value: unknown, tests: Array<TestFunction>): boolean
 
 Test a value against the union of different test functions. As long as one pass, it passes.
 
-# WrapTest
+# Unary
 
 ```ts
-wrapTest(test_function: ((value: unknown, options: Options) => boolean), ...parameters: Array<Options>): ((value: unknown) => boolean)
+unary(test_function: ((value: unknown, options: Options) => boolean), ...parameters: Array<Options>): ((value: unknown) => boolean)
 ```
 
-Helper function for creating closures of test functions.
+Helper function for creating closures of test functions with their configuration options.

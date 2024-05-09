@@ -257,10 +257,10 @@ When a provided callable throws anything but an instance of `Error`, an instance
 
 You can get the original thrown value from the `reason` property.
 
-# WrapTest
+# Unary
 
 ```ts
-wrapTest(test_function: ((value: unknown, options: Options) => void), ...parameters: Array<Options>): ((value: unknown) => void)
+unary(test_function: ((value: unknown, options: Options) => void), ...parameters: Array<Options>): ((value: unknown) => void)
 ```
 
-Helper function for creating closures of test functions.
+Helper function for creating closures of test functions with their configuration options.
