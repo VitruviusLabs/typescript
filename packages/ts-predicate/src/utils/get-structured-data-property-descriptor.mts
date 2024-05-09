@@ -2,6 +2,7 @@ import type { Test } from "../definition/type/test.mjs";
 import type { StructuredDataDescriptor } from "../definition/interface/structured-data-descriptor.mjs";
 import type { StructuredDataPropertyDescriptor } from "../definition/type/structured-data-property-descriptor.mjs";
 
+/** @internal */
 function getStructuredDataPropertyDescriptor<Type>(descriptor: StructuredDataDescriptor<Type> | Test<NonNullable<Type>>, key: string): StructuredDataPropertyDescriptor<unknown>
 {
 	// @ts-expect-error: Key mapping

@@ -5,6 +5,7 @@ function isUnion<T1, T2>(value: unknown, tests: [Test<T1>, Test<T2>]): value is 
 function isUnion<T1, T2, T3>(value: unknown, tests: [Test<T1>, Test<T2>, Test<T3>]): value is T1 | T2 | T3;
 function isUnion<T1, T2, T3, T4>(value: unknown, tests: [Test<T1>, Test<T2>, Test<T3>, Test<T4>]): value is T1 | T2 | T3 | T4;
 function isUnion<T1, T2, T3, T4, T5>(value: unknown, tests: [Test<T1>, Test<T2>, Test<T3>, Test<T4>, Test<T5>]): value is T1 | T2 | T3 | T4 | T5;
+function isUnion<T>(value: unknown, tests: Array<Test<T>>): value is T;
 
 function isUnion(value: unknown, tests: Array<Test<unknown>>): value is unknown
 {

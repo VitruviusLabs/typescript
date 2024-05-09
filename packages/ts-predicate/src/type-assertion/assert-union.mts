@@ -7,6 +7,7 @@ function assertUnion<T1, T2>(value: unknown, tests: [Test<T1>, Test<T2>]): asser
 function assertUnion<T1, T2, T3>(value: unknown, tests: [Test<T1>, Test<T2>, Test<T3>]): asserts value is T1 | T2 | T3;
 function assertUnion<T1, T2, T3, T4>(value: unknown, tests: [Test<T1>, Test<T2>, Test<T3>, Test<T4>]): asserts value is T1 | T2 | T3 | T4;
 function assertUnion<T1, T2, T3, T4, T5>(value: unknown, tests: [Test<T1>, Test<T2>, Test<T3>, Test<T4>, Test<T5>]): asserts value is T1 | T2 | T3 | T4 | T5;
+function assertUnion<T>(value: unknown, tests: Array<Test<T>>): asserts value is T;
 
 function assertUnion(value: unknown, tests: Array<Test<unknown>>): asserts value is unknown
 {

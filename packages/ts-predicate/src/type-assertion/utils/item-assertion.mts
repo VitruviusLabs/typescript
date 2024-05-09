@@ -1,6 +1,7 @@
 import type { Test } from "../../definition/_index.mjs";
 import { ValidationError } from "./validation-error.mjs";
 
+/** @internal */
 function itemAssertion<Type>(value: unknown, callable: Test<Type>): asserts value is Type
 {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- assertion return undefined

@@ -1,6 +1,7 @@
 import type { Test } from "../../definition/_index.mjs";
 import { rethrowUnexpectedError } from "../../utils/rethrow-unexpected-error.mjs";
 
+/** @internal */
 function itemGuard<Type>(value: unknown, callable: Test<Type>): value is Type
 {
 	try
