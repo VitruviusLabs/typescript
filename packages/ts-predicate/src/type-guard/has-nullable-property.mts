@@ -1,4 +1,4 @@
-import type { ObjectWithNullableProperty } from "../definition/_index.mjs";
+import type { ObjectWithNullableProperty } from "../definition/type/object-with-nullable-property.mjs";
 
 function hasNullableProperty<O extends object, K extends string>(
 	value: O,

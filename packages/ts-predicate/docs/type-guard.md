@@ -1,3 +1,14 @@
+# Test
+
+When validating a composite value, you may provide tests for its constituents.
+
+```ts
+type Test<T> =
+	| (item: unknown) => asserts item is T
+	| (item: unknown) => item is T
+;
+```
+
 # TypeGuard
 
 ## IsPrimitive
@@ -88,11 +99,6 @@ interface ArrayConstraints<T>
 	minLength?: number;
 	itemTest?: Test<T>;
 }
-
-type Test<T> =
-	| (item: unknown) => asserts item is T
-	| (item: unknown) => item is T
-;
 ```
 
 If `minLength` is provided, it'll confirm that the value has at least that many items.
@@ -185,7 +191,7 @@ Narrow down the value to being an object with the property defined, though it ma
 ## HasProperty
 
 ```ts
-hasProperty(value: object, property: string): boolean
+hasProperty<T>(value: object, property: string, test?: Test<T>): boolean
 ```
 
 Narrow down the value to being an object with the property defined.
@@ -249,7 +255,7 @@ isUnion(value: unknown, tests: Array<TestFunction>): boolean
 
 Test a value against the union of different test functions. As long as one pass, it passes.
 
-# Unary
+## Unary
 
 ```ts
 unary(test_function: ((value: unknown, options: Options) => boolean), ...parameters: Array<Options>): ((value: unknown) => boolean)

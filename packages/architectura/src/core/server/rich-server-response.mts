@@ -13,12 +13,14 @@ import { CookieSameSiteEnum } from "./definition/enum/cookie-same-site.enum.mjs"
 import { ContentEncodingEnum } from "./definition/enum/content-encoding.enum.mjs";
 import { JSONUtility } from "../../utility/json/json-utility.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
+import { isErrorWithCode } from "../../predicate/is-error-with-code.mjs";
 
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
 	private readonly cookies: Map<string, CookieDescriptorInterface>;
 	private content: Buffer | string | undefined;
 	private locked: boolean;
+	private processed: boolean;
 
 	public constructor(request: RichClientRequest)
 	{
@@ -27,6 +29,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		this.cookies = new Map();
 		this.content = undefined;
 		this.locked = false;
+		this.processed = false;
 	}
 
 	private static GetEncoder(encoding: ContentEncodingEnum): Transform
@@ -89,12 +92,12 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 	public isLocked(): boolean
 	{
-		return this.locked || this.headersSent || this.writableEnded || this.writableFinished;
+		return this.locked;
 	}
 
-	public isSent(): boolean
+	public isProcessed(): boolean
 	{
-		return this.headersSent && this.writableEnded && this.writableFinished;
+		return this.processed;
 	}
 
 	public hasContent(): boolean
@@ -364,6 +367,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		if (this.content === undefined)
 		{
 			this.end();
+			this.processed = true;
 
 			return;
 		}
@@ -374,6 +378,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		{
 			this.write(this.content);
 			this.end();
+			this.processed = true;
 
 			return;
 		}
@@ -388,15 +393,23 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 		try
 		{
-			// @TODO: Investigate premature close
-			// If the response stream end before the encoder stream does,
-			// the promise will reject with an ERR_STREAM_PREMATURE_CLOSE error.
-			// This try/catch is a temporary workaround until we find a better solution
 			await PROMISE;
 		}
 		catch (error: unknown)
 		{
-			LoggerProxy.Error(error);
+			if (isErrorWithCode(error) && error.code === "ERR_STREAM_PREMATURE_CLOSE")
+			{
+				LoggerProxy.Warning("Premature response close");
+			}
+			else
+			{
+				// eslint-disable-next-line @typescript-eslint/no-throw-literal -- Rethrow as is
+				throw error;
+			}
+		}
+		finally
+		{
+			this.processed = true;
 		}
 	}
 

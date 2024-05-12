@@ -362,7 +362,7 @@ class Server
 			return;
 		}
 
-		if (!RESPONSE.isSent())
+		if (!RESPONSE.isProcessed())
 		{
 			LoggerProxy.Warning("Unfinished server response.");
 		}

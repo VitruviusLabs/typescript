@@ -1,3 +1,14 @@
+# Test
+
+When validating a composite value, you may provide tests for its constituents.
+
+```ts
+type Test<T> =
+	| (item: unknown) => asserts item is T
+	| (item: unknown) => item is T
+;
+```
+
 # TypeAssertion
 
 ## AssertDefined
@@ -118,11 +129,6 @@ interface RecordConstraints<T>
 {
 	itemTest?: Test<T>;
 }
-
-type Test<T> =
-	| (item: unknown) => asserts item is T
-	| (item: unknown) => item is T
-;
 ```
 
 If `itemTest` is provided, it'll asserts that the predicate hold true for every item.
@@ -180,7 +186,7 @@ nullish.
 ## AssertProperty
 
 ```ts
-assertProperty(value: object, property: string): void
+assertProperty<T>(value: object, property: string, test?: Test<T>): void
 ```
 
 Asserts that the value is an object with the property defined.
@@ -244,6 +250,14 @@ assertUnion(value: unknown, tests: Array<TestFunction>): void
 
 Test a value against the union of different test functions. As long as one pass, it passes.
 
+## Unary
+
+```ts
+unary(test_function: ((value: unknown, options: Options) => void), ...parameters: Array<Options>): ((value: unknown) => void)
+```
+
+Helper function for creating closures of test functions with their configuration options.
+
 # ValidationError
 
 To distinguish between unexpected errors and validation errors, you can check that the caught error is an instance of `ValidationError`.
@@ -256,11 +270,3 @@ Any custom assertion must throw a `ValidationError` unless an unexpected error o
 When a provided callable throws anything but an instance of `Error`, an instance of `UnknownError` will be created.
 
 You can get the original thrown value from the `reason` property.
-
-# Unary
-
-```ts
-unary(test_function: ((value: unknown, options: Options) => void), ...parameters: Array<Options>): ((value: unknown) => void)
-```
-
-Helper function for creating closures of test functions with their configuration options.
