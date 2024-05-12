@@ -1,6 +1,6 @@
 import { ValidationError } from "./utils/validation-error.mjs";
 
-function assertAllowedKeys(value: Record<string, unknown>, allowed_keys: Array<string>): void
+function assertAllowedKeys(value: object, allowed_keys: Array<string>): void
 {
 	const FORBIDDEN_PROPERTIES: Array<string> = Object.keys(value).filter(
 		(key: string): boolean =>

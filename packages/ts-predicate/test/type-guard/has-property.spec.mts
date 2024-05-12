@@ -31,4 +31,26 @@ describe("TypeGuard.hasProperty", (): void => {
 			strictEqual(RESULT, true);
 		}
 	});
+
+	it("should return false when given an object with the property and the property is of the wrong type", (): void => {
+		const VALUES: Array<unknown> = getInvertedValues(GroupType.NULLISH, GroupType.STRING);
+
+		for (const ITEM of VALUES)
+		{
+			const RESULT: unknown = TypeGuard.hasProperty({ answer: ITEM }, "answer", TypeGuard.isString);
+
+			strictEqual(RESULT, false);
+		}
+	});
+
+	it("should return true when given an object with the property and the property is of the correct type", (): void => {
+		const VALUES: Array<unknown> = getValues(GroupType.STRING);
+
+		for (const ITEM of VALUES)
+		{
+			const RESULT: unknown = TypeGuard.hasProperty({ answer: ITEM }, "answer", TypeGuard.isString);
+
+			strictEqual(RESULT, true);
+		}
+	});
 });

@@ -1,4 +1,4 @@
-import type { ObjectWithNullableProperty } from "../definition/_index.mjs";
+import type { ObjectWithNullableProperty } from "../definition/type/object-with-nullable-property.mjs";
 import { hasNullableProperty } from "../type-guard/has-nullable-property.mjs";
 import { ValidationError } from "./utils/validation-error.mjs";
 

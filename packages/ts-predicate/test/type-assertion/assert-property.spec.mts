@@ -30,4 +30,22 @@ describe("TypeAssertion.assertProperty", (): void => {
 
 		doesNotThrow(WRAPPER);
 	});
+
+	it("should throw when given an object with the property, but the value is of the wrong type", (): void => {
+		const WRAPPER = (): void =>
+		{
+			TypeAssertion.assertProperty({ answer: "lorem ipsum" }, "answer", TypeAssertion.assertNumber);
+		};
+
+		throws(WRAPPER, createErrorTest("The value must be a number."));
+	});
+
+	it("should return when given an object with the property and the value is of the correct type", (): void => {
+		const WRAPPER = (): void =>
+		{
+			TypeAssertion.assertProperty({ answer: 42 }, "answer", TypeAssertion.assertNumber);
+		};
+
+		doesNotThrow(WRAPPER);
+	});
 });

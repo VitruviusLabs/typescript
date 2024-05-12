@@ -1,20 +1,10 @@
 import { type Dirent, type ReadStream, type Stats, createReadStream } from "node:fs";
 import { type FileHandle, open, readFile, readdir, stat } from "node:fs/promises";
-import { hasProperty, isInstanceOf, isString } from "@vitruvius-labs/ts-predicate/type-guard";
-import type { FileSystemErrorInterface } from "./definition/interface/file-system-error.interface.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
+import { isErrorWithCode } from "../../predicate/is-error-with-code.mjs";
 
 class FileSystemService
 {
-	public static IsFileSystemError(this: void, error: unknown): error is FileSystemErrorInterface
-	{
-		return (
-			isInstanceOf(error, Error)
-			&& hasProperty(error, "code")
-			&& isString(error.code)
-		);
-	}
-
 	public static async DirectoryExists(directory_path: string): Promise<boolean>
 	{
 		const STAT: Stats | undefined = await FileSystemService.GetStats(directory_path);
@@ -107,7 +97,7 @@ class FileSystemService
 		return FILE;
 	}
 
-	public static async OpenFile(this: void, file_path: string, flags: string): Promise<FileHandle>
+	public static async OpenFile(file_path: string, flags: string): Promise<FileHandle>
 	{
 		const EXISTS: boolean = await FileSystemService.FileExists(file_path);
 
@@ -121,7 +111,7 @@ class FileSystemService
 		return FILE;
 	}
 
-	public static async GetStats(this: void, path: string): Promise<Stats | undefined>
+	public static async GetStats(path: string): Promise<Stats | undefined>
 	{
 		try
 		{
@@ -129,7 +119,7 @@ class FileSystemService
 		}
 		catch (error: unknown)
 		{
-			if (FileSystemService.IsFileSystemError(error))
+			if (isErrorWithCode(error))
 			{
 				switch (error.code)
 				{
@@ -156,7 +146,7 @@ class FileSystemService
 	/**
 	* This dynamic import proxy method allows mocking dynamic imports in your tests.
 	*/
-	public static async Import(this: void, path: string): Promise<unknown>
+	public static async Import(path: string): Promise<unknown>
 	{
 		const MODULE: unknown = await import(path);
 
