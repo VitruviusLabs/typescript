@@ -74,7 +74,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		if (isNumber(parameters))
 		{
 			this.statusCode = parameters;
-			this.setCookieHeader();
+			this.processCookieHeader();
 			await this.writePayload();
 
 			return;
@@ -86,7 +86,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		this.processCookies(parameters);
 		this.processContentType(parameters);
 		this.processPayload(parameters);
-		this.setCookieHeader();
+		this.processCookieHeader();
 		await this.writePayload();
 	}
 
@@ -337,10 +337,8 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		this.content = JSONUtility.Encode(parameters.payload);
 	}
 
-	private setCookieHeader(): void
+	private processCookieHeader(): void
 	{
-		this.assertUnlocked();
-
 		if (this.cookies.size === 0)
 		{
 			return;
