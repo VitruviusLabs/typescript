@@ -1,71 +1,106 @@
-import { toError } from "@vitruvius-labs/ts-predicate/helper";
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
+import type { LogContextInterface } from "./definition/interface/log-context.interface.mjs";
+import { toError } from "@vitruvius-labs/ts-predicate/helper";
 import { LoggerService } from "./logger.service.mjs";
 import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
+import { ExecutionContextRegistry } from "../../core/execution-context/execution-context.registry.mjs";
+import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";
+import { Server } from "../../core/server/server.mjs";
 
 class LoggerProxy
 {
-	protected static Initialised: boolean = false;
+	private static Initialised: boolean = false;
+	private static Logger: LoggerInterface = new LoggerService();
 
-	protected static Logger: LoggerInterface = new LoggerService();
-
-	public static Initialise(loggerService: LoggerInterface): void
+	public static Initialise(logger_service: LoggerInterface): void
 	{
-		if (this.Initialised)
+		if (LoggerProxy.Initialised)
 		{
 			return;
 		}
 
-		this.Logger = loggerService;
+		LoggerProxy.Logger = logger_service;
 
-		this.Initialised = true;
+		LoggerProxy.Initialised = true;
 	}
 
-	public static Debug(message: string, context?: string): void
+	public static Debug(message: unknown, tag?: string): void
 	{
-		this.Logger.debug(message, context);
+		LoggerProxy.Process(message, LogLevelEnum.DEBUG, tag);
 	}
 
-	public static Informational(message: string, context?: string): void
+	public static Informational(message: unknown, tag?: string): void
 	{
-		this.Logger.informational(message, context);
+		LoggerProxy.Process(message, LogLevelEnum.INFO, tag);
 	}
 
-	public static Info(message: string, context?: string): void
+	public static Info(message: unknown, tag?: string): void
 	{
-		this.Logger.info(message, context);
+		LoggerProxy.Process(message, LogLevelEnum.INFO, tag);
 	}
 
-	public static Notice(message: string, context?: string): void
+	public static Notice(message: unknown, tag?: string): void
 	{
-		this.Logger.notice(message, context);
+		LoggerProxy.Process(message, LogLevelEnum.NOTICE, tag);
 	}
 
-	public static Warning(message: string, context?: string): void
+	public static Warning(message: unknown, tag?: string): void
 	{
-		this.Logger.warning(message, context);
+		LoggerProxy.Process(message, LogLevelEnum.WARNING, tag);
 	}
 
-	public static Error(message: unknown, context?: string): void
+	public static Error(message: unknown, tag?: string): void
 	{
-		const NORMALIZED_ERROR: Error | string = isString(message) ? message : toError(message);
-
-		this.Logger.error(NORMALIZED_ERROR, context);
+		LoggerProxy.Process(message, LogLevelEnum.ERROR, tag);
 	}
 
-	public static Critical(message: string, context?: string): void
+	public static Critical(message: unknown, tag?: string): void
 	{
-		this.Logger.critical(message, context);
+		LoggerProxy.Process(message, LogLevelEnum.CRITICAL, tag);
 	}
 
-	public static Alert(message: string, context?: string): void
+	public static Alert(message: unknown, tag?: string): void
 	{
-		this.Logger.alert(message, context);
+		LoggerProxy.Process(message, LogLevelEnum.ALERT, tag);
 	}
 
-	public static Emergency(message: string, context?: string): void
+	public static Emergency(message: unknown, tag?: string): void
 	{
-		this.Logger.emergency(message, context);
+		LoggerProxy.Process(message, LogLevelEnum.EMERGENCY, tag);
+	}
+
+	private static Process(message: unknown, level: LogLevelEnum, tag: string | undefined): void
+	{
+		const UUID: string | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext()?.getUUID();
+
+		const CONTEXT: LogContextInterface = {
+			level: level,
+			uuid: UUID,
+			tag: tag,
+		};
+
+		let promise: Promise<void> | void = undefined;
+
+		if (isString(message))
+		{
+			promise = LoggerProxy.Logger.handleMessage(message, CONTEXT);
+
+			return;
+		}
+
+		promise = LoggerProxy.Logger.handleError(toError(message), CONTEXT);
+
+		if (!(promise instanceof Promise))
+		{
+			return;
+		}
+
+		promise.catch(
+			(reason: Error): void =>
+			{
+				Server.HandleError(reason).catch((): void => { /* Do nothing */ });
+			}
+		);
 	}
 }
 

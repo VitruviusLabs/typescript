@@ -198,17 +198,24 @@ class Server
 	{
 		const REQUEST_PATH: string = request.getPath();
 
-		for (const [ROUTE, DIRECTORY] of GlobalConfiguration.GetPublicAssetDirectories())
+		// Hidden directories or files are inaccessible
+		// Also prevents directory traversal attacks
+		if (REQUEST_PATH.includes("/."))
 		{
-			const ROUTE_REGEXP: RegExp = new RegExp(ROUTE);
+			return undefined;
+		}
 
-			if (ROUTE_REGEXP.exec(REQUEST_PATH) !== null)
+		for (const [URL_PATH_START, BASE_DIRECTORY_PATH] of GlobalConfiguration.GetPublicAssetDirectories())
+		{
+			if (REQUEST_PATH.startsWith(URL_PATH_START))
 			{
-				const FILE_PATH: string = REQUEST_PATH.replace(ROUTE_REGEXP, "").padStart(1, "/");
+				const FILE_SUB_PATH: string = REQUEST_PATH.replace(URL_PATH_START, "");
 
-				if (await FileSystemService.FileExists(`${DIRECTORY}${FILE_PATH}`))
+				const FILE_PATH: string = BASE_DIRECTORY_PATH + FILE_SUB_PATH;
+
+				if (await FileSystemService.FileExists(FILE_PATH))
 				{
-					return `${DIRECTORY}${FILE_PATH}`;
+					return FILE_PATH;
 				}
 			}
 		}
@@ -345,14 +352,26 @@ class Server
 
 		if (!RESPONSE.isLocked())
 		{
-			LoggerProxy.Error(has_error_occurred ? "Unhandled server error." : "Unhandled response.");
-
 			RESPONSE.getHeaderNames().forEach(
 				(header: string): void =>
 				{
 					RESPONSE.removeHeader(header);
 				}
 			);
+
+			if (has_error_occurred)
+			{
+				LoggerProxy.Error("Unhandled server error.");
+
+				await RESPONSE.replyWith({
+					status: HTTPStatusCodeEnum.INTERNAL_SERVER_ERROR,
+					payload: "500 - Internal Server Error.",
+				});
+
+				return;
+			}
+
+			LoggerProxy.Error("Unhandled response.");
 
 			await RESPONSE.replyWith({
 				status: HTTPStatusCodeEnum.NOT_FOUND,

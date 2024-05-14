@@ -1,3 +1,4 @@
+import { isBigInt, isString } from "@vitruvius-labs/ts-predicate/type-guard";
 import type { JSONValueType } from "./definition/type/json-value.type.mjs";
 
 class JSONUtility
@@ -12,7 +13,7 @@ class JSONUtility
 			// @ts-expect-error: key is unused
 			(key: string, value: unknown): unknown =>
 			{
-				if (typeof value === "bigint")
+				if (isBigInt(value))
 				{
 					return `${value.toString()}n`;
 				}
@@ -30,7 +31,7 @@ class JSONUtility
 			// @ts-expect-error: key is unused
 			(key: string, value: unknown): unknown =>
 			{
-				if (typeof value === "string" && /^\d+n$/.test(value))
+				if (isString(value) && /^\d+n$/.test(value))
 				{
 					return BigInt(value.slice(0, -1));
 				}

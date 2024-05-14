@@ -15,6 +15,34 @@ abstract class BaseEndpoint extends Singleton
 	protected readonly excludedGlobalPostHooks: Array<typeof BasePostHook> = [];
 	protected readonly errorHooks: Array<BaseErrorHook> = [];
 	protected readonly excludedGlobalErrorHooks: Array<typeof BaseErrorHook> = [];
+	private normalizedRoute: RegExp | undefined = undefined;
+
+	private static NormalizeRoute(route: RegExp | string): RegExp
+	{
+		if (route instanceof RegExp)
+		{
+			return new RegExp(BaseEndpoint.MakeRouteWhole(route.source), route.flags);
+		}
+
+		return new RegExp(BaseEndpoint.MakeRouteWhole(route));
+	}
+
+	private static MakeRouteWhole(route: string): string
+	{
+		let pattern: string = route;
+
+		if (!route.startsWith("^"))
+		{
+			pattern = `^${pattern}`;
+		}
+
+		if (!route.endsWith("$"))
+		{
+			pattern = `${pattern}$`;
+		}
+
+		return pattern;
+	}
 
 	public abstract execute(context: ExecutionContext): Promise<void> | void;
 
@@ -27,25 +55,12 @@ abstract class BaseEndpoint extends Singleton
 	/** @sealed */
 	public getRoute(): RegExp
 	{
-		if (typeof this.route === "string")
+		if (this.normalizedRoute === undefined)
 		{
-			let route: string = this.route;
-
-			if (!route.startsWith("^"))
-			{
-				route = `^${route}`;
-			}
-
-			if (!route.endsWith("$"))
-			{
-				route = `${route}$`;
-			}
-
-			// @ts-expect-error: Optimization
-			this.route = new RegExp(route);
+			this.normalizedRoute = BaseEndpoint.NormalizeRoute(this.route);
 		}
 
-		return this.route;
+		return this.normalizedRoute;
 	}
 
 	public getPreHooks(): Array<BasePreHook>

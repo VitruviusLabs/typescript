@@ -263,8 +263,8 @@ class StackTraceParserService
 		return {
 			method: this.getLongestMethodLength() + StackTraceParserServiceEnum.COLUMN_PADDING,
 			line: this.getLongestLineLength() + StackTraceParserServiceEnum.COLUMN_PADDING,
-			position: this.getLongestModuleLength() + StackTraceParserServiceEnum.COLUMN_PADDING,
-			module: this.getLongestPositionLength() + StackTraceParserServiceEnum.COLUMN_PADDING,
+			position: this.getLongestPositionLength() + StackTraceParserServiceEnum.COLUMN_PADDING,
+			module: this.getLongestModuleLength() + StackTraceParserServiceEnum.COLUMN_PADDING,
 		};
 	}
 

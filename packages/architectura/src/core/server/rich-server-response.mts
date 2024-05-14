@@ -178,7 +178,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 			return HEADER;
 		}
 
-		if (typeof HEADER === "number")
+		if (isNumber(HEADER))
 		{
 			return [HEADER.toString()];
 		}

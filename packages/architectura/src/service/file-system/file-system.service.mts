@@ -2,6 +2,7 @@ import { type Dirent, type ReadStream, type Stats, createReadStream } from "node
 import { type FileHandle, open, readFile, readdir, stat } from "node:fs/promises";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { isErrorWithCode } from "../../predicate/is-error-with-code.mjs";
+import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
 
 class FileSystemService
 {
@@ -68,7 +69,7 @@ class FileSystemService
 	{
 		const FILE: Buffer | string = await FileSystemService.ReadFile(file_path);
 
-		if (typeof FILE === "string")
+		if (isString(FILE))
 		{
 			return Buffer.from(FILE);
 		}

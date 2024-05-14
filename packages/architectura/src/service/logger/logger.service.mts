@@ -1,140 +1,65 @@
-import type { LoggerServiceWriteInterface } from "./definition/interface/logger-service-write.interface.mjs";
+import type { LogContextInterface } from "./_index.mjs";
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
 import { ValidationError } from "@vitruvius-labs/ts-predicate";
 import { stringifyErrorTree } from "@vitruvius-labs/ts-predicate/helper";
 import { Singleton } from "../../utility/singleton.mjs";
 import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
 import { DateEnum } from "../../definition/enum/date.enum.mjs";
-import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";
 
 class LoggerService extends Singleton implements LoggerInterface
 {
-	public write(content: LoggerServiceWriteInterface): void
+	public handleMessage(message: string, context: LogContextInterface): void
 	{
-		const LEVEL: string = content.level.toUpperCase();
+		const LEVEL: string = context.level.toUpperCase();
 		const DATE: Date = new Date();
 		const FORMATTED_DATE: string = DATE.toISOString().slice(0, DateEnum.ISO_DATETIME_LENGTH).replace("T", " ");
 
-		let logLinePrefix: string = `[${FORMATTED_DATE}] [${LEVEL}]`;
+		let prefix: string = `[${FORMATTED_DATE}] [${LEVEL}]`;
 
-		if (content.context !== undefined)
+		if (context.uuid !== undefined)
 		{
-			logLinePrefix = `${logLinePrefix} [${content.context}]`;
+			prefix = `${prefix} {${context.uuid}}`;
 		}
 
-		const LOG_LINE: string = `${logLinePrefix} - ${content.message}`;
-
-		// eslint-disable-next-line no-console -- This is a logger, it should log to the console.
-		console.log(LOG_LINE);
-	}
-
-	public debug(message: string, context?: string): void
-	{
-		this.write({
-			level: LogLevelEnum.DEBUG,
-			message: message,
-			context: context,
-		});
-	}
-
-	public informational(message: string, context?: string): void
-	{
-		this.write({
-			level: LogLevelEnum.INFO,
-			message: message,
-			context: context,
-		});
-	}
-
-	public info(message: string, context?: string): void
-	{
-		this.informational(message, context);
-	}
-
-	public notice(message: string, context?: string): void
-	{
-		this.write({
-			level: LogLevelEnum.NOTICE,
-			message: message,
-			context: context,
-		});
-	}
-
-	public warning(message: string, context?: string): void
-	{
-		this.write({
-			level: LogLevelEnum.WARNING,
-			message: message,
-			context: context,
-		});
-	}
-
-	public error(content: Error | string, context?: string): void
-	{
-		if (content instanceof Error)
+		if (context.tag !== undefined)
 		{
-			this.logError(content);
-
-			return;
+			prefix = `${prefix} [${context.tag}]`;
 		}
 
-		this.write({
-			level: LogLevelEnum.ERROR,
-			message: content,
-			context: context,
-		});
+		const PREFIXED_MESSAGE: string = message
+			.trimEnd()
+			.split("\n")
+			.map(
+				(message_line: string): string =>
+				{
+					return `${prefix} - ${message_line}`;
+				}
+			)
+			.join("\n");
+
+		// eslint-disable-next-line no-console -- This is a console logger, it should log to the console.
+		console.log(PREFIXED_MESSAGE);
 	}
 
-	public critical(message: string, context?: string): void
-	{
-		this.write({
-			level: LogLevelEnum.CRITICAL,
-			message: message,
-			context: context,
-		});
-	}
-
-	public alert(message: string, context?: string): void
-	{
-		this.write({
-			level: LogLevelEnum.ALERT,
-			message: message,
-			context: context,
-		});
-	}
-
-	public emergency(message: string, context?: string): void
-	{
-		this.write({
-			level: LogLevelEnum.EMERGENCY,
-			message: message,
-			context: context,
-		});
-	}
-
-	private logError(error: Error): void
+	public handleError(error: Error, context: LogContextInterface): void
 	{
 		const STACK_TRACE_PARSER: StackTraceParserService = new StackTraceParserService(error);
-		const FORMATTED_STACK_TRACE: Array<string> = STACK_TRACE_PARSER.getStackTraceAsTable();
+		const FORMATTED_STACK_TRACE: string = STACK_TRACE_PARSER.getStackTraceAsTable().join("\n");
+
+		let message: string = "";
 
 		if (error instanceof ValidationError)
 		{
-			const FORMATTED_VALIDATION_ISSUES: Array<string> = stringifyErrorTree(error).split("\n");
-
-			for (const LINE of FORMATTED_VALIDATION_ISSUES)
-			{
-				this.error(LINE);
-			}
+			message = stringifyErrorTree(error);
 		}
 		else
 		{
-			this.error(error.message);
+			message = `${error.message}\n`;
 		}
 
-		for (const LINE of FORMATTED_STACK_TRACE)
-		{
-			this.error(LINE);
-		}
+		message = `${message}${FORMATTED_STACK_TRACE}`;
+
+		this.handleMessage(message, context);
 	}
 }
 
