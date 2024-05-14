@@ -24,22 +24,22 @@ describe("BaseEndpoint", (): void =>
 
 	describe("getRoute", (): void =>
 	{
-		it("should return the route as is when it's a RegExp", (): void =>
+		it("should return the route when it's a RegExp, that RegExp must match the whole path", (): void =>
 		{
 			class DummyEndpoint extends BaseEndpoint
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
-				protected readonly route: RegExp = /test-dummy/;
+				protected readonly route: RegExp = /\/test-dummy/;
 
 				public execute(): void { }
 			}
 
 			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
 
-			deepStrictEqual(ENDPOINT.getRoute(), /test-dummy/);
+			deepStrictEqual(ENDPOINT.getRoute(), /^\/test-dummy$/);
 		});
 
-		it("should return the route as a RegExp when it is a string, that RegExp must only match the whole path", (): void =>
+		it("should return the route as a RegExp when it is a string, that RegExp must match the whole path", (): void =>
 		{
 			class DummyEndpoint extends BaseEndpoint
 			{

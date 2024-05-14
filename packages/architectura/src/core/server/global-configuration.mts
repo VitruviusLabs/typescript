@@ -8,7 +8,7 @@ class GlobalConfiguration
 	private static readonly GLOBAL_PRE_HOOKS: Array<BasePreHook> = [];
 	private static readonly GLOBAL_POST_HOOKS: Array<BasePostHook> = [];
 	private static readonly GLOBAL_ERROR_HOOKS: Array<BaseErrorHook> = [];
-	private static readonly PUBLIC_ASSET_DIRECTORIES: Map<string, string> = new Map<string, string>();
+	private static readonly PUBLIC_ASSET_DIRECTORIES: Map<string, string> = new Map();
 
 	private constructor() { }
 
@@ -51,11 +51,14 @@ class GlobalConfiguration
 		return this.PUBLIC_ASSET_DIRECTORIES;
 	}
 
-	public static async AddPublicAssetDirectory(route: string, directory_path: string): Promise<void>
+	public static async AddPublicAssetDirectory(url_path_start: string, base_directory_path: string): Promise<void>
 	{
-		await FileSystemService.ConfirmDirectoryExistence(directory_path);
+		await FileSystemService.ConfirmDirectoryExistence(base_directory_path);
 
-		this.PUBLIC_ASSET_DIRECTORIES.set(route, directory_path);
+		this.PUBLIC_ASSET_DIRECTORIES.set(
+			url_path_start.replace(/\/$/, ""),
+			base_directory_path.replace(/\/$/, "")
+		);
 	}
 }
 

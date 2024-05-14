@@ -1,2 +1,2 @@
-export * from "./logger-service-write.interface.mjs";
+export * from "./log-context.interface.mjs";
 export * from "./logger.interface.mjs";
