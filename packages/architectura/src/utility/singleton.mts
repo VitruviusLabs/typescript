@@ -45,8 +45,45 @@ abstract class Singleton
 	}
 
 	/**
+	 * Test if there is an instance of a singleton class.
+	 *
+	 * @sealed
+	 * @remarks
+	 *
+	 * This method returns a boolean if the instance of a singleton class exists.
+	 *
+	 * @example
+	 * ```typescript
+	 * class MySingleton extends Singleton
+	 * {
+	 *      public constructor()
+	 *      {
+	 *          super();
+	 *      }
+	 * }
+	 *
+	 * if (!MySingleton.HasInstance(MySingleton))
+	 * {
+	 *     new MySingleton();
+	 * }
+	 *
+	 * const instance = MySingleton.GetInstance(MySingleton)
+	 * ```
+	 *
+	 * @param class_constructor - The constructor of the singleton class.
+	 * @returns true if the instance of the singleton class exists, false otherwise.
+	 */
+	public static HasInstance<T extends Singleton>(class_constructor: ConstructorOf<T>): boolean
+	{
+		const INSTANCE: object | undefined = INSTANCES.get(class_constructor);
+
+		return INSTANCE instanceof class_constructor;
+	}
+
+	/**
 	 * Retrieve the instance of a singleton class.
 	 *
+	 * @sealed
 	 * @remarks
 	 *
 	 * This method returns the instance of a singleton class.
@@ -91,6 +128,7 @@ abstract class Singleton
 	/**
 	 * Retrieve the instance of a singleton class.
 	 *
+	 * @sealed
 	 * @remarks
 	 *
 	 * This method returns the instance of a singleton class.
@@ -114,6 +152,7 @@ abstract class Singleton
 	/**
 	 * Clears the instance of a singleton class.
 	 *
+	 * @sealed
 	 * @remarks
 	 *
 	 * This method clears the instance of a singleton class. It removes the instance from
@@ -131,14 +170,14 @@ abstract class Singleton
 	 *
 	 * const instance = new MySingleton();
 	 *
-	 * MySingleton.Remove(MySingleton);
+	 * MySingleton.RemoveInstance(MySingleton);
 	 *
 	 * const instance2 = MySingleton.GetInstance(MySingleton); // Returns undefined
 	 * ```
 	 *
 	 * @param class_constructor - The constructor of the singleton class.
 	 */
-	public static Remove<T extends Singleton>(class_constructor: ConstructorOf<T>): void
+	public static RemoveInstance<T extends Singleton>(class_constructor: ConstructorOf<T>): void
 	{
 		INSTANCES.delete(class_constructor);
 	}

@@ -1,75 +1,9 @@
-import { deepStrictEqual, strictEqual } from "node:assert";
+import { deepStrictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, HTTPMethodEnum } from "../../../src/_index.mjs";
 
 describe("BaseEndpoint", (): void =>
 {
-	describe("getMethod", (): void =>
-	{
-		it("should return the method", (): void =>
-		{
-			class DummyEndpoint extends BaseEndpoint
-			{
-				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.PUT;
-				protected readonly route: string = "/test-dummy";
-
-				public execute(): void { }
-			}
-
-			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
-
-			strictEqual(ENDPOINT.getMethod(), HTTPMethodEnum.PUT);
-		});
-	});
-
-	describe("getRoute", (): void =>
-	{
-		it("should return the route when it's a RegExp, that RegExp must match the whole path", (): void =>
-		{
-			class DummyEndpoint extends BaseEndpoint
-			{
-				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
-				protected readonly route: RegExp = /\/test-dummy/;
-
-				public execute(): void { }
-			}
-
-			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
-
-			deepStrictEqual(ENDPOINT.getRoute(), /^\/test-dummy$/);
-		});
-
-		it("should return the route as a RegExp when it is a string, that RegExp must match the whole path", (): void =>
-		{
-			class DummyEndpoint extends BaseEndpoint
-			{
-				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
-				protected readonly route: string = "/test-dummy";
-
-				public execute(): void { }
-			}
-
-			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
-
-			deepStrictEqual(ENDPOINT.getRoute(), /^\/test-dummy$/);
-		});
-
-		it("should preserve named capturing groups", (): void =>
-		{
-			class DummyEndpoint extends BaseEndpoint
-			{
-				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
-				protected readonly route: string = "/test-dummy/(?<slug>[a-z0-9-]+)";
-
-				public execute(): void { }
-			}
-
-			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
-
-			deepStrictEqual(ENDPOINT.getRoute(), /^\/test-dummy\/(?<slug>[a-z0-9-]+)$/);
-		});
-	});
-
 	describe("getPreHooks", (): void =>
 	{
 		it("should return the pre hooks", (): void =>

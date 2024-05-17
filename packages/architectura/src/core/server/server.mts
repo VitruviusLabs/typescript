@@ -12,6 +12,8 @@ import { assertInteger } from "@vitruvius-labs/ts-predicate/type-assertion";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { EndpointRegistry } from "../endpoint/endpoint.registry.mjs";
+import { HookRegistry } from "../hook/hook.registry.mjs";
+import { AssetRegistry } from "./asset.registry.mjs";
 import { ExecutionContext } from "../execution-context/execution-context.mjs";
 import { ExecutionContextRegistry } from "../execution-context/execution-context.registry.mjs";
 import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
@@ -19,7 +21,6 @@ import { PortsEnum } from "./definition/enum/ports.enum.mjs";
 import { RichClientRequest } from "./rich-client-request.mjs";
 import { RichServerResponse } from "./rich-server-response.mjs";
 import { ContentType } from "../../utility/content-type/content-type.mjs";
-import { GlobalConfiguration } from "./global-configuration.mjs";
 import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
 class Server
@@ -109,7 +110,7 @@ class Server
 			return;
 		}
 
-		for (const HOOK of GlobalConfiguration.GetGlobalErrorHooks())
+		for (const HOOK of HookRegistry.GetErrorHooks())
 		{
 			await HOOK.execute(CONTEXT, error);
 		}
@@ -205,7 +206,7 @@ class Server
 			return undefined;
 		}
 
-		for (const [URL_PATH_START, BASE_DIRECTORY_PATH] of GlobalConfiguration.GetPublicAssetDirectories())
+		for (const [URL_PATH_START, BASE_DIRECTORY_PATH] of AssetRegistry.GetPublicDirectories())
 		{
 			if (REQUEST_PATH.startsWith(URL_PATH_START))
 			{
@@ -225,7 +226,7 @@ class Server
 
 	private static async HandleEndpoints(context: ExecutionContext): Promise<boolean>
 	{
-		const ENDPOINT: BaseEndpoint | undefined = this.FindMatchingEndpoint(context.getRequest());
+		const ENDPOINT: BaseEndpoint | undefined = EndpointRegistry.FindEndpoint(context.getRequest().getMethod(), context.getRequest().getPath());
 
 		if (ENDPOINT === undefined)
 		{
@@ -258,39 +259,11 @@ class Server
 		return true;
 	}
 
-	private static FindMatchingEndpoint(request: RichClientRequest): BaseEndpoint | undefined
-	{
-		const REQUEST_METHOD: string | undefined = request.getMethod();
-		const REQUEST_PATH: string = request.getPath();
-		const ENDPOINTS: ReadonlyMap<string, BaseEndpoint> = EndpointRegistry.GetEndpoints();
-
-		for (const [, ENDPOINT] of ENDPOINTS)
-		{
-			if (ENDPOINT.getMethod() !== REQUEST_METHOD)
-			{
-				continue;
-			}
-
-			const ROUTE: RegExp = ENDPOINT.getRoute();
-
-			const MATCHES: RegExpMatchArray | null = REQUEST_PATH.match(ROUTE);
-
-			if (MATCHES !== null)
-			{
-				Reflect.set(request, "pathMatchGroups", MATCHES.groups);
-
-				return ENDPOINT;
-			}
-		}
-
-		return undefined;
-	}
-
 	private static async RunPreHooks(endpoint: BaseEndpoint, context: ExecutionContext): Promise<void>
 	{
 		const EXCLUDED_HOOKS: Array<typeof BasePreHook> = endpoint.getExcludedGlobalPreHooks();
 
-		for (const HOOK of GlobalConfiguration.GetGlobalPreHooks())
+		for (const HOOK of HookRegistry.GetPreHooks())
 		{
 			if (EXCLUDED_HOOKS.includes(getConstructorOf(HOOK)))
 			{
@@ -310,7 +283,7 @@ class Server
 	{
 		const EXCLUDED_HOOKS: Array<typeof BasePostHook> = endpoint.getExcludedGlobalPostHooks();
 
-		for (const HOOK of GlobalConfiguration.GetGlobalPostHooks())
+		for (const HOOK of HookRegistry.GetPostHooks())
 		{
 			if (EXCLUDED_HOOKS.includes(getConstructorOf(HOOK)))
 			{
@@ -330,7 +303,7 @@ class Server
 	{
 		const EXCLUDED_HOOKS: Array<typeof BaseErrorHook> = endpoint.getExcludedGlobalErrorHooks();
 
-		for (const HOOK of GlobalConfiguration.GetGlobalErrorHooks())
+		for (const HOOK of HookRegistry.GetErrorHooks())
 		{
 			if (EXCLUDED_HOOKS.includes(getConstructorOf(HOOK)))
 			{

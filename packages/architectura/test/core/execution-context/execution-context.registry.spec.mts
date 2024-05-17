@@ -1,23 +1,31 @@
 import { deepStrictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
-import { ExecutionContextRegistry } from "../../../src/_index.mjs";
+import { ExecutionContext, type ExecutionContextInstantiationInterface, ExecutionContextRegistry } from "../../../src/_index.mjs";
 
 describe("ExecutionContextRegistry", (): void => {
-	describe("GetContextAccessor", (): void => {
-		it("should return the static ContextAccessor property when called", (): void =>
-		{
-			// @ts-expect-error - We need to access this private property for test purposes.
-			deepStrictEqual(ExecutionContextRegistry.GetContextAccessor(), ExecutionContextRegistry.ContextAccessor);
-		});
-	});
-
 	describe("GetExecutionContext", (): void => {
 		it("should throw when called outside of an async hook", (): void => {
-			throws(
-				(): void => {
-					ExecutionContextRegistry.GetExecutionContext();
-				}
-			);
+			const WRAPPER = (): void =>
+			{
+				ExecutionContextRegistry.GetExecutionContext();
+			};
+
+			throws(WRAPPER);
+		});
+
+		it("should return a context when called inside of an async hook", (): void => {
+			const PARAMETERS: ExecutionContextInstantiationInterface = {
+				// @ts-expect-error: Dummy value for testing purposes.
+				request: Symbol("request"),
+				// @ts-expect-error: Dummy value for testing purposes.
+				response: Symbol("response"),
+			};
+
+			const CONTEXT: ExecutionContext = new ExecutionContext(PARAMETERS);
+
+			ExecutionContextRegistry.SetExecutionContext(CONTEXT);
+
+			deepStrictEqual(ExecutionContextRegistry.GetExecutionContext(), CONTEXT);
 		});
 	});
 });
