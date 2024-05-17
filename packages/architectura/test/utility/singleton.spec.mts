@@ -60,7 +60,7 @@ describe("Singleton", (): void => {
 		});
 	});
 
-	describe("Remove", (): void => {
+	describe("RemoveInstance", (): void => {
 		it("should remove the instance of the singleton class.", (): void => {
 			class MySingleton extends Singleton
 			{
@@ -72,7 +72,7 @@ describe("Singleton", (): void => {
 
 			new MySingleton();
 
-			MySingleton.Remove(MySingleton);
+			MySingleton.RemoveInstance(MySingleton);
 
 			const INSTANCE2: MySingleton | undefined = MySingleton.FindInstance(MySingleton);
 

@@ -1,4 +1,4 @@
-import type { LogContextInterface } from "./_index.mjs";
+import type { LogContextInterface } from "./definition/interface/log-context.interface.mjs";
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
 import { ValidationError } from "@vitruvius-labs/ts-predicate";
 import { stringifyErrorTree } from "@vitruvius-labs/ts-predicate/helper";
