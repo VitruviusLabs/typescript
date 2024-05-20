@@ -1,6 +1,7 @@
 import type { Dirent } from "node:fs";
 import type { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 import type { EndpointEntryInterface } from "./definition/interface/endpoint-entry.interface.mjs";
+import type { EndpointDetailsInterface } from "./definition/interface/endpoint-details.interface.mjs";
 import { isFunction, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
 import { type ConstructorOf, getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 import { HelloWorldEndpoint } from "../../endpoint/hello-world.endpoint.mjs";
@@ -39,22 +40,27 @@ class EndpointRegistry
 
 	public static AddEndpoint(endpoint: BaseEndpoint | ConstructorOf<BaseEndpoint>): void
 	{
-		let constructor_class: ConstructorOf<BaseEndpoint> | undefined = undefined;
-		let instance: BaseEndpoint | undefined = undefined;
+		const DETAILS: EndpointDetailsInterface = this.GetEndpointDetails(endpoint);
 
-		if (endpoint instanceof BaseEndpoint)
+		if (this.IsAbstractEndpoint(DETAILS.instance))
 		{
-			constructor_class = getConstructorOf(endpoint);
-			instance = endpoint;
-		}
-		else
-		{
-			constructor_class = endpoint;
-			instance = new endpoint();
+			throw new Error("Endpoint is missing properties method and route.");
 		}
 
-		const METHOD: HTTPMethodEnum = instance.getMethod();
-		const ROUTE: RegExp = instance.getRoute();
+		this.AppendEndpoint(DETAILS);
+	}
+
+	public static async AddEndpointsDirectory(directory: string): Promise<void>
+	{
+		await FileSystemService.ConfirmDirectoryExistence(directory);
+
+		await EndpointRegistry.ParseDirectoryForEndpoints(directory);
+	}
+
+	private static AppendEndpoint(details: EndpointDetailsInterface): void
+	{
+		const METHOD: HTTPMethodEnum = details.instance.getMethod();
+		const ROUTE: RegExp = details.instance.getRoute();
 
 		const IDENTIFIER: string = `${METHOD}::${ROUTE.toString()}`;
 
@@ -62,9 +68,9 @@ class EndpointRegistry
 
 		if (ENTRY !== undefined)
 		{
-			if (ENTRY.endpoint === endpoint)
+			if (ENTRY.endpoint === details.endpoint)
 			{
-				throw new Error(`Endpoint ${constructor_class.name} already added.`);
+				throw new Error(`Endpoint ${details.constructor.name} already added.`);
 			}
 
 			throw new Error(`An endpoint is already added for method ${METHOD} and route "${ROUTE.toString()}".`);
@@ -77,16 +83,9 @@ class EndpointRegistry
 			{
 				method: METHOD,
 				route: ROUTE,
-				endpoint: endpoint,
+				endpoint: details.endpoint,
 			}
 		);
-	}
-
-	public static async AddEndpointsDirectory(directory: string): Promise<void>
-	{
-		await FileSystemService.ConfirmDirectoryExistence(directory);
-
-		await EndpointRegistry.ParseDirectoryForEndpoints(directory);
 	}
 
 	private static async ParseDirectoryForEndpoints(directory: string): Promise<void>
@@ -121,17 +120,53 @@ class EndpointRegistry
 			{
 				if (this.IsEndpoint(EXPORT))
 				{
-					this.AddEndpoint(EXPORT);
+					const DETAILS: EndpointDetailsInterface = this.GetEndpointDetails(EXPORT);
 
-					return;
+					if (this.IsAbstractEndpoint(DETAILS.instance))
+					{
+						continue;
+					}
+
+					this.AppendEndpoint(DETAILS);
 				}
 			}
 		}
 	}
 
+	private static GetEndpointDetails(endpoint: BaseEndpoint | ConstructorOf<BaseEndpoint>): EndpointDetailsInterface
+	{
+		let constructor_class: ConstructorOf<BaseEndpoint> | undefined = undefined;
+		let instance: BaseEndpoint | undefined = undefined;
+
+		if (endpoint instanceof BaseEndpoint)
+		{
+			constructor_class = getConstructorOf(endpoint);
+			instance = endpoint;
+		}
+		else
+		{
+			constructor_class = endpoint;
+			instance = new endpoint();
+		}
+
+		return {
+			endpoint: endpoint,
+			constructor: constructor_class,
+			instance: instance,
+		};
+	}
+
 	private static IsEndpoint(value: unknown): value is BaseEndpoint | ConstructorOf<BaseEndpoint>
 	{
 		return value instanceof BaseEndpoint || isFunction(value) && value.prototype instanceof BaseEndpoint;
+	}
+
+	private static IsAbstractEndpoint(endpoint: BaseEndpoint): boolean
+	{
+		return (
+			Reflect.get(endpoint, "method") === undefined
+			&& Reflect.get(endpoint, "route") === undefined
+		);
 	}
 }
 
