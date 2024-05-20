@@ -1,6 +1,6 @@
 import { deepStrictEqual } from "node:assert/strict";
 import { describe, it } from "node:test";
-import { BaseEndpoint, type EndpointEntryInterface, EndpointRegistry, HTTPMethodEnum, HelloWorldEndpoint } from "../../../src/_index.mjs";
+import { BaseEndpoint, type EndpointEntryInterface, type EndpointMatchInterface, EndpointRegistry, HTTPMethodEnum, HelloWorldEndpoint } from "../../../src/_index.mjs";
 
 describe("EndpointRegistry", (): void =>
 {
@@ -10,12 +10,17 @@ describe("EndpointRegistry", (): void =>
 		{
 			const ENDPOINT: HelloWorldEndpoint = new HelloWorldEndpoint();
 
+			const MATCHING_ENDPOINT: EndpointMatchInterface = {
+				endpoint: ENDPOINT,
+				matchGroups: undefined,
+			};
+
 			const EMPTY_MAP: Map<string, BaseEndpoint> = new Map();
 
 			// @ts-expect-error - We need to access this private property for test purposes.
 			EndpointRegistry.ENDPOINTS.clear();
 
-			deepStrictEqual(EndpointRegistry.FindEndpoint(HTTPMethodEnum.GET, "/"), ENDPOINT);
+			deepStrictEqual(EndpointRegistry.FindEndpoint(HTTPMethodEnum.GET, "/"), MATCHING_ENDPOINT);
 			// @ts-expect-error - We need to access this private property for test purposes.
 			deepStrictEqual(EndpointRegistry.ENDPOINTS, EMPTY_MAP);
 		});
@@ -32,6 +37,11 @@ describe("EndpointRegistry", (): void =>
 
 			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
 
+			const MATCHING_ENDPOINT: EndpointMatchInterface = {
+				endpoint: ENDPOINT,
+				matchGroups: undefined,
+			};
+
 			// @ts-expect-error - We need to access this private property for test purposes.
 			EndpointRegistry.ENDPOINTS.clear();
 
@@ -45,7 +55,7 @@ describe("EndpointRegistry", (): void =>
 				}
 			);
 
-			deepStrictEqual(EndpointRegistry.FindEndpoint(HTTPMethodEnum.GET, "/test-dummy"), ENDPOINT);
+			deepStrictEqual(EndpointRegistry.FindEndpoint(HTTPMethodEnum.GET, "/test-dummy"), MATCHING_ENDPOINT);
 
 			// @ts-expect-error - We need to access this private property for test purposes.
 			EndpointRegistry.ENDPOINTS.clear();
@@ -107,12 +117,15 @@ describe("EndpointRegistry", (): void =>
 
 			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
 
+			const METHOD: HTTPMethodEnum = ENDPOINT.getMethod();
+			const ROUTE: RegExp = ENDPOINT.getRoute();
+
 			const POPULATED_MAP: Map<string, EndpointEntryInterface> = new Map([
 				[
-					"GET::/^\\/test-dummy$/",
+					`${METHOD}::${ROUTE.toString()}`,
 					{
-						method: HTTPMethodEnum.GET,
-						route: /^\/test-dummy$/,
+						method: METHOD,
+						route: ROUTE,
 						endpoint: ENDPOINT,
 					},
 				],

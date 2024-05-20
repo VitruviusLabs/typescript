@@ -2,6 +2,7 @@ import type { Dirent } from "node:fs";
 import type { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 import type { EndpointEntryInterface } from "./definition/interface/endpoint-entry.interface.mjs";
 import type { EndpointDetailsInterface } from "./definition/interface/endpoint-details.interface.mjs";
+import type { EndpointMatchInterface } from "./definition/interface/endpoint-match.interface.mjs";
 import { isFunction, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
 import { type ConstructorOf, getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 import { HelloWorldEndpoint } from "../../endpoint/hello-world.endpoint.mjs";
@@ -13,26 +14,44 @@ class EndpointRegistry
 {
 	private static readonly ENDPOINTS: Map<string, EndpointEntryInterface> = new Map();
 
-	public static FindEndpoint(request_method: HTTPMethodEnum, request_path: string): BaseEndpoint | undefined
+	public static FindEndpoint(request_method: HTTPMethodEnum, request_path: string): EndpointMatchInterface | undefined
 	{
 		if (this.ENDPOINTS.size === 0)
 		{
 			LoggerProxy.Warning("No endpoint have been added. Default endpoint.");
 
-			return new HelloWorldEndpoint();
+			return {
+				endpoint: new HelloWorldEndpoint(),
+				matchGroups: undefined,
+			};
 		}
 
 		for (const [, ENDPOINT_ENTRY] of this.ENDPOINTS)
 		{
-			if (ENDPOINT_ENTRY.method === request_method && ENDPOINT_ENTRY.route.test(request_path))
+			if (ENDPOINT_ENTRY.method !== request_method)
 			{
-				if (ENDPOINT_ENTRY.endpoint instanceof BaseEndpoint)
-				{
-					return ENDPOINT_ENTRY.endpoint;
-				}
-
-				return new ENDPOINT_ENTRY.endpoint();
+				continue;
 			}
+
+			const MATCHES: RegExpMatchArray | null = ENDPOINT_ENTRY.route.exec(request_path);
+
+			if (MATCHES === null)
+			{
+				continue;
+			}
+
+			if (ENDPOINT_ENTRY.endpoint instanceof BaseEndpoint)
+			{
+				return {
+					endpoint: ENDPOINT_ENTRY.endpoint,
+					matchGroups: MATCHES.groups,
+				};
+			}
+
+			return {
+				endpoint: new ENDPOINT_ENTRY.endpoint(),
+				matchGroups: MATCHES.groups,
+			};
 		}
 
 		return undefined;
