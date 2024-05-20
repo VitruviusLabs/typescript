@@ -1,5 +1,6 @@
 import type { ServerConfigurationType } from "./definition/type/server-configuration.type.mjs";
 import type { ServerInstantiationType } from "./definition/type/server-instantiation.type.mjs";
+import type { EndpointMatchInterface } from "../endpoint/definition/interface/endpoint-match.interface.mjs";
 import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
 import type { BasePreHook } from "../hook/base.pre-hook.mjs";
 import type { BasePostHook } from "../hook/base.post-hook.mjs";
@@ -226,12 +227,17 @@ class Server
 
 	private static async HandleEndpoints(context: ExecutionContext): Promise<boolean>
 	{
-		const ENDPOINT: BaseEndpoint | undefined = EndpointRegistry.FindEndpoint(context.getRequest().getMethod(), context.getRequest().getPath());
+		const REQUEST: RichClientRequest = context.getRequest();
+		const MATCHING_ENDPOINT: EndpointMatchInterface | undefined = EndpointRegistry.FindEndpoint(REQUEST.getMethod(), REQUEST.getPath());
 
-		if (ENDPOINT === undefined)
+		if (MATCHING_ENDPOINT === undefined)
 		{
 			return false;
 		}
+
+		Reflect.set(REQUEST, "pathMatchGroups", MATCHING_ENDPOINT.matchGroups);
+
+		const ENDPOINT: BaseEndpoint = MATCHING_ENDPOINT.endpoint;
 
 		LoggerProxy.Debug(`Matching endpoint found: ${ENDPOINT.constructor.name}.`);
 
