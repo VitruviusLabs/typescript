@@ -11,13 +11,26 @@ import { JWT } from "./jwt.mjs";
 import { JSONUtility } from "../../../utility/json/json-utility.mjs";
 import { validateAlgorithm } from "../utility/validate-algorithm.mjs";
 
+/**
+ * Factory for creating JWTs
+ */
 class JWTFactory
 {
+	/**
+	 * Create a new JWT
+	 *
+	 * @throws if the some parameters are invalid
+	 */
 	public static Create(algorithm: string, secret: SecretType, claims?: JWTClaimsInterface): JWT
 	{
 		return new JWT(algorithm, secret, claims ?? {});
 	}
 
+	/**
+	 * Parse a JWT from an encoded token
+	 *
+	 * @throws if the token is invalid (tampered, truncated, expired, etc.)
+	 */
 	public static Parse(encoded_token: string, secret: SecretType): JWT
 	{
 		if (!/^[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+){2}$/.test(encoded_token))

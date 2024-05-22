@@ -1,3 +1,6 @@
+/**
+ * Standard HTTP status codes
+ */
 const enum HTTPStatusCodeEnum
 {
 	CONTINUE = 100,

@@ -7,11 +7,21 @@ import { ExecutionContextRegistry } from "../../core/execution-context/execution
 import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";
 import { Server } from "../../core/server/server.mjs";
 
+/**
+ * Proxy for the logger service
+ */
 class LoggerProxy
 {
 	private static Initialised: boolean = false;
 	private static Logger: LoggerInterface = new LoggerService();
 
+	/**
+	 * Initialises the logger proxy with a custom logger
+	 *
+	 * @remarks
+	 * Unless called, it writes to the console
+	 * Ignore subsequent calls.
+	 */
 	public static Initialise(logger_service: LoggerInterface): void
 	{
 		if (LoggerProxy.Initialised)
@@ -24,46 +34,73 @@ class LoggerProxy
 		LoggerProxy.Initialised = true;
 	}
 
+	/**
+	 * Logs a debug message
+	 */
 	public static Debug(message: unknown, tag?: string): void
 	{
 		LoggerProxy.Process(message, LogLevelEnum.DEBUG, tag);
 	}
 
+	/**
+	 * Logs an informational message
+	 */
 	public static Informational(message: unknown, tag?: string): void
 	{
 		LoggerProxy.Process(message, LogLevelEnum.INFO, tag);
 	}
 
+	/**
+	 * Logs an informational message
+	 */
 	public static Info(message: unknown, tag?: string): void
 	{
 		LoggerProxy.Process(message, LogLevelEnum.INFO, tag);
 	}
 
+	/**
+	 * Logs a notice message
+	 */
 	public static Notice(message: unknown, tag?: string): void
 	{
 		LoggerProxy.Process(message, LogLevelEnum.NOTICE, tag);
 	}
 
+	/**
+	 * Logs a warning message
+	 */
 	public static Warning(message: unknown, tag?: string): void
 	{
 		LoggerProxy.Process(message, LogLevelEnum.WARNING, tag);
 	}
 
+	/**
+	 * Logs an error message
+	 */
 	public static Error(message: unknown, tag?: string): void
 	{
 		LoggerProxy.Process(message, LogLevelEnum.ERROR, tag);
 	}
 
+	/**
+	 * Logs a critical message
+	 */
 	public static Critical(message: unknown, tag?: string): void
 	{
 		LoggerProxy.Process(message, LogLevelEnum.CRITICAL, tag);
 	}
 
+	/**
+	 * Logs an alert message
+	 */
 	public static Alert(message: unknown, tag?: string): void
 	{
 		LoggerProxy.Process(message, LogLevelEnum.ALERT, tag);
 	}
 
+	/**
+	 * Logs an emergency message
+	 */
 	public static Emergency(message: unknown, tag?: string): void
 	{
 		LoggerProxy.Process(message, LogLevelEnum.EMERGENCY, tag);

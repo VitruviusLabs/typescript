@@ -1,3 +1,6 @@
+/**
+ * List useful numbers for extracting date and time from ISO string
+ */
 const enum DateEnum
 {
 	ISO_DATE_LENGTH = 10,

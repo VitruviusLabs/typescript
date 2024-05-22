@@ -4,11 +4,22 @@ import { FileSystemService } from "../service/file-system/file-system.service.mj
 import { LoggerProxy } from "../service/logger/logger.proxy.mjs";
 import { BaseDomain } from "./base.domain.mjs";
 
+/**
+ * Service for loading domains from a directory
+ */
 class DomainService
 {
+	/**
+	 * Load a domain from a directory
+	 *
+	 * @remarks
+	 * Domain exporting files are identified by their name containing ".domain.".
+	 *
+	 * @throws if no domain is found in the directory
+	 */
 	public static async LoadFromDirectory(directory_path: string): Promise<void>
 	{
-		await FileSystemService.ConfirmDirectoryExistence(directory_path);
+		await FileSystemService.AssertDirectoryExistence(directory_path);
 
 		const FOUND: boolean = await this.Load(directory_path);
 
@@ -18,9 +29,15 @@ class DomainService
 		}
 	}
 
+	/**
+	 * Attempt to load a domain from each sub-directory
+	 *
+	 * @remarks
+	 * Domain exporting files are identified by their name containing ".domain.".
+	 */
 	public static async LoadMultipleFromRootDirectory(directory_path: string): Promise<void>
 	{
-		await FileSystemService.ConfirmDirectoryExistence(directory_path);
+		await FileSystemService.AssertDirectoryExistence(directory_path);
 
 		const ENTITIES: Array<Dirent> = await FileSystemService.ReadDirectory(directory_path);
 

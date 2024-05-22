@@ -1,6 +1,10 @@
 import type { BaseEndpoint } from "../../base.endpoint.mjs";
 
-/** @internal */
+/**
+ * Interface for the result when an endpoint match a request
+ *
+ * @internal
+ */
 interface EndpointMatchInterface
 {
 	endpoint: BaseEndpoint;

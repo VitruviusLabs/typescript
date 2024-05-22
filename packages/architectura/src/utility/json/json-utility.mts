@@ -1,8 +1,17 @@
 import { isBigInt, isString } from "@vitruvius-labs/ts-predicate/type-guard";
 import type { JSONValueType } from "./definition/type/json-value.type.mjs";
 
+/**
+ * Utility for JSON operations
+ */
 class JSONUtility
 {
+	/**
+	 * Encode data to JSON
+	 *
+	 * @remarks
+	 * Supports encoding BigInt values as strings ending with "n"
+	 */
 	public static Encode(data: symbol | undefined): undefined;
 	public static Encode(data: bigint | boolean | number | object | string | null): string;
 	public static Encode(data: unknown): string | undefined;
@@ -23,6 +32,12 @@ class JSONUtility
 		);
 	}
 
+	/**
+	 * Decode JSON to data
+	 *
+	 * @remarks
+	 * Supports decoding BigInt values from strings ending with "n"
+	 */
 	public static Parse(serialized_data: string): JSONValueType
 	{
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-return -- JSON.parse can return anything

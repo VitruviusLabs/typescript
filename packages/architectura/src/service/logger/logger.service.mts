@@ -6,8 +6,16 @@ import { Singleton } from "../../utility/singleton.mjs";
 import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
 import { DateEnum } from "../../definition/enum/date.enum.mjs";
 
+/**
+ * Default logger service
+ *
+ * @internal
+ */
 class LoggerService extends Singleton implements LoggerInterface
 {
+	/**
+	 * Logs a message
+	 */
 	public handleMessage(message: string, context: LogContextInterface): void
 	{
 		const LEVEL: string = context.level.toUpperCase();
@@ -41,6 +49,9 @@ class LoggerService extends Singleton implements LoggerInterface
 		console.log(PREFIXED_MESSAGE);
 	}
 
+	/**
+	 * Logs an error
+	 */
 	public handleError(error: Error, context: LogContextInterface): void
 	{
 		const STACK_TRACE_PARSER: StackTraceParserService = new StackTraceParserService(error);

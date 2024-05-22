@@ -19,16 +19,29 @@ class ExecutionContext extends ContextualStorage
 		this.response = context_items.response;
 	}
 
+	/**
+	 * Returns the UUID of the context.
+	 *
+	 * @remarks
+	 * Allows for identification of the context from anywhere,
+	 * making it easier to debug and trace the flow of the request processing.
+	 */
 	public getUUID(): string
 	{
 		return this.uuid;
 	}
 
+	/**
+	 * Returns the request object that was passed to the server.
+	 */
 	public getRequest(): RichClientRequest
 	{
 		return this.request;
 	}
 
+	/**
+	 * Returns the response object that was passed to the server.
+	 */
 	public getResponse(): RichServerResponse
 	{
 		return this.response;

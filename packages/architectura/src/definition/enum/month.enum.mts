@@ -1,3 +1,6 @@
+/**
+ * List months of the year with their corresponding Date constructor number
+ */
 const enum MonthEnum
 {
 	JANUARY = 0,

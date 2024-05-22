@@ -1,3 +1,6 @@
+/**
+ * Call frame details
+ */
 interface StackTraceLineParsingResultInterface
 {
 	method: string;

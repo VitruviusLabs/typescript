@@ -2,7 +2,11 @@ import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import type { HTTPMethodEnum } from "../../../definition/enum/http-method.enum.mjs";
 import type { BaseEndpoint } from "../../base.endpoint.mjs";
 
-/** @internal */
+/**
+ * Interface for storing an endpoint in the registry
+ *
+ * @internal
+ */
 interface EndpointEntryInterface
 {
 	method: HTTPMethodEnum;

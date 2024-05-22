@@ -1,3 +1,6 @@
+/**
+ * Column widths for the table
+ */
 interface TableColumnWidthsInterface
 {
 	method: number;

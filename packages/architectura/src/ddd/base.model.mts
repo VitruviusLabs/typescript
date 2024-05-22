@@ -1,7 +1,9 @@
+import type { BaseModelInstantiationInterface } from "./definition/interface/base-model-instantiation.interface.mjs";
 import { randomUUID } from "node:crypto";
 
-import type { BaseModelInstantiationInterface } from "./definition/interface/base-model-instantiation.interface.mjs";
-
+/**
+ * Base model for all entities
+ */
 abstract class BaseModel
 {
 	protected readonly id: bigint | undefined;
@@ -10,19 +12,43 @@ abstract class BaseModel
 	protected readonly updatedAt: Date | undefined;
 	protected readonly deletedAt: Date | undefined;
 
+	/**
+	 * Create a new model
+	 */
 	public constructor(parameters: BaseModelInstantiationInterface)
 	{
 		this.uuid = parameters.uuid ?? randomUUID();
 	}
 
+	/**
+	 * Save the entity
+	 *
+	 * @remarks
+	 * Usually retrieve the corresponding repository from the domain then save the entity.
+	 */
 	public abstract save(): Promise<void>;
+
+	/**
+	 * Delete the entity
+	 *
+	 * @remarks
+	 * Usually retrieve the corresponding repository from the domain then delete the entity.
+	 */
 	public abstract delete(): Promise<void>;
 
+	/**
+	 * Check if the entity has an id, meaning it has been saved
+	 */
 	public hasId(): boolean
 	{
 		return this.id !== undefined;
 	}
 
+	/**
+	 * Get the id
+	 *
+	 * @throws if the entity has not been saved
+	 */
 	public getId(): bigint
 	{
 		if (this.id === undefined)
@@ -33,11 +59,19 @@ abstract class BaseModel
 		return this.id;
 	}
 
+	/**
+	 * Get the UUID
+	 */
 	public getUUID(): string
 	{
 		return this.uuid;
 	}
 
+	/**
+	 * Get the creation date
+	 *
+	 * @throws if the entity has not been saved
+	 */
 	public getCreatedAt(): Date
 	{
 		if (this.createdAt === undefined)
@@ -48,6 +82,11 @@ abstract class BaseModel
 		return this.createdAt;
 	}
 
+	/**
+	 * Get the update date
+	 *
+	 * @throws if the entity has not been saved
+	 */
 	public getUpdatedAt(): Date
 	{
 		if (this.updatedAt === undefined)
@@ -58,6 +97,14 @@ abstract class BaseModel
 		return this.updatedAt;
 	}
 
+	/**
+	 * Get the deletion date
+	 *
+	 * @remarks
+	 * This is only available if you use soft deletion.
+	 *
+	 * @throws if the entity has not been saved
+	 */
 	public getDeletedAt(): Date | undefined
 	{
 		if (this.id === undefined)

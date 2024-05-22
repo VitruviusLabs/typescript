@@ -1,3 +1,6 @@
+/**
+ * Cookie's SameSite possible values
+ */
 const enum CookieSameSiteEnum
 {
 	None = "None",

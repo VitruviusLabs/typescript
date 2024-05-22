@@ -8,10 +8,19 @@ import { SessionRegistry } from "../entity/session.registry.mjs";
 import { SessionConstantEnum } from "../definition/enum/session-constant.enum.mjs";
 import { MillisecondEnum } from "../../../definition/enum/millisecond.enum.mjs";
 
+/**
+ * Session pre-hook
+ */
 class SessionPreHook extends BasePreHook
 {
 	private readonly delegate: SessionDelegate;
 
+	/**
+	 * Create the session pre-hook
+	 *
+	 * @remarks
+	 * Initialize expired sessions removal
+	 */
 	public constructor(delegate: SessionDelegate)
 	{
 		super();
@@ -46,6 +55,13 @@ class SessionPreHook extends BasePreHook
 		TIMER.unref();
 	}
 
+	/**
+	 * Execute the session pre-hook
+	 *
+	 * @remarks
+	 * Refreshes the session if it exists, otherwise creates a new one.
+	 * When creating a new one, prefill the session cookie in the response.
+	 */
 	public execute(context: ExecutionContext): void
 	{
 		let session: Session | undefined = undefined;

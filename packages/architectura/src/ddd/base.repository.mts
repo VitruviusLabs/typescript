@@ -3,6 +3,9 @@ import type { BaseModelInstantiationInterface } from "./definition/interface/bas
 import type { ModelMetadataInterface } from "./definition/interface/model-metadata.interface.mjs";
 import type { BaseFactory } from "./base.factory.mjs";
 
+/**
+ * Base repository for storing entities
+ */
 abstract class BaseRepository<
 	T extends BaseModel,
 	I extends BaseModelInstantiationInterface,
@@ -11,6 +14,9 @@ abstract class BaseRepository<
 {
 	private readonly factory: BaseFactory<T, I, C>;
 
+	/**
+	 * Create a new repository
+	 */
 	public constructor(factory: BaseFactory<T, I, C>)
 	{
 		this.factory = factory;
@@ -32,12 +38,49 @@ abstract class BaseRepository<
 		Reflect.set(model, "deletedAt", undefined);
 	}
 
+	/**
+	 * Fetch an entity by its UUID.
+	 *
+	 * @remarks
+	 * Used by both the findByUUID and getByUUID methods.
+	 */
 	protected abstract fetchByUUID(uuid: string): Promise<(I & ModelMetadataInterface) | undefined>;
+
+	/**
+	 * Fetch an entity by its id.
+	 *
+	 * @remarks
+	 * Used by both the findById and getById methods.
+	 */
 	protected abstract fetchById(id: bigint): Promise<(I & ModelMetadataInterface) | undefined>;
+
+	/**
+	 * Register a new entity.
+	 *
+	 * @remarks
+	 * Used by the save method.
+	 */
 	protected abstract register(model: T): Promise<ModelMetadataInterface>;
+
+	/**
+	 * Update an existing entity.
+	 *
+	 * @remarks
+	 * Used by the save method.
+	 */
 	protected abstract update(model: T): Promise<ModelMetadataInterface>;
+
+	/**
+	 * Delete an existing entity.
+	 *
+	 * @remarks
+	 * Used by the delete method.
+	 */
 	protected abstract destroy(id: bigint): Promise<void>;
 
+	/**
+	 * Retrieve an entity by its UUID if it exists.
+	 */
 	public async findByUUID(uuid: string): Promise<T | undefined>
 	{
 		const data: (I & ModelMetadataInterface) | undefined = await this.fetchByUUID(uuid);
@@ -52,6 +95,11 @@ abstract class BaseRepository<
 		return model;
 	}
 
+	/**
+	 * Retrieve an entity by its UUID.
+	 *
+	 * @throws if it doesn't exists.
+	 */
 	public async getByUUID(uuid: string): Promise<T>
 	{
 		const model: T | undefined = await this.findByUUID(uuid);
@@ -64,6 +112,9 @@ abstract class BaseRepository<
 		return model;
 	}
 
+	/**
+	 * Retrieve an entity by its id if it exists.
+	 */
 	public async findById(id: bigint): Promise<T | undefined>
 	{
 		const data: (I & ModelMetadataInterface) | undefined = await this.fetchById(id);
@@ -78,6 +129,11 @@ abstract class BaseRepository<
 		return model;
 	}
 
+	/**
+	 * Retrieve an entity by its id.
+	 *
+	 * @throws if it doesn't exists.
+	 */
 	public async getById(id: bigint): Promise<T>
 	{
 		const model: T | undefined = await this.findById(id);
@@ -90,6 +146,12 @@ abstract class BaseRepository<
 		return model;
 	}
 
+	/**
+	 * Save an entity.
+	 *
+	 * @remarks
+	 * This method will either register a new entity or update an existing one.
+	 */
 	public async save(model: T): Promise<void>
 	{
 		if (model.hasId())
@@ -106,6 +168,11 @@ abstract class BaseRepository<
 		BaseRepository.SetImmutableFields(model, register_metadata);
 	}
 
+	/**
+	 * Delete an entity.
+	 *
+	 * @throws if the entity has not been saved
+	 */
 	public async delete(model: T): Promise<void>
 	{
 		await this.destroy(model.getId());
@@ -113,6 +180,13 @@ abstract class BaseRepository<
 		BaseRepository.ClearImmutableFields(model);
 	}
 
+	/**
+	 * Create an existing entity.
+	 *
+	 * @remarks
+	 * Use this method to create entities in custom getters.
+	 * Using the factory directly would erroneously create duplicate.
+	 */
 	protected create(parameters: I & ModelMetadataInterface): T
 	{
 		const model: T = this.factory.create(parameters);

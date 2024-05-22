@@ -1,9 +1,12 @@
-import { NumericBaseEnum } from "../../definition/enum/numeric-base.enum.mjs";
-import { StackTraceParserServiceEnum } from "./definition/enum/stack-trace-parser-service.enum.mjs";
 import type { StackTraceLineParsingResultInterface } from "./definition/interface/stack-trace-line-parsing-result.interface.mjs";
 import type { StackTraceParserLineAndPositionInterface } from "./definition/interface/stack-trace-parser-line-and-position.interface.mjs";
 import type { TableColumnWidthsInterface } from "./definition/interface/table-column-widths.interface.mjs";
+import { NumericBaseEnum } from "../../definition/enum/numeric-base.enum.mjs";
+import { StackTraceParserServiceEnum } from "./definition/enum/stack-trace-parser-service.enum.mjs";
 
+/**
+ * Service to parse stack traces
+ */
 class StackTraceParserService
 {
 	private static readonly ErrorMessageRegExp: RegExp = /Error: (?<message>.*)/;
@@ -30,6 +33,9 @@ class StackTraceParserService
 	private readonly message: string = "";
 	private readonly lines: Array<StackTraceLineParsingResultInterface> = [];
 
+	/**
+	 * Create a new parser for a specific error
+	 */
 	public constructor(error: Error)
 	{
 		this.error = error;
@@ -155,16 +161,28 @@ class StackTraceParserService
 		return `${StackTraceParserService.TableLineBottomLeftSeparator}${METHOD_COLUMN_LINE}${StackTraceParserService.TableLineBottomSeparator}${LINE_COLUMN_LINE}${StackTraceParserService.TableLineBottomSeparator}${POSITION_COLUMN_LINE}${StackTraceParserService.TableLineBottomSeparator}${MODULE_COLUMN_LINE}${StackTraceParserService.TableLineBottomRightSeparator}`;
 	}
 
+	/**
+	 * Get the error message
+	 */
 	public getMessage(): string
 	{
 		return this.message;
 	}
 
+	/**
+	 * Get the call stack details
+	 */
 	public getLines(): Array<StackTraceLineParsingResultInterface>
 	{
 		return this.lines;
 	}
 
+	/**
+	 * Get the pretty formatted call stack
+	 *
+	 * @remarks
+	 * The table is split into an array of string instead of being joined with new line characters
+	 */
 	public getStackTraceAsTable(): Array<string>
 	{
 		const TABLE_COLUMN_WIDTHS: TableColumnWidthsInterface = this.getTableColumnWidths();

@@ -1,3 +1,8 @@
+/**
+ * Standard JWT header
+ *
+ * @internal
+ */
 interface JWTHeaderInterface
 {
 	typ: "JWT";

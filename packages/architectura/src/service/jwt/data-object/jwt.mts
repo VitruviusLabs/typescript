@@ -8,12 +8,20 @@ import { validateClaims } from "../utility/validate-claims.mjs";
 import { computeSignature } from "../utility/compute-signature.mjs";
 import { JSONUtility } from "../../../utility/json/json-utility.mjs";
 
+/**
+ * JSON Web Token
+ */
 class JWT
 {
 	private readonly header: JWTHeaderInterface;
 	private readonly secret: SecretType;
 	private claims: JWTClaimsInterface;
 
+	/**
+	 * Create a new JWT
+	 *
+	 * @throws if the some parameters are invalid
+	 */
 	public constructor(algorithm: string, secret: SecretType, claims: JWTClaimsInterface)
 	{
 		validateAlgorithm(algorithm);
@@ -29,22 +37,38 @@ class JWT
 		this.claims = claims;
 	}
 
+	/**
+	 * Get the algorithm
+	 */
 	public getAlgorithm(): string
 	{
 		return this.header.alg;
 	}
 
+	/**
+	 * Get the claims
+	 */
 	public getClaims(): JWTClaimsInterface
 	{
 		return this.claims;
 	}
 
+	/**
+	 * Set the claims
+	 *
+	 * @throws if the claims are invalid
+	 */
 	public setClaims(claims: JWTClaimsInterface): void
 	{
 		validateClaims(claims);
 		this.claims = claims;
 	}
 
+	/**
+	 * Encode the JWT
+	 *
+	 * @throws if the claims are invalid (modified externally)
+	 */
 	public toString(): string
 	{
 		validateClaims(this.claims);

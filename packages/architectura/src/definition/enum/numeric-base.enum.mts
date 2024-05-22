@@ -1,3 +1,6 @@
+/**
+ * List of common numeric bases
+ */
 const enum NumericBaseEnum
 {
 	BINARY = 2,

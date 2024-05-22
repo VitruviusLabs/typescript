@@ -1,3 +1,8 @@
+/**
+ * Intermediate extracted data
+ *
+ * @internal
+ */
 interface StackTraceParserLineAndPositionInterface
 {
 	line: number;

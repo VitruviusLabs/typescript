@@ -5,6 +5,14 @@ import { JWTConstantEnum } from "../definition/enum/jwt-constant.enum.mjs";
 import { JWTFactory } from "../data-object/jwt.factory.mjs";
 import { JWT } from "../data-object/jwt.mjs";
 
+/**
+ * JWT Pre-hook
+ *
+ * @remarks
+ * Extract JWT from a request, and link it to the execution context
+ *
+ * @throws if the JWT exists but is invalid
+ */
 class JWTPreHook extends BasePreHook
 {
 	private readonly secret: SecretType;

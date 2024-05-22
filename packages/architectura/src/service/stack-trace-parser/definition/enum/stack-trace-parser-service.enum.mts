@@ -1,3 +1,6 @@
+/**
+ * Magic numbers and constants for the StackTraceParserService.
+ */
 const enum StackTraceParserServiceEnum
 {
 	LINE_NOT_FOUND_INDEX = -1,

@@ -1,3 +1,6 @@
+/**
+ * Standard JWT Claims properties
+ */
 interface JWTClaimsInterface
 {
 	// Issued At

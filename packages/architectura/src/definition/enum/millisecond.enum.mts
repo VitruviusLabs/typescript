@@ -1,3 +1,6 @@
+/**
+ * Numbers for converting a duration into milliseconds.
+ */
 const enum MillisecondEnum
 {
 	SECOND = 1_000,

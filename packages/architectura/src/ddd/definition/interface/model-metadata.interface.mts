@@ -1,3 +1,6 @@
+/**
+ * Properties needed to instantiate an existing entity
+ */
 interface ModelMetadataInterface
 {
 	id: bigint | number | string;

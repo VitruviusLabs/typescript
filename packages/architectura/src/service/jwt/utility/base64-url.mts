@@ -1,6 +1,13 @@
-/** @internal */
+/**
+ * Base64 URL utility class
+ *
+ * @internal
+ */
 class Base64URL
 {
+	/**
+	 * Encode a value to Base64 URL format
+	 */
 	public static Encode(value: string): string
 	{
 		const BUFFER: Buffer = Buffer.from(value, "utf8");
@@ -10,6 +17,9 @@ class Base64URL
 		return ENCODED_VALUE;
 	}
 
+	/**
+	 * Decode a value from Base64 URL format
+	 */
 	public static Decode(encoded_value: string): string
 	{
 		const BASE64: string = encoded_value.replaceAll("-", "+").replaceAll("_", "/");

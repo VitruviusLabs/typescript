@@ -1,7 +1,11 @@
 import type { JWTClaimsInterface } from "../definition/interface/jwt-claims.interface.mjs";
 import { isDefined } from "@vitruvius-labs/ts-predicate/type-guard";
 
-/** @internal */
+/**
+ * Validates the standard properties of a JWT claims
+ *
+ * @internal
+ */
 function validateClaims(claims: JWTClaimsInterface, check_active: boolean = true): void
 {
 	const NOW: number = Date.now();

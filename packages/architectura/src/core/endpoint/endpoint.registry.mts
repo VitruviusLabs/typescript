@@ -10,10 +10,20 @@ import { FileSystemService } from "../../service/file-system/file-system.service
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { BaseEndpoint } from "./base.endpoint.mjs";
 
+/**
+ * Endpoint registry.
+ *
+ * @sealed
+ */
 class EndpointRegistry
 {
 	private static readonly ENDPOINTS: Map<string, EndpointEntryInterface> = new Map();
 
+	/**
+	 * Find an endpoint that matches the given method and path.
+	 *
+	 * @internal
+	 */
 	public static FindEndpoint(request_method: HTTPMethodEnum, request_path: string): EndpointMatchInterface | undefined
 	{
 		if (this.ENDPOINTS.size === 0)
@@ -57,6 +67,13 @@ class EndpointRegistry
 		return undefined;
 	}
 
+	/**
+	 * Add an endpoint.
+	 *
+	 * @remarks
+	 * If given an endpoint constructor, it will be instantiated for every matching request.
+	 * If given an endpoint instance, it will be reused as is for every matching request.
+	 */
 	public static AddEndpoint(endpoint: BaseEndpoint | ConstructorOf<BaseEndpoint>): void
 	{
 		const DETAILS: EndpointDetailsInterface = this.GetEndpointDetails(endpoint);
@@ -69,9 +86,18 @@ class EndpointRegistry
 		this.AppendEndpoint(DETAILS);
 	}
 
+	/**
+	 * Recursively explore a folder and add all endpoints found.
+	 *
+	 * @remarks
+	 * Endpoint exporting files are identified by their name containing ".endpoint.".
+	 * Abstract endpoints without method nor route will be ignored
+	 * If the exported endpoint is a constructor, it will be instantiated for every matching request.
+	 * If the exported endpoint is an instance, it will be reused as is for every matching request.
+	 */
 	public static async AddEndpointsDirectory(directory: string): Promise<void>
 	{
-		await FileSystemService.ConfirmDirectoryExistence(directory);
+		await FileSystemService.AssertDirectoryExistence(directory);
 
 		await EndpointRegistry.ParseDirectoryForEndpoints(directory);
 	}

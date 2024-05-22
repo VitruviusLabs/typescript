@@ -1,5 +1,16 @@
+/**
+ * Helper for endpoint routes.
+ *
+ * @internal
+ * @sealed
+ */
 class RouteUtility
 {
+	/**
+	 * Normalize an endpoint route
+	 *
+	 * @internal
+	 */
 	public static NormalizeRoute(route: RegExp | string): RegExp
 	{
 		const FLAGS: string = "u";

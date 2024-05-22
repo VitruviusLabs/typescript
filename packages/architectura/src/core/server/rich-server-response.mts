@@ -15,6 +15,9 @@ import { JSONUtility } from "../../utility/json/json-utility.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { isErrorWithCode } from "../../predicate/is-error-with-code.mjs";
 
+/**
+ * Rich server response.
+ */
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
 	private readonly cookies: Map<string, CookieDescriptorInterface>;
@@ -22,6 +25,11 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 	private locked: boolean;
 	private processed: boolean;
 
+	/**
+	 * Create a new rich server response.
+	 *
+	 * @internal
+	 */
 	public constructor(request: RichClientRequest)
 	{
 		super(request);
@@ -47,6 +55,17 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		}
 	}
 
+	/**
+	 * Send a JSON payload as response.
+	 *
+	 * @remarks
+	 * Locks the response to prevent further modifications.
+	 *
+	 * The response will have a status code of 200 because no issue with HTTP occurred.
+	 * If you want to represent a non-HTTP error, set relevant properties in the content.
+	 *
+	 * @see {@link RichServerResponse.replyWith | replyWith}
+	 */
 	public async json(content: unknown): Promise<void>
 	{
 		await this.replyWith({
@@ -56,6 +75,14 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		});
 	}
 
+	/**
+	 * Send a plain text payload as response.
+	 *
+	 * @remarks
+	 * Locks the response to prevent further modifications.
+	 *
+	 * @see {@link RichServerResponse.replyWith | replyWith}
+	 */
 	public async text(content: Buffer | string): Promise<void>
 	{
 		await this.replyWith({
@@ -65,6 +92,14 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		});
 	}
 
+	/**
+	 * Send a response.
+	 *
+	 * @remarks
+	 * Locks the response to prevent further modifications.
+	 *
+	 * @throws if the response is locked.
+	 */
 	public async replyWith(parameters: HTTPStatusCodeEnum | ReplyInterface): Promise<void>
 	{
 		this.assertUnlocked();
@@ -90,26 +125,47 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		await this.writePayload();
 	}
 
+	/**
+	 * Check if the response is locked.
+	 *
+	 * @remarks
+	 * It can be used to know when the getters will return the final values.
+	 */
 	public isLocked(): boolean
 	{
 		return this.locked;
 	}
 
+	/**
+	 * Check if the response is processed.
+	 */
 	public isProcessed(): boolean
 	{
 		return this.processed;
 	}
 
+	/**
+	 * Check if the response has content.
+	 */
 	public hasContent(): boolean
 	{
 		return this.content !== undefined;
 	}
 
+	/**
+	 * Get the content as-is.
+	 *
+	 * @remarks
+	 * This method should be avoided outside debugging and logging.
+	 */
 	public getUnsafeContent(): Buffer | string | undefined
 	{
 		return this.content;
 	}
 
+	/**
+	 * Get the content as a buffer.
+	 */
 	public getRawContent(): Buffer
 	{
 		if (this.content instanceof Buffer)
@@ -125,6 +181,9 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		return Buffer.from(this.content);
 	}
 
+	/**
+	 * Get the content as a string.
+	 */
 	public getContent(): string
 	{
 		if (this.content instanceof Buffer)
@@ -135,6 +194,14 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		return this.content ?? "";
 	}
 
+	/**
+	 * Set the content.
+	 *
+	 * @remarks
+	 * This method should be avoided, prefer the use of {@link RichServerResponse.replyWith | replyWith}
+	 *
+	 * @throws if the response is locked.
+	 */
 	public setContent(content: Buffer | string): void
 	{
 		this.assertUnlocked();
@@ -142,11 +209,22 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		this.content = content;
 	}
 
+	/**
+	 * Get the status code.
+	 */
 	public getStatusCode(): HTTPStatusCodeEnum
 	{
 		return this.statusCode;
 	}
 
+	/**
+	 * Set the status code.
+	 *
+	 * @remarks
+	 * This method should be avoided, prefer the use of {@link RichServerResponse.replyWith | replyWith}
+	 *
+	 * @throws if the response is locked.
+	 */
 	public setStatusCode(status_code: HTTPStatusCodeEnum): void
 	{
 		this.assertUnlocked();
@@ -154,19 +232,23 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		this.statusCode = status_code;
 	}
 
-	public getUnsafeHeader(name: string): Array<string> | number | string | undefined
+	/**
+	 * Get the specified header.
+	 *
+	 * @remarks
+	 * This method should be avoided outside debugging and logging.
+	 */
+	public getHeaderRaw(name: string): Array<string> | number | string | undefined
 	{
 		return super.getHeader(name.toLowerCase());
 	}
 
-	public override getHeader(name: string): string | undefined
+	/**
+	 * Get an array of all the headers associated with the specified name.
+	 */
+	public getHeaderAll(name: string): Array<string>
 	{
-		return this.getNormalizedHeader(name)[0];
-	}
-
-	public getNormalizedHeader(name: string): Array<string>
-	{
-		const HEADER: Array<string> | number | string | undefined = this.getUnsafeHeader(name);
+		const HEADER: Array<string> | number | string | undefined = this.getHeaderRaw(name);
 
 		if (HEADER === undefined)
 		{
@@ -186,6 +268,22 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		return [HEADER];
 	}
 
+	/**
+	 * Get the first header associated with the specified name.
+	 */
+	public override getHeader(name: string): string | undefined
+	{
+		return this.getHeaderAll(name)[0];
+	}
+
+	/**
+	 * Set a cookie.
+	 *
+	 * @remarks
+	 * This method should be avoided, prefer the use of {@link RichServerResponse.replyWith | replyWith}
+	 *
+	 * @throws if the response is locked.
+	 */
 	public setCookie(descriptor: CookieDescriptorInterface): void
 	{
 		this.assertUnlocked();

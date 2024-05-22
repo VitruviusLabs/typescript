@@ -1,3 +1,8 @@
+/**
+ * Predefined ports
+ *
+ * @internal
+ */
 const enum PortsEnum
 {
 	LOWEST_AVAILABLE = 1,

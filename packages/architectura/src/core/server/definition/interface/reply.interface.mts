@@ -2,6 +2,9 @@ import type { ContentTypeEnum } from "../enum/content-type.enum.mjs";
 import type { HTTPStatusCodeEnum } from "../enum/http-status-code.enum.mjs";
 import type { CookieDescriptorInterface } from "./cookie-descriptor.interface.mjs";
 
+/**
+ * Response reply interface
+ */
 interface ReplyInterface
 {
 	status?: HTTPStatusCodeEnum;

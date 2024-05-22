@@ -24,6 +24,13 @@ import { RichServerResponse } from "./rich-server-response.mjs";
 import { ContentType } from "../../utility/content-type/content-type.mjs";
 import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
+/* @TODO: Add support for HTTP/2 */
+
+/**
+ * Server class.
+ *
+ * @sealed
+ */
 class Server
 {
 	private readonly port: number = PortsEnum.DEFAULT_HTTPS;
@@ -68,6 +75,9 @@ class Server
 		this.nativeServer = new SecureServer(SECURE_OPTIONS);
 	}
 
+	/**
+	 * Create a new server instance.
+	 */
 	public static async Create(options: ServerConfigurationType): Promise<Server>
 	{
 		const OPTIONS: ServerInstantiationType = await this.ComputeServerOptions(options);
@@ -93,6 +103,12 @@ class Server
 		return SERVER;
 	}
 
+	/**
+	 * Handle an error.
+	 *
+	 * @remarks
+	 * It is intended for use in event listeners when catching an error.
+	 */
 	public static async HandleError(error: unknown): Promise<void>
 	{
 		const CONTEXT: ExecutionContext | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext();
@@ -184,7 +200,7 @@ class Server
 
 		LoggerProxy.Debug(`Public asset found "${FILE_PATH}".`);
 
-		const FILE: Buffer = await FileSystemService.ReadFileAsBuffer(FILE_PATH);
+		const FILE: Buffer = await FileSystemService.ReadBinaryFile(FILE_PATH);
 
 		const CONTENT_TYPE: string = ContentType.Get(extname(FILE_PATH));
 

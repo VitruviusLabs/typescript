@@ -1,3 +1,6 @@
+/**
+ * Standard log levels
+ */
 const enum LogLevelEnum
 {
 	DEBUG = "debug",

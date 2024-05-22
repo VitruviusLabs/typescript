@@ -1,3 +1,6 @@
+/**
+ * Predefined content types
+ */
 const enum ContentTypeEnum
 {
 	UNKNOWN = "application/octet-stream",

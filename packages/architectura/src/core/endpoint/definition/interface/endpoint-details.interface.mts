@@ -1,7 +1,11 @@
 import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import type { BaseEndpoint } from "../../base.endpoint.mjs";
 
-/** @internal */
+/**
+ * Helper interface when adding an endpoint
+ *
+ * @internal
+ */
 interface EndpointDetailsInterface
 {
 	endpoint: BaseEndpoint | ConstructorOf<BaseEndpoint>;

@@ -1,7 +1,11 @@
 import type { SecretType } from "../definition/type/secret.type.mjs";
 import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
 
-/** @internal */
+/**
+ * Validates the secret
+ *
+ * @internal
+ */
 function validateSecret(secret: SecretType): void
 {
 	if (isString(secret))
