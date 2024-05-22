@@ -1,5 +1,7 @@
 /**
  * Column widths for the table
+ *
+ * @internal
  */
 interface TableColumnWidthsInterface
 {

@@ -1,5 +1,5 @@
 /**
- * Predefined constants for managing sessions
+ * Constants for managing sessions
  *
  * @internal
  */

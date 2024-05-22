@@ -1,5 +1,5 @@
 /**
- * Help with parsing JWT
+ * Constants for parsing JWT
  *
  * @internal
  */

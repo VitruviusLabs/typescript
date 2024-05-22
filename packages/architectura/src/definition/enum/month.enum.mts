@@ -1,5 +1,9 @@
 /**
- * List months of the year with their corresponding Date constructor number
+ * List of months
+ *
+ * @remarks
+ * Does not number month from 1 to 12 as the ISO standard,
+ * but from 0 to 11 as the Date constructor expects
  */
 const enum MonthEnum
 {

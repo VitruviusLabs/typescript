@@ -1,7 +1,7 @@
 /**
  * Call frame details
  */
-interface StackTraceLineParsingResultInterface
+interface CallFrameDetailsInterface
 {
 	method: string;
 	line: number;
@@ -9,4 +9,4 @@ interface StackTraceLineParsingResultInterface
 	module: string;
 }
 
-export type { StackTraceLineParsingResultInterface };
+export type { CallFrameDetailsInterface };

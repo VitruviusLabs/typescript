@@ -3,7 +3,7 @@ import type { LoggerInterface } from "./definition/interface/logger.interface.mj
 import { ValidationError } from "@vitruvius-labs/ts-predicate";
 import { stringifyErrorTree } from "@vitruvius-labs/ts-predicate/helper";
 import { Singleton } from "../../utility/singleton.mjs";
-import { StackTraceParserService } from "../stack-trace-parser/stack-trace-parser.service.mjs";
+import { StackTraceService } from "../stack-trace/stack-trace.service.mjs";
 import { DateEnum } from "../../definition/enum/date.enum.mjs";
 
 /**
@@ -54,8 +54,8 @@ class LoggerService extends Singleton implements LoggerInterface
 	 */
 	public handleError(error: Error, context: LogContextInterface): void
 	{
-		const STACK_TRACE_PARSER: StackTraceParserService = new StackTraceParserService(error);
-		const FORMATTED_STACK_TRACE: string = STACK_TRACE_PARSER.getStackTraceAsTable().join("\n");
+		const STACK_TRACE_PARSER: StackTraceService = new StackTraceService(error);
+		const FORMATTED_STACK_TRACE: string = STACK_TRACE_PARSER.getPrettyPrintableTrace();
 
 		let message: string = "";
 
