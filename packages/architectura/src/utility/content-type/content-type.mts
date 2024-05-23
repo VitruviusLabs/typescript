@@ -3,6 +3,8 @@ import { EXTENSION_TO_MIME_TYPE_MAPPING } from "./mime-types-mapping.mjs";
 
 /**
  * Content type utility
+ *
+ * @sealed
  */
 class ContentType
 {

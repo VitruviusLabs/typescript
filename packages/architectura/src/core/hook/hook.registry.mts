@@ -8,6 +8,8 @@ import { BaseErrorHook } from "./base.error-hook.mjs";
 
 /**
  * Hook registry.
+ *
+ * @sealed
  */
 class HookRegistry
 {

@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { default as assert } from "node:assert/strict";
 import { describe, it } from "node:test";
-import { Singleton } from "../../src/utility/singleton.mjs";
+import { Singleton } from "../../src/_index.mjs";
 
 describe("Singleton", (): void => {
 	describe("constructor", (): void => {

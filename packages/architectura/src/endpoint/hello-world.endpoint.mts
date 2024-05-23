@@ -8,6 +8,9 @@ import type { ExecutionContext } from "../core/execution-context/execution-conte
  * @remarks
  * Used as a placeholder endpoint when none have been added to the registry.
  * Let's you know that the server is correctly running.
+ *
+ * @internal
+ * @sealed
  */
 class HelloWorldEndpoint extends BaseEndpoint
 {

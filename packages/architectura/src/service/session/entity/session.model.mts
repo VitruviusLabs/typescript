@@ -11,6 +11,8 @@ import { ContextualStorage } from "../../../core/utility/contextual-storage.mjs"
  * Expires after a set time.
  * Store session data which can be saved remotely.
  * You can link custom objects to the session too, but they won't be saved like the data.
+ *
+ * @sealed
  */
 class Session extends ContextualStorage
 {

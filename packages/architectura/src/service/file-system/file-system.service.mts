@@ -6,6 +6,8 @@ import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
 
 /**
  * Service for interacting with the file system
+ *
+ * @sealed
  */
 class FileSystemService
 {

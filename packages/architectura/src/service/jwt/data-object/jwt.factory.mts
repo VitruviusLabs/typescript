@@ -13,6 +13,8 @@ import { validateAlgorithm } from "../utility/validate-algorithm.mjs";
 
 /**
  * Factory for creating JWTs
+ *
+ * @sealed
  */
 class JWTFactory
 {

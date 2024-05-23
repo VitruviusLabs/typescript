@@ -10,6 +10,8 @@ import { JSONUtility } from "../../../utility/json/json-utility.mjs";
 
 /**
  * JSON Web Token
+ *
+ * @sealed
  */
 class JWT
 {

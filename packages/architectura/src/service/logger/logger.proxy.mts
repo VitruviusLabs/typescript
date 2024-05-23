@@ -9,6 +9,8 @@ import { Server } from "../../core/server/server.mjs";
 
 /**
  * Proxy for the logger service
+ *
+ * @sealed
  */
 class LoggerProxy
 {

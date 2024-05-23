@@ -3,6 +3,8 @@ import type { JSONValueType } from "./definition/type/json-value.type.mjs";
 
 /**
  * Utility for JSON operations
+ *
+ * @sealed
  */
 class JSONUtility
 {

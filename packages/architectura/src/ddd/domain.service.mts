@@ -6,6 +6,8 @@ import { BaseDomain } from "./base.domain.mjs";
 
 /**
  * Service for loading domains from a directory
+ *
+ * @sealed
  */
 class DomainService
 {

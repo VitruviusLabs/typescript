@@ -2,12 +2,12 @@ import type { Session } from "./session.model.mjs";
 
 /**
  * Session registry
+ *
+ * @sealed
  */
 class SessionRegistry
 {
 	private static readonly SESSIONS: Map<string, Session> = new Map();
-
-	private constructor() {}
 
 	/**
 	 * Get a session by its UUID

@@ -10,6 +10,8 @@ import { MillisecondEnum } from "../../../definition/enum/millisecond.enum.mjs";
 
 /**
  * Session pre-hook
+ *
+ * @sealed
  */
 class SessionPreHook extends BasePreHook
 {

@@ -9,44 +9,62 @@ import { TextAlignEnum } from "./definition/enum/text-align.enum.mjs";
 
 /**
  * Service to process Error stack traces
+ *
+ * @sealed
  */
-class StackTraceService
+class StackTraceUtility
 {
-	private static readonly ErrorMessageRegExp: RegExp = /Error: (?<message>.*)/;
-	private static readonly FileIndicatorRegExp: RegExp = /(?<file>(?:node:|file:\/\/)[^\n)]+)/;
-	private static readonly LineAndPositionRegExp: RegExp = /:(?<line>[0-9]+):(?<position>[0-9]+)\)?/;
-
-	private readonly error: Error;
-	private readonly message: string = "";
-	private readonly callFrames: Array<CallFrameDetailsInterface> = [];
+	private static readonly ERROR_MESSAGE_REGEXP: RegExp = /Error: (?<message>.*)/;
+	private static readonly FILE_INDICATOR_REGEXP: RegExp = /(?<file>(?:node:|file:\/\/)[^\n)]+)/;
+	private static readonly LINE_AND_POSITION_REGEXP: RegExp = /:(?<line>[0-9]+):(?<position>[0-9]+)\)?/;
 
 	/**
-	 * Create a new wrapper for a specific error
+	 * Get the call stack as a JSON serializable array
 	 */
-	public constructor(error: Error)
+	public static GetSerializableTrace(error: Error): Array<CallFrameDetailsInterface>
 	{
-		this.error = error;
+		const CALL_FRAMES: Array<CallFrameDetailsInterface> = [];
 
-		if (this.error.stack === undefined)
-		{
-			throw new Error("Error has no stack trace defined.");
-		}
-
-		this.message = this.error.message;
-
-		const STACK_TRACE: Array<string> = this.error.stack.trim().split("\n");
+		const STACK_TRACE: Array<string> = (error.stack ?? "").trim().split("\n");
 
 		for (const LINE of STACK_TRACE)
 		{
-			const CALL_FRAME: CallFrameDetailsInterface | undefined = StackTraceService.ParseLine(LINE);
+			const CALL_FRAME: CallFrameDetailsInterface | undefined = StackTraceUtility.ParseLine(LINE);
 
 			if (CALL_FRAME === undefined)
 			{
 				continue;
 			}
 
-			this.callFrames.push(CALL_FRAME);
+			CALL_FRAMES.push(CALL_FRAME);
 		}
+
+		return CALL_FRAMES;
+	}
+
+	/**
+	 * Get the call stack as a pretty formatted string
+	 */
+	public static GetPrettyPrintableTrace(error: Error): string
+	{
+		const CALL_FRAMES: Array<CallFrameDetailsInterface> = StackTraceUtility.GetSerializableTrace(error);
+
+		const TABLE_COLUMN_WIDTHS: TableColumnWidthsInterface = StackTraceUtility.GetTableColumnWidths(CALL_FRAMES);
+
+		const TABLE: Array<string> = [];
+
+		TABLE.push(StackTraceUtility.GetTableTopLine(TABLE_COLUMN_WIDTHS));
+		TABLE.push(StackTraceUtility.GetTableHeaderLine(TABLE_COLUMN_WIDTHS));
+		TABLE.push(StackTraceUtility.GetTableSeparationLine(TABLE_COLUMN_WIDTHS));
+
+		for (const CALL_FRAME of CALL_FRAMES)
+		{
+			TABLE.push(StackTraceUtility.GetTableLine(CALL_FRAME, TABLE_COLUMN_WIDTHS));
+		}
+
+		TABLE.push(StackTraceUtility.GetTableBottomLine(TABLE_COLUMN_WIDTHS));
+
+		return TABLE.join("\n");
 	}
 
 	private static ParseLine(line: string): CallFrameDetailsInterface | undefined
@@ -58,19 +76,19 @@ class StackTraceService
 			return undefined;
 		}
 
-		if (StackTraceService.ErrorMessageRegExp.test(TRIMMED_LINE))
+		if (StackTraceUtility.ERROR_MESSAGE_REGEXP.test(TRIMMED_LINE))
 		{
 			return undefined;
 		}
 
 		const CLEANED_LINE: string = TRIMMED_LINE.replace(/^at /, "");
-		const FILE_INDICATOR: RegExpExecArray | null = StackTraceService.FileIndicatorRegExp.exec(CLEANED_LINE);
+		const FILE_INDICATOR: RegExpExecArray | null = StackTraceUtility.FILE_INDICATOR_REGEXP.exec(CLEANED_LINE);
 		const FILE_INDICATOR_CONTENT: string | undefined = FILE_INDICATOR?.groups?.["file"];
-		const LINE_AND_POSITION: LineAndPositionInterface = StackTraceService.ExtractLineAndPosition(FILE_INDICATOR_CONTENT ?? TRIMMED_LINE);
-		const LINE_WITHOUT_FILE_INDICATOR: string = CLEANED_LINE.replace(StackTraceService.FileIndicatorRegExp, "");
-		const LINE_WITHOUT_FILE_INDICATOR_AND_LINE_AND_POSITION: string = LINE_WITHOUT_FILE_INDICATOR.replace(StackTraceService.LineAndPositionRegExp, "");
-		const METHOD: string = LINE_WITHOUT_FILE_INDICATOR_AND_LINE_AND_POSITION.replaceAll("(", "").replaceAll(")", "").trim();
-		const FOUND_MODULE: string = StackTraceService.ExtractModule(FILE_INDICATOR_CONTENT);
+		const LINE_AND_POSITION: LineAndPositionInterface = StackTraceUtility.ExtractLineAndPosition(FILE_INDICATOR_CONTENT ?? TRIMMED_LINE);
+		const LINE_WITHOUT_FILE_INDICATOR: string = CLEANED_LINE.replace(StackTraceUtility.FILE_INDICATOR_REGEXP, "");
+		const LINE_WITHOUT_FILE_INDICATOR_AND_LINE_AND_POSITION: string = LINE_WITHOUT_FILE_INDICATOR.replace(StackTraceUtility.LINE_AND_POSITION_REGEXP, "");
+		const METHOD: string = StackTraceUtility.ExtractMethod(LINE_WITHOUT_FILE_INDICATOR_AND_LINE_AND_POSITION);
+		const FOUND_MODULE: string = StackTraceUtility.ExtractModule(FILE_INDICATOR_CONTENT);
 
 		return {
 			method: METHOD === "" ? StackTraceParsingConstantEnum.UNKNOWN_METHOD : METHOD,
@@ -89,7 +107,7 @@ class StackTraceService
 			position: NOT_FOUND_INDEX,
 		};
 
-		const MATCH: RegExpExecArray | null = StackTraceService.LineAndPositionRegExp.exec(string);
+		const MATCH: RegExpExecArray | null = StackTraceUtility.LINE_AND_POSITION_REGEXP.exec(string);
 
 		if (MATCH === null)
 		{
@@ -116,6 +134,15 @@ class StackTraceService
 		return LINE_AND_POSITION;
 	}
 
+	private static ExtractMethod(line_without_file_indicator_and_line_and_position: string): string
+	{
+		return line_without_file_indicator_and_line_and_position
+			.replaceAll("(", "")
+			.replaceAll(")", "")
+			.trim()
+			.replace("async ", "");
+	}
+
 	private static ExtractModule(file_indicator_content: string | undefined): string
 	{
 		if (file_indicator_content === undefined)
@@ -126,25 +153,27 @@ class StackTraceService
 		return file_indicator_content
 			.replace(/^\(/, "")
 			.replace(/\)$/, "")
-			.replace(StackTraceService.LineAndPositionRegExp, "")
+			.replace(StackTraceUtility.LINE_AND_POSITION_REGEXP, "")
 			.replace("file://", "");
 	}
 
-	private static GetPaddedString(text: string, length: number, align: TextAlignEnum): string
+	private static GetPaddedString(value: number | string, length: number, align: TextAlignEnum): string
 	{
+		const TEXT: string = ` ${value.toString()} `;
+
 		if (align === TextAlignEnum.LEFT)
 		{
-			return text.padEnd(length, " ");
+			return TEXT.padEnd(length, " ");
 		}
 
 		if (align === TextAlignEnum.RIGHT)
 		{
-			return text.padStart(length, " ");
+			return TEXT.padStart(length, " ");
 		}
 
 		const CENTER_PADDING_DIVISION: number = 2;
-		const STRING_PADDING: number = Math.floor((length - text.length) / CENTER_PADDING_DIVISION);
-		const LEFT_PADDED_STRING: string = text.padStart(STRING_PADDING + text.length, " ");
+		const STRING_PADDING: number = Math.floor((length - TEXT.length) / CENTER_PADDING_DIVISION);
+		const LEFT_PADDED_STRING: string = TEXT.padStart(STRING_PADDING + TEXT.length, " ");
 		const PADDED_STRING: string = LEFT_PADDED_STRING.padEnd(length, " ");
 
 		return PADDED_STRING;
@@ -169,13 +198,13 @@ class StackTraceService
 	{
 		return [
 			PrettyTableEnum.VERTICAL,
-			StackTraceService.GetPaddedString(ColumnLabelEnum.METHOD, table_column_widths.method, TextAlignEnum.CENTER),
+			StackTraceUtility.GetPaddedString(ColumnLabelEnum.METHOD, table_column_widths.method, TextAlignEnum.CENTER),
 			PrettyTableEnum.VERTICAL,
-			StackTraceService.GetPaddedString(ColumnLabelEnum.LINE, table_column_widths.line, TextAlignEnum.CENTER),
+			StackTraceUtility.GetPaddedString(ColumnLabelEnum.LINE, table_column_widths.line, TextAlignEnum.CENTER),
 			PrettyTableEnum.VERTICAL,
-			StackTraceService.GetPaddedString(ColumnLabelEnum.POSITION, table_column_widths.position, TextAlignEnum.CENTER),
+			StackTraceUtility.GetPaddedString(ColumnLabelEnum.POSITION, table_column_widths.position, TextAlignEnum.CENTER),
 			PrettyTableEnum.VERTICAL,
-			StackTraceService.GetPaddedString(ColumnLabelEnum.MODULE, table_column_widths.module, TextAlignEnum.CENTER),
+			StackTraceUtility.GetPaddedString(ColumnLabelEnum.MODULE, table_column_widths.module, TextAlignEnum.CENTER),
 			PrettyTableEnum.VERTICAL,
 		].join("");
 	}
@@ -214,91 +243,32 @@ class StackTraceService
 	{
 		return [
 			PrettyTableEnum.VERTICAL,
-			StackTraceService.GetPaddedString(call_frame.method, table_column_widths.method, TextAlignEnum.LEFT),
+			StackTraceUtility.GetPaddedString(call_frame.method, table_column_widths.method, TextAlignEnum.LEFT),
 			PrettyTableEnum.VERTICAL,
-			StackTraceService.GetPaddedString(call_frame.line.toString(), table_column_widths.line, TextAlignEnum.RIGHT),
+			StackTraceUtility.GetPaddedString(call_frame.line, table_column_widths.line, TextAlignEnum.RIGHT),
 			PrettyTableEnum.VERTICAL,
-			StackTraceService.GetPaddedString(call_frame.position.toString(), table_column_widths.position, TextAlignEnum.RIGHT),
+			StackTraceUtility.GetPaddedString(call_frame.position, table_column_widths.position, TextAlignEnum.RIGHT),
 			PrettyTableEnum.VERTICAL,
-			StackTraceService.GetPaddedString(call_frame.module, table_column_widths.module, TextAlignEnum.LEFT),
+			StackTraceUtility.GetPaddedString(call_frame.module, table_column_widths.module, TextAlignEnum.LEFT),
 			PrettyTableEnum.VERTICAL,
 		].join("");
 	}
 
-	/**
-	 * Get the error message
-	 */
-	public getMessage(): string
-	{
-		return this.message;
-	}
-
-	/**
-	 * Get the call stack as a JSON serializable array
-	 */
-	public getSerializableTrace(): Array<CallFrameDetailsInterface>
-	{
-		return this.callFrames;
-	}
-
-	/**
-	 * Get the call stack as a pretty formatted string
-	 */
-	public getPrettyPrintableTrace(): string
-	{
-		const TABLE_COLUMN_WIDTHS: TableColumnWidthsInterface = this.getTableColumnWidths();
-
-		const TABLE: Array<string> = [];
-
-		TABLE.push(StackTraceService.GetTableTopLine(TABLE_COLUMN_WIDTHS));
-		TABLE.push(StackTraceService.GetTableHeaderLine(TABLE_COLUMN_WIDTHS));
-		TABLE.push(StackTraceService.GetTableSeparationLine(TABLE_COLUMN_WIDTHS));
-
-		for (const CALL_FRAME of this.callFrames)
-		{
-			TABLE.push(StackTraceService.GetTableLine(CALL_FRAME, TABLE_COLUMN_WIDTHS));
-		}
-
-		TABLE.push(StackTraceService.GetTableBottomLine(TABLE_COLUMN_WIDTHS));
-
-		return TABLE.join("\n");
-	}
-
-	private getTableColumnWidths(): TableColumnWidthsInterface
+	private static GetTableColumnWidths(call_frames: Array<CallFrameDetailsInterface>): TableColumnWidthsInterface
 	{
 		return {
-			method: this.getLongestMethodLength(),
-			line: this.getLongestLineLength(),
-			position: this.getLongestPositionLength(),
-			module: this.getLongestModuleLength(),
+			method: StackTraceUtility.GetLongestLength(call_frames, ColumnLabelEnum.METHOD, "method"),
+			line: StackTraceUtility.GetLongestLength(call_frames, ColumnLabelEnum.LINE, "line"),
+			position: StackTraceUtility.GetLongestLength(call_frames, ColumnLabelEnum.POSITION, "position"),
+			module: StackTraceUtility.GetLongestLength(call_frames, ColumnLabelEnum.MODULE, "module"),
 		};
 	}
 
-	private getLongestMethodLength(): number
-	{
-		return this.getLongestLength(ColumnLabelEnum.METHOD, "method");
-	}
-
-	private getLongestLineLength(): number
-	{
-		return this.getLongestLength(ColumnLabelEnum.LINE, "line");
-	}
-
-	private getLongestPositionLength(): number
-	{
-		return this.getLongestLength(ColumnLabelEnum.POSITION, "position");
-	}
-
-	private getLongestModuleLength(): number
-	{
-		return this.getLongestLength(ColumnLabelEnum.MODULE, "module");
-	}
-
-	private getLongestLength(column_name: string, key: keyof CallFrameDetailsInterface): number
+	private static GetLongestLength(call_frames: Array<CallFrameDetailsInterface>, column_name: string, key: keyof CallFrameDetailsInterface): number
 	{
 		const COLUMN_PADDING: number = 2;
 
-		return COLUMN_PADDING + this.callFrames.reduce(
+		return COLUMN_PADDING + call_frames.reduce(
 			(longest_length: number, call_frame: CallFrameDetailsInterface): number =>
 			{
 				return Math.max(longest_length, call_frame[key].toString().length);
@@ -308,4 +278,4 @@ class StackTraceService
 	}
 }
 
-export { StackTraceService };
+export { StackTraceUtility };

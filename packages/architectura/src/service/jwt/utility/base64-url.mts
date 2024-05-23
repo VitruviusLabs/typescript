@@ -2,6 +2,7 @@
  * Base64 URL utility class
  *
  * @internal
+ * @sealed
  */
 class Base64URL
 {
