@@ -250,6 +250,9 @@ jobs:
       - name: Building workspace dependencies
         run: pnpm --filter ts-predicate ci:build
 
+      - name: Package dependencies installation
+        run: pnpm install --filter toolbox
+
       - name: Lint with ESlint
         run: pnpm --filter toolbox ci:lint
 
@@ -277,6 +280,9 @@ jobs:
       - name: Building workspace dependencies
         run: pnpm --filter ts-predicate ci:build
 
+      - name: Package dependencies installation
+        run: pnpm install --filter toolbox
+
       - name: Check TypeScript syntax
         run: pnpm --filter toolbox ci:ts:check
 
@@ -303,6 +309,9 @@ jobs:
 
       - name: Building workspace dependencies
         run: pnpm --filter ts-predicate ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter toolbox
 
       - name: Test with Node Test runner
         run: pnpm --filter toolbox ci:test:unit
@@ -349,6 +358,9 @@ jobs:
 
       - name: Building workspace dependencies
         run: pnpm --filter ts-predicate ci:build
+
+      - name: Package dependencies installation
+        run: pnpm install --filter toolbox
 
       - name: Package build
         run: pnpm --filter toolbox ci:build
