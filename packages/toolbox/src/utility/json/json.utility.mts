@@ -3,10 +3,10 @@ import type { JSONValueType } from "./definition/type/json-value.type.mjs";
 
 class JSONUtility
 {
-	public static Encode(data: symbol | undefined): undefined;
-	public static Encode(data: bigint | boolean | number | object | string | null): string;
-	public static Encode(data: unknown): string | undefined;
-	public static Encode(data: unknown): string | undefined
+	public static Serialize(data: symbol | undefined): undefined;
+	public static Serialize(data: bigint | boolean | number | object | string | null): string;
+	public static Serialize(data: unknown): string | undefined;
+	public static Serialize(data: unknown): string | undefined
 	{
 		return JSON.stringify(
 			data,
@@ -23,7 +23,7 @@ class JSONUtility
 		);
 	}
 
-	public static Parse(serialized_data: string): JSONValueType
+	public static Deserialize(serialized_data: string): JSONValueType
 	{
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-return -- JSON.parse can return anything
 		return JSON.parse(

@@ -138,6 +138,12 @@ importers:
 
   packages/testing-ground: {}
 
+  packages/toolbox:
+    dependencies:
+      '@vitruvius-labs/ts-predicate':
+        specifier: workspace:^
+        version: link:../ts-predicate
+
   packages/ts-predicate: {}
 
 packages:

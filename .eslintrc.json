@@ -263,7 +263,8 @@
 			{
 				"allowAsThisParameter": true,
 				"allowInGenericTypeArguments": [
-					"Promise"
+					"Promise",
+					"Generator"
 				]
 			}
 		],
