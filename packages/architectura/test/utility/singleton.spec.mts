@@ -1,7 +1,7 @@
-import { doesNotThrow, throws } from "node:assert";
-import { default as assert } from "node:assert/strict";
+import { doesNotThrow, strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { Singleton } from "../../src/_index.mjs";
+import { createErrorTest } from "@vitruvius-labs/testing-ground";
 
 describe("Singleton", (): void => {
 	describe("constructor", (): void => {
@@ -18,7 +18,7 @@ describe("Singleton", (): void => {
 
 			const INSTANCE2: MySingleton | undefined = MySingleton.GetInstance(MySingleton);
 
-			assert.strictEqual(INSTANCE, INSTANCE2);
+			strictEqual(INSTANCE, INSTANCE2);
 		});
 
 		it("should throw an error when the constructor is called more than once.", (): void => {
@@ -30,15 +30,13 @@ describe("Singleton", (): void => {
 				}
 			}
 
-			doesNotThrow((): void =>
-			{
+			const WRAPPER = (): void => {
 				new MySingleton();
-			});
+			};
 
-			throws((): void =>
-			{
-				new MySingleton();
-			});
+			doesNotThrow(WRAPPER);
+
+			throws(WRAPPER, createErrorTest());
 		});
 	});
 
@@ -56,7 +54,7 @@ describe("Singleton", (): void => {
 
 			const INSTANCE2: MySingleton | undefined = MySingleton.GetInstance(MySingleton);
 
-			assert.strictEqual(INSTANCE, INSTANCE2);
+			strictEqual(INSTANCE, INSTANCE2);
 		});
 	});
 
@@ -76,7 +74,7 @@ describe("Singleton", (): void => {
 
 			const INSTANCE2: MySingleton | undefined = MySingleton.FindInstance(MySingleton);
 
-			assert.strictEqual(INSTANCE2, undefined);
+			strictEqual(INSTANCE2, undefined);
 		});
 	});
 });

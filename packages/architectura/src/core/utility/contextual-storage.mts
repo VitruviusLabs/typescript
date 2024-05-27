@@ -18,6 +18,11 @@ abstract class ContextualStorage
 
 	/**
 	 * Get a contextual item if it exists.
+	 *
+	 * @remarks
+	 * It shouldn't throw an error unless the storage has been tampered with
+	 *
+	 * @throws if the item does not inherit from the class.
 	 */
 	public findContextualItem<T extends object>(dependent_class: ConstructorOf<T>): T | undefined
 	{
@@ -50,9 +55,16 @@ abstract class ContextualStorage
 
 	/**
 	 * Set a contextual item.
+	 *
+	 * @throws if the item does not inherit from the class.
 	 */
 	public setContextualItem<T extends object>(dependent_class: ConstructorOf<T>, dependent_object: T): void
 	{
+		if (!(dependent_object instanceof dependent_class))
+		{
+			throw new Error(`The object must be a ${dependent_class.name}.`);
+		}
+
 		this.contextualItems.set(dependent_class, dependent_object);
 	}
 

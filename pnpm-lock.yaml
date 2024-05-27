@@ -107,6 +107,9 @@ importers:
 
   packages/architectura:
     dependencies:
+      '@vitruvius-labs/toolbox':
+        specifier: workspace:^
+        version: link:../toolbox
       '@vitruvius-labs/ts-predicate':
         specifier: workspace:^
         version: link:../ts-predicate

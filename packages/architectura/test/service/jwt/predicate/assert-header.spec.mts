@@ -5,8 +5,7 @@ import { assertHeader } from "../../../../src/service/jwt/predicate/assert-heade
 
 describe("assertHeader", (): void => {
 	it('should return when given a record with the required properties "type" and "alg"', (): void => {
-		const WRAPPER = (): void =>
-		{
+		const WRAPPER = (): void => {
 			assertHeader({
 				typ: "JWT",
 				alg: "RSA-SHA256",
@@ -21,8 +20,7 @@ describe("assertHeader", (): void => {
 
 		for (const VALUE of VALUES)
 		{
-			const WRAPPER = (): void =>
-			{
+			const WRAPPER = (): void => {
 				assertHeader(VALUE);
 			};
 

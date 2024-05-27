@@ -1,13 +1,11 @@
 import type { Socket } from "node:net";
-import type { JSONObjectType } from "../../utility/json/definition/type/json-object.type.mjs";
-import type { JSONValueType } from "../../utility/json/definition/type/json-value.type.mjs";
 import type { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 import { type IncomingHttpHeaders, IncomingMessage } from "node:http";
 import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
+import { type JSONObjectType, JSONUtility, type JSONValueType } from "@vitruvius-labs/toolbox";
 import { assertRecord } from "@vitruvius-labs/ts-predicate/type-assertion";
 import { isArray } from "@vitruvius-labs/ts-predicate/type-guard";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
-import { JSONUtility } from "../../utility/json/json-utility.mjs";
 import { CookieUtility } from "../utility/cookie.utility.mjs";
 import { isHTTPMethodEnum } from "../predicate/is-http-method-enum.mjs";
 
@@ -467,7 +465,7 @@ class RichClientRequest extends IncomingMessage
 	public async getBodyAsJSON(): Promise<JSONObjectType>
 	{
 		const BODY_AS_STRING: string = await this.getBodyAsString();
-		const PARSED_BODY: JSONValueType = JSONUtility.Parse(BODY_AS_STRING);
+		const PARSED_BODY: JSONValueType = JSONUtility.Deserialize(BODY_AS_STRING);
 
 		assertRecord(PARSED_BODY);
 

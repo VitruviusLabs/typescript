@@ -5,8 +5,7 @@ import { validateAlgorithm } from "../../../../src/service/jwt/utility/validate-
 
 describe("validateAlgorithm", (): void => {
 	it("should refuse to not use an algorithm", (): void => {
-		const WRAPPER = (): void =>
-		{
+		const WRAPPER = (): void => {
 			validateAlgorithm("none");
 		};
 
@@ -14,8 +13,7 @@ describe("validateAlgorithm", (): void => {
 	});
 
 	it("should reject unknown algorithms", (): void => {
-		const WRAPPER = (): void =>
-		{
+		const WRAPPER = (): void => {
 			validateAlgorithm("does-not-exists");
 		};
 
@@ -23,8 +21,7 @@ describe("validateAlgorithm", (): void => {
 	});
 
 	it("should accept known algorithms", (): void => {
-		const WRAPPER = (): void =>
-		{
+		const WRAPPER = (): void => {
 			validateAlgorithm("RSA-SHA256");
 		};
 

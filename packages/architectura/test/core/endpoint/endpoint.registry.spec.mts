@@ -1,13 +1,20 @@
 import { deepStrictEqual } from "node:assert/strict";
-import { describe, it } from "node:test";
+import { afterEach, beforeEach, describe, it } from "node:test";
 import { BaseEndpoint, type EndpointEntryInterface, type EndpointMatchInterface, EndpointRegistry, HTTPMethodEnum, HelloWorldEndpoint } from "../../../src/_index.mjs";
 
-describe("EndpointRegistry", (): void =>
-{
-	describe("FindEndpoint", (): void =>
-	{
-		it("should return a map with the HelloWorldEndpoint when no endpoint was registered, but not add it permanently", (): void =>
-		{
+describe("EndpointRegistry", (): void => {
+	beforeEach((): void => {
+		// @ts-expect-error: Access to private property for testing purposes.
+		EndpointRegistry.ENDPOINTS.clear();
+	});
+
+	afterEach((): void => {
+		// @ts-expect-error: Access to private property for testing purposes.
+		EndpointRegistry.ENDPOINTS.clear();
+	});
+
+	describe("FindEndpoint", (): void => {
+		it("should return a map with the HelloWorldEndpoint when no endpoint was registered, but not add it permanently", (): void => {
 			const ENDPOINT: HelloWorldEndpoint = new HelloWorldEndpoint();
 
 			const MATCHING_ENDPOINT: EndpointMatchInterface = {
@@ -17,16 +24,12 @@ describe("EndpointRegistry", (): void =>
 
 			const EMPTY_MAP: Map<string, BaseEndpoint> = new Map();
 
-			// @ts-expect-error - We need to access this private property for test purposes.
-			EndpointRegistry.ENDPOINTS.clear();
-
 			deepStrictEqual(EndpointRegistry.FindEndpoint(HTTPMethodEnum.GET, "/"), MATCHING_ENDPOINT);
 			// @ts-expect-error - We need to access this private property for test purposes.
 			deepStrictEqual(EndpointRegistry.ENDPOINTS, EMPTY_MAP);
 		});
 
-		it("should return the registered endpoint that matches", (): void =>
-		{
+		it("should return the registered endpoint that matches", (): void => {
 			class DummyEndpoint extends BaseEndpoint
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
@@ -41,9 +44,6 @@ describe("EndpointRegistry", (): void =>
 				endpoint: ENDPOINT,
 				matchGroups: undefined,
 			};
-
-			// @ts-expect-error - We need to access this private property for test purposes.
-			EndpointRegistry.ENDPOINTS.clear();
 
 			// @ts-expect-error - We need to access this private property for test purposes.
 			EndpointRegistry.ENDPOINTS.set(
@@ -56,13 +56,9 @@ describe("EndpointRegistry", (): void =>
 			);
 
 			deepStrictEqual(EndpointRegistry.FindEndpoint(HTTPMethodEnum.GET, "/test-dummy"), MATCHING_ENDPOINT);
-
-			// @ts-expect-error - We need to access this private property for test purposes.
-			EndpointRegistry.ENDPOINTS.clear();
 		});
 
-		it("should return undefined if there is no match", (): void =>
-		{
+		it("should return undefined if there is no match", (): void => {
 			class DummyEndpoint extends BaseEndpoint
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
@@ -72,9 +68,6 @@ describe("EndpointRegistry", (): void =>
 			}
 
 			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
-
-			// @ts-expect-error - We need to access this private property for test purposes.
-			EndpointRegistry.ENDPOINTS.clear();
 
 			// @ts-expect-error - We need to access this private property for test purposes.
 			EndpointRegistry.ENDPOINTS.set(
@@ -97,16 +90,11 @@ describe("EndpointRegistry", (): void =>
 			);
 
 			deepStrictEqual(EndpointRegistry.FindEndpoint(HTTPMethodEnum.GET, "/dummy-test"), undefined);
-
-			// @ts-expect-error - We need to access this private property for test purposes.
-			EndpointRegistry.ENDPOINTS.clear();
 		});
 	});
 
-	describe("AddEndpoint", (): void =>
-	{
-		it("should keep the registered endpoint", (): void =>
-		{
+	describe("AddEndpoint", (): void => {
+		it("should keep the registered endpoint", (): void => {
 			class DummyEndpoint extends BaseEndpoint
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
@@ -131,13 +119,9 @@ describe("EndpointRegistry", (): void =>
 				],
 			]);
 
-			// @ts-expect-error - We need to access this private property for test purposes.
-			EndpointRegistry.ENDPOINTS.clear();
 			EndpointRegistry.AddEndpoint(ENDPOINT);
 			// @ts-expect-error - We need to access this private property for test purposes.
 			deepStrictEqual(EndpointRegistry.ENDPOINTS, POPULATED_MAP);
-			// @ts-expect-error - We need to access this private property for test purposes.
-			EndpointRegistry.ENDPOINTS.clear();
 		});
 	});
 });

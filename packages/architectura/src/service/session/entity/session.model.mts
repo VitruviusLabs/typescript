@@ -1,5 +1,5 @@
-import type { JSONObjectType } from "../../../utility/json/definition/type/json-object.type.mjs";
-import type { SessionDelegate } from "./session.delegate.mjs";
+import type { JSONObjectType } from "@vitruvius-labs/toolbox";
+import type { SessionDelegateInterface } from "../definition/interface/session-delegate.interface.mjs";
 import { SessionConstantEnum } from "../definition/enum/session-constant.enum.mjs";
 import { MillisecondEnum } from "../../../definition/enum/millisecond.enum.mjs";
 import { ContextualStorage } from "../../../core/utility/contextual-storage.mjs";
@@ -17,50 +17,34 @@ import { ContextualStorage } from "../../../core/utility/contextual-storage.mjs"
 class Session extends ContextualStorage
 {
 	private readonly uuid: string;
-	private readonly delegate: SessionDelegate;
+	private readonly delegate: SessionDelegateInterface | undefined;
 	private expirationTime: number;
 	private data: JSONObjectType;
 
 	/**
 	 * Create a new session object
+	 *
+	 * @remarks
+	 * No data will be loaded from the delegate.
 	 */
-	public constructor(uuid: string, delegate: SessionDelegate)
+	public constructor(uuid: string, delegate?: SessionDelegateInterface)
 	{
 		super();
 
 		this.uuid = uuid;
-		this.delegate = delegate;
 		this.expirationTime = 0;
+		this.delegate = delegate;
 		this.data = {};
 
-		this.refresh();
+		this.postponeExpiration();
 	}
 
 	/**
-	 * Save the session data
+	 * Get the session UUID
 	 */
-	public async save(): Promise<void>
+	public getUUID(): string
 	{
-		await this.delegate.saveData(this.uuid, this.data);
-	}
-
-	/**
-	 * Clear the session data
-	 */
-	public async clear(): Promise<void>
-	{
-		await this.delegate.removeData(this.uuid);
-		this.data = {};
-	}
-
-	/**
-	 * Refresh the session remaining time
-	 */
-	public refresh(): void
-	{
-		const TTL: number = SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE;
-
-		this.expirationTime = Date.now() + TTL;
+		return this.uuid;
 	}
 
 	/**
@@ -72,11 +56,21 @@ class Session extends ContextualStorage
 	}
 
 	/**
-	 * Get the session UUID
+	 * Get the expiration date
 	 */
-	public getUUID(): string
+	public getExpirationDate(): Date
 	{
-		return this.uuid;
+		return new Date(this.expirationTime);
+	}
+
+	/**
+	 * Postpone the expiration date
+	 */
+	public postponeExpiration(): void
+	{
+		const TTL: number = SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE;
+
+		this.expirationTime = Date.now() + TTL;
 	}
 
 	/**
@@ -93,6 +87,36 @@ class Session extends ContextualStorage
 	public setData(data: JSONObjectType): void
 	{
 		this.data = data;
+	}
+
+	/**
+	 * Load the session data
+	 */
+	public async loadData(): Promise<void>
+	{
+		const DATA: JSONObjectType | undefined = await this.delegate?.fetchData(this.uuid);
+
+		if (DATA !== undefined)
+		{
+			this.data = DATA;
+		}
+	}
+
+	/**
+	 * Save the session data
+	 */
+	public async saveData(): Promise<void>
+	{
+		await this.delegate?.saveData(this.uuid, this.data);
+	}
+
+	/**
+	 * Clear the session data
+	 */
+	public async clearData(): Promise<void>
+	{
+		await this.delegate?.removeData(this.uuid);
+		this.data = {};
 	}
 }
 

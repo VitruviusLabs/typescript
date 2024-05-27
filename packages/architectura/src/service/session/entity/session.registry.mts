@@ -14,7 +14,7 @@ class SessionRegistry
 	 */
 	public static GetSession(uuid: string): Session | undefined
 	{
-		return this.SESSIONS.get(uuid);
+		return SessionRegistry.SESSIONS.get(uuid);
 	}
 
 	/**
@@ -22,7 +22,7 @@ class SessionRegistry
 	 */
 	public static AddSession(session: Session): void
 	{
-		this.SESSIONS.set(session.getUUID(), session);
+		SessionRegistry.SESSIONS.set(session.getUUID(), session);
 	}
 
 	/**
@@ -30,15 +30,20 @@ class SessionRegistry
 	 */
 	public static RemoveSession(uuid: string): void
 	{
-		this.SESSIONS.delete(uuid);
+		SessionRegistry.SESSIONS.delete(uuid);
 	}
 
 	/**
 	 * List all sessions
+	 *
+	 * @internal
+	 *
+	 * @privateRemarks
+	 * Used for cleaning expired sessions.
 	 */
 	public static ListSessions(): IterableIterator<Session>
 	{
-		return this.SESSIONS.values();
+		return SessionRegistry.SESSIONS.values();
 	}
 }
 

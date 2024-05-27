@@ -7,11 +7,11 @@ import { pipeline } from "node:stream/promises";
 import { ServerResponse as HTTPServerResponse } from "node:http";
 import { createBrotliCompress, createDeflate, createGzip } from "node:zlib";
 import { isNumber, isRecord, isString } from "@vitruvius-labs/ts-predicate/type-guard";
+import { JSONUtility } from "@vitruvius-labs/toolbox";
 import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
 import { CookieSameSiteEnum } from "./definition/enum/cookie-same-site.enum.mjs";
 import { ContentEncodingEnum } from "./definition/enum/content-encoding.enum.mjs";
-import { JSONUtility } from "../../utility/json/json-utility.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { isErrorWithCode } from "../../predicate/is-error-with-code.mjs";
 
@@ -432,7 +432,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 			return;
 		}
 
-		this.content = JSONUtility.Encode(parameters.payload);
+		this.content = JSONUtility.Serialize(parameters.payload);
 	}
 
 	private processCookieHeader(): void

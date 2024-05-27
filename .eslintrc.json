@@ -1783,6 +1783,12 @@
 			"rules": {
 				"@stylistic/js/generator-star-spacing": "off",
 				"@stylistic/ts/brace-style": "off",
+				"@stylistic/js/max-statements-per-line": [
+					"error",
+					{
+						"max": 2
+					}
+				],
 				"@typescript-eslint/class-methods-use-this": "off",
 				"@typescript-eslint/dot-notation": [
 					"error",
@@ -1799,9 +1805,11 @@
 				"@typescript-eslint/no-extraneous-class": "off",
 				"@typescript-eslint/no-floating-promises": "off",
 				"@typescript-eslint/no-magic-numbers": "off",
+				"@typescript-eslint/no-unsafe-assignment": "off",
 				"@typescript-eslint/no-unsafe-argument": "off",
 				"@typescript-eslint/no-unsafe-member-access": "off",
 				"@typescript-eslint/no-unused-expressions": "off",
+				"@typescript-eslint/no-unsafe-call": "off",
 				"@typescript-eslint/unbound-method": "off",
 				"consistent-return": "off",
 				"func-names": "off",

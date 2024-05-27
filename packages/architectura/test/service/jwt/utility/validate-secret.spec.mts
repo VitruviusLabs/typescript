@@ -5,8 +5,7 @@ import { validateSecret } from "../../../../src/service/jwt/utility/validate-sec
 
 describe("validateSecret", (): void => {
 	it("should return when given a valid secret", (): void => {
-		const WRAPPER = (): void =>
-		{
+		const WRAPPER = (): void => {
 			return validateSecret("your-256-bit-secret-here");
 		};
 

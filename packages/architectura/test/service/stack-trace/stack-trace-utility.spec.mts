@@ -1,34 +1,28 @@
 import { describe, it } from "node:test";
 import { deepStrictEqual, strictEqual } from "node:assert";
 import { type CallFrameDetailsInterface, StackTraceUtility } from "../../../src/_index.mjs";
-
-const FAKE_TRACE: string = `
-Error: Test
-    at alpha (file:///vitruvius-labs/typescript/packages/architectura/alpha.mjs:3:8)
-    at beta (file:///vitruvius-labs/typescript/packages/architectura/beta.mjs:8:14)
-    at file:///vitruvius-labs/typescript/packages/architectura/dummy.mjs:33:1
-    at ModuleJob.run (node:internal/modules/esm/module_job:222:25)
-    at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:123:5)
-`.trim();
-
-const PRETTY_PRINTABLE_TRACE: string = `
-┌─────────────────────────────────┬──────┬──────────┬────────────────────────────────────────────────────────────┐
-│             Method              │ Line │ Position │                           Module                           │
-├─────────────────────────────────┼──────┼──────────┼────────────────────────────────────────────────────────────┤
-│ alpha                           │    3 │        8 │ /vitruvius-labs/typescript/packages/architectura/alpha.mjs │
-│ beta                            │    8 │       14 │ /vitruvius-labs/typescript/packages/architectura/beta.mjs  │
-│ >anonymous<                     │   33 │        1 │ /vitruvius-labs/typescript/packages/architectura/dummy.mjs │
-│ ModuleJob.run                   │  222 │       25 │ node:internal/modules/esm/module_job                       │
-│ ModuleLoader.import             │  316 │       24 │ node:internal/modules/esm/loader                           │
-│ asyncRunEntryPointWithESMLoader │  123 │        5 │ node:internal/modules/run_main                             │
-└─────────────────────────────────┴──────┴──────────┴────────────────────────────────────────────────────────────┘
-`.trim();
+import { IndentUtility } from "@vitruvius-labs/toolbox";
 
 describe("StackTraceUtility", (): void => {
 	describe("GetSerializableTrace", (): void => {
 		it("should return the provided error stack trace in a JSON serializable form", (): void => {
-			const SERIALIZABLE_TRACE: Array<CallFrameDetailsInterface> = [
+			const ERROR: Error = {
+				name: "Error",
+				message: "Lorem ipsum",
+				stack: IndentUtility.PruneTrim(`
+					Error: Test
+						at alpha (file:///vitruvius-labs/typescript/packages/architectura/alpha.mjs:3:8)
+						at beta (file:///vitruvius-labs/typescript/packages/architectura/beta.mjs:8:14)
+						at file:///vitruvius-labs/typescript/packages/architectura/dummy.mjs:33:1
+						at ModuleJob.run (node:internal/modules/esm/module_job:222:25)
+						at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
+						at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:123:5)
+				`),
+			};
+
+			Object.setPrototypeOf(ERROR, Error.prototype);
+
+			const EXPECTED: Array<CallFrameDetailsInterface> = [
 				{
 					method: "alpha",
 					line: 3,
@@ -67,15 +61,7 @@ describe("StackTraceUtility", (): void => {
 				},
 			];
 
-			const ERROR: Error = {
-				name: "Error",
-				message: "Lorem ipsum",
-				stack: FAKE_TRACE,
-			};
-
-			Object.setPrototypeOf(ERROR, Error.prototype);
-
-			deepStrictEqual(StackTraceUtility.GetSerializableTrace(ERROR), SERIALIZABLE_TRACE);
+			deepStrictEqual(StackTraceUtility.GetSerializableTrace(ERROR), EXPECTED);
 		});
 	});
 
@@ -84,12 +70,33 @@ describe("StackTraceUtility", (): void => {
 			const ERROR: Error = {
 				name: "Error",
 				message: "Lorem ipsum",
-				stack: FAKE_TRACE,
+				stack: IndentUtility.PruneTrim(`
+					Error: Test
+						at alpha (file:///vitruvius-labs/typescript/packages/architectura/alpha.mjs:3:8)
+						at beta (file:///vitruvius-labs/typescript/packages/architectura/beta.mjs:8:14)
+						at file:///vitruvius-labs/typescript/packages/architectura/dummy.mjs:33:1
+						at ModuleJob.run (node:internal/modules/esm/module_job:222:25)
+						at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
+						at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:123:5)
+				`),
 			};
 
 			Object.setPrototypeOf(ERROR, Error.prototype);
 
-			strictEqual(StackTraceUtility.GetPrettyPrintableTrace(ERROR), PRETTY_PRINTABLE_TRACE);
+			const EXPECTED: string = IndentUtility.PruneTrim(`
+				┌─────────────────────────────────┬──────┬──────────┬────────────────────────────────────────────────────────────┐
+				│             Method              │ Line │ Position │                           Module                           │
+				├─────────────────────────────────┼──────┼──────────┼────────────────────────────────────────────────────────────┤
+				│ alpha                           │    3 │        8 │ /vitruvius-labs/typescript/packages/architectura/alpha.mjs │
+				│ beta                            │    8 │       14 │ /vitruvius-labs/typescript/packages/architectura/beta.mjs  │
+				│ >anonymous<                     │   33 │        1 │ /vitruvius-labs/typescript/packages/architectura/dummy.mjs │
+				│ ModuleJob.run                   │  222 │       25 │ node:internal/modules/esm/module_job                       │
+				│ ModuleLoader.import             │  316 │       24 │ node:internal/modules/esm/loader                           │
+				│ asyncRunEntryPointWithESMLoader │  123 │        5 │ node:internal/modules/run_main                             │
+				└─────────────────────────────────┴──────┴──────────┴────────────────────────────────────────────────────────────┘
+			`);
+
+			strictEqual(StackTraceUtility.GetPrettyPrintableTrace(ERROR), EXPECTED);
 		});
 	});
 });

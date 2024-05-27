@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { ExecutionContext } from "../../../core/execution-context/execution-context.mjs";
-import type { SessionDelegate } from "../entity/session.delegate.mjs";
+import type { SessionDelegateInterface } from "../definition/interface/session-delegate.interface.mjs";
 import { BasePreHook } from "../../../core/hook/base.pre-hook.mjs";
 import { Server } from "../../../core/server/server.mjs";
 import { Session } from "../entity/session.model.mjs";
@@ -15,7 +15,7 @@ import { MillisecondEnum } from "../../../definition/enum/millisecond.enum.mjs";
  */
 class SessionPreHook extends BasePreHook
 {
-	private readonly delegate: SessionDelegate;
+	private readonly delegate: SessionDelegateInterface;
 
 	/**
 	 * Create the session pre-hook
@@ -23,7 +23,7 @@ class SessionPreHook extends BasePreHook
 	 * @remarks
 	 * Initialize expired sessions removal
 	 */
-	public constructor(delegate: SessionDelegate)
+	public constructor(delegate: SessionDelegateInterface)
 	{
 		super();
 
@@ -43,7 +43,7 @@ class SessionPreHook extends BasePreHook
 						}
 
 						SessionRegistry.RemoveSession(SESSION.getUUID());
-						await SESSION.clear();
+						await SESSION.clearData();
 					}
 				}
 				catch (error: unknown)
@@ -64,11 +64,11 @@ class SessionPreHook extends BasePreHook
 	 * Refreshes the session if it exists, otherwise creates a new one.
 	 * When creating a new one, prefill the session cookie in the response.
 	 */
-	public execute(context: ExecutionContext): void
+	public async execute(context: ExecutionContext): Promise<void>
 	{
-		let session: Session | undefined = undefined;
-
 		const SESSION_ID: string | undefined = context.getRequest().getCookie(SessionConstantEnum.COOKIE_NAME);
+
+		let session: Session | undefined = undefined;
 
 		if (SESSION_ID !== undefined)
 		{
@@ -77,24 +77,26 @@ class SessionPreHook extends BasePreHook
 
 		if (session !== undefined)
 		{
-			session.refresh();
+			session.postponeExpiration();
 			context.setContextualItem(Session, session);
 
 			return;
 		}
 
-		session = new Session(SESSION_ID ?? randomUUID(), this.delegate);
+		const NEW_SESSION: Session = new Session(SESSION_ID ?? randomUUID(), this.delegate);
 
-		SessionRegistry.AddSession(session);
-		context.setContextualItem(Session, session);
+		SessionRegistry.AddSession(NEW_SESSION);
+		context.setContextualItem(Session, NEW_SESSION);
 
 		if (SESSION_ID === undefined)
 		{
 			context.getResponse().setCookie({
 				name: SessionConstantEnum.COOKIE_NAME.toString(),
-				value: session.getUUID(),
+				value: NEW_SESSION.getUUID(),
 			});
 		}
+
+		await NEW_SESSION.loadData();
 	}
 }
 
