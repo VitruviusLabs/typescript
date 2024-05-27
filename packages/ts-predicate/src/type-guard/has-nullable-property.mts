@@ -1,6 +1,6 @@
 import type { ObjectWithNullableProperty } from "../definition/type/object-with-nullable-property.mjs";
 
-function hasNullableProperty<O extends object, K extends string>(
+function hasNullableProperty<O extends object, K extends string | symbol>(
 	value: O,
 	property: K
 ): value is ObjectWithNullableProperty<O, K>
