@@ -5,20 +5,32 @@ import { createErrorTest } from "@vitruvius-labs/testing-ground";
 
 describe("TypeAssertion.assertNullableProperty", (): void => {
 	it("should throw when given an object without the property", (): void => {
-		const WRAPPER = (): void =>
-		{
+		const SYMBOL: unique symbol = Symbol("answer");
+
+		const WRAPPER_STRING = (): void => {
 			TypeAssertion.assertNullableProperty({}, "answer");
 		};
 
-		throws(WRAPPER, createErrorTest("The value must have a property \"answer\"."));
+		const WRAPPER_SYMBOL = (): void => {
+			TypeAssertion.assertNullableProperty({}, SYMBOL);
+		};
+
+		throws(WRAPPER_STRING, createErrorTest("The value must have a property \"answer\"."));
+		throws(WRAPPER_SYMBOL, createErrorTest("The value must have a property \"Symbol(answer)\"."));
 	});
 
 	it("should return when given an object with the property", (): void => {
-		const WRAPPER = (): void =>
-		{
+		const SYMBOL: unique symbol = Symbol("answer");
+
+		const WRAPPER_STRING = (): void => {
 			TypeAssertion.assertNullableProperty({ answer: undefined }, "answer");
 		};
 
-		doesNotThrow(WRAPPER);
+		const WRAPPER_SYMBOL = (): void => {
+			TypeAssertion.assertNullableProperty({ [SYMBOL]: undefined }, SYMBOL);
+		};
+
+		doesNotThrow(WRAPPER_STRING);
+		doesNotThrow(WRAPPER_SYMBOL);
 	});
 });

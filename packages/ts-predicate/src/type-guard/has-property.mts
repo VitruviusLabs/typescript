@@ -4,7 +4,7 @@ import { hasNullableProperty } from "./has-nullable-property.mjs";
 import { isDefined } from "./is-defined.mjs";
 import { itemGuard } from "./utils/item-guard.mjs";
 
-function hasProperty<O extends object, K extends string, T>(
+function hasProperty<O extends object, K extends string | symbol, T>(
 	value: O,
 	property: K,
 	test?: Test<T>

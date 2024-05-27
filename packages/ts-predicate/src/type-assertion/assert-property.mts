@@ -5,7 +5,7 @@ import { assertNullableProperty } from "./assert-nullable-property.mjs";
 import { itemAssertion } from "./utils/item-assertion.mjs";
 import { ValidationError } from "./utils/validation-error.mjs";
 
-function assertProperty<O extends object, K extends string, T>(
+function assertProperty<O extends object, K extends string | symbol, T>(
 	value: O,
 	property: K,
 	test?: Test<T>
@@ -15,7 +15,7 @@ function assertProperty<O extends object, K extends string, T>(
 
 	if (!isDefined(value[property]))
 	{
-		throw new ValidationError(`The property "${property}" must not have a nullish value (undefined, null, or NaN).`);
+		throw new ValidationError(`The property "${property.toString()}" must not have a nullish value (undefined, null, or NaN).`);
 	}
 
 	if (test !== undefined)
