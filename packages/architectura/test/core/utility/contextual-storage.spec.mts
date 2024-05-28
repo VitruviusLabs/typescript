@@ -11,8 +11,7 @@ describe("ContextualStorage", (): void => {
 			const STORAGE: ContextualStorage = new DummyStorage();
 			const DATE: Date = new Date();
 
-			// @ts-expect-error: Access to private property for testing purposes.
-			STORAGE.contextualItems.set(Date, DATE);
+			Reflect.get(STORAGE, "contextualItems").set(Date, DATE);
 
 			strictEqual(STORAGE.findContextualItem(Date), DATE);
 		});
@@ -33,8 +32,7 @@ describe("ContextualStorage", (): void => {
 			const STORAGE: ContextualStorage = new DummyStorage();
 			const DATE: Date = new Date();
 
-			// @ts-expect-error: Access to private property for testing purposes.
-			STORAGE.contextualItems.set(Date, DATE);
+			Reflect.get(STORAGE, "contextualItems").set(Date, DATE);
 
 			strictEqual(STORAGE.getContextualItem(Date), DATE);
 		});
@@ -61,19 +59,17 @@ describe("ContextualStorage", (): void => {
 
 			STORAGE.setContextualItem(Date, DATE);
 
-			// @ts-expect-error: Access to private property for testing purposes.
-			deepStrictEqual(STORAGE.contextualItems, new Map([[Date, DATE]]));
+			deepStrictEqual(Reflect.get(STORAGE, "contextualItems"), new Map([[Date, DATE]]));
 		});
 
 		it("should throw when given an invalid item.", (): void => {
 			class DummyStorage extends ContextualStorage {}
 
 			const STORAGE: ContextualStorage = new DummyStorage();
-			// @ts-expect-error: Testing purposes.
-			const DATE: Date = {};
 
 			const WRAPPER = (): void => {
-				STORAGE.setContextualItem(Date, DATE);
+				// @ts-expect-error: Erroneous value for testing purposes.
+				STORAGE.setContextualItem(Date, {});
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -86,13 +82,11 @@ describe("ContextualStorage", (): void => {
 
 			const STORAGE: ContextualStorage = new DummyStorage();
 
-			// @ts-expect-error: Access to private property for testing purposes.
-			STORAGE.contextualItems.set(Date, new Date());
+			Reflect.get(STORAGE, "contextualItems").set(Date, new Date());
 
 			STORAGE.removeContextualItem(Date);
 
-			// @ts-expect-error: Access to private property for testing purposes.
-			deepStrictEqual(STORAGE.contextualItems, new Map());
+			deepStrictEqual(Reflect.get(STORAGE, "contextualItems"), new Map());
 		});
 
 		it("should do nothing if the item is not there.", (): void => {
@@ -114,13 +108,11 @@ describe("ContextualStorage", (): void => {
 
 			const STORAGE: ContextualStorage = new DummyStorage();
 
-			// @ts-expect-error: Access to private property for testing purposes.
-			STORAGE.contextualItems.set(Date, new Date());
+			Reflect.get(STORAGE, "contextualItems").set(Date, new Date());
 
 			STORAGE.clearContextualItems();
 
-			// @ts-expect-error: Access to private property for testing purposes.
-			deepStrictEqual(STORAGE.contextualItems, new Map());
+			deepStrictEqual(Reflect.get(STORAGE, "contextualItems"), new Map());
 		});
 	});
 });

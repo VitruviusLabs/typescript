@@ -108,7 +108,8 @@ class LoggerProxy
 		LoggerProxy.Process(message, LogLevelEnum.EMERGENCY, tag);
 	}
 
-	private static Process(message: unknown, level: LogLevelEnum, tag: string | undefined): void
+	// @ts-expect-error: Returns void to not interrupt the flow
+	private static async Process(message: unknown, level: LogLevelEnum, tag: string | undefined): void
 	{
 		const UUID: string | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext()?.getUUID();
 
@@ -118,28 +119,19 @@ class LoggerProxy
 			tag: tag,
 		};
 
-		let promise: Promise<void> | void = undefined;
-
-		if (isString(message))
+		try
 		{
-			promise = LoggerProxy.Logger.handleMessage(message, CONTEXT);
-
-			return;
-		}
-
-		promise = LoggerProxy.Logger.handleError(toError(message), CONTEXT);
-
-		if (!(promise instanceof Promise))
-		{
-			return;
-		}
-
-		promise.catch(
-			(reason: Error): void =>
+			if (isString(message))
 			{
-				Server.HandleError(reason).catch((): void => { /* Do nothing */ });
+				await LoggerProxy.Logger.handleMessage(message, CONTEXT);
 			}
-		);
+
+			await LoggerProxy.Logger.handleError(toError(message), CONTEXT);
+		}
+		catch (error: unknown)
+		{
+			await Server.HandleError(error).catch((): void => { /* Do nothing */ });
+		}
 	}
 }
 

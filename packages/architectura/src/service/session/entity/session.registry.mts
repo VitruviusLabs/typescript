@@ -1,4 +1,4 @@
-import type { Session } from "./session.model.mjs";
+import type { Session } from "./session.mjs";
 
 /**
  * Session registry

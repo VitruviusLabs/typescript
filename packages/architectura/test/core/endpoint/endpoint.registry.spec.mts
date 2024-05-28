@@ -4,13 +4,11 @@ import { BaseEndpoint, type EndpointEntryInterface, type EndpointMatchInterface,
 
 describe("EndpointRegistry", (): void => {
 	beforeEach((): void => {
-		// @ts-expect-error: Access to private property for testing purposes.
-		EndpointRegistry.ENDPOINTS.clear();
+		Reflect.get(EndpointRegistry, "ENDPOINTS").clear();
 	});
 
 	afterEach((): void => {
-		// @ts-expect-error: Access to private property for testing purposes.
-		EndpointRegistry.ENDPOINTS.clear();
+		Reflect.get(EndpointRegistry, "ENDPOINTS").clear();
 	});
 
 	describe("FindEndpoint", (): void => {
@@ -25,8 +23,7 @@ describe("EndpointRegistry", (): void => {
 			const EMPTY_MAP: Map<string, BaseEndpoint> = new Map();
 
 			deepStrictEqual(EndpointRegistry.FindEndpoint(HTTPMethodEnum.GET, "/"), MATCHING_ENDPOINT);
-			// @ts-expect-error - We need to access this private property for test purposes.
-			deepStrictEqual(EndpointRegistry.ENDPOINTS, EMPTY_MAP);
+			deepStrictEqual(Reflect.get(EndpointRegistry, "ENDPOINTS"), EMPTY_MAP);
 		});
 
 		it("should return the registered endpoint that matches", (): void => {
@@ -45,8 +42,7 @@ describe("EndpointRegistry", (): void => {
 				matchGroups: undefined,
 			};
 
-			// @ts-expect-error - We need to access this private property for test purposes.
-			EndpointRegistry.ENDPOINTS.set(
+			Reflect.get(EndpointRegistry, "ENDPOINTS").set(
 				"dummy-key",
 				{
 					method: HTTPMethodEnum.GET,
@@ -69,8 +65,7 @@ describe("EndpointRegistry", (): void => {
 
 			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
 
-			// @ts-expect-error - We need to access this private property for test purposes.
-			EndpointRegistry.ENDPOINTS.set(
+			Reflect.get(EndpointRegistry, "ENDPOINTS").set(
 				"dummy-key",
 				{
 					method: HTTPMethodEnum.GET,
@@ -79,8 +74,7 @@ describe("EndpointRegistry", (): void => {
 				}
 			);
 
-			// @ts-expect-error - We need to access this private property for test purposes.
-			EndpointRegistry.ENDPOINTS.set(
+			Reflect.get(EndpointRegistry, "ENDPOINTS").set(
 				"dummy-key",
 				{
 					method: HTTPMethodEnum.POST,
@@ -120,8 +114,12 @@ describe("EndpointRegistry", (): void => {
 			]);
 
 			EndpointRegistry.AddEndpoint(ENDPOINT);
-			// @ts-expect-error - We need to access this private property for test purposes.
-			deepStrictEqual(EndpointRegistry.ENDPOINTS, POPULATED_MAP);
+			deepStrictEqual(Reflect.get(EndpointRegistry, "ENDPOINTS"), POPULATED_MAP);
 		});
+	});
+
+	describe("AddEndpointsDirectory", (): void => {
+		it.todo("should explore a folder recursively and add endpoints to the registry", async (): Promise<void> => {});
+		it.todo("should ignore abstract endpoints", async (): Promise<void> => {});
 	});
 });

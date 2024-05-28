@@ -2,7 +2,7 @@ import type { Socket } from "node:net";
 import type { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 import { type IncomingHttpHeaders, IncomingMessage } from "node:http";
 import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
-import { type JSONObjectType, JSONUtility, type JSONValueType } from "@vitruvius-labs/toolbox";
+import { type JSONObjectType, type JSONValueType, jsonDeserialize } from "@vitruvius-labs/toolbox";
 import { assertRecord } from "@vitruvius-labs/ts-predicate/type-assertion";
 import { isArray } from "@vitruvius-labs/ts-predicate/type-guard";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";
@@ -105,11 +105,11 @@ class RichClientRequest extends IncomingMessage
 		{
 			this.contentType = CONTENT_TYPE_HEADER;
 
-			if (this.contentType.startsWith("multipart/form-data; boundary="))
+			if (CONTENT_TYPE_HEADER.startsWith("multipart/form-data; boundary="))
 			{
 				this.contentType = ContentTypeEnum.FORM_DATA;
 
-				const BOUNDARY_IDENTIFIER: string = this.contentType.replace("multipart/form-data; boundary=", "");
+				const BOUNDARY_IDENTIFIER: string = CONTENT_TYPE_HEADER.replace("multipart/form-data; boundary=", "");
 
 				if (BOUNDARY_IDENTIFIER.length === 0)
 				{
@@ -465,12 +465,30 @@ class RichClientRequest extends IncomingMessage
 	public async getBodyAsJSON(): Promise<JSONObjectType>
 	{
 		const BODY_AS_STRING: string = await this.getBodyAsString();
-		const PARSED_BODY: JSONValueType = JSONUtility.Deserialize(BODY_AS_STRING);
+		const PARSED_BODY: JSONValueType = jsonDeserialize(BODY_AS_STRING);
 
 		assertRecord(PARSED_BODY);
 
 		return PARSED_BODY;
 	}
+
+	/* @TODO: Add support for multipart body */
+	/**
+	 * @throws if the request doesn't have a multipart body.
+	 */
+	/*
+	public async getBodyAsMultipart(): Promise<unknown>
+	{
+		if (this.boundary === undefined)
+		{
+			throw new Error("This request does not have a multipart body.");
+		}
+
+		const BODY_AS_STRING: string = await this.getBodyAsString();
+
+		return MultipartUtility.Parse(BODY_AS_STRING.split(this.boundary));
+	}
+	*/
 }
 
 export { RichClientRequest };

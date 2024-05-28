@@ -1,7 +1,7 @@
 import type { TokenType } from "../definition/type/token.type.mjs";
 import type { SecretType } from "../definition/type/secret.type.mjs";
 import type { JWTClaimsInterface } from "../definition/interface/jwt-claims.interface.mjs";
-import { JSONUtility } from "@vitruvius-labs/toolbox";
+import { jsonDeserialize } from "@vitruvius-labs/toolbox";
 import { Base64URL } from "../utility/base64-url.mjs";
 import { validateSecret } from "../utility/validate-secret.mjs";
 import { assertToken } from "../predicate/assert-token.mjs";
@@ -66,7 +66,7 @@ class JWTFactory
 			throw new Error("Invalid token signature.");
 		}
 
-		const CLAIMS: unknown = JSONUtility.Deserialize(Base64URL.Decode(ENCODED_CLAIMS));
+		const CLAIMS: unknown = jsonDeserialize(Base64URL.Decode(ENCODED_CLAIMS));
 
 		assertClaims(CLAIMS);
 

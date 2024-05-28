@@ -13,13 +13,11 @@ describe("validateSecret", (): void => {
 	});
 
 	it("should reject empty secrets", (): void => {
-		const WRAPPER_STRING = (): void =>
-		{
+		const WRAPPER_STRING = (): void => {
 			return validateSecret("");
 		};
 
-		const WRAPPER_BUFFER_VIEW = (): void =>
-		{
+		const WRAPPER_BUFFER_VIEW = (): void => {
 			return validateSecret(new Uint8Array(0));
 		};
 

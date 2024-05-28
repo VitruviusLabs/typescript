@@ -1,7 +1,7 @@
 import type { SecretType } from "../definition/type/secret.type.mjs";
 import type { JWTHeaderInterface } from "../definition/interface/jwt-header.interface.mjs";
 import type { JWTClaimsInterface } from "../definition/interface/jwt-claims.interface.mjs";
-import { JSONUtility } from "@vitruvius-labs/toolbox";
+import { jsonSerialize } from "@vitruvius-labs/toolbox";
 import { Base64URL } from "../utility/base64-url.mjs";
 import { validateAlgorithm } from "../utility/validate-algorithm.mjs";
 import { validateSecret } from "../utility/validate-secret.mjs";
@@ -75,7 +75,7 @@ class JWT
 	{
 		validateClaims(this.claims);
 		const HEADER: string = Base64URL.Encode(JSON.stringify(this.header));
-		const CLAIMS: string = Base64URL.Encode(JSONUtility.Serialize(this.claims));
+		const CLAIMS: string = Base64URL.Encode(jsonSerialize(this.claims));
 
 		const SIGNATURE: string = computeSignature({
 			algorithm: this.header.alg,

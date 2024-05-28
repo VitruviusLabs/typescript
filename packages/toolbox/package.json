@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-labs/toolbox",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Utility library",
 	"author": {
 		"name": "VitruviusLabs"
@@ -33,6 +33,10 @@
 		"./indent": {
 			"import": "./build/esm/utility/indent/_index.mjs",
 			"types": "./build/types/utility/indent/_index.d.mts"
+		},
+		"./split-once": {
+			"import": "./build/esm/utility/split-once.mjs",
+			"types": "./build/types/utility/split-once.d.mts"
 		}
 	},
 	"files": [

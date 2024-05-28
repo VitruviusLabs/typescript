@@ -2,12 +2,9 @@ import { deepStrictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, HTTPMethodEnum } from "../../../src/_index.mjs";
 
-describe("BaseEndpoint", (): void =>
-{
-	describe("getPreHooks", (): void =>
-	{
-		it("should return the pre hooks", (): void =>
-		{
+describe("BaseEndpoint", (): void => {
+	describe("getPreHooks", (): void => {
+		it("should return the pre hooks", (): void => {
 			class DummyPreHook extends BasePreHook
 			{
 				public execute(): void { }
@@ -30,10 +27,8 @@ describe("BaseEndpoint", (): void =>
 		});
 	});
 
-	describe("getExcludedGlobalPreHooks", (): void =>
-	{
-		it("should return the excluded pre hook constructors", (): void =>
-		{
+	describe("getExcludedGlobalPreHooks", (): void => {
+		it("should return the excluded pre hook constructors", (): void => {
 			class DummyPreHook extends BasePreHook
 			{
 				public execute(): void { }
@@ -54,10 +49,8 @@ describe("BaseEndpoint", (): void =>
 		});
 	});
 
-	describe("getPostHooks", (): void =>
-	{
-		it("should return the post hooks", (): void =>
-		{
+	describe("getPostHooks", (): void => {
+		it("should return the post hooks", (): void => {
 			class DummyPostHook extends BasePostHook
 			{
 				public execute(): void { }
@@ -80,10 +73,8 @@ describe("BaseEndpoint", (): void =>
 		});
 	});
 
-	describe("getExcludedGlobalPostHooks", (): void =>
-	{
-		it("should return the excluded post hook constructors", (): void =>
-		{
+	describe("getExcludedGlobalPostHooks", (): void => {
+		it("should return the excluded post hook constructors", (): void => {
 			class DummyPostHook extends BasePostHook
 			{
 				public execute(): void { }
@@ -104,10 +95,8 @@ describe("BaseEndpoint", (): void =>
 		});
 	});
 
-	describe("getErrorHooks", (): void =>
-	{
-		it("should return the error hooks", (): void =>
-		{
+	describe("getErrorHooks", (): void => {
+		it("should return the error hooks", (): void => {
 			class DummyErrorHook extends BaseErrorHook
 			{
 				public execute(): void { }
@@ -130,10 +119,8 @@ describe("BaseEndpoint", (): void =>
 		});
 	});
 
-	describe("getExcludedGlobalErrorHooks", (): void =>
-	{
-		it("should return the excluded error hook constructors", (): void =>
-		{
+	describe("getExcludedGlobalErrorHooks", (): void => {
+		it("should return the excluded error hook constructors", (): void => {
 			class DummyErrorHook extends BaseErrorHook
 			{
 				public execute(): void { }

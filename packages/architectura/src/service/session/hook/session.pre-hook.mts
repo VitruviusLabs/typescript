@@ -3,7 +3,7 @@ import type { ExecutionContext } from "../../../core/execution-context/execution
 import type { SessionDelegateInterface } from "../definition/interface/session-delegate.interface.mjs";
 import { BasePreHook } from "../../../core/hook/base.pre-hook.mjs";
 import { Server } from "../../../core/server/server.mjs";
-import { Session } from "../entity/session.model.mjs";
+import { Session } from "../entity/session.mjs";
 import { SessionRegistry } from "../entity/session.registry.mjs";
 import { SessionConstantEnum } from "../definition/enum/session-constant.enum.mjs";
 import { MillisecondEnum } from "../../../definition/enum/millisecond.enum.mjs";

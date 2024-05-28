@@ -4,8 +4,7 @@ import { createErrorTest } from "@vitruvius-labs/testing-ground";
 import { assertToken } from "../../../../src/service/jwt/predicate/assert-token.mjs";
 
 describe("isToken", (): void => {
-	it("should return when given a tuple of 3 strings", (): void =>
-	{
+	it("should return when given a tuple of 3 strings", (): void => {
 		const WRAPPER = (): void => {
 			assertToken(["", "", ""]);
 		};

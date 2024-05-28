@@ -1,5 +1,5 @@
 import type { SessionDelegateInterface } from "../definition/interface/session-delegate.interface.mjs";
-import { Session } from "./session.model.mjs";
+import { Session } from "./session.mjs";
 
 /**
  * Session Factory
