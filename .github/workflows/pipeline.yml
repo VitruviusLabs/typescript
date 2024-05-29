@@ -985,8 +985,9 @@ jobs:
 
       - name: Building workspace dependencies
         run: |
-          pnpm --filter ts-predicate ci:build
           pnpm --filter testing-ground ci:build
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter toolbox ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura
