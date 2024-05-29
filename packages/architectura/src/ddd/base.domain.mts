@@ -3,7 +3,12 @@
  */
 abstract class BaseDomain
 {
-	private constructor() {}
+	/**
+	 * Domains are meant to be static classes
+	 *
+	 * @sealed
+	 */
+	protected constructor() {}
 
 	/**
 	 * Domain initialization
