@@ -62,12 +62,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.DEBUG,
 					undefined,
 				];
 
-				LoggerProxy.Debug("Lorem ipsum dolor sit amet");
+				LoggerProxy.Debug("Hello, World!");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -77,12 +77,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.DEBUG,
-					"Consectetur",
+					"Lorem ipsum",
 				];
 
-				LoggerProxy.Debug("Lorem ipsum dolor sit amet", "Consectetur");
+				LoggerProxy.Debug("Hello, World!", "Lorem ipsum");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -94,12 +94,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.INFO,
 					undefined,
 				];
 
-				LoggerProxy.Informational("Lorem ipsum dolor sit amet");
+				LoggerProxy.Informational("Hello, World!");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -109,12 +109,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.INFO,
-					"Consectetur",
+					"Lorem ipsum",
 				];
 
-				LoggerProxy.Informational("Lorem ipsum dolor sit amet", "Consectetur");
+				LoggerProxy.Informational("Hello, World!", "Lorem ipsum");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -126,12 +126,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.INFO,
 					undefined,
 				];
 
-				LoggerProxy.Info("Lorem ipsum dolor sit amet");
+				LoggerProxy.Info("Hello, World!");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -141,12 +141,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.INFO,
-					"Consectetur",
+					"Lorem ipsum",
 				];
 
-				LoggerProxy.Info("Lorem ipsum dolor sit amet", "Consectetur");
+				LoggerProxy.Info("Hello, World!", "Lorem ipsum");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -158,12 +158,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.NOTICE,
 					undefined,
 				];
 
-				LoggerProxy.Notice("Lorem ipsum dolor sit amet");
+				LoggerProxy.Notice("Hello, World!");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -173,12 +173,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.NOTICE,
-					"Consectetur",
+					"Lorem ipsum",
 				];
 
-				LoggerProxy.Notice("Lorem ipsum dolor sit amet", "Consectetur");
+				LoggerProxy.Notice("Hello, World!", "Lorem ipsum");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -190,12 +190,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.WARNING,
 					undefined,
 				];
 
-				LoggerProxy.Warning("Lorem ipsum dolor sit amet");
+				LoggerProxy.Warning("Hello, World!");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -205,12 +205,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.WARNING,
-					"Consectetur",
+					"Lorem ipsum",
 				];
 
-				LoggerProxy.Warning("Lorem ipsum dolor sit amet", "Consectetur");
+				LoggerProxy.Warning("Hello, World!", "Lorem ipsum");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -222,12 +222,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.ERROR,
 					undefined,
 				];
 
-				LoggerProxy.Error("Lorem ipsum dolor sit amet");
+				LoggerProxy.Error("Hello, World!");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -237,12 +237,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.ERROR,
-					"Consectetur",
+					"Lorem ipsum",
 				];
 
-				LoggerProxy.Error("Lorem ipsum dolor sit amet", "Consectetur");
+				LoggerProxy.Error("Hello, World!", "Lorem ipsum");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -254,12 +254,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.CRITICAL,
 					undefined,
 				];
 
-				LoggerProxy.Critical("Lorem ipsum dolor sit amet");
+				LoggerProxy.Critical("Hello, World!");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -269,12 +269,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.CRITICAL,
-					"Consectetur",
+					"Lorem ipsum",
 				];
 
-				LoggerProxy.Critical("Lorem ipsum dolor sit amet", "Consectetur");
+				LoggerProxy.Critical("Hello, World!", "Lorem ipsum");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -286,12 +286,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.ALERT,
 					undefined,
 				];
 
-				LoggerProxy.Alert("Lorem ipsum dolor sit amet");
+				LoggerProxy.Alert("Hello, World!");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -301,12 +301,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.ALERT,
-					"Consectetur",
+					"Lorem ipsum",
 				];
 
-				LoggerProxy.Alert("Lorem ipsum dolor sit amet", "Consectetur");
+				LoggerProxy.Alert("Hello, World!", "Lorem ipsum");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -318,12 +318,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.EMERGENCY,
 					undefined,
 				];
 
-				LoggerProxy.Emergency("Lorem ipsum dolor sit amet");
+				LoggerProxy.Emergency("Hello, World!");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -333,12 +333,12 @@ describe("LoggerProxy", (): void => {
 				const STUB: SinonStub = asStub(Reflect.get(LoggerProxy, "Process"));
 
 				const PARAMETERS: Array<unknown> = [
-					"Lorem ipsum dolor sit amet",
+					"Hello, World!",
 					LogLevelEnum.EMERGENCY,
-					"Consectetur",
+					"Lorem ipsum",
 				];
 
-				LoggerProxy.Emergency("Lorem ipsum dolor sit amet", "Consectetur");
+				LoggerProxy.Emergency("Hello, World!", "Lorem ipsum");
 
 				strictEqual(STUB.calledOnce, true, "'Process' should be called exactly once");
 				deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -371,7 +371,7 @@ describe("LoggerProxy", (): void => {
 			STUB.resolves();
 
 			const PARAMETERS: Array<unknown> = [
-				"Lorem ipsum dolor sit amet",
+				"Hello, World!",
 				{
 					level: LogLevelEnum.DEBUG,
 					uuid: "lorem-ipsum",
@@ -379,7 +379,7 @@ describe("LoggerProxy", (): void => {
 				},
 			];
 
-			await Reflect.get(LoggerProxy, "Process").call(LoggerProxy, "Lorem ipsum dolor sit amet", LogLevelEnum.DEBUG, undefined);
+			await Reflect.get(LoggerProxy, "Process").call(LoggerProxy, "Hello, World!", LogLevelEnum.DEBUG, undefined);
 
 			strictEqual(STUB.calledOnce, true, "'handleMessage' should be called exactly once");
 			deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -406,11 +406,11 @@ describe("LoggerProxy", (): void => {
 				{
 					level: LogLevelEnum.ERROR,
 					uuid: "lorem-ipsum",
-					tag: "Consectetur",
+					tag: "Lorem ipsum",
 				},
 			];
 
-			await Reflect.get(LoggerProxy, "Process").call(LoggerProxy, ERROR, LogLevelEnum.ERROR, "Consectetur");
+			await Reflect.get(LoggerProxy, "Process").call(LoggerProxy, ERROR, LogLevelEnum.ERROR, "Lorem ipsum");
 
 			strictEqual(STUB.calledOnce, true, "'handleError' should be called exactly once");
 			deepStrictEqual(STUB.firstCall.args, PARAMETERS);
@@ -425,7 +425,7 @@ describe("LoggerProxy", (): void => {
 			STUB.rejects(ERROR);
 			HANDLE_ERROR_STUB.rejects();
 
-			const PROMISE: Promise<void> = Reflect.get(LoggerProxy, "Process").call(LoggerProxy, "Lorem ipsum dolor sit amet", LogLevelEnum.DEBUG, undefined);
+			const PROMISE: Promise<void> = Reflect.get(LoggerProxy, "Process").call(LoggerProxy, "Hello, World!", LogLevelEnum.DEBUG, undefined);
 
 			await doesNotReject(PROMISE);
 			strictEqual(HANDLE_ERROR_STUB.calledOnce, true, "'Server.HandleError' should be called exactly once");
