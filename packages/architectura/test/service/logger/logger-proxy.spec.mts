@@ -354,7 +354,7 @@ describe("LoggerProxy", (): void => {
 			// @ts-expect-error: Only getUUID() is needed
 			stub(ExecutionContextRegistry, "GetUnsafeExecutionContext").returns({
 				getUUID: (): string => {
-					return "lorem-ipsum";
+					return "00000000-0000-0000-0000-000000000000";
 				},
 			});
 		});
@@ -374,7 +374,7 @@ describe("LoggerProxy", (): void => {
 				"Hello, World!",
 				{
 					level: LogLevelEnum.DEBUG,
-					uuid: "lorem-ipsum",
+					uuid: "00000000-0000-0000-0000-000000000000",
 					tag: undefined,
 				},
 			];
@@ -392,20 +392,11 @@ describe("LoggerProxy", (): void => {
 
 			const ERROR: Error = new Error("Dummy error");
 
-			try
-			{
-				throw ERROR;
-			}
-			catch
-			{
-				/* Do nothing */
-			}
-
 			const PARAMETERS: Array<unknown> = [
 				ERROR,
 				{
 					level: LogLevelEnum.ERROR,
-					uuid: "lorem-ipsum",
+					uuid: "00000000-0000-0000-0000-000000000000",
 					tag: "Lorem ipsum",
 				},
 			];

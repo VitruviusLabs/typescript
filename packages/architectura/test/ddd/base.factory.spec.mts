@@ -31,10 +31,10 @@ describe("BaseFactory", (): void => {
 	describe("create", (): void => {
 		it("should return a new instance of the model", (): void => {
 			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
-			const MODEL: DummyModel = FACTORY.create({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = FACTORY.create({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			strictEqual(Reflect.get(MODEL, "id"), undefined);
-			strictEqual(Reflect.get(MODEL, "uuid"), "lorem-ipsum");
+			strictEqual(Reflect.get(MODEL, "uuid"), "00000000-0000-0000-0000-000000000000");
 			strictEqual(Reflect.get(MODEL, "createdAt"), undefined);
 			strictEqual(Reflect.get(MODEL, "updatedAt"), undefined);
 			strictEqual(Reflect.get(MODEL, "deletedAt"), undefined);

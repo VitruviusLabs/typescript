@@ -1,4 +1,4 @@
-import { describe } from "node:test";
+import { describe, it } from "node:test";
 import { BaseDomain } from "../../src/_index.mjs";
 
 describe("BaseDomain", (): void => {

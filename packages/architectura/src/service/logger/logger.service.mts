@@ -14,6 +14,16 @@ import { DateEnum } from "../../definition/enum/date.enum.mjs";
 class LoggerService extends Singleton implements LoggerInterface
 {
 	/**
+	 * @privateRemarks
+	 * Proxy to console.log for easier testing
+	 */
+	private static Write(message: string): void
+	{
+		// eslint-disable-next-line no-console -- This is a console logger, it should log to the console.
+		console.log(message);
+	}
+
+	/**
 	 * Logs a message
 	 */
 	public handleMessage(message: string, context: LogContextInterface): void
@@ -45,8 +55,7 @@ class LoggerService extends Singleton implements LoggerInterface
 			)
 			.join("\n");
 
-		// eslint-disable-next-line no-console -- This is a console logger, it should log to the console.
-		console.log(PREFIXED_MESSAGE);
+		LoggerService.Write(PREFIXED_MESSAGE);
 	}
 
 	/**

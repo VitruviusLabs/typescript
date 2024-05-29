@@ -14,35 +14,35 @@ describe("SessionRegistry", (): void => {
 
 	describe("GetSession", (): void => {
 		it("should return undefined if no session exists with this UUID", (): void => {
-			strictEqual(SessionRegistry.GetSession("lorem-ipsum"), undefined);
+			strictEqual(SessionRegistry.GetSession("00000000-0000-0000-0000-000000000000"), undefined);
 		});
 
 		it("should return an existing session", (): void => {
-			const SESSION: Session = new Session("lorem-ipsum");
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
-			Reflect.get(SessionRegistry, "SESSIONS").set("lorem-ipsum", SESSION);
+			Reflect.get(SessionRegistry, "SESSIONS").set("00000000-0000-0000-0000-000000000000", SESSION);
 
-			strictEqual(SessionRegistry.GetSession("lorem-ipsum"), SESSION);
+			strictEqual(SessionRegistry.GetSession("00000000-0000-0000-0000-000000000000"), SESSION);
 		});
 	});
 
 	describe("AddSession", (): void => {
 		it("should hold onto the session", (): void => {
-			const SESSION: Session = new Session("lorem-ipsum");
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
 			SessionRegistry.AddSession(SESSION);
 
-			deepStrictEqual(Reflect.get(SessionRegistry, "SESSIONS"), new Map([["lorem-ipsum", SESSION]]));
+			deepStrictEqual(Reflect.get(SessionRegistry, "SESSIONS"), new Map([["00000000-0000-0000-0000-000000000000", SESSION]]));
 		});
 	});
 
 	describe("RemoveSession", (): void => {
 		it("should remove the session", (): void => {
-			const SESSION: Session = new Session("lorem-ipsum");
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
-			Reflect.get(SessionRegistry, "SESSIONS").set("lorem-ipsum", SESSION);
+			Reflect.get(SessionRegistry, "SESSIONS").set("00000000-0000-0000-0000-000000000000", SESSION);
 
-			SessionRegistry.RemoveSession("lorem-ipsum");
+			SessionRegistry.RemoveSession("00000000-0000-0000-0000-000000000000");
 
 			deepStrictEqual(Reflect.get(SessionRegistry, "SESSIONS"), new Map());
 		});
@@ -50,9 +50,9 @@ describe("SessionRegistry", (): void => {
 
 	describe("ListSessions", (): void => {
 		it("should return an iterator of all registered sessions", (): void => {
-			const SESSION: Session = new Session("lorem-ipsum");
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
-			Reflect.get(SessionRegistry, "SESSIONS").set("lorem-ipsum", SESSION);
+			Reflect.get(SessionRegistry, "SESSIONS").set("00000000-0000-0000-0000-000000000000", SESSION);
 
 			const ITERABLE: IterableIterator<Session> = SessionRegistry.ListSessions();
 

@@ -19,10 +19,10 @@ describe("BaseModel", (): void => {
 
 	describe("constructor", (): void => {
 		it("should create a new model", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			strictEqual(Reflect.get(MODEL, "id"), undefined);
-			strictEqual(Reflect.get(MODEL, "uuid"), "lorem-ipsum");
+			strictEqual(Reflect.get(MODEL, "uuid"), "00000000-0000-0000-0000-000000000000");
 			strictEqual(Reflect.get(MODEL, "createdAt"), undefined);
 			strictEqual(Reflect.get(MODEL, "updatedAt"), undefined);
 			strictEqual(Reflect.get(MODEL, "deletedAt"), undefined);
@@ -31,13 +31,13 @@ describe("BaseModel", (): void => {
 
 	describe("hasId", (): void => {
 		it("should return false if the model has no id", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			strictEqual(MODEL.hasId(), false);
 		});
 
 		it("should return true if the model has an id", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			Reflect.set(MODEL, "id", 1n);
 
@@ -47,7 +47,7 @@ describe("BaseModel", (): void => {
 
 	describe("getId", (): void => {
 		it("should throw an error if the model has no id", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			const WRAPPER = (): void => {
 				MODEL.getId();
@@ -57,7 +57,7 @@ describe("BaseModel", (): void => {
 		});
 
 		it("should return the id if the model has an id", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			Reflect.set(MODEL, "id", 1n);
 
@@ -67,15 +67,15 @@ describe("BaseModel", (): void => {
 
 	describe("getUUID", (): void => {
 		it("should return the UUID", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
-			strictEqual(MODEL.getUUID(), "lorem-ipsum");
+			strictEqual(MODEL.getUUID(), "00000000-0000-0000-0000-000000000000");
 		});
 	});
 
 	describe("getCreatedAt", (): void => {
 		it("should throw an error if the model was never saved", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			const WRAPPER = (): void => {
 				MODEL.getCreatedAt();
@@ -85,7 +85,7 @@ describe("BaseModel", (): void => {
 		});
 
 		it("should return the creation date if the model has a creation date", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			const DATE: Date = new Date();
 
@@ -98,7 +98,7 @@ describe("BaseModel", (): void => {
 
 	describe("getUpdatedAt", (): void => {
 		it("should throw an error if the model was never saved", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			const WRAPPER = (): void => {
 				MODEL.getUpdatedAt();
@@ -108,7 +108,7 @@ describe("BaseModel", (): void => {
 		});
 
 		it("should return the update date if the model has an update date", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			const DATE: Date = new Date();
 
@@ -121,7 +121,7 @@ describe("BaseModel", (): void => {
 
 	describe("getDeletedAt", (): void => {
 		it("should throw an error if the model was never saved", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			const WRAPPER = (): void => {
 				MODEL.getUpdatedAt();
@@ -131,7 +131,7 @@ describe("BaseModel", (): void => {
 		});
 
 		it("should return undefined if the model has no deletion date", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			Reflect.set(MODEL, "id", 1n);
 
@@ -139,7 +139,7 @@ describe("BaseModel", (): void => {
 		});
 
 		it("should return the deletion date if the model has a deletion date", (): void => {
-			const MODEL: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			const DATE: Date = new Date();
 

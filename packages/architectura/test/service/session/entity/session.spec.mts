@@ -23,9 +23,9 @@ describe("Session", (): void => {
 				removeData: stub().rejects(),
 			};
 
-			const SESSION: Session = new Session("lorem-ipsum", DELEGATE);
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000", DELEGATE);
 
-			strictEqual(Reflect.get(SESSION, "uuid"), "lorem-ipsum");
+			strictEqual(Reflect.get(SESSION, "uuid"), "00000000-0000-0000-0000-000000000000");
 			strictEqual(Reflect.get(SESSION, "delegate"), DELEGATE);
 			strictEqual(Reflect.get(SESSION, "expirationTime"), SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE);
 			deepStrictEqual(Reflect.get(SESSION, "data"), {});
@@ -34,22 +34,22 @@ describe("Session", (): void => {
 
 	describe("getUUID", (): void => {
 		it("should return the UUID", (): void => {
-			const SESSION: Session = new Session("lorem-ipsum");
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
-			strictEqual(SESSION.getUUID(), "lorem-ipsum");
+			strictEqual(SESSION.getUUID(), "00000000-0000-0000-0000-000000000000");
 		});
 	});
 
 	describe("isExpired", (): void => {
 		it("should return false when the session is not expired", (): void => {
-			const SESSION: Session = new Session("lorem-ipsum");
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
 			CLOCK.now = SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE;
 			strictEqual(SESSION.isExpired(), false);
 		});
 
 		it("should return true when the session is expired", (): void => {
-			const SESSION: Session = new Session("lorem-ipsum");
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
 			CLOCK.now = 1 + SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE;
 			strictEqual(SESSION.isExpired(), true);
@@ -58,7 +58,7 @@ describe("Session", (): void => {
 
 	describe("getExpirationDate", (): void => {
 		it("should return the expiration date", (): void => {
-			const SESSION: Session = new Session("lorem-ipsum");
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
 			deepStrictEqual(SESSION.getExpirationDate(), new Date(SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE));
 		});
@@ -66,7 +66,7 @@ describe("Session", (): void => {
 
 	describe("postponeExpiration", (): void => {
 		it("should update the expiration date", (): void => {
-			const SESSION: Session = new Session("lorem-ipsum");
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
 			CLOCK.now = 5_000;
 			SESSION.postponeExpiration();
@@ -79,7 +79,7 @@ describe("Session", (): void => {
 		it("should return the data", (): void => {
 			const DATA: JSONObjectType = { lorem: "ipsum" };
 
-			const SESSION: Session = new Session("lorem-ipsum");
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
 			Reflect.set(SESSION, "data", DATA);
 
@@ -91,7 +91,7 @@ describe("Session", (): void => {
 		it("should keep the data", (): void => {
 			const DATA: JSONObjectType = { lorem: "ipsum" };
 
-			const SESSION: Session = new Session("lorem-ipsum");
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
 			SESSION.setData(DATA);
 
@@ -111,12 +111,12 @@ describe("Session", (): void => {
 				removeData: stub().rejects(),
 			};
 
-			const SESSION: Session = new Session("lorem-ipsum", DELEGATE);
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000", DELEGATE);
 
 			await SESSION.loadData();
 
 			strictEqual(STUB.calledOnce, true, "'fetchData' should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, ["lorem-ipsum"]);
+			deepStrictEqual(STUB.firstCall.args, ["00000000-0000-0000-0000-000000000000"]);
 			deepStrictEqual(Reflect.get(SESSION, "data"), DATA);
 		});
 	});
@@ -133,14 +133,14 @@ describe("Session", (): void => {
 				removeData: stub().rejects(),
 			};
 
-			const SESSION: Session = new Session("lorem-ipsum", DELEGATE);
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000", DELEGATE);
 
 			Reflect.set(SESSION, "data", DATA);
 
 			await SESSION.saveData();
 
 			strictEqual(STUB.calledOnce, true, "'saveData' should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, ["lorem-ipsum", DATA]);
+			deepStrictEqual(STUB.firstCall.args, ["00000000-0000-0000-0000-000000000000", DATA]);
 		});
 	});
 
@@ -154,12 +154,12 @@ describe("Session", (): void => {
 				removeData: STUB.resolves(),
 			};
 
-			const SESSION: Session = new Session("lorem-ipsum", DELEGATE);
+			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000", DELEGATE);
 
 			await SESSION.clearData();
 
 			strictEqual(STUB.calledOnce, true, "'clearData' should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, ["lorem-ipsum"]);
+			deepStrictEqual(STUB.firstCall.args, ["00000000-0000-0000-0000-000000000000"]);
 			deepStrictEqual(Reflect.get(SESSION, "data"), {});
 		});
 	});

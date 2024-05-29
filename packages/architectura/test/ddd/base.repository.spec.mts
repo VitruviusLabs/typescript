@@ -102,14 +102,14 @@ describe("BaseRepository", (): void => {
 
 			const MODEL: DummyModel = Reflect.get(REPOSITORY, "create").call(REPOSITORY, {
 				id: 1n,
-				uuid: "lorem-ipsum",
+				uuid: "00000000-0000-0000-0000-000000000000",
 				createdAt: DATE,
 				updatedAt: DATE,
 				deletedAt: null,
 			});
 
 			strictEqual(Reflect.get(MODEL, "id"), 1n);
-			strictEqual(Reflect.get(MODEL, "uuid"), "lorem-ipsum");
+			strictEqual(Reflect.get(MODEL, "uuid"), "00000000-0000-0000-0000-000000000000");
 			strictEqual(Reflect.get(MODEL, "createdAt"), DATE);
 			strictEqual(Reflect.get(MODEL, "updatedAt"), DATE);
 			strictEqual(Reflect.get(MODEL, "deletedAt"), undefined);
@@ -123,7 +123,7 @@ describe("BaseRepository", (): void => {
 
 			asStub(Reflect.get(REPOSITORY, "fetchByUUID")).resolves(undefined);
 
-			await strictResolves(REPOSITORY.findByUUID("lorem-ipsum"), undefined);
+			await strictResolves(REPOSITORY.findByUUID("00000000-0000-0000-0000-000000000000"), undefined);
 		});
 
 		it("should return an instance of the model if an entity with this UUID exists", async (): Promise<void> => {
@@ -132,7 +132,7 @@ describe("BaseRepository", (): void => {
 
 			const METADATA: ModelMetadataInterface = {
 				id: 1n,
-				uuid: "lorem-ipsum",
+				uuid: "00000000-0000-0000-0000-000000000000",
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				deletedAt: null,
@@ -142,7 +142,7 @@ describe("BaseRepository", (): void => {
 
 			asStub(Reflect.get(REPOSITORY, "fetchByUUID")).resolves(METADATA);
 
-			await deepStrictResolves(REPOSITORY.findByUUID("lorem-ipsum"), EXPECTED);
+			await deepStrictResolves(REPOSITORY.findByUUID("00000000-0000-0000-0000-000000000000"), EXPECTED);
 		});
 	});
 
@@ -153,7 +153,7 @@ describe("BaseRepository", (): void => {
 
 			asStub(Reflect.get(REPOSITORY, "fetchByUUID")).resolves(undefined);
 
-			await rejects(REPOSITORY.getByUUID("lorem-ipsum"), createErrorTest());
+			await rejects(REPOSITORY.getByUUID("00000000-0000-0000-0000-000000000000"), createErrorTest());
 		});
 
 		it("should return an instance of the model if an entity with this UUID exists", async (): Promise<void> => {
@@ -162,7 +162,7 @@ describe("BaseRepository", (): void => {
 
 			const METADATA: ModelMetadataInterface = {
 				id: 1n,
-				uuid: "lorem-ipsum",
+				uuid: "00000000-0000-0000-0000-000000000000",
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				deletedAt: null,
@@ -172,7 +172,7 @@ describe("BaseRepository", (): void => {
 
 			asStub(Reflect.get(REPOSITORY, "fetchByUUID")).resolves(METADATA);
 
-			await deepStrictResolves(REPOSITORY.getByUUID("lorem-ipsum"), EXPECTED);
+			await deepStrictResolves(REPOSITORY.getByUUID("00000000-0000-0000-0000-000000000000"), EXPECTED);
 		});
 	});
 
@@ -192,7 +192,7 @@ describe("BaseRepository", (): void => {
 
 			const METADATA: ModelMetadataInterface = {
 				id: 1n,
-				uuid: "lorem-ipsum",
+				uuid: "00000000-0000-0000-0000-000000000000",
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				deletedAt: null,
@@ -222,7 +222,7 @@ describe("BaseRepository", (): void => {
 
 			const METADATA: ModelMetadataInterface = {
 				id: 1n,
-				uuid: "lorem-ipsum",
+				uuid: "00000000-0000-0000-0000-000000000000",
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				deletedAt: null,
@@ -243,13 +243,13 @@ describe("BaseRepository", (): void => {
 
 			const METADATA: ModelMetadataInterface = {
 				id: 1n,
-				uuid: "lorem-ipsum",
+				uuid: "00000000-0000-0000-0000-000000000000",
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				deletedAt: null,
 			};
 
-			const ENTITY: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const ENTITY: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 			const EXPECTED: DummyModel = Reflect.get(REPOSITORY, "create").call(REPOSITORY, METADATA);
 
 			const STUB: SinonStub = asStub(Reflect.get(REPOSITORY, "register"));
@@ -269,7 +269,7 @@ describe("BaseRepository", (): void => {
 
 			const METADATA: ModelMetadataInterface = {
 				id: 1n,
-				uuid: "lorem-ipsum",
+				uuid: "00000000-0000-0000-0000-000000000000",
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				deletedAt: null,
@@ -297,14 +297,14 @@ describe("BaseRepository", (): void => {
 
 			const METADATA: ModelMetadataInterface = {
 				id: 1n,
-				uuid: "lorem-ipsum",
+				uuid: "00000000-0000-0000-0000-000000000000",
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				deletedAt: null,
 			};
 
 			const ENTITY: DummyModel = Reflect.get(REPOSITORY, "create").call(REPOSITORY, METADATA);
-			const EXPECTED: DummyModel = new DummyModel({ uuid: "lorem-ipsum" });
+			const EXPECTED: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			const STUB: SinonStub = asStub(Reflect.get(REPOSITORY, "destroy"));
 

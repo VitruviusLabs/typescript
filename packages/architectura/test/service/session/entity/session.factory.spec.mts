@@ -22,11 +22,11 @@ describe("SessionFactory", (): void => {
 				removeData: stub().rejects(),
 			};
 
-			const EXPECTED: Session = new Session("lorem-ipsum", DELEGATE);
+			const EXPECTED: Session = new Session("00000000-0000-0000-0000-000000000000", DELEGATE);
 
 			EXPECTED.setData({ lorem: "ipsum" });
 
-			await deepStrictResolves(SessionFactory.Create("lorem-ipsum", DELEGATE), EXPECTED);
+			await deepStrictResolves(SessionFactory.Create("00000000-0000-0000-0000-000000000000", DELEGATE), EXPECTED);
 		});
 	});
 });
