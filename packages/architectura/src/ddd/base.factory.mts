@@ -10,14 +10,14 @@ abstract class BaseFactory<
 	C extends new (arg: I) => T
 >
 {
-	protected readonly ClassConstructor: C;
+	protected readonly classConstructor: C;
 
 	/**
 	 * Create a new factory
 	 */
 	public constructor(class_constructor: C)
 	{
-		this.ClassConstructor = class_constructor;
+		this.classConstructor = class_constructor;
 	}
 
 	/**
@@ -28,7 +28,7 @@ abstract class BaseFactory<
 	 */
 	public create(parameters: I): T
 	{
-		return new this.ClassConstructor(parameters);
+		return new this.classConstructor(parameters);
 	}
 }
 

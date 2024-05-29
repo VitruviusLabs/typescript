@@ -1,8 +1,8 @@
+import type { JSONObjectType } from "@vitruvius-labs/toolbox";
 import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, strictEqual } from "node:assert";
 import { type SinonFakeTimers, type SinonStub, stub, useFakeTimers } from "sinon";
 import { MillisecondEnum, Session, SessionConstantEnum, type SessionDelegateInterface } from "../../../../src/_index.mjs";
-import type { JSONObjectType } from "@vitruvius-labs/toolbox";
 
 describe("Session", (): void => {
 	const CLOCK: SinonFakeTimers = useFakeTimers({ toFake: ["Date"] });

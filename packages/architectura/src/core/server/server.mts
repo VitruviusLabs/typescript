@@ -21,7 +21,7 @@ import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs"
 import { PortsEnum } from "./definition/enum/ports.enum.mjs";
 import { RichClientRequest } from "./rich-client-request.mjs";
 import { RichServerResponse } from "./rich-server-response.mjs";
-import { ContentType } from "../../utility/content-type/content-type.mjs";
+import { getContentType } from "../../utility/content-type/get-content-type.mjs";
 import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
 /* @TODO: Add support for HTTP/2 */
@@ -202,7 +202,7 @@ class Server
 
 		const FILE: Buffer = await FileSystemService.ReadBinaryFile(FILE_PATH);
 
-		const CONTENT_TYPE: string = ContentType.Get(extname(FILE_PATH));
+		const CONTENT_TYPE: string = getContentType(extname(FILE_PATH));
 
 		await context.getResponse().replyWith({
 			payload: FILE,

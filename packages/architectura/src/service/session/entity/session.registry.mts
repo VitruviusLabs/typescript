@@ -1,4 +1,4 @@
-import type { Session } from "./session.mjs";
+import { Session } from "./session.mjs";
 
 /**
  * Session registry
@@ -22,15 +22,27 @@ class SessionRegistry
 	 */
 	public static AddSession(session: Session): void
 	{
+		if (SessionRegistry.SESSIONS.has(session.getUUID()))
+		{
+			throw new Error("A session with this UUID already exists");
+		}
+
 		SessionRegistry.SESSIONS.set(session.getUUID(), session);
 	}
 
 	/**
 	 * Remove a session from the registry
 	 */
-	public static RemoveSession(uuid: string): void
+	public static RemoveSession(session_or_uuid: Session | string): void
 	{
-		SessionRegistry.SESSIONS.delete(uuid);
+		if (session_or_uuid instanceof Session)
+		{
+			SessionRegistry.SESSIONS.delete(session_or_uuid.getUUID());
+
+			return;
+		}
+
+		SessionRegistry.SESSIONS.delete(session_or_uuid);
 	}
 
 	/**
