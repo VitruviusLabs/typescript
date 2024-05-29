@@ -1,55 +1,61 @@
-function getDetailedType(value: unknown): string
+// eslint-disable-next-line @typescript-eslint/ban-types -- Generic type is enough as we won't invoke it
+function getDetailedFunctionType(value: Function): string
 {
-	if (typeof value === "function")
+	const CODE: string = value.toString();
+
+	if (value.name === "")
 	{
-		const CODE: string = value.toString();
-
-		if (value.name === "")
+		if (CODE.startsWith("class"))
 		{
-			if (CODE.startsWith("class"))
-			{
-				return "anonymous class";
-			}
-
-			if (/^async function ?\*/.test(CODE))
-			{
-				return "anonymous async generator";
-			}
-
-			if (/^function ?\*/.test(CODE))
-			{
-				return "anonymous generator";
-			}
-
-			if (CODE.startsWith("async"))
-			{
-				return "anonymous async function";
-			}
-
-			return "anonymous function";
+			return "anonymous class";
 		}
 
-		if (CODE.startsWith("class") || /^function [A-Z]/.test(CODE))
+		if (/^async function ?\*/.test(CODE))
 		{
-			return `class ${value.name}`;
+			return "anonymous async generator";
 		}
 
-		if (/^async function ?\*/.test(CODE) || /^async ?\*/.test(CODE))
+		if (/^function ?\*/.test(CODE))
 		{
-			return `async generator ${value.name}`;
-		}
-
-		if (/^function ?\*/.test(CODE) || CODE.startsWith("*"))
-		{
-			return `generator ${value.name}`;
+			return "anonymous generator";
 		}
 
 		if (CODE.startsWith("async"))
 		{
-			return `async function ${value.name}`;
+			return "anonymous async function";
 		}
 
-		return `function ${value.name}`;
+		return "anonymous function";
+	}
+
+	if (CODE.startsWith("class") || /^function [A-Z]/.test(CODE))
+	{
+		return `class ${value.name}`;
+	}
+
+	if (/^async function ?\*/.test(CODE) || /^async ?\*/.test(CODE))
+	{
+		return `async generator ${value.name}`;
+	}
+
+	if (/^function ?\*/.test(CODE) || CODE.startsWith("*"))
+	{
+		return `generator ${value.name}`;
+	}
+
+	if (CODE.startsWith("async"))
+	{
+		return `async function ${value.name}`;
+	}
+
+	return `function ${value.name}`;
+}
+
+function getDetailedType(value: unknown): string
+{
+	if (typeof value === "function")
+	{
+		return getDetailedFunctionType(value);
 	}
 
 	if (typeof value === "object")
@@ -67,17 +73,22 @@ function getDetailedType(value: unknown): string
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Prototype is loosely typed
 		const PROTO: object | null = Object.getPrototypeOf(value);
 
-		if (PROTO === null || PROTO === Object.prototype)
+		if (PROTO === null)
 		{
-			return "anonymous object";
+			return "null-prototype object";
+		}
+
+		if (PROTO === Object.prototype)
+		{
+			return "generic object";
 		}
 
 		if (PROTO.constructor.name === "")
 		{
-			return "object anonymous class";
+			return "instance of anonymous class";
 		}
 
-		return `object ${PROTO.constructor.name}`;
+		return `instance of ${PROTO.constructor.name}`;
 	}
 
 	if (Number.isNaN(value))
@@ -107,7 +118,15 @@ function getDetailedType(value: unknown): string
 
 	if (typeof value === "string")
 	{
-		return `string (${value.length.toString()} characters)`;
+		/* a UUID is 36 characters */
+		const MAX_LENGTH: number = 36;
+
+		if (value.includes("\n") || value.includes('"') || value.length > MAX_LENGTH)
+		{
+			return `string (${value.length.toString()} characters)`;
+		}
+
+		return `string ("${value}")`;
 	}
 
 	if (typeof value === "symbol")

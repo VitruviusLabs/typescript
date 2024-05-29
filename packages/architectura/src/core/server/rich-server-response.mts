@@ -14,6 +14,7 @@ import { CookieSameSiteEnum } from "./definition/enum/cookie-same-site.enum.mjs"
 import { ContentEncodingEnum } from "./definition/enum/content-encoding.enum.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { isErrorWithCode } from "../../predicate/is-error-with-code.mjs";
+import { parseQualityValues } from "../../utility/parse-quality-values.mjs";
 
 /**
  * Rich server response.
@@ -106,23 +107,30 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 		this.locked = true;
 
-		if (isNumber(parameters))
+		try
 		{
-			this.statusCode = parameters;
+			if (isNumber(parameters))
+			{
+				this.statusCode = parameters;
+				this.processCookieHeader();
+				await this.writePayload();
+
+				return;
+			}
+
+			this.statusCode = parameters.status ?? HTTPStatusCodeEnum.OK;
+
+			this.processHeaders(parameters);
+			this.processCookies(parameters);
+			this.processContentType(parameters);
+			this.processPayload(parameters);
 			this.processCookieHeader();
 			await this.writePayload();
-
-			return;
 		}
-
-		this.statusCode = parameters.status ?? HTTPStatusCodeEnum.OK;
-
-		this.processHeaders(parameters);
-		this.processCookies(parameters);
-		this.processContentType(parameters);
-		this.processPayload(parameters);
-		this.processCookieHeader();
-		await this.writePayload();
+		finally
+		{
+			this.processed = true;
+		}
 	}
 
 	/**
@@ -288,14 +296,19 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 	{
 		this.assertUnlocked();
 
+		this.defineCookie(descriptor);
+	}
+
+	private defineCookie(descriptor: CookieDescriptorInterface): void
+	{
 		if (descriptor.expires !== undefined && descriptor.maxAge !== undefined)
 		{
-			throw new Error("A cookie can't have both an expires and max-age attribute.");
+			throw new Error("A cookie can't have both an 'Expires' and 'Max-Age' attribute.");
 		}
 
-		if (descriptor.sameSite === CookieSameSiteEnum.None && !(descriptor.secure ?? this.isSecure()))
+		if (descriptor.sameSite === CookieSameSiteEnum.NONE && !(descriptor.secure ?? this.isSecure()))
 		{
-			throw new Error("A cookie can't have the attribute SameSite equals to None without the attribute Secure.");
+			throw new Error("A cookie can't have the 'SameSite' attribute equals to 'None' without the 'Secure' attribute.");
 		}
 
 		this.cookies.set(descriptor.name, descriptor);
@@ -394,7 +407,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		parameters.cookies.forEach(
 			(descriptor: CookieDescriptorInterface): void =>
 			{
-				this.setCookie(descriptor);
+				this.defineCookie(descriptor);
 			}
 		);
 	}
@@ -420,7 +433,14 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 			return;
 		}
 
-		this.setHeader("Content-Type", ContentTypeEnum.TEXT);
+		if (isString(parameters.payload))
+		{
+			this.setHeader("Content-Type", ContentTypeEnum.TEXT);
+
+			return;
+		}
+
+		this.setHeader("Content-Type", ContentTypeEnum.BINARY);
 	}
 
 	private processPayload(parameters: ReplyInterface): void
@@ -463,7 +483,6 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		if (this.content === undefined)
 		{
 			this.end();
-			this.processed = true;
 
 			return;
 		}
@@ -474,7 +493,6 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		{
 			this.write(this.content);
 			this.end();
-			this.processed = true;
 
 			return;
 		}
@@ -503,10 +521,6 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 				throw error;
 			}
 		}
-		finally
-		{
-			this.processed = true;
-		}
 	}
 
 	private findAcceptedEncoding(): ContentEncodingEnum | undefined
@@ -518,12 +532,10 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 			return undefined;
 		}
 
-		const ACCEPTED_ENCODINGS: Array<string> = ACCEPT_ENCODING_HEADER.split(", ");
+		const ACCEPTED_ENCODINGS: Array<string> = parseQualityValues(ACCEPT_ENCODING_HEADER);
 
-		for (const RAW_ACCEPTED_ENCODING of ACCEPTED_ENCODINGS)
+		for (const ACCEPTED_ENCODING of ACCEPTED_ENCODINGS)
 		{
-			const ACCEPTED_ENCODING: string | undefined = RAW_ACCEPTED_ENCODING.split(";")[0];
-
 			if (ACCEPTED_ENCODING === ContentEncodingEnum.GZIP)
 			{
 				return ContentEncodingEnum.GZIP;

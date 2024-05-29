@@ -7,7 +7,7 @@ function instanceOf<T extends object>(value: unknown, expected: ConstructorOf<T>
 {
 	doesNotThrow(
 		(): void => { assertInstanceOf(value, expected); },
-		`Expected value to be an instance of ${expected.name}, but instead is ${getDetailedType(value)}.`
+		`Expected value to be an instance of ${expected.name}, but instead got ${getDetailedType(value)}.`
 	);
 }
 

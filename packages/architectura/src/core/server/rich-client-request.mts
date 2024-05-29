@@ -38,7 +38,8 @@ class RichClientRequest extends IncomingMessage
 		this.cookies = new Map();
 		this.path = undefined;
 		this.pathFragments = [];
-		this.query = {};
+		/* parseQuery returns a null-prototype object */
+		this.query = parseQuery("");
 		this.contentType = undefined;
 		this.boundary = undefined;
 		this.rawBody = Promise.resolve(Buffer.alloc(0));

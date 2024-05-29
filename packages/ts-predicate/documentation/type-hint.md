@@ -44,11 +44,13 @@ Possible values:
 - boolean (true or false)
 - number (N)
 - bigint (N)
+- string ("Message")
 - string (N characters)
 - array (N items)
-- anonymous object
-- object anonymous class
-- object ClassName
+- null-prototype object
+- generic object
+- instance of anonymous class
+- instance of ClassName
 - anonymous function
 - anonymous async function
 - function name
@@ -60,7 +62,9 @@ Possible values:
 - anonymous class
 - class Name
 
-Note: generator refers to a generator function.
+Note:
+- Strings with new lines, double quotes, or longer than 36 characters will be abbreviated to a character count.
+- generator refers to a generator function.
 
 ## GetName
 
