@@ -974,8 +974,8 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
-          run_install: false
+          version: 9
+          run_install: true
 
       - name: Dependencies cache unpacking
         uses: actions/cache@v4
@@ -1007,8 +1007,8 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
-          run_install: false
+          version: 9
+          run_install: true
 
       - name: Dependencies cache unpacking
         uses: actions/cache@v4
