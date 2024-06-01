@@ -45,47 +45,6 @@ class RichClientRequest extends IncomingMessage
 		this.rawBody = Promise.resolve(Buffer.alloc(0));
 	}
 
-	private static async ListenForContent(message: IncomingMessage): Promise<Buffer>
-	{
-		return await new Promise(
-			(resolve: (value: Buffer) => void, reject: (reason: Error) => void): void =>
-			{
-				let body: Buffer = Buffer.alloc(0);
-
-				message.addListener(
-					"data",
-					(chunk: Buffer): void =>
-					{
-						body = Buffer.concat([body, chunk]);
-					}
-				);
-
-				message.addListener(
-					"end",
-					(): void =>
-					{
-						if (!message.complete)
-						{
-							reject(new Error("The connection was terminated while the message was still being sent."));
-
-							return;
-						}
-
-						resolve(body);
-					}
-				);
-
-				message.addListener(
-					"error",
-					(error: Error): void =>
-					{
-						reject(error);
-					}
-				);
-			}
-		);
-	}
-
 	/**
 	 * Initialize the request.
 	 *
@@ -157,7 +116,7 @@ class RichClientRequest extends IncomingMessage
 			}
 		}
 
-		this.rawBody = RichClientRequest.ListenForContent(this);
+		this.rawBody = this.listenForContent();
 	}
 
 	/**
@@ -490,6 +449,53 @@ class RichClientRequest extends IncomingMessage
 		return MultipartUtility.Parse(BODY_AS_STRING.split(this.boundary));
 	}
 	*/
+
+	private async listenForContent(): Promise<Buffer>
+	{
+		return await new Promise(
+			(resolve: (value: Buffer) => void, reject: (reason: Error) => void): void =>
+			{
+				let body: Buffer = Buffer.alloc(0);
+
+				const CLEAR_LISTENERS = (): void =>
+				{
+					/* eslint-disable @typescript-eslint/no-use-before-define -- Closure */
+					this.removeListener("data", ON_DATA);
+					this.removeListener("end", ON_END);
+					this.removeListener("error", ON_ERROR);
+					/* eslint-enable @typescript-eslint/no-use-before-define -- Closure */
+				};
+
+				const ON_DATA = (chunk: Buffer): void =>
+				{
+					body = Buffer.concat([body, chunk]);
+				};
+
+				const ON_END = (): void =>
+				{
+					if (!this.complete)
+					{
+						reject(new Error("The connection was terminated while the message was still being sent."));
+
+						return;
+					}
+
+					resolve(body);
+					CLEAR_LISTENERS();
+				};
+
+				const ON_ERROR = (error: Error): void =>
+				{
+					reject(error);
+					CLEAR_LISTENERS();
+				};
+
+				this.addListener("data", ON_DATA);
+				this.addListener("end", ON_END);
+				this.addListener("error", ON_ERROR);
+			}
+		);
+	}
 }
 
 export { RichClientRequest };

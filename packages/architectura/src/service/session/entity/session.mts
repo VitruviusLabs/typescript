@@ -1,7 +1,6 @@
-import type { JSONObjectType } from "@vitruvius-labs/toolbox";
+import { type JSONObjectType, MillisecondEnum } from "@vitruvius-labs/toolbox";
 import type { SessionDelegateInterface } from "../definition/interface/session-delegate.interface.mjs";
 import { SessionConstantEnum } from "../definition/enum/session-constant.enum.mjs";
-import { MillisecondEnum } from "../../../definition/enum/millisecond.enum.mjs";
 import { ContextualStorage } from "../../../core/utility/contextual-storage.mjs";
 
 /**

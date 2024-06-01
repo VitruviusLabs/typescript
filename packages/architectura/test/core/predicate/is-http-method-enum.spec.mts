@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import { strictEqual } from "node:assert";
-import { HTTPMethodEnum, isHTTPMethodEnum } from "../../../src/_index.mjs";
 import { getAllValues } from "@vitruvius-labs/testing-ground";
+import { HTTPMethodEnum, isHTTPMethodEnum } from "../../../src/_index.mjs";
 
 describe("isHTTPMethodEnum", (): void => {
 	it("should return true for valid HTTPMethodEnum values", (): void => {

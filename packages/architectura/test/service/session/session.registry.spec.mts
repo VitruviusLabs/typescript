@@ -1,15 +1,17 @@
-import { afterEach, beforeEach, describe, it } from "node:test";
-import { deepStrictEqual, doesNotThrow, strictEqual } from "node:assert";
-import { assertFunction, assertObject, assertProperty } from "@vitruvius-labs/ts-predicate/type-assertion";
+import { after, beforeEach, describe, it } from "node:test";
+import { deepStrictEqual, strictEqual } from "node:assert";
+import { ReflectUtility, deepStrictIterable } from "@vitruvius-labs/toolbox";
 import { Session, SessionRegistry } from "../../../src/_index.mjs";
 
 describe("SessionRegistry", (): void => {
+	const SESSION_MAP: Map<string, Session> = Reflect.get(SessionRegistry, "SESSIONS");
+
 	beforeEach((): void => {
-		Reflect.get(SessionRegistry, "SESSIONS").clear();
+		SESSION_MAP.clear();
 	});
 
-	afterEach((): void => {
-		Reflect.get(SessionRegistry, "SESSIONS").clear();
+	after((): void => {
+		SESSION_MAP.clear();
 	});
 
 	describe("GetSession", (): void => {
@@ -20,7 +22,7 @@ describe("SessionRegistry", (): void => {
 		it("should return an existing session", (): void => {
 			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
-			Reflect.get(SessionRegistry, "SESSIONS").set("00000000-0000-0000-0000-000000000000", SESSION);
+			SESSION_MAP.set("00000000-0000-0000-0000-000000000000", SESSION);
 
 			strictEqual(SessionRegistry.GetSession("00000000-0000-0000-0000-000000000000"), SESSION);
 		});
@@ -32,7 +34,7 @@ describe("SessionRegistry", (): void => {
 
 			SessionRegistry.AddSession(SESSION);
 
-			deepStrictEqual(Reflect.get(SessionRegistry, "SESSIONS"), new Map([["00000000-0000-0000-0000-000000000000", SESSION]]));
+			deepStrictEqual(ReflectUtility.Get(SessionRegistry, "SESSIONS"), new Map([["00000000-0000-0000-0000-000000000000", SESSION]]));
 		});
 	});
 
@@ -40,11 +42,11 @@ describe("SessionRegistry", (): void => {
 		it("should remove the session", (): void => {
 			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
-			Reflect.get(SessionRegistry, "SESSIONS").set("00000000-0000-0000-0000-000000000000", SESSION);
+			SESSION_MAP.set("00000000-0000-0000-0000-000000000000", SESSION);
 
 			SessionRegistry.RemoveSession("00000000-0000-0000-0000-000000000000");
 
-			deepStrictEqual(Reflect.get(SessionRegistry, "SESSIONS"), new Map());
+			deepStrictEqual(ReflectUtility.Get(SessionRegistry, "SESSIONS"), new Map());
 		});
 	});
 
@@ -52,16 +54,11 @@ describe("SessionRegistry", (): void => {
 		it("should return an iterator of all registered sessions", (): void => {
 			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
-			Reflect.get(SessionRegistry, "SESSIONS").set("00000000-0000-0000-0000-000000000000", SESSION);
+			SESSION_MAP.set("00000000-0000-0000-0000-000000000000", SESSION);
 
 			const ITERABLE: IterableIterator<Session> = SessionRegistry.ListSessions();
 
-			doesNotThrow((): void => {
-				assertObject(ITERABLE);
-				assertProperty(ITERABLE, Symbol.iterator, assertFunction);
-			});
-
-			deepStrictEqual([...ITERABLE], [SESSION]);
+			deepStrictIterable(ITERABLE, [SESSION]);
 		});
 	});
 });

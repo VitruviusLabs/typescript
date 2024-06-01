@@ -9,7 +9,9 @@ import { EXTENSION_TO_MIME_TYPE_MAPPING } from "./mime-types-mapping.mjs";
  */
 function getContentType(extension: string): string
 {
-	return EXTENSION_TO_MIME_TYPE_MAPPING.get(extension) ?? ContentTypeEnum.BINARY;
+	const EXTENSION: string = extension.startsWith(".") ? extension.slice(1) : extension;
+
+	return EXTENSION_TO_MIME_TYPE_MAPPING.get(EXTENSION) ?? ContentTypeEnum.BINARY;
 }
 
 export { getContentType };

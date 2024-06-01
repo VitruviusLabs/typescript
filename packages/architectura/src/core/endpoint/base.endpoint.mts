@@ -29,6 +29,7 @@ abstract class BaseEndpoint
 	protected readonly excludedGlobalPostHooks: Array<typeof BasePostHook> = [];
 	protected readonly errorHooks: Array<BaseErrorHook> = [];
 	protected readonly excludedGlobalErrorHooks: Array<typeof BaseErrorHook> = [];
+	private readonly context: ExecutionContext | undefined = undefined;
 
 	/**
 	 * Process the request.
@@ -128,6 +129,27 @@ abstract class BaseEndpoint
 	public getExcludedGlobalErrorHooks(): Array<typeof BaseErrorHook>
 	{
 		return this.excludedGlobalErrorHooks;
+	}
+
+	/**
+	 * Get the execution context for this endpoint.
+	 *
+	 * @remarks
+	 * This method is only useful for contextual endpoints.
+	 * Contextual endpoints are instantiated for every matching request.
+	 *
+	 * @throws when called in a non-contextual endpoint.
+	 *
+	 * @sealed
+	 */
+	protected getContext(): ExecutionContext
+	{
+		if (this.context === undefined)
+		{
+			throw new Error("This is not a contextual endpoint.");
+		}
+
+		return this.context;
 	}
 }
 

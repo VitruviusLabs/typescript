@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import { deepStrictEqual, doesNotThrow, strictEqual, throws } from "node:assert";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
+import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { ContextualStorage } from "../../../src/_index.mjs";
 
 describe("ContextualStorage", (): void => {
@@ -11,7 +12,7 @@ describe("ContextualStorage", (): void => {
 			const STORAGE: ContextualStorage = new DummyStorage();
 			const DATE: Date = new Date();
 
-			Reflect.get(STORAGE, "contextualItems").set(Date, DATE);
+			ReflectUtility.Set(STORAGE, "contextualItems", new Map([[Date, DATE]]));
 
 			strictEqual(STORAGE.findContextualItem(Date), DATE);
 		});
@@ -32,7 +33,7 @@ describe("ContextualStorage", (): void => {
 			const STORAGE: ContextualStorage = new DummyStorage();
 			const DATE: Date = new Date();
 
-			Reflect.get(STORAGE, "contextualItems").set(Date, DATE);
+			ReflectUtility.Set(STORAGE, "contextualItems", new Map([[Date, DATE]]));
 
 			strictEqual(STORAGE.getContextualItem(Date), DATE);
 		});
@@ -59,7 +60,7 @@ describe("ContextualStorage", (): void => {
 
 			STORAGE.setContextualItem(Date, DATE);
 
-			deepStrictEqual(Reflect.get(STORAGE, "contextualItems"), new Map([[Date, DATE]]));
+			deepStrictEqual(ReflectUtility.Get(STORAGE, "contextualItems"), new Map([[Date, DATE]]));
 		});
 
 		it("should throw when given an invalid item.", (): void => {
@@ -82,11 +83,11 @@ describe("ContextualStorage", (): void => {
 
 			const STORAGE: ContextualStorage = new DummyStorage();
 
-			Reflect.get(STORAGE, "contextualItems").set(Date, new Date());
+			ReflectUtility.Set(STORAGE, "contextualItems", new Map([[Date, new Date()]]));
 
 			STORAGE.removeContextualItem(Date);
 
-			deepStrictEqual(Reflect.get(STORAGE, "contextualItems"), new Map());
+			deepStrictEqual(ReflectUtility.Get(STORAGE, "contextualItems"), new Map());
 		});
 
 		it("should do nothing if the item is not there.", (): void => {
@@ -108,11 +109,11 @@ describe("ContextualStorage", (): void => {
 
 			const STORAGE: ContextualStorage = new DummyStorage();
 
-			Reflect.get(STORAGE, "contextualItems").set(Date, new Date());
+			ReflectUtility.Set(STORAGE, "contextualItems", new Map([[Date, new Date()]]));
 
 			STORAGE.clearContextualItems();
 
-			deepStrictEqual(Reflect.get(STORAGE, "contextualItems"), new Map());
+			deepStrictEqual(ReflectUtility.Get(STORAGE, "contextualItems"), new Map());
 		});
 	});
 });

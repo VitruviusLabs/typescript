@@ -2,6 +2,7 @@ import type { BaseModel } from "./base.model.mjs";
 import type { BaseModelInstantiationInterface } from "./definition/interface/base-model-instantiation.interface.mjs";
 import type { ModelMetadataInterface } from "./definition/interface/model-metadata.interface.mjs";
 import type { BaseFactory } from "./base.factory.mjs";
+import { ReflectUtility } from "@vitruvius-labs/toolbox";
 
 /**
  * Base repository for storing entities
@@ -24,18 +25,18 @@ abstract class BaseRepository<
 
 	private static SetImmutableFields(model: BaseModel, data: ModelMetadataInterface): void
 	{
-		Reflect.set(model, "id", BigInt(data.id));
-		Reflect.set(model, "createdAt", data.createdAt);
-		Reflect.set(model, "updatedAt", data.updatedAt);
-		Reflect.set(model, "deletedAt", data.deletedAt ?? undefined);
+		ReflectUtility.Set(model, "id", BigInt(data.id));
+		ReflectUtility.Set(model, "createdAt", data.createdAt);
+		ReflectUtility.Set(model, "updatedAt", data.updatedAt);
+		ReflectUtility.Set(model, "deletedAt", data.deletedAt ?? undefined);
 	}
 
 	private static ClearImmutableFields(model: BaseModel): void
 	{
-		Reflect.set(model, "id", undefined);
-		Reflect.set(model, "createdAt", undefined);
-		Reflect.set(model, "updatedAt", undefined);
-		Reflect.set(model, "deletedAt", undefined);
+		ReflectUtility.Set(model, "id", undefined);
+		ReflectUtility.Set(model, "createdAt", undefined);
+		ReflectUtility.Set(model, "updatedAt", undefined);
+		ReflectUtility.Set(model, "deletedAt", undefined);
 	}
 
 	/**

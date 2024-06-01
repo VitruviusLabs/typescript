@@ -1,8 +1,9 @@
+import type { FileSystemFlagEnum } from "./definition/enum/file-system-flag.enum.mjs";
 import { type Dirent, type ReadStream, type Stats, createReadStream } from "node:fs";
 import { type FileHandle, open, readFile, readdir, stat } from "node:fs/promises";
+import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { isErrorWithCode } from "../../predicate/is-error-with-code.mjs";
-import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
 
 /**
  * Service for interacting with the file system
@@ -123,11 +124,11 @@ class FileSystemService
 	 *
 	 * @throws if the file does not exist
 	 */
-	public static async OpenFile(file_path: string, flags: string): Promise<FileHandle>
+	public static async OpenFile(file_path: string, flags?: FileSystemFlagEnum | number | string | undefined, permissions?: number | string | undefined): Promise<FileHandle>
 	{
 		await FileSystemService.AssertFileExistence(file_path);
 
-		const FILE: FileHandle = await open(file_path, flags);
+		const FILE: FileHandle = await open(file_path, flags, permissions);
 
 		return FILE;
 	}

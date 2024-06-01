@@ -19,6 +19,11 @@ class ExecutionContext extends ContextualStorage
 		this.response = context_items.response;
 	}
 
+	public static Create(context_items: ExecutionContextInstantiationInterface): ExecutionContext
+	{
+		return new ExecutionContext(context_items);
+	}
+
 	/**
 	 * Returns the UUID of the context.
 	 *

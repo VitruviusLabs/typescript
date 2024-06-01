@@ -9,7 +9,7 @@ describe("validateClaims", (): void => {
 			validateClaims({});
 		};
 
-		doesNotThrow(WRAPPER, createErrorTest());
+		doesNotThrow(WRAPPER);
 	});
 
 	it("should return when given claims issued in the past", (): void => {
@@ -17,7 +17,7 @@ describe("validateClaims", (): void => {
 			validateClaims({ iat: Date.now() - 1000 });
 		};
 
-		doesNotThrow(WRAPPER, createErrorTest());
+		doesNotThrow(WRAPPER);
 	});
 
 	it("should throw when given claims issued in the future", (): void => {
@@ -33,20 +33,20 @@ describe("validateClaims", (): void => {
 			validateClaims({ nbf: Date.now() - 1000 });
 		};
 
-		doesNotThrow(WRAPPER, createErrorTest());
+		doesNotThrow(WRAPPER);
 	});
 
-	it("should return when given claims not yet active but told to skip the check", (): void => {
-		const WRAPPER = (): void => {
-			validateClaims({ nbf: Date.now() + 1000 }, false);
-		};
-
-		doesNotThrow(WRAPPER, createErrorTest());
-	});
-
-	it("should throw when given claims not yet active", (): void => {
+	it("should return when given claims not yet active, by default it should ignore that", (): void => {
 		const WRAPPER = (): void => {
 			validateClaims({ nbf: Date.now() + 1000 });
+		};
+
+		doesNotThrow(WRAPPER);
+	});
+
+	it("should throw when given claims not yet active and told to not ignore that", (): void => {
+		const WRAPPER = (): void => {
+			validateClaims({ nbf: Date.now() + 1000 }, true);
 		};
 
 		throws(WRAPPER, createErrorTest());

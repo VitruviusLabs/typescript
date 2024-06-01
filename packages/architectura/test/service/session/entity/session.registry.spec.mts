@@ -1,15 +1,17 @@
-import { afterEach, beforeEach, describe, it } from "node:test";
+import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, doesNotThrow, strictEqual, throws } from "node:assert";
 import { Session, SessionRegistry } from "../../../../src/_index.mjs";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
 
 describe("SessionRegistry", (): void => {
+	const SESSION_MAP: Map<string, Session> = Reflect.get(SessionRegistry, "SESSIONS");
+
 	beforeEach((): void => {
-		Reflect.get(SessionRegistry, "SESSIONS").clear();
+		SESSION_MAP.clear();
 	});
 
-	afterEach((): void => {
-		Reflect.get(SessionRegistry, "SESSIONS").clear();
+	after((): void => {
+		SESSION_MAP.clear();
 	});
 
 	describe("GetSession", (): void => {
@@ -20,7 +22,7 @@ describe("SessionRegistry", (): void => {
 		it("should return the session with this UUID", (): void => {
 			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
-			Reflect.get(SessionRegistry, "SESSIONS").set("00000000-0000-0000-0000-000000000000", SESSION);
+			SESSION_MAP.set("00000000-0000-0000-0000-000000000000", SESSION);
 
 			strictEqual(SessionRegistry.GetSession("00000000-0000-0000-0000-000000000000"), SESSION);
 		});
@@ -32,14 +34,14 @@ describe("SessionRegistry", (): void => {
 
 			SessionRegistry.AddSession(SESSION);
 
-			deepStrictEqual(Reflect.get(SessionRegistry, "SESSIONS"), new Map([["00000000-0000-0000-0000-000000000000", SESSION]]));
+			deepStrictEqual(SESSION_MAP, new Map([["00000000-0000-0000-0000-000000000000", SESSION]]));
 		});
 
 		it("should throw if there is already a session with this UUID already", (): void => {
 			const SESSION_1: Session = new Session("00000000-0000-0000-0000-000000000000");
 			const SESSION_2: Session = new Session("00000000-0000-0000-0000-000000000000");
 
-			Reflect.get(SessionRegistry, "SESSIONS").set("00000000-0000-0000-0000-000000000000", SESSION_1);
+			SESSION_MAP.set("00000000-0000-0000-0000-000000000000", SESSION_1);
 
 			const WRAPPER = (): void => {
 				SessionRegistry.AddSession(SESSION_2);
@@ -53,21 +55,21 @@ describe("SessionRegistry", (): void => {
 		it("should remove the session with this UUID", (): void => {
 			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
-			Reflect.get(SessionRegistry, "SESSIONS").set("00000000-0000-0000-0000-000000000000", SESSION);
+			SESSION_MAP.set("00000000-0000-0000-0000-000000000000", SESSION);
 
 			SessionRegistry.RemoveSession("00000000-0000-0000-0000-000000000000");
 
-			deepStrictEqual(Reflect.get(SessionRegistry, "SESSIONS"), new Map());
+			deepStrictEqual(SESSION_MAP, new Map());
 		});
 
 		it("should remove the session", (): void => {
 			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
-			Reflect.get(SessionRegistry, "SESSIONS").set("00000000-0000-0000-0000-000000000000", SESSION);
+			SESSION_MAP.set("00000000-0000-0000-0000-000000000000", SESSION);
 
 			SessionRegistry.RemoveSession(SESSION);
 
-			deepStrictEqual(Reflect.get(SessionRegistry, "SESSIONS"), new Map());
+			deepStrictEqual(SESSION_MAP, new Map());
 		});
 
 		it("should not throw if there is no session with this UUID already", (): void => {

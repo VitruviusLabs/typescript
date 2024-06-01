@@ -2,11 +2,12 @@ import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, strictEqual, throws } from "node:assert";
 import { type SinonFakeTimers, useFakeTimers } from "sinon";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
+import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { JWT, type JWTClaimsInterface, type SecretType } from "../../../../src/_index.mjs";
 
 describe("JWT", (): void => {
 	const ALGORITHM: string = "RSA-SHA256";
-	const SECRET: SecretType = "secret";
+	const SECRET: SecretType = "your-256-bit-secret-here";
 	const CLOCK: SinonFakeTimers = useFakeTimers({ toFake: ["Date"] });
 
 	beforeEach((): void => {
@@ -27,12 +28,12 @@ describe("JWT", (): void => {
 
 			const TOKEN: JWT = new JWT(ALGORITHM, SECRET, CLAIMS);
 
-			deepStrictEqual(Reflect.get(TOKEN, "header"), { typ: "JWT", alg: ALGORITHM });
-			strictEqual(Reflect.get(TOKEN, "secret"), SECRET);
-			deepStrictEqual(Reflect.get(TOKEN, "claims"), CLAIMS);
+			deepStrictEqual(ReflectUtility.Get(TOKEN, "header"), { typ: "JWT", alg: ALGORITHM });
+			strictEqual(ReflectUtility.Get(TOKEN, "secret"), SECRET);
+			deepStrictEqual(ReflectUtility.Get(TOKEN, "claims"), CLAIMS);
 		});
 
-		it("should throw if the algorithm is unsupported", (): void => {
+		it("should validate the algorithm", (): void => {
 			const CLAIMS: JWTClaimsInterface = {};
 
 			const WRAPPER = (): void => {
@@ -42,7 +43,7 @@ describe("JWT", (): void => {
 			throws(WRAPPER, createErrorTest());
 		});
 
-		it("should throw if the secret is invalid", (): void => {
+		it("should validate the secret", (): void => {
 			const CLAIMS: JWTClaimsInterface = {};
 
 			const WRAPPER = (): void => {
@@ -52,32 +53,10 @@ describe("JWT", (): void => {
 			throws(WRAPPER, createErrorTest());
 		});
 
-		it("should throw if the claims are invalid (iat)", (): void => {
+		it("should validate the claims", (): void => {
 			const CLAIMS: JWTClaimsInterface = {
 				iat: 1,
-			};
-
-			const WRAPPER = (): void => {
-				new JWT(ALGORITHM, SECRET, CLAIMS);
-			};
-
-			throws(WRAPPER, createErrorTest());
-		});
-
-		it("should throw if the claims are invalid (nbf)", (): void => {
-			const CLAIMS: JWTClaimsInterface = {
-				nbf: 1,
-			};
-
-			const WRAPPER = (): void => {
-				new JWT(ALGORITHM, SECRET, CLAIMS);
-			};
-
-			throws(WRAPPER, createErrorTest());
-		});
-
-		it("should throw if the claims are invalid (exp)", (): void => {
-			const CLAIMS: JWTClaimsInterface = {
+				nbf: 0,
 				exp: -1,
 			};
 
@@ -88,43 +67,15 @@ describe("JWT", (): void => {
 			throws(WRAPPER, createErrorTest());
 		});
 
-		it("should throw if the claims are invalid (iat > nbf)", (): void => {
-			const CLAIMS: JWTClaimsInterface = {
-				iat: 2,
-				nbf: 1,
-			};
+		it("should be resilient to external claims mutations", (): void => {
+			const CLAIMS: JWTClaimsInterface = { iat: -1 };
 
-			const WRAPPER = (): void => {
-				new JWT(ALGORITHM, SECRET, CLAIMS);
-			};
+			const TOKEN: JWT = new JWT(ALGORITHM, SECRET, CLAIMS);
 
-			throws(WRAPPER, createErrorTest());
-		});
+			CLAIMS.iat = 1;
 
-		it("should throw if the claims are invalid (iat > exp)", (): void => {
-			const CLAIMS: JWTClaimsInterface = {
-				iat: 2,
-				exp: 1,
-			};
-
-			const WRAPPER = (): void => {
-				new JWT(ALGORITHM, SECRET, CLAIMS);
-			};
-
-			throws(WRAPPER, createErrorTest());
-		});
-
-		it("should throw if the claims are invalid (nbf > exp)", (): void => {
-			const CLAIMS: JWTClaimsInterface = {
-				nbf: 2,
-				exp: 1,
-			};
-
-			const WRAPPER = (): void => {
-				new JWT(ALGORITHM, SECRET, CLAIMS);
-			};
-
-			throws(WRAPPER, createErrorTest());
+			deepStrictEqual(ReflectUtility.Get(TOKEN, "claims"), { iat: -1 });
+			deepStrictEqual(CLAIMS, { iat: 1 });
 		});
 	});
 
@@ -142,6 +93,14 @@ describe("JWT", (): void => {
 
 			deepStrictEqual(TOKEN.getClaims(), { exp: 1 });
 		});
+
+		it("should be resilient to external claims mutations", (): void => {
+			const TOKEN: JWT = new JWT(ALGORITHM, SECRET, { iat: -1 });
+
+			TOKEN.getClaims().iat = 1;
+
+			deepStrictEqual(ReflectUtility.Get(TOKEN, "claims"), { iat: -1 });
+		});
 	});
 
 	describe("setClaims", (): void => {
@@ -156,38 +115,16 @@ describe("JWT", (): void => {
 
 			TOKEN.setClaims(CLAIMS);
 
-			deepStrictEqual(Reflect.get(TOKEN, "claims"), CLAIMS);
+			deepStrictEqual(ReflectUtility.Get(TOKEN, "claims"), CLAIMS);
 		});
 
-		it("should throw if the claims are invalid (iat)", (): void => {
+		it("should validate the claims", (): void => {
 			const TOKEN: JWT = new JWT(ALGORITHM, SECRET, {});
 
 			const WRAPPER = (): void => {
 				TOKEN.setClaims({
 					iat: 1,
-				});
-			};
-
-			throws(WRAPPER, createErrorTest());
-		});
-
-		it("should throw if the claims are invalid (nbf)", (): void => {
-			const TOKEN: JWT = new JWT(ALGORITHM, SECRET, {});
-
-			const WRAPPER = (): void => {
-				TOKEN.setClaims({
-					nbf: 1,
-				});
-			};
-
-			throws(WRAPPER, createErrorTest());
-		});
-
-		it("should throw if the claims are invalid (exp)", (): void => {
-			const TOKEN: JWT = new JWT(ALGORITHM, SECRET, {});
-
-			const WRAPPER = (): void => {
-				TOKEN.setClaims({
+					nbf: 0,
 					exp: -1,
 				});
 			};
@@ -195,43 +132,17 @@ describe("JWT", (): void => {
 			throws(WRAPPER, createErrorTest());
 		});
 
-		it("should throw if the claims are invalid (iat > nbf)", (): void => {
+		it("should be resilient to external claims mutations", (): void => {
+			const CLAIMS: JWTClaimsInterface = { iat: -1 };
+
 			const TOKEN: JWT = new JWT(ALGORITHM, SECRET, {});
 
-			const WRAPPER = (): void => {
-				TOKEN.setClaims({
-					iat: 2,
-					nbf: 1,
-				});
-			};
+			TOKEN.setClaims(CLAIMS);
 
-			throws(WRAPPER, createErrorTest());
-		});
+			CLAIMS.iat = 1;
 
-		it("should throw if the claims are invalid (iat > exp)", (): void => {
-			const TOKEN: JWT = new JWT(ALGORITHM, SECRET, {});
-
-			const WRAPPER = (): void => {
-				TOKEN.setClaims({
-					iat: 2,
-					exp: 1,
-				});
-			};
-
-			throws(WRAPPER, createErrorTest());
-		});
-
-		it("should throw if the claims are invalid (nbf > exp)", (): void => {
-			const TOKEN: JWT = new JWT(ALGORITHM, SECRET, {});
-
-			const WRAPPER = (): void => {
-				TOKEN.setClaims({
-					nbf: 2,
-					exp: 1,
-				});
-			};
-
-			throws(WRAPPER, createErrorTest());
+			deepStrictEqual(ReflectUtility.Get(TOKEN, "claims"), { iat: -1 });
+			deepStrictEqual(CLAIMS, { iat: 1 });
 		});
 	});
 
@@ -244,9 +155,11 @@ describe("JWT", (): void => {
 			};
 
 			const EXPECTED: string = [
+				/* cspell: disable */
 				"eyJ0eXAiOiJKV1QiLCJhbGciOiJSU0EtU0hBMjU2In0",
 				"eyJpYXQiOi0xLCJuYmYiOjAsImV4cCI6MX0",
-				"wrzDqizDh8K5woXCvcKFwolYwrTCkcKResO0wpZAwp4Yw6_CvsKQw55iw4bDqsKnR8OnwqLCpjM",
+				"DgVOw4htw6JsfVF4w7tCfQ7CjhHCscO1fcO9TcKEwoXDtUExNVLCncKyQMO3",
+				/* cspell: enable */
 			].join(".");
 
 			const TOKEN: JWT = new JWT(ALGORITHM, SECRET, CLAIMS);

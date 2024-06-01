@@ -1,5 +1,5 @@
 import type { Dirent } from "node:fs";
-import { type ConstructorOf, getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
+import type { ConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 import { isFunction, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { BasePreHook } from "./base.pre-hook.mjs";
@@ -205,7 +205,7 @@ class HookRegistry
 			return value.name;
 		}
 
-		return getConstructorOf(value).name;
+		return value.constructor.name;
 	}
 }
 

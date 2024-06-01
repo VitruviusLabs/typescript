@@ -1,10 +1,10 @@
-import type { HTTPServerInstantiationInterface } from "../interface/http-server-instantiation.interface.mjs";
-import type { HTTPSServerInstantiationInterface } from "../interface/https-server-instantiation.interface.mjs";
+import type { UnsafeServerInstantiationInterface } from "../interface/unsafe-server-instantiation.interface.mjs";
+import type { SecureServerInstantiationInterface } from "../interface/secure-server-instantiation.interface.mjs";
 
 /** @internal */
 type ServerInstantiationType = (
-	| HTTPServerInstantiationInterface
-	| HTTPSServerInstantiationInterface
+	| SecureServerInstantiationInterface
+	| UnsafeServerInstantiationInterface
 );
 
 export type { ServerInstantiationType };

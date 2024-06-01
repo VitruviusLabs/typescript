@@ -1,86 +1,84 @@
-import type { JSONObjectType } from "@vitruvius-labs/toolbox";
-import { afterEach, beforeEach, describe, it } from "node:test";
-import { deepStrictEqual, rejects, strictEqual, throws } from "node:assert";
+import { describe, it } from "node:test";
+import { deepStrictEqual, doesNotReject, rejects, strictEqual, throws } from "node:assert";
 import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
-import { type SinonStub, stub } from "sinon";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
+import { type JSONObjectType, ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
 import { ContentTypeEnum, HTTPMethodEnum, RichClientRequest } from "../../../src/_index.mjs";
-import { mockRequest } from "../../utils/mock/mock-request.mjs";
-import { mockSocket } from "../../utils/mock/mock-socket.mjs";
-import { asStub } from "../../utils/as-stub.mjs";
-import { deepStrictResolves } from "../../utils/assert/deep-strict-resolves.mjs";
-import { strictResolves } from "../../utils/assert/strict-resolves.mjs";
+import { type MockRequestInterface, mockRequest, mockSocket } from "../../../mock/_index.mjs";
 
 describe("RichClientRequest", (): void => {
 	describe("constructor", (): void => {
 		it("should create a new request", async (): Promise<void> => {
-			const REQUEST: RichClientRequest = new RichClientRequest(mockSocket());
+			const REQUEST: RichClientRequest = new RichClientRequest(mockSocket().instance);
 
-			strictEqual(Reflect.get(REQUEST, "pathMatchGroups"), undefined);
-			strictEqual(Reflect.get(REQUEST, "initialized"), false);
-			deepStrictEqual(Reflect.get(REQUEST, "cookies"), new Map());
-			strictEqual(Reflect.get(REQUEST, "path"), undefined);
-			deepStrictEqual(Reflect.get(REQUEST, "pathFragments"), []);
-			deepStrictEqual(Reflect.get(REQUEST, "query"), parseQuery(""));
-			strictEqual(Reflect.get(REQUEST, "contentType"), undefined);
-			strictEqual(Reflect.get(REQUEST, "boundary"), undefined);
-			await deepStrictResolves(Reflect.get(REQUEST, "rawBody"), Buffer.alloc(0));
+			strictEqual(ReflectUtility.Get(REQUEST, "pathMatchGroups"), undefined);
+			strictEqual(ReflectUtility.Get(REQUEST, "initialized"), false);
+			deepStrictEqual(ReflectUtility.Get(REQUEST, "cookies"), new Map());
+			strictEqual(ReflectUtility.Get(REQUEST, "path"), undefined);
+			deepStrictEqual(ReflectUtility.Get(REQUEST, "pathFragments"), []);
+			deepStrictEqual(ReflectUtility.Get(REQUEST, "query"), parseQuery(""));
+			strictEqual(ReflectUtility.Get(REQUEST, "contentType"), undefined);
+			strictEqual(ReflectUtility.Get(REQUEST, "boundary"), undefined);
+
+			const BODY: unknown = ReflectUtility.Get(REQUEST, "rawBody");
+
+			instanceOf(BODY, Promise);
+			await doesNotReject(BODY);
+			deepStrictEqual(await BODY, Buffer.alloc(0));
 		});
 	});
 
-	describe("ListenForContent", (): void => {
+	describe("listenForContent", (): void => {
 		it("should listen for content and resolve as a Buffer", async (): Promise<void> => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST_MOCK: MockRequestInterface = mockRequest();
+			const REQUEST: RichClientRequest = REQUEST_MOCK.instance;
 
-			const PROMISE: Promise<Buffer> = Reflect.get(RichClientRequest, "ListenForContent").call(RichClientRequest, REQUEST);
+			const RESULT: unknown = ReflectUtility.Call(REQUEST, "listenForContent");
 
-			Reflect.set(REQUEST, "complete", true);
+			ReflectUtility.Set(REQUEST, "complete", true);
 			REQUEST.emit("data", Buffer.from("Hello, "));
 			REQUEST.emit("data", Buffer.from("World!"));
 			REQUEST.emit("end");
 
-			await deepStrictResolves(PROMISE, Buffer.from("Hello, World!"));
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, Buffer.from("Hello, World!"));
 		});
 
 		it("should reject if the connection is terminated", async (): Promise<void> => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST_MOCK: MockRequestInterface = mockRequest();
+			const REQUEST: RichClientRequest = REQUEST_MOCK.instance;
 
-			const PROMISE: Promise<Buffer> = Reflect.get(RichClientRequest, "ListenForContent").call(RichClientRequest, REQUEST);
+			const RESULT: unknown = ReflectUtility.Call(REQUEST, "listenForContent");
 
 			REQUEST.emit("error", new Error("Payload issue"));
 
-			await rejects(PROMISE, createErrorTest());
+			instanceOf(RESULT, Promise);
+			await rejects(RESULT, createErrorTest());
 		});
 
 		it("should reject if the message is not completely sent", async (): Promise<void> => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST_MOCK: MockRequestInterface = mockRequest();
+			const REQUEST: RichClientRequest = REQUEST_MOCK.instance;
 
-			const PROMISE: Promise<Buffer> = Reflect.get(RichClientRequest, "ListenForContent").call(RichClientRequest, REQUEST);
+			const RESULT: unknown = ReflectUtility.Call(REQUEST, "listenForContent");
 
-			Reflect.set(REQUEST, "complete", false);
+			ReflectUtility.Set(REQUEST, "complete", false);
 			REQUEST.emit("data", Buffer.from("Hello, "));
 			REQUEST.emit("end");
 
-			await rejects(PROMISE, createErrorTest());
+			instanceOf(RESULT, Promise);
+			await rejects(RESULT, createErrorTest());
 		});
 	});
 
 	describe("initialize", (): void => {
-		beforeEach((): void => {
-			// @ts-expect-error: Stub private method
-			stub(RichClientRequest, "ListenForContent");
-		});
-
-		afterEach((): void => {
-			asStub(Reflect.get(RichClientRequest, "ListenForContent")).restore();
-		});
-
 		it("should initialize the request (with cookies and URL parameters)", async (): Promise<void> => {
-			const STUB: SinonStub = asStub(Reflect.get(RichClientRequest, "ListenForContent"));
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST_MOCK: MockRequestInterface = mockRequest();
+			const REQUEST: RichClientRequest = REQUEST_MOCK.instance;
 			const PARAMETERS: string = "lorem=ipsum&alpha=omega&id=1&id=2";
 
-			STUB.resolves(Buffer.alloc(0));
+			REQUEST_MOCK.stubs.listenForContent.resolves(Buffer.from("Hello, World!"));
 
 			REQUEST.url = `/api/v1/resource?${PARAMETERS}`;
 			REQUEST.headers.cookie = "alpha=1; beta=2; delta=3";
@@ -88,26 +86,30 @@ describe("RichClientRequest", (): void => {
 
 			REQUEST.initialize();
 
-			strictEqual(Reflect.get(REQUEST, "pathMatchGroups"), undefined);
-			strictEqual(Reflect.get(REQUEST, "initialized"), true);
-			strictEqual(Reflect.get(REQUEST, "contentType"), undefined);
-			strictEqual(Reflect.get(REQUEST, "boundary"), undefined);
-			deepStrictEqual(Reflect.get(REQUEST, "cookies"), new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]));
-			strictEqual(Reflect.get(REQUEST, "path"), "/api/v1/resource");
-			deepStrictEqual(Reflect.get(REQUEST, "pathFragments"), ["api", "v1", "resource"]);
-			deepStrictEqual(Reflect.get(REQUEST, "query"), parseQuery(PARAMETERS));
-			strictEqual(STUB.calledOnce, true, "'ListenForContent' should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, [REQUEST]);
-			await deepStrictResolves(Reflect.get(REQUEST, "rawBody"), Buffer.alloc(0));
+			strictEqual(ReflectUtility.Get(REQUEST, "pathMatchGroups"), undefined);
+			strictEqual(ReflectUtility.Get(REQUEST, "initialized"), true);
+			strictEqual(ReflectUtility.Get(REQUEST, "contentType"), undefined);
+			strictEqual(ReflectUtility.Get(REQUEST, "boundary"), undefined);
+			deepStrictEqual(ReflectUtility.Get(REQUEST, "cookies"), new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]));
+			strictEqual(ReflectUtility.Get(REQUEST, "path"), "/api/v1/resource");
+			deepStrictEqual(ReflectUtility.Get(REQUEST, "pathFragments"), ["api", "v1", "resource"]);
+			deepStrictEqual(ReflectUtility.Get(REQUEST, "query"), parseQuery(PARAMETERS));
+			strictEqual(REQUEST_MOCK.stubs.listenForContent.callCount, 1, "'listenForContent' should be called exactly once");
+
+			const BODY: unknown = ReflectUtility.Get(REQUEST, "rawBody");
+
+			instanceOf(BODY, Promise);
+			await doesNotReject(BODY);
+			deepStrictEqual(await BODY, Buffer.from("Hello, World!"));
 		});
 
 		it("should initialize the request (application/json)", async (): Promise<void> => {
-			const STUB: SinonStub = asStub(Reflect.get(RichClientRequest, "ListenForContent"));
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST_MOCK: MockRequestInterface = mockRequest();
+			const REQUEST: RichClientRequest = REQUEST_MOCK.instance;
 
 			const JSON_BODY: string = JSON.stringify({ lorem: "ipsum" });
 
-			STUB.resolves(Buffer.from(JSON_BODY));
+			REQUEST_MOCK.stubs.listenForContent.resolves(Buffer.from(JSON_BODY));
 
 			REQUEST.url = "/api/v2/resource";
 			REQUEST.headers["content-type"] = "application/json";
@@ -115,24 +117,28 @@ describe("RichClientRequest", (): void => {
 
 			REQUEST.initialize();
 
-			strictEqual(Reflect.get(REQUEST, "pathMatchGroups"), undefined);
-			strictEqual(Reflect.get(REQUEST, "initialized"), true);
-			strictEqual(Reflect.get(REQUEST, "contentType"), "application/json");
-			strictEqual(Reflect.get(REQUEST, "boundary"), undefined);
-			deepStrictEqual(Reflect.get(REQUEST, "cookies"), new Map());
-			strictEqual(Reflect.get(REQUEST, "path"), "/api/v2/resource");
-			deepStrictEqual(Reflect.get(REQUEST, "pathFragments"), ["api", "v2", "resource"]);
-			deepStrictEqual(Reflect.get(REQUEST, "query"), parseQuery(""));
-			strictEqual(STUB.calledOnce, true, "'ListenForContent' should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, [REQUEST]);
-			await deepStrictResolves(Reflect.get(REQUEST, "rawBody"), Buffer.from(JSON_BODY));
+			strictEqual(ReflectUtility.Get(REQUEST, "pathMatchGroups"), undefined);
+			strictEqual(ReflectUtility.Get(REQUEST, "initialized"), true);
+			strictEqual(ReflectUtility.Get(REQUEST, "contentType"), "application/json");
+			strictEqual(ReflectUtility.Get(REQUEST, "boundary"), undefined);
+			deepStrictEqual(ReflectUtility.Get(REQUEST, "cookies"), new Map());
+			strictEqual(ReflectUtility.Get(REQUEST, "path"), "/api/v2/resource");
+			deepStrictEqual(ReflectUtility.Get(REQUEST, "pathFragments"), ["api", "v2", "resource"]);
+			deepStrictEqual(ReflectUtility.Get(REQUEST, "query"), parseQuery(""));
+			strictEqual(REQUEST_MOCK.stubs.listenForContent.callCount, 1, "'listenForContent' should be called exactly once");
+
+			const BODY: unknown = ReflectUtility.Get(REQUEST, "rawBody");
+
+			instanceOf(BODY, Promise);
+			await doesNotReject(BODY);
+			deepStrictEqual(await BODY, Buffer.from(JSON_BODY));
 		});
 
 		it("should initialize the request (multipart/form-data)", async (): Promise<void> => {
-			const STUB: SinonStub = asStub(Reflect.get(RichClientRequest, "ListenForContent"));
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST_MOCK: MockRequestInterface = mockRequest();
+			const REQUEST: RichClientRequest = REQUEST_MOCK.instance;
 
-			STUB.resolves(Buffer.from("Hello, World"));
+			REQUEST_MOCK.stubs.listenForContent.resolves(Buffer.from("Hello, World"));
 
 			REQUEST.url = "/api/v3/resource";
 			REQUEST.headers["content-type"] = "multipart/form-data; boundary=-----123456789";
@@ -140,23 +146,27 @@ describe("RichClientRequest", (): void => {
 
 			REQUEST.initialize();
 
-			strictEqual(Reflect.get(REQUEST, "pathMatchGroups"), undefined);
-			strictEqual(Reflect.get(REQUEST, "initialized"), true);
-			strictEqual(Reflect.get(REQUEST, "contentType"), "multipart/form-data");
-			strictEqual(Reflect.get(REQUEST, "boundary"), "-------123456789");
-			deepStrictEqual(Reflect.get(REQUEST, "cookies"), new Map());
-			strictEqual(Reflect.get(REQUEST, "path"), "/api/v3/resource");
-			deepStrictEqual(Reflect.get(REQUEST, "pathFragments"), ["api", "v3", "resource"]);
-			deepStrictEqual(Reflect.get(REQUEST, "query"), parseQuery(""));
-			strictEqual(STUB.calledOnce, true, "'ListenForContent' should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, [REQUEST]);
-			await deepStrictResolves(Reflect.get(REQUEST, "rawBody"), Buffer.from("Hello, World"));
+			strictEqual(ReflectUtility.Get(REQUEST, "pathMatchGroups"), undefined);
+			strictEqual(ReflectUtility.Get(REQUEST, "initialized"), true);
+			strictEqual(ReflectUtility.Get(REQUEST, "contentType"), "multipart/form-data");
+			strictEqual(ReflectUtility.Get(REQUEST, "boundary"), "-------123456789");
+			deepStrictEqual(ReflectUtility.Get(REQUEST, "cookies"), new Map());
+			strictEqual(ReflectUtility.Get(REQUEST, "path"), "/api/v3/resource");
+			deepStrictEqual(ReflectUtility.Get(REQUEST, "pathFragments"), ["api", "v3", "resource"]);
+			deepStrictEqual(ReflectUtility.Get(REQUEST, "query"), parseQuery(""));
+			strictEqual(REQUEST_MOCK.stubs.listenForContent.callCount, 1, "'listenForContent' should be called exactly once");
+
+			const BODY: unknown = ReflectUtility.Get(REQUEST, "rawBody");
+
+			instanceOf(BODY, Promise);
+			await doesNotReject(BODY);
+			deepStrictEqual(await BODY, Buffer.from("Hello, World"));
 		});
 
 		it("should throw if initialized more than once", (): void => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST: RichClientRequest = mockRequest().instance;
 
-			Reflect.set(REQUEST, "initialized", true);
+			ReflectUtility.Set(REQUEST, "initialized", true);
 
 			const WRAPPER = (): void => {
 				REQUEST.initialize();
@@ -169,13 +179,12 @@ describe("RichClientRequest", (): void => {
 	describe("method", (): void => {
 		describe("getUnsafeMethod", (): void => {
 			it("should return the method, whatever it is", (): void => {
+				const REQUEST: RichClientRequest = mockRequest().instance;
 				const VALUES: Array<string | undefined> = [undefined, "", HTTPMethodEnum.GET, HTTPMethodEnum.POST, "SEARCH", "QUERY"];
 
 				for (const VALUE of VALUES)
 				{
-					const REQUEST: RichClientRequest = mockRequest();
-
-					Reflect.set(REQUEST, "method", VALUE);
+					ReflectUtility.Set(REQUEST, "method", VALUE);
 
 					strictEqual(REQUEST.getUnsafeMethod(), VALUE);
 				}
@@ -184,19 +193,19 @@ describe("RichClientRequest", (): void => {
 
 		describe("hasStandardMethod", (): void => {
 			it("should return false if the method is missing or non-standard", (): void => {
+				const REQUEST: RichClientRequest = mockRequest().instance;
 				const VALUES: Array<string | undefined> = [undefined, "", "SEARCH", "QUERY", "OPTION"];
 
 				for (const VALUE of VALUES)
 				{
-					const REQUEST: RichClientRequest = mockRequest();
-
-					Reflect.set(REQUEST, "method", VALUE);
+					ReflectUtility.Set(REQUEST, "method", VALUE);
 
 					strictEqual(REQUEST.hasStandardMethod(), false);
 				}
 			});
 
 			it("should return true if the method is standard", (): void => {
+				const REQUEST: RichClientRequest = mockRequest().instance;
 				const VALUES: Array<HTTPMethodEnum> = [
 					HTTPMethodEnum.GET,
 					HTTPMethodEnum.HEAD,
@@ -211,9 +220,7 @@ describe("RichClientRequest", (): void => {
 
 				for (const VALUE of VALUES)
 				{
-					const REQUEST: RichClientRequest = mockRequest();
-
-					Reflect.set(REQUEST, "method", VALUE);
+					ReflectUtility.Set(REQUEST, "method", VALUE);
 
 					strictEqual(REQUEST.hasStandardMethod(), true);
 				}
@@ -222,13 +229,12 @@ describe("RichClientRequest", (): void => {
 
 		describe("getMethod", (): void => {
 			it("should throw if the method is missing or non-standard", (): void => {
+				const REQUEST: RichClientRequest = mockRequest().instance;
 				const VALUES: Array<string | undefined> = [undefined, "", "SEARCH", "QUERY", "OPTION"];
 
 				for (const VALUE of VALUES)
 				{
-					const REQUEST: RichClientRequest = mockRequest();
-
-					Reflect.set(REQUEST, "method", VALUE);
+					ReflectUtility.Set(REQUEST, "method", VALUE);
 
 					const WRAPPER = (): void => {
 						REQUEST.getMethod();
@@ -239,6 +245,7 @@ describe("RichClientRequest", (): void => {
 			});
 
 			it("should return true if the method is standard", (): void => {
+				const REQUEST: RichClientRequest = mockRequest().instance;
 				const VALUES: Array<HTTPMethodEnum> = [
 					HTTPMethodEnum.GET,
 					HTTPMethodEnum.HEAD,
@@ -253,9 +260,7 @@ describe("RichClientRequest", (): void => {
 
 				for (const VALUE of VALUES)
 				{
-					const REQUEST: RichClientRequest = mockRequest();
-
-					Reflect.set(REQUEST, "method", VALUE);
+					ReflectUtility.Set(REQUEST, "method", VALUE);
 
 					strictEqual(REQUEST.getMethod(), VALUE);
 				}
@@ -266,12 +271,11 @@ describe("RichClientRequest", (): void => {
 	describe("URL", (): void => {
 		describe("getUnsafeURL", (): void => {
 			it("should return the URL, whatever it is", (): void => {
+				const REQUEST: RichClientRequest = mockRequest().instance;
 				const VALUES: Array<string | undefined> = [undefined, "", "/", "/api/v1/resource", "/api/v2/resource?lorem=ipsum&alpha=omega"];
 
 				for (const VALUE of VALUES)
 				{
-					const REQUEST: RichClientRequest = mockRequest();
-
 					REQUEST.url = VALUE;
 
 					strictEqual(REQUEST.getUnsafeURL(), VALUE);
@@ -281,7 +285,7 @@ describe("RichClientRequest", (): void => {
 
 		describe("hasURL", (): void => {
 			it("should return false if the URL is missing", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				REQUEST.url = undefined;
 
@@ -289,12 +293,11 @@ describe("RichClientRequest", (): void => {
 			});
 
 			it("should return true if the URL exists", (): void => {
+				const REQUEST: RichClientRequest = mockRequest().instance;
 				const VALUES: Array<string> = ["", "/", "/api/v1/resource", "/api/v2/resource?lorem=ipsum&alpha=omega"];
 
 				for (const VALUE of VALUES)
 				{
-					const REQUEST: RichClientRequest = mockRequest();
-
 					REQUEST.url = VALUE;
 
 					strictEqual(REQUEST.hasURL(), true);
@@ -304,7 +307,7 @@ describe("RichClientRequest", (): void => {
 
 		describe("getURL", (): void => {
 			it("should return false if the URL is missing", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				REQUEST.url = undefined;
 
@@ -316,12 +319,11 @@ describe("RichClientRequest", (): void => {
 			});
 
 			it("should return true if the URL exists", (): void => {
+				const REQUEST: RichClientRequest = mockRequest().instance;
 				const VALUES: Array<string> = ["", "/", "/api/v1/resource", "/api/v2/resource?lorem=ipsum&alpha=omega"];
 
 				for (const VALUE of VALUES)
 				{
-					const REQUEST: RichClientRequest = mockRequest();
-
 					REQUEST.url = VALUE;
 
 					strictEqual(REQUEST.getURL(), VALUE);
@@ -333,13 +335,12 @@ describe("RichClientRequest", (): void => {
 	describe("path", (): void => {
 		describe("getUnsafePath", (): void => {
 			it("should return the path, whatever it is", (): void => {
+				const REQUEST: RichClientRequest = mockRequest().instance;
 				const VALUES: Array<string | undefined> = [undefined, "", "/", "/api/v1/resource", "/api/v2/resource"];
 
 				for (const VALUE of VALUES)
 				{
-					const REQUEST: RichClientRequest = mockRequest();
-
-					Reflect.set(REQUEST, "path", VALUE);
+					ReflectUtility.Set(REQUEST, "path", VALUE);
 
 					strictEqual(REQUEST.getUnsafePath(), VALUE);
 				}
@@ -348,21 +349,20 @@ describe("RichClientRequest", (): void => {
 
 		describe("hasPath", (): void => {
 			it("should return false if the path is missing", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
-				Reflect.set(REQUEST, "path", undefined);
+				ReflectUtility.Set(REQUEST, "path", undefined);
 
 				strictEqual(REQUEST.hasPath(), false);
 			});
 
 			it("should return true if the path exists", (): void => {
+				const REQUEST: RichClientRequest = mockRequest().instance;
 				const VALUES: Array<string> = ["", "/", "/api/v1/resource", "/api/v2/resource"];
 
 				for (const VALUE of VALUES)
 				{
-					const REQUEST: RichClientRequest = mockRequest();
-
-					Reflect.set(REQUEST, "path", VALUE);
+					ReflectUtility.Set(REQUEST, "path", VALUE);
 
 					strictEqual(REQUEST.hasPath(), true);
 				}
@@ -371,9 +371,9 @@ describe("RichClientRequest", (): void => {
 
 		describe("getPath", (): void => {
 			it("should return false if the path is missing", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
-				Reflect.set(REQUEST, "path", undefined);
+				ReflectUtility.Set(REQUEST, "path", undefined);
 
 				const WRAPPER = (): void => {
 					REQUEST.getPath();
@@ -383,13 +383,12 @@ describe("RichClientRequest", (): void => {
 			});
 
 			it("should return true if the path exists", (): void => {
+				const REQUEST: RichClientRequest = mockRequest().instance;
 				const VALUES: Array<string> = ["", "/", "/api/v1/resource", "/api/v2/resource"];
 
 				for (const VALUE of VALUES)
 				{
-					const REQUEST: RichClientRequest = mockRequest();
-
-					Reflect.set(REQUEST, "path", VALUE);
+					ReflectUtility.Set(REQUEST, "path", VALUE);
 
 					strictEqual(REQUEST.getPath(), VALUE);
 				}
@@ -399,11 +398,11 @@ describe("RichClientRequest", (): void => {
 
 	describe("getPathFragments", (): void => {
 		it("should return the paths fragments", (): void => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST: RichClientRequest = mockRequest().instance;
 
 			const FRAGMENTS: Array<string> = ["api", "v1", "resource"];
 
-			Reflect.set(REQUEST, "pathFragments", FRAGMENTS);
+			ReflectUtility.Set(REQUEST, "pathFragments", FRAGMENTS);
 
 			deepStrictEqual(REQUEST.getPathFragments(), FRAGMENTS);
 		});
@@ -411,11 +410,11 @@ describe("RichClientRequest", (): void => {
 
 	describe("getPathMatchGroups", (): void => {
 		it("should return the path match groups", (): void => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST: RichClientRequest = mockRequest().instance;
 
 			const PATH_MATCH_GROUPS: NodeJS.Dict<string> = { lorem: "ipsum" };
 
-			Reflect.set(REQUEST, "pathMatchGroups", PATH_MATCH_GROUPS);
+			ReflectUtility.Set(REQUEST, "pathMatchGroups", PATH_MATCH_GROUPS);
 
 			deepStrictEqual(REQUEST.getPathMatchGroups(), PATH_MATCH_GROUPS);
 		});
@@ -424,11 +423,11 @@ describe("RichClientRequest", (): void => {
 	describe("query", (): void => {
 		describe("getQuery", (): void => {
 			it("return the query", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				const PARSED_URL_QUERY: ParsedUrlQuery = parseQuery("lorem=ipsum&alpha=omega&id=1&id=2");
 
-				Reflect.set(REQUEST, "query", PARSED_URL_QUERY);
+				ReflectUtility.Set(REQUEST, "query", PARSED_URL_QUERY);
 
 				deepStrictEqual(REQUEST.getQuery(), PARSED_URL_QUERY);
 			});
@@ -436,18 +435,18 @@ describe("RichClientRequest", (): void => {
 
 		describe("hasQueryItem", (): void => {
 			it("should return false if there is no value associated with that query parameter name", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
-				Reflect.set(REQUEST, "query", parseQuery("lorem=ipsum&alpha=omega&id=1&id=2"));
+				ReflectUtility.Set(REQUEST, "query", parseQuery("lorem=ipsum&alpha=omega&id=1&id=2"));
 
 				strictEqual(REQUEST.hasQueryItem("ipsum"), false);
 				strictEqual(REQUEST.hasQueryItem("omega"), false);
 			});
 
 			it("should return true if there is one ore more values associated with that query parameter name", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
-				Reflect.set(REQUEST, "query", parseQuery("lorem=ipsum&alpha=omega&id=1&id=2"));
+				ReflectUtility.Set(REQUEST, "query", parseQuery("lorem=ipsum&alpha=omega&id=1&id=2"));
 
 				strictEqual(REQUEST.hasQueryItem("lorem"), true);
 				strictEqual(REQUEST.hasQueryItem("alpha"), true);
@@ -457,18 +456,18 @@ describe("RichClientRequest", (): void => {
 
 		describe("getQueryItemAll", (): void => {
 			it("should return an empty array if there is no value associated with that query parameter name", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
-				Reflect.set(REQUEST, "query", parseQuery("lorem=ipsum&alpha=omega&id=1&id=2"));
+				ReflectUtility.Set(REQUEST, "query", parseQuery("lorem=ipsum&alpha=omega&id=1&id=2"));
 
 				deepStrictEqual(REQUEST.getQueryItemAll("ipsum"), []);
 				deepStrictEqual(REQUEST.getQueryItemAll("omega"), []);
 			});
 
 			it("should return the array of values associated with that query parameter name", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
-				Reflect.set(REQUEST, "query", parseQuery("lorem=ipsum&alpha=omega&id=1&id=2"));
+				ReflectUtility.Set(REQUEST, "query", parseQuery("lorem=ipsum&alpha=omega&id=1&id=2"));
 
 				deepStrictEqual(REQUEST.getQueryItemAll("lorem"), ["ipsum"]);
 				deepStrictEqual(REQUEST.getQueryItemAll("alpha"), ["omega"]);
@@ -478,18 +477,18 @@ describe("RichClientRequest", (): void => {
 
 		describe("getQueryItem", (): void => {
 			it("should return undefined if there is no value associated with that query parameter name", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
-				Reflect.set(REQUEST, "query", parseQuery("lorem=ipsum&alpha=omega&id=1&id=2"));
+				ReflectUtility.Set(REQUEST, "query", parseQuery("lorem=ipsum&alpha=omega&id=1&id=2"));
 
 				strictEqual(REQUEST.getQueryItem("ipsum"), undefined);
 				strictEqual(REQUEST.getQueryItem("omega"), undefined);
 			});
 
 			it("should return the first value associated with that query parameter name", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
-				Reflect.set(REQUEST, "query", parseQuery("lorem=ipsum&alpha=omega&id=1&id=2"));
+				ReflectUtility.Set(REQUEST, "query", parseQuery("lorem=ipsum&alpha=omega&id=1&id=2"));
 
 				strictEqual(REQUEST.getQueryItem("lorem"), "ipsum");
 				strictEqual(REQUEST.getQueryItem("alpha"), "omega");
@@ -501,7 +500,7 @@ describe("RichClientRequest", (): void => {
 	describe("headers", (): void => {
 		describe("getRawHeaders", (): void => {
 			it("should return the unprocessed headers", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				const RAW_HEADERS: NodeJS.Dict<Array<string>> = {
 					"content-type": ["application/json"],
@@ -517,7 +516,7 @@ describe("RichClientRequest", (): void => {
 
 		describe("getHeaders", (): void => {
 			it("should return the processed headers", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				const PROCESSED_HEADERS: NodeJS.Dict<string> = {
 					"content-type": "application/json",
@@ -533,7 +532,7 @@ describe("RichClientRequest", (): void => {
 
 		describe("hasHeader", (): void => {
 			it("should return false if the header was not received", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				strictEqual(REQUEST.hasHeader("Content-Disposition"), false);
 				strictEqual(REQUEST.hasHeader("Content-Length"), false);
@@ -541,7 +540,7 @@ describe("RichClientRequest", (): void => {
 			});
 
 			it("should return true if the header was not received", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				REQUEST.headers.cookie = "alpha=1; beta=2; delta=3";
 				REQUEST.headers["content-type"] = "application/json";
@@ -555,7 +554,7 @@ describe("RichClientRequest", (): void => {
 
 		describe("getRawHeader", (): void => {
 			it("should return an empty array if no header with that name was received", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				deepStrictEqual(REQUEST.getRawHeader("Content-Disposition"), []);
 				deepStrictEqual(REQUEST.getRawHeader("Content-Length"), []);
@@ -563,7 +562,7 @@ describe("RichClientRequest", (): void => {
 			});
 
 			it("should return an array of all the headers received with that name", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				REQUEST.headersDistinct["cookie"] = ["alpha=1; beta=2", "delta=3"];
 				REQUEST.headersDistinct["content-type"] = ["application/json"];
@@ -575,7 +574,7 @@ describe("RichClientRequest", (): void => {
 
 		describe("getHeader", (): void => {
 			it("should return undefined if no header with that name was received", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				deepStrictEqual(REQUEST.getHeader("Content-Disposition"), undefined);
 				deepStrictEqual(REQUEST.getHeader("Content-Length"), undefined);
@@ -583,13 +582,13 @@ describe("RichClientRequest", (): void => {
 			});
 
 			it("should return an empty array when no header with the name 'Set-Cookie' was received", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				deepStrictEqual(REQUEST.getHeader("Set-Cookie"), []);
 			});
 
 			it("should return the processed header with that name", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				REQUEST.headers.cookie = "alpha=1; beta=2; delta=3";
 				REQUEST.headers["content-type"] = "application/json";
@@ -605,11 +604,11 @@ describe("RichClientRequest", (): void => {
 	describe("cookies", (): void => {
 		describe("getCookies", (): void => {
 			it("should return the cookies mapping", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
 				const MAPPING: Map<string, string> = new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]);
 
-				Reflect.set(REQUEST, "cookies", MAPPING);
+				ReflectUtility.Set(REQUEST, "cookies", MAPPING);
 
 				strictEqual(REQUEST.getCookies(), MAPPING);
 			});
@@ -617,9 +616,9 @@ describe("RichClientRequest", (): void => {
 
 		describe("hasCookie", (): void => {
 			it("should return false if there is no cookie with that name", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
-				Reflect.set(REQUEST, "cookies", new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]));
+				ReflectUtility.Set(REQUEST, "cookies", new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]));
 
 				strictEqual(REQUEST.hasCookie("1"), false);
 				strictEqual(REQUEST.hasCookie("2"), false);
@@ -627,9 +626,9 @@ describe("RichClientRequest", (): void => {
 			});
 
 			it("should return true if there is a cookie with that name", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
-				Reflect.set(REQUEST, "cookies", new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]));
+				ReflectUtility.Set(REQUEST, "cookies", new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]));
 
 				strictEqual(REQUEST.hasCookie("alpha"), true);
 				strictEqual(REQUEST.hasCookie("beta"), true);
@@ -639,9 +638,9 @@ describe("RichClientRequest", (): void => {
 
 		describe("getCookie", (): void => {
 			it("should return undefined if there is no cookie with that name", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
-				Reflect.set(REQUEST, "cookies", new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]));
+				ReflectUtility.Set(REQUEST, "cookies", new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]));
 
 				strictEqual(REQUEST.getCookie("1"), undefined);
 				strictEqual(REQUEST.getCookie("2"), undefined);
@@ -649,9 +648,9 @@ describe("RichClientRequest", (): void => {
 			});
 
 			it("should return true if there is a cookie with that name", (): void => {
-				const REQUEST: RichClientRequest = mockRequest();
+				const REQUEST: RichClientRequest = mockRequest().instance;
 
-				Reflect.set(REQUEST, "cookies", new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]));
+				ReflectUtility.Set(REQUEST, "cookies", new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]));
 
 				strictEqual(REQUEST.getCookie("alpha"), "1");
 				strictEqual(REQUEST.getCookie("beta"), "2");
@@ -662,21 +661,21 @@ describe("RichClientRequest", (): void => {
 
 	describe("getBoundary", (): void => {
 		it("should return the boundary", (): void => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST: RichClientRequest = mockRequest().instance;
 
 			const BOUNDARY: string = "-------123456789";
 
-			Reflect.set(REQUEST, "boundary", BOUNDARY);
+			ReflectUtility.Set(REQUEST, "boundary", BOUNDARY);
 
 			strictEqual(REQUEST.getBoundary(), BOUNDARY);
 		});
 	});
 
 	describe("getContentType", (): void => {
-		it("", (): void => {
-			const REQUEST: RichClientRequest = mockRequest();
+		it("should return the content type", (): void => {
+			const REQUEST: RichClientRequest = mockRequest().instance;
 
-			Reflect.set(REQUEST, "contentType", ContentTypeEnum.JSON);
+			ReflectUtility.Set(REQUEST, "contentType", ContentTypeEnum.JSON);
 
 			strictEqual(REQUEST.getContentType(), ContentTypeEnum.JSON);
 		});
@@ -684,35 +683,47 @@ describe("RichClientRequest", (): void => {
 
 	describe("getRawBody", (): void => {
 		it("should resolve with a Buffer", async (): Promise<void> => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST: RichClientRequest = mockRequest().instance;
 
-			Reflect.set(REQUEST, "rawBody", Promise.resolve(Buffer.from("Hello, World!")));
+			ReflectUtility.Set(REQUEST, "rawBody", Promise.resolve(Buffer.from("Hello, World!")));
 
-			await deepStrictResolves(REQUEST.getRawBody(), Buffer.from("Hello, World!"));
+			const RESULT: unknown = REQUEST.getRawBody();
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, Buffer.from("Hello, World!"));
 		});
 	});
 
 	describe("getBodyAsString", (): void => {
 		it("should resolve with a string", async (): Promise<void> => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST: RichClientRequest = mockRequest().instance;
 
-			Reflect.set(REQUEST, "rawBody", Promise.resolve(Buffer.from("Hello, World!")));
+			ReflectUtility.Set(REQUEST, "rawBody", Promise.resolve(Buffer.from("Hello, World!")));
 
-			await strictResolves(REQUEST.getBodyAsString(), "Hello, World!");
+			const RESULT: unknown = REQUEST.getBodyAsString();
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, "Hello, World!");
 		});
 
 		it("should resolve with a string, even if there is no body", async (): Promise<void> => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST: RichClientRequest = mockRequest().instance;
 
-			Reflect.set(REQUEST, "rawBody", Promise.resolve(Buffer.alloc(0)));
+			ReflectUtility.Set(REQUEST, "rawBody", Promise.resolve(Buffer.alloc(0)));
 
-			await strictResolves(REQUEST.getBodyAsString(), "");
+			const RESULT: unknown = REQUEST.getBodyAsString();
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, "");
 		});
 	});
 
 	describe("getBodyAsJSON", (): void => {
 		it("should resolve with parsed JSON", async (): Promise<void> => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST: RichClientRequest = mockRequest().instance;
 
 			const DATA: JSONObjectType = {
 				lorem: "ipsum",
@@ -720,23 +731,27 @@ describe("RichClientRequest", (): void => {
 				id: [1, 2],
 			};
 
-			Reflect.set(REQUEST, "rawBody", Promise.resolve(Buffer.from(JSON.stringify(DATA))));
+			ReflectUtility.Set(REQUEST, "rawBody", Promise.resolve(Buffer.from(JSON.stringify(DATA))));
 
-			await deepStrictResolves(REQUEST.getBodyAsJSON(), DATA);
+			const RESULT: unknown = REQUEST.getBodyAsJSON();
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, DATA);
 		});
 
 		it("should reject if the body cannot be parsed as JSON", async (): Promise<void> => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST: RichClientRequest = mockRequest().instance;
 
-			Reflect.set(REQUEST, "rawBody", Promise.resolve(Buffer.from("Hello, World!")));
+			ReflectUtility.Set(REQUEST, "rawBody", Promise.resolve(Buffer.from("Hello, World!")));
 
 			await rejects(REQUEST.getBodyAsJSON());
 		});
 
 		it("should reject if the parsed JSON is not an object", async (): Promise<void> => {
-			const REQUEST: RichClientRequest = mockRequest();
+			const REQUEST: RichClientRequest = mockRequest().instance;
 
-			Reflect.set(REQUEST, "rawBody", Promise.resolve(Buffer.from("42")));
+			ReflectUtility.Set(REQUEST, "rawBody", Promise.resolve(Buffer.from("42")));
 
 			await rejects(REQUEST.getBodyAsJSON());
 		});

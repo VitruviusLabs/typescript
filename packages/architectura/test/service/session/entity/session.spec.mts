@@ -1,8 +1,8 @@
-import type { JSONObjectType } from "@vitruvius-labs/toolbox";
 import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, strictEqual } from "node:assert";
 import { type SinonFakeTimers, type SinonStub, stub, useFakeTimers } from "sinon";
-import { MillisecondEnum, Session, SessionConstantEnum, type SessionDelegateInterface } from "../../../../src/_index.mjs";
+import { type JSONObjectType, MillisecondEnum, ReflectUtility } from "@vitruvius-labs/toolbox";
+import { Session, SessionConstantEnum, type SessionDelegateInterface } from "../../../../src/_index.mjs";
 
 describe("Session", (): void => {
 	const CLOCK: SinonFakeTimers = useFakeTimers({ toFake: ["Date"] });
@@ -25,10 +25,10 @@ describe("Session", (): void => {
 
 			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000", DELEGATE);
 
-			strictEqual(Reflect.get(SESSION, "uuid"), "00000000-0000-0000-0000-000000000000");
-			strictEqual(Reflect.get(SESSION, "delegate"), DELEGATE);
-			strictEqual(Reflect.get(SESSION, "expirationTime"), SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE);
-			deepStrictEqual(Reflect.get(SESSION, "data"), {});
+			strictEqual(ReflectUtility.Get(SESSION, "uuid"), "00000000-0000-0000-0000-000000000000");
+			strictEqual(ReflectUtility.Get(SESSION, "delegate"), DELEGATE);
+			strictEqual(ReflectUtility.Get(SESSION, "expirationTime"), SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE);
+			deepStrictEqual(ReflectUtility.Get(SESSION, "data"), {});
 		});
 	});
 
@@ -71,7 +71,7 @@ describe("Session", (): void => {
 			CLOCK.now = 5_000;
 			SESSION.postponeExpiration();
 
-			strictEqual(Reflect.get(SESSION, "expirationTime"), 5_000 + SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE);
+			strictEqual(ReflectUtility.Get(SESSION, "expirationTime"), 5_000 + SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE);
 		});
 	});
 
@@ -81,7 +81,7 @@ describe("Session", (): void => {
 
 			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000");
 
-			Reflect.set(SESSION, "data", DATA);
+			ReflectUtility.Set(SESSION, "data", DATA);
 
 			deepStrictEqual(SESSION.getData(), DATA);
 		});
@@ -95,7 +95,7 @@ describe("Session", (): void => {
 
 			SESSION.setData(DATA);
 
-			deepStrictEqual(Reflect.get(SESSION, "data"), DATA);
+			deepStrictEqual(ReflectUtility.Get(SESSION, "data"), DATA);
 		});
 	});
 
@@ -115,9 +115,9 @@ describe("Session", (): void => {
 
 			await SESSION.loadData();
 
-			strictEqual(STUB.calledOnce, true, "'fetchData' should be called exactly once");
+			strictEqual(STUB.callCount, 1, "'fetchData' should be called exactly once");
 			deepStrictEqual(STUB.firstCall.args, ["00000000-0000-0000-0000-000000000000"]);
-			deepStrictEqual(Reflect.get(SESSION, "data"), DATA);
+			deepStrictEqual(ReflectUtility.Get(SESSION, "data"), DATA);
 		});
 	});
 
@@ -135,11 +135,11 @@ describe("Session", (): void => {
 
 			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000", DELEGATE);
 
-			Reflect.set(SESSION, "data", DATA);
+			ReflectUtility.Set(SESSION, "data", DATA);
 
 			await SESSION.saveData();
 
-			strictEqual(STUB.calledOnce, true, "'saveData' should be called exactly once");
+			strictEqual(STUB.callCount, 1, "'saveData' should be called exactly once");
 			deepStrictEqual(STUB.firstCall.args, ["00000000-0000-0000-0000-000000000000", DATA]);
 		});
 	});
@@ -158,9 +158,9 @@ describe("Session", (): void => {
 
 			await SESSION.clearData();
 
-			strictEqual(STUB.calledOnce, true, "'clearData' should be called exactly once");
+			strictEqual(STUB.callCount, 1, "'clearData' should be called exactly once");
 			deepStrictEqual(STUB.firstCall.args, ["00000000-0000-0000-0000-000000000000"]);
-			deepStrictEqual(Reflect.get(SESSION, "data"), {});
+			deepStrictEqual(ReflectUtility.Get(SESSION, "data"), {});
 		});
 	});
 });

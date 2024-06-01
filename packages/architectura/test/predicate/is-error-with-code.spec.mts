@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
-import { isErrorWithCode } from "../../src/_index.mjs";
 import { getAllValues } from "@vitruvius-labs/testing-ground";
+import { isErrorWithCode } from "../../src/_index.mjs";
 import { strictEqual } from "node:assert";
 
 describe("isErrorWithCode", (): void => {

@@ -1,7 +1,8 @@
 import { after, beforeEach, describe, it } from "node:test";
+import { deepStrictEqual, doesNotReject } from "node:assert";
 import { type SinonFakeTimers, stub, useFakeTimers } from "sinon";
+import { instanceOf } from "@vitruvius-labs/toolbox";
 import { Session, type SessionDelegateInterface, SessionFactory } from "../../../../src/_index.mjs";
-import { deepStrictResolves } from "../../../utils/assert/deep-strict-resolves.mjs";
 
 describe("SessionFactory", (): void => {
 	const CLOCK: SinonFakeTimers = useFakeTimers({ toFake: ["Date"] });
@@ -26,7 +27,11 @@ describe("SessionFactory", (): void => {
 
 			EXPECTED.setData({ lorem: "ipsum" });
 
-			await deepStrictResolves(SessionFactory.Create("00000000-0000-0000-0000-000000000000", DELEGATE), EXPECTED);
+			const RESULT: unknown = SessionFactory.Create("00000000-0000-0000-0000-000000000000", DELEGATE);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, EXPECTED);
 		});
 	});
 });

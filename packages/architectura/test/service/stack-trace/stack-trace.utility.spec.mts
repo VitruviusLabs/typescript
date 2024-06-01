@@ -63,6 +63,17 @@ describe("StackTraceUtility", (): void => {
 
 			deepStrictEqual(StackTraceUtility.GetSerializableTrace(ERROR), EXPECTED);
 		});
+
+		it("should return an empty array if the error has no stack trace", (): void => {
+			const ERROR: Error = {
+				name: "Error",
+				message: "Lorem ipsum",
+			};
+
+			Object.setPrototypeOf(ERROR, Error.prototype);
+
+			deepStrictEqual(StackTraceUtility.GetSerializableTrace(ERROR), []);
+		});
 	});
 
 	describe("GetPrettyPrintableTrace", (): void => {
@@ -97,6 +108,17 @@ describe("StackTraceUtility", (): void => {
 			`);
 
 			strictEqual(StackTraceUtility.GetPrettyPrintableTrace(ERROR), EXPECTED);
+		});
+
+		it("should return an empty string if the error has no stack trace", (): void => {
+			const ERROR: Error = {
+				name: "Error",
+				message: "Lorem ipsum",
+			};
+
+			Object.setPrototypeOf(ERROR, Error.prototype);
+
+			strictEqual(StackTraceUtility.GetPrettyPrintableTrace(ERROR), "");
 		});
 	});
 });

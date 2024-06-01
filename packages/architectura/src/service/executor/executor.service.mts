@@ -28,12 +28,9 @@ class ExecutorService
 		}
 	}
 
-	/**
-	 * Create a new executor service
-	 */
-	public static Create(value: ExecutorInstantiationInterface): ExecutorService
+	private static async Timeout(delay: number): Promise<void>
 	{
-		return new ExecutorService(value);
+		await timeout(delay);
 	}
 
 	/**
@@ -53,7 +50,7 @@ class ExecutorService
 			}
 			catch
 			{
-				await timeout(this.computeDelay(tries + 1));
+				await ExecutorService.Timeout(this.computeDelay(tries + 1));
 			}
 		}
 

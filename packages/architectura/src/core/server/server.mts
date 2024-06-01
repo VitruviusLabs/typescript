@@ -10,6 +10,7 @@ import { Server as SecureServer, type ServerOptions as SecureServerOptions } fro
 import { extname } from "node:path";
 import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 import { assertInteger } from "@vitruvius-labs/ts-predicate/type-assertion";
+import { ReflectUtility } from "@vitruvius-labs/toolbox/reflect";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { EndpointRegistry } from "../endpoint/endpoint.registry.mjs";
@@ -80,7 +81,7 @@ class Server
 	 */
 	public static async Create(options: ServerConfigurationType): Promise<Server>
 	{
-		const OPTIONS: ServerInstantiationType = await this.ComputeServerOptions(options);
+		const OPTIONS: ServerInstantiationType = await Server.ComputeServerOptions(options);
 
 		const SERVER: Server = new Server(OPTIONS);
 
@@ -91,11 +92,11 @@ class Server
 			{
 				try
 				{
-					await this.DefaultListener(request, response);
+					await Server.RequestListener(request, response);
 				}
 				catch (error: unknown)
 				{
-					await this.HandleError(error);
+					await Server.HandleError(error);
 				}
 			}
 		);
@@ -107,32 +108,43 @@ class Server
 	 * Handle an error.
 	 *
 	 * @remarks
-	 * It is intended for use in event listeners when catching an error.
+	 * - It is intended for use in event listeners when catching an error.
+	 * - If you only want to log the error, use {@link LoggerProxy.Error} instead.
+	 * - It will attempt to finalize the response and log the error.
+	 * - It'll run all global error hooks before finalizing the response.
 	 */
 	public static async HandleError(error: unknown): Promise<void>
 	{
-		const CONTEXT: ExecutionContext | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext();
-
-		if (CONTEXT === undefined)
+		try
 		{
-			if (error instanceof Error)
+			const CONTEXT: ExecutionContext | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext();
+
+			if (CONTEXT === undefined)
 			{
 				LoggerProxy.Error(error);
 
 				return;
 			}
 
-			LoggerProxy.Error("An unknown error occurred.");
+			try
+			{
+				for (const HOOK of HookRegistry.GetErrorHooks())
+				{
+					await HOOK.execute(CONTEXT, error);
+				}
+			}
+			catch (scoped_error: unknown)
+			{
+				LoggerProxy.Error(scoped_error);
+			}
 
-			return;
+			await Server.FinalizeResponse(CONTEXT, true);
 		}
-
-		for (const HOOK of HookRegistry.GetErrorHooks())
+		catch (scoped_error: unknown)
 		{
-			await HOOK.execute(CONTEXT, error);
+			// eslint-disable-next-line no-console -- No alternative
+			console.error(scoped_error);
 		}
-
-		await this.FinalizeResponse(CONTEXT, true);
 	}
 
 	private static async ComputeServerOptions(options: ServerConfigurationType): Promise<ServerInstantiationType>
@@ -151,27 +163,27 @@ class Server
 		return SECURE_OPTIONS;
 	}
 
-	private static async DefaultListener(request: RichClientRequest, response: RichServerResponse): Promise<void>
+	private static async RequestListener(request: RichClientRequest, response: RichServerResponse): Promise<void>
 	{
 		LoggerProxy.Debug(`Incoming request "${request.url ?? ""}".`);
 
 		request.initialize();
 
-		const CONTEXT: ExecutionContext = new ExecutionContext({
+		const CONTEXT: ExecutionContext = ExecutionContext.Create({
 			request: request,
 			response: response,
 		});
 
 		ExecutionContextRegistry.SetExecutionContext(CONTEXT);
 
-		const IS_PUBLIC_ASSET: boolean = await this.HandlePublicAssets(CONTEXT);
+		const IS_PUBLIC_ASSET: boolean = await Server.HandlePublicAssets(CONTEXT);
 
 		if (IS_PUBLIC_ASSET)
 		{
 			return;
 		}
 
-		const IS_ENDPOINT: boolean = await this.HandleEndpoints(CONTEXT);
+		const IS_ENDPOINT: boolean = await Server.HandleEndpoints(CONTEXT);
 
 		if (IS_ENDPOINT)
 		{
@@ -191,7 +203,7 @@ class Server
 			return false;
 		}
 
-		const FILE_PATH: string | undefined = await this.FindPublicAsset(context.getRequest());
+		const FILE_PATH: string | undefined = await AssetRegistry.FindPublicAsset(context.getRequest().getPath());
 
 		if (FILE_PATH === undefined)
 		{
@@ -212,35 +224,6 @@ class Server
 		return true;
 	}
 
-	private static async FindPublicAsset(request: RichClientRequest): Promise<string | undefined>
-	{
-		const REQUEST_PATH: string = request.getPath();
-
-		// Hidden directories or files are inaccessible
-		// Also prevents directory traversal attacks
-		if (REQUEST_PATH.includes("/."))
-		{
-			return undefined;
-		}
-
-		for (const [URL_PATH_START, BASE_DIRECTORY_PATH] of AssetRegistry.GetPublicDirectories())
-		{
-			if (REQUEST_PATH.startsWith(URL_PATH_START))
-			{
-				const FILE_SUB_PATH: string = REQUEST_PATH.replace(URL_PATH_START, "");
-
-				const FILE_PATH: string = BASE_DIRECTORY_PATH + FILE_SUB_PATH;
-
-				if (await FileSystemService.FileExists(FILE_PATH))
-				{
-					return FILE_PATH;
-				}
-			}
-		}
-
-		return undefined;
-	}
-
 	private static async HandleEndpoints(context: ExecutionContext): Promise<boolean>
 	{
 		const REQUEST: RichClientRequest = context.getRequest();
@@ -251,19 +234,24 @@ class Server
 			return false;
 		}
 
-		Reflect.set(REQUEST, "pathMatchGroups", MATCHING_ENDPOINT.matchGroups);
-
 		const ENDPOINT: BaseEndpoint = MATCHING_ENDPOINT.endpoint;
 
 		LoggerProxy.Debug(`Matching endpoint found: ${ENDPOINT.constructor.name}.`);
+
+		ReflectUtility.Set(REQUEST, "pathMatchGroups", MATCHING_ENDPOINT.matchGroups);
+
+		if (MATCHING_ENDPOINT.contextual)
+		{
+			ReflectUtility.Set(ENDPOINT, "context", context);
+		}
 
 		let has_error_occurred: boolean = true;
 
 		try
 		{
-			await this.RunPreHooks(ENDPOINT, context);
+			await Server.RunPreHooks(ENDPOINT, context);
 			await ENDPOINT.execute(context);
-			await this.RunPostHooks(ENDPOINT, context);
+			await Server.RunPostHooks(ENDPOINT, context);
 
 			has_error_occurred = false;
 		}
@@ -271,11 +259,11 @@ class Server
 		{
 			LoggerProxy.Error(error);
 
-			await this.RunErrorHooks(ENDPOINT, context, error);
+			await Server.RunErrorHooks(ENDPOINT, context, error);
 		}
 		finally
 		{
-			await this.FinalizeResponse(context, has_error_occurred);
+			await Server.FinalizeResponse(context, has_error_occurred);
 		}
 
 		return true;

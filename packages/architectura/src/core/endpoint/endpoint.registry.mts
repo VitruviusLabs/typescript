@@ -33,6 +33,7 @@ class EndpointRegistry
 			return {
 				endpoint: new HelloWorldEndpoint(),
 				matchGroups: undefined,
+				contextual: true,
 			};
 		}
 
@@ -54,12 +55,14 @@ class EndpointRegistry
 			{
 				return {
 					endpoint: ENDPOINT_ENTRY.endpoint,
+					contextual: false,
 					matchGroups: MATCHES.groups,
 				};
 			}
 
 			return {
 				endpoint: new ENDPOINT_ENTRY.endpoint(),
+				contextual: true,
 				matchGroups: MATCHES.groups,
 			};
 		}
@@ -180,24 +183,19 @@ class EndpointRegistry
 
 	private static GetEndpointDetails(endpoint: BaseEndpoint | ConstructorOf<BaseEndpoint>): EndpointDetailsInterface
 	{
-		let constructor_class: ConstructorOf<BaseEndpoint> | undefined = undefined;
-		let instance: BaseEndpoint | undefined = undefined;
-
 		if (endpoint instanceof BaseEndpoint)
 		{
-			constructor_class = getConstructorOf(endpoint);
-			instance = endpoint;
-		}
-		else
-		{
-			constructor_class = endpoint;
-			instance = new endpoint();
+			return {
+				endpoint: endpoint,
+				constructor: getConstructorOf(endpoint),
+				instance: endpoint,
+			};
 		}
 
 		return {
 			endpoint: endpoint,
-			constructor: constructor_class,
-			instance: instance,
+			constructor: endpoint,
+			instance: new endpoint(),
 		};
 	}
 
@@ -208,10 +206,7 @@ class EndpointRegistry
 
 	private static IsAbstractEndpoint(endpoint: BaseEndpoint): boolean
 	{
-		return (
-			Reflect.get(endpoint, "method") === undefined
-			&& Reflect.get(endpoint, "route") === undefined
-		);
+		return Reflect.get(endpoint, "method") === undefined && Reflect.get(endpoint, "route") === undefined;
 	}
 }
 

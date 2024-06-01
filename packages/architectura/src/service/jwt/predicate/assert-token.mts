@@ -1,5 +1,5 @@
-import { JWTConstantEnum } from "../definition/enum/jwt-constant.enum.mjs";
 import type { TokenType } from "../definition/type/token.type.mjs";
+import { JWTConstantEnum } from "../definition/enum/jwt-constant.enum.mjs";
 
 /**
  * Asserts that the token is valid

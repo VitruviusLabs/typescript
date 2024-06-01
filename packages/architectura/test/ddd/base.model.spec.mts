@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import { strictEqual, throws } from "node:assert";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
+import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { BaseModel } from "../../src/_index.mjs";
 
 describe("BaseModel", (): void => {
@@ -21,11 +22,11 @@ describe("BaseModel", (): void => {
 		it("should create a new model", (): void => {
 			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
-			strictEqual(Reflect.get(MODEL, "id"), undefined);
-			strictEqual(Reflect.get(MODEL, "uuid"), "00000000-0000-0000-0000-000000000000");
-			strictEqual(Reflect.get(MODEL, "createdAt"), undefined);
-			strictEqual(Reflect.get(MODEL, "updatedAt"), undefined);
-			strictEqual(Reflect.get(MODEL, "deletedAt"), undefined);
+			strictEqual(ReflectUtility.Get(MODEL, "id"), undefined);
+			strictEqual(ReflectUtility.Get(MODEL, "uuid"), "00000000-0000-0000-0000-000000000000");
+			strictEqual(ReflectUtility.Get(MODEL, "createdAt"), undefined);
+			strictEqual(ReflectUtility.Get(MODEL, "updatedAt"), undefined);
+			strictEqual(ReflectUtility.Get(MODEL, "deletedAt"), undefined);
 		});
 	});
 
@@ -39,7 +40,7 @@ describe("BaseModel", (): void => {
 		it("should return true if the model has an id", (): void => {
 			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
-			Reflect.set(MODEL, "id", 1n);
+			ReflectUtility.Set(MODEL, "id", 1n);
 
 			strictEqual(MODEL.hasId(), true);
 		});
@@ -59,7 +60,7 @@ describe("BaseModel", (): void => {
 		it("should return the id if the model has an id", (): void => {
 			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
-			Reflect.set(MODEL, "id", 1n);
+			ReflectUtility.Set(MODEL, "id", 1n);
 
 			strictEqual(MODEL.getId(), 1n);
 		});
@@ -89,8 +90,8 @@ describe("BaseModel", (): void => {
 
 			const DATE: Date = new Date();
 
-			Reflect.set(MODEL, "id", 1n);
-			Reflect.set(MODEL, "createdAt", DATE);
+			ReflectUtility.Set(MODEL, "id", 1n);
+			ReflectUtility.Set(MODEL, "createdAt", DATE);
 
 			strictEqual(MODEL.getCreatedAt(), DATE);
 		});
@@ -112,8 +113,8 @@ describe("BaseModel", (): void => {
 
 			const DATE: Date = new Date();
 
-			Reflect.set(MODEL, "id", 1n);
-			Reflect.set(MODEL, "updatedAt", DATE);
+			ReflectUtility.Set(MODEL, "id", 1n);
+			ReflectUtility.Set(MODEL, "updatedAt", DATE);
 
 			strictEqual(MODEL.getUpdatedAt(), DATE);
 		});
@@ -133,7 +134,7 @@ describe("BaseModel", (): void => {
 		it("should return undefined if the model has no deletion date", (): void => {
 			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
-			Reflect.set(MODEL, "id", 1n);
+			ReflectUtility.Set(MODEL, "id", 1n);
 
 			strictEqual(MODEL.getDeletedAt(), undefined);
 		});
@@ -143,8 +144,8 @@ describe("BaseModel", (): void => {
 
 			const DATE: Date = new Date();
 
-			Reflect.set(MODEL, "id", 1n);
-			Reflect.set(MODEL, "deletedAt", DATE);
+			ReflectUtility.Set(MODEL, "id", 1n);
+			ReflectUtility.Set(MODEL, "deletedAt", DATE);
 
 			strictEqual(MODEL.getDeletedAt(), DATE);
 		});

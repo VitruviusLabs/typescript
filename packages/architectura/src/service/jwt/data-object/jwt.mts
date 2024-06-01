@@ -17,18 +17,21 @@ class JWT
 {
 	private readonly header: JWTHeaderInterface;
 	private readonly secret: SecretType;
+	private readonly validateNBF: boolean;
 	private claims: JWTClaimsInterface;
 
 	/**
 	 * Create a new JWT
 	 *
-	 * @throws if the some parameters are invalid
+	 * @throws if some parameters are invalid
 	 */
 	public constructor(algorithm: string, secret: SecretType, claims: JWTClaimsInterface)
 	{
+		this.validateNBF = false;
+
 		validateAlgorithm(algorithm);
 		validateSecret(secret);
-		validateClaims(claims);
+		validateClaims(claims, this.validateNBF);
 
 		this.header = {
 			typ: "JWT",
@@ -36,7 +39,7 @@ class JWT
 		};
 
 		this.secret = secret;
-		this.claims = claims;
+		this.claims = structuredClone(claims);
 	}
 
 	/**
@@ -52,7 +55,7 @@ class JWT
 	 */
 	public getClaims(): JWTClaimsInterface
 	{
-		return this.claims;
+		return structuredClone(this.claims);
 	}
 
 	/**
@@ -62,8 +65,8 @@ class JWT
 	 */
 	public setClaims(claims: JWTClaimsInterface): void
 	{
-		validateClaims(claims);
-		this.claims = claims;
+		validateClaims(claims, this.validateNBF);
+		this.claims = structuredClone(claims);
 	}
 
 	/**
@@ -73,7 +76,6 @@ class JWT
 	 */
 	public toString(): string
 	{
-		validateClaims(this.claims);
 		const HEADER: string = Base64URL.Encode(JSON.stringify(this.header));
 		const CLAIMS: string = Base64URL.Encode(jsonSerialize(this.claims));
 

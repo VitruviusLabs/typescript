@@ -1,8 +1,8 @@
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
 import type { LogContextInterface } from "./definition/interface/log-context.interface.mjs";
 import { toError } from "@vitruvius-labs/ts-predicate/helper";
-import { LoggerService } from "./logger.service.mjs";
 import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
+import { LoggerService } from "./logger.service.mjs";
 import { ExecutionContextRegistry } from "../../core/execution-context/execution-context.registry.mjs";
 import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";
 import { Server } from "../../core/server/server.mjs";
@@ -111,26 +111,28 @@ class LoggerProxy
 	// @ts-expect-error: Returns void to not interrupt the flow
 	private static async Process(message: unknown, level: LogLevelEnum, tag: string | undefined): void
 	{
-		const UUID: string | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext()?.getUUID();
-
-		const CONTEXT: LogContextInterface = {
-			level: level,
-			uuid: UUID,
-			tag: tag,
-		};
-
 		try
 		{
+			const UUID: string | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext()?.getUUID();
+
+			const CONTEXT: LogContextInterface = {
+				level: level,
+				uuid: UUID,
+				tag: tag,
+			};
+
 			if (isString(message))
 			{
 				await LoggerProxy.Logger.handleMessage(message, CONTEXT);
+
+				return;
 			}
 
 			await LoggerProxy.Logger.handleError(toError(message), CONTEXT);
 		}
 		catch (error: unknown)
 		{
-			await Server.HandleError(error).catch((): void => { /* Do nothing */ });
+			await Server.HandleError(error);
 		}
 	}
 }

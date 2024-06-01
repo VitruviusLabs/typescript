@@ -1,5 +1,5 @@
-import { AsyncLocalStorage } from "node:async_hooks";
 import type { ExecutionContext } from "./execution-context.mjs";
+import { AsyncLocalStorage } from "node:async_hooks";
 
 /**
  * Execution context registry.

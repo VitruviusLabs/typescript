@@ -228,7 +228,7 @@
 		"@typescript-eslint/no-empty-interface": [
 			"error",
 			{
-				"allowSingleExtends": false
+				"allowSingleExtends": true
 			}
 		],
 		"@typescript-eslint/no-explicit-any": [
@@ -1815,7 +1815,9 @@
 				"func-names": "off",
 				"func-style": "off",
 				"max-classes-per-file": "off",
+				"max-lines": "off",
 				"max-lines-per-function": "off",
+				"max-statements": "off",
 				"no-new": "off",
 				"symbol-description": "off"
 			}

@@ -5,7 +5,7 @@ interface ExecutorInstantiationInterface
 {
 	maxTries: number;
 	retryDelay: number;
-	callable: () => Promise<void>;
+	callable: () => Promise<void> | void;
 	/**
 	 * Custom delay computation
 	 *

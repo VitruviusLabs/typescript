@@ -1,13 +1,14 @@
 import { afterEach, describe, it } from "node:test";
 import { deepStrictEqual, doesNotThrow, throws } from "node:assert";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
+import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { BaseErrorHook, BasePostHook, BasePreHook, HookRegistry } from "../../../src/_index.mjs";
 
 describe("HookRegistry", (): void => {
 	afterEach((): void => {
-		Reflect.set(HookRegistry, "PRE_HOOKS", []);
-		Reflect.set(HookRegistry, "POST_HOOKS", []);
-		Reflect.set(HookRegistry, "ERROR_HOOKS", []);
+		ReflectUtility.Set(HookRegistry, "PRE_HOOKS", []);
+		ReflectUtility.Set(HookRegistry, "POST_HOOKS", []);
+		ReflectUtility.Set(HookRegistry, "ERROR_HOOKS", []);
 	});
 
 	describe("GetPreHooks", (): void => {
@@ -17,7 +18,7 @@ describe("HookRegistry", (): void => {
 				public async execute(): Promise<void> { }
 			}
 
-			Reflect.set(HookRegistry, "PRE_HOOKS", [new DummyPreHook()]);
+			ReflectUtility.Set(HookRegistry, "PRE_HOOKS", [new DummyPreHook()]);
 
 			deepStrictEqual(HookRegistry.GetPreHooks(), [new DummyPreHook()]);
 		});
@@ -28,7 +29,7 @@ describe("HookRegistry", (): void => {
 				public async execute(): Promise<void> { }
 			}
 
-			Reflect.set(HookRegistry, "PRE_HOOKS", [DummyPreHook]);
+			ReflectUtility.Set(HookRegistry, "PRE_HOOKS", [DummyPreHook]);
 
 			deepStrictEqual(HookRegistry.GetPreHooks(), [new DummyPreHook()]);
 		});
@@ -43,7 +44,7 @@ describe("HookRegistry", (): void => {
 
 			HookRegistry.AddPreHook(DummyPreHook);
 
-			deepStrictEqual(Reflect.get(HookRegistry, "PRE_HOOKS"), [DummyPreHook]);
+			deepStrictEqual(ReflectUtility.Get(HookRegistry, "PRE_HOOKS"), [DummyPreHook]);
 		});
 
 		it("should throw when a pre hook is added more than once", (): void => {
@@ -68,7 +69,7 @@ describe("HookRegistry", (): void => {
 				public async execute(): Promise<void> { }
 			}
 
-			Reflect.set(HookRegistry, "POST_HOOKS", [new DummyPostHook()]);
+			ReflectUtility.Set(HookRegistry, "POST_HOOKS", [new DummyPostHook()]);
 
 			deepStrictEqual(HookRegistry.GetPostHooks(), [new DummyPostHook()]);
 		});
@@ -79,7 +80,7 @@ describe("HookRegistry", (): void => {
 				public async execute(): Promise<void> { }
 			}
 
-			Reflect.set(HookRegistry, "POST_HOOKS", [DummyPostHook]);
+			ReflectUtility.Set(HookRegistry, "POST_HOOKS", [DummyPostHook]);
 
 			deepStrictEqual(HookRegistry.GetPostHooks(), [new DummyPostHook()]);
 		});
@@ -94,7 +95,7 @@ describe("HookRegistry", (): void => {
 
 			HookRegistry.AddPostHook(DummyPostHook);
 
-			deepStrictEqual(Reflect.get(HookRegistry, "POST_HOOKS"), [DummyPostHook]);
+			deepStrictEqual(ReflectUtility.Get(HookRegistry, "POST_HOOKS"), [DummyPostHook]);
 		});
 
 		it("should throw when a post hook is added more than once", (): void => {
@@ -119,7 +120,7 @@ describe("HookRegistry", (): void => {
 				public async execute(): Promise<void> { }
 			}
 
-			Reflect.set(HookRegistry, "ERROR_HOOKS", [new DummyErrorHook()]);
+			ReflectUtility.Set(HookRegistry, "ERROR_HOOKS", [new DummyErrorHook()]);
 
 			deepStrictEqual(HookRegistry.GetErrorHooks(), [new DummyErrorHook()]);
 		});
@@ -130,7 +131,7 @@ describe("HookRegistry", (): void => {
 				public async execute(): Promise<void> { }
 			}
 
-			Reflect.set(HookRegistry, "ERROR_HOOKS", [DummyErrorHook]);
+			ReflectUtility.Set(HookRegistry, "ERROR_HOOKS", [DummyErrorHook]);
 
 			deepStrictEqual(HookRegistry.GetErrorHooks(), [new DummyErrorHook()]);
 		});
@@ -145,7 +146,7 @@ describe("HookRegistry", (): void => {
 
 			HookRegistry.AddErrorHook(DummyErrorHook);
 
-			deepStrictEqual(Reflect.get(HookRegistry, "ERROR_HOOKS"), [DummyErrorHook]);
+			deepStrictEqual(ReflectUtility.Get(HookRegistry, "ERROR_HOOKS"), [DummyErrorHook]);
 		});
 
 		it("should throw when a error hook is added more than once", (): void => {
@@ -164,6 +165,6 @@ describe("HookRegistry", (): void => {
 	});
 
 	describe("AddHooksDirectory", (): void => {
-		it.todo("should explore a folder recursively and add hooks to the registry", async (): Promise<void> => {});
+		it.skip("should explore a folder recursively and add hooks to the registry", async (): Promise<void> => {});
 	});
 });

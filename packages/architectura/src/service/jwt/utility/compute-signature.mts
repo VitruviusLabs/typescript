@@ -1,5 +1,5 @@
-import { type Hmac, createHmac } from "node:crypto";
 import type { SignatureIngredientsInterface } from "../definition/interface/signature-ingredients.interface.mjs";
+import { type Hmac, createHmac } from "node:crypto";
 import { Base64URL } from "./base64-url.mjs";
 
 /**

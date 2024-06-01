@@ -25,9 +25,16 @@ class StackTraceUtility
 	{
 		const CALL_FRAMES: Array<CallFrameDetailsInterface> = [];
 
-		const STACK_TRACE: Array<string> = (error.stack ?? "").trim().split("\n");
+		const STACK_TRACE: string = (error.stack ?? "").trim();
 
-		for (const LINE of STACK_TRACE)
+		if (STACK_TRACE === "")
+		{
+			return [];
+		}
+
+		const LINES: Array<string> = STACK_TRACE.split("\n");
+
+		for (const LINE of LINES)
 		{
 			const CALL_FRAME: CallFrameDetailsInterface | undefined = StackTraceUtility.ParseLine(LINE);
 
@@ -48,6 +55,11 @@ class StackTraceUtility
 	public static GetPrettyPrintableTrace(error: Error): string
 	{
 		const CALL_FRAMES: Array<CallFrameDetailsInterface> = StackTraceUtility.GetSerializableTrace(error);
+
+		if (CALL_FRAMES.length === 0)
+		{
+			return "";
+		}
 
 		const TABLE_COLUMN_WIDTHS: TableColumnWidthsInterface = StackTraceUtility.GetTableColumnWidths(CALL_FRAMES);
 

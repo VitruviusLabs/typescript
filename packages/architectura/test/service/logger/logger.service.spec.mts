@@ -1,33 +1,30 @@
-import { after, afterEach, beforeEach, describe, it } from "node:test";
-import { type SinonFakeTimers, type SinonStub, stub, useFakeTimers } from "sinon";
-import { LogLevelEnum, LoggerService, Singleton } from "../../../src/_index.mjs";
-import { asStub } from "../../utils/as-stub.mjs";
+import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, strictEqual } from "node:assert";
+import { type SinonFakeTimers, type SinonStub, stub, useFakeTimers } from "sinon";
 import { pruneIndentTrim } from "@vitruvius-labs/toolbox";
 import { ValidationError } from "@vitruvius-labs/ts-predicate";
+import { LogLevelEnum, LoggerService, Singleton } from "../../../src/_index.mjs";
 
 describe("LoggerService", (): void => {
 	const CLOCK: SinonFakeTimers = useFakeTimers({ toFake: ["Date"] });
 
-	beforeEach((): void => {
-		// @ts-expect-error: Stubbing a private method
-		stub(LoggerService, "Write").returns(undefined);
-		CLOCK.reset();
-		Singleton.RemoveInstance(LoggerService);
-	});
+	// @ts-expect-error: Stubbing a private method
+	const WRITE_STUB: SinonStub = stub(LoggerService, "Write");
 
-	afterEach((): void => {
-		asStub(Reflect.get(LoggerService, "Write")).restore();
+	beforeEach((): void => {
+		CLOCK.reset();
+		WRITE_STUB.reset();
+		WRITE_STUB.returns(undefined);
 		Singleton.RemoveInstance(LoggerService);
 	});
 
 	after((): void => {
 		CLOCK.restore();
+		WRITE_STUB.restore();
 	});
 
 	describe("handleMessage", (): void => {
 		it("should log a message (simple)", (): void => {
-			const STUB: SinonStub = asStub(Reflect.get(LoggerService, "Write"));
 			const LOGGER_SERVICE: LoggerService = new LoggerService();
 
 			const EXPECTED: string = pruneIndentTrim(`
@@ -41,12 +38,11 @@ describe("LoggerService", (): void => {
 				}
 			);
 
-			strictEqual(STUB.calledOnce, true, "'LoggerService.Write' should be called only once");
-			deepStrictEqual(STUB.firstCall.args, [EXPECTED]);
+			strictEqual(WRITE_STUB.callCount, 1, "'LoggerService.Write' should be called only once");
+			deepStrictEqual(WRITE_STUB.firstCall.args, [EXPECTED]);
 		});
 
 		it("should log a message (with uuid)", (): void => {
-			const STUB: SinonStub = asStub(Reflect.get(LoggerService, "Write"));
 			const LOGGER_SERVICE: LoggerService = new LoggerService();
 
 			const EXPECTED: string = pruneIndentTrim(`
@@ -61,12 +57,11 @@ describe("LoggerService", (): void => {
 				}
 			);
 
-			strictEqual(STUB.calledOnce, true, "'LoggerService.Write' should be called only once");
-			deepStrictEqual(STUB.firstCall.args, [EXPECTED]);
+			strictEqual(WRITE_STUB.callCount, 1, "'LoggerService.Write' should be called only once");
+			deepStrictEqual(WRITE_STUB.firstCall.args, [EXPECTED]);
 		});
 
 		it("should log a message (with tag)", (): void => {
-			const STUB: SinonStub = asStub(Reflect.get(LoggerService, "Write"));
 			const LOGGER_SERVICE: LoggerService = new LoggerService();
 
 			const EXPECTED: string = pruneIndentTrim(`
@@ -81,12 +76,11 @@ describe("LoggerService", (): void => {
 				}
 			);
 
-			strictEqual(STUB.calledOnce, true, "'LoggerService.Write' should be called only once");
-			deepStrictEqual(STUB.firstCall.args, [EXPECTED]);
+			strictEqual(WRITE_STUB.callCount, 1, "'LoggerService.Write' should be called only once");
+			deepStrictEqual(WRITE_STUB.firstCall.args, [EXPECTED]);
 		});
 
 		it("should log a message (with uuid and tag)", (): void => {
-			const STUB: SinonStub = asStub(Reflect.get(LoggerService, "Write"));
 			const LOGGER_SERVICE: LoggerService = new LoggerService();
 
 			const EXPECTED: string = pruneIndentTrim(`
@@ -102,12 +96,11 @@ describe("LoggerService", (): void => {
 				}
 			);
 
-			strictEqual(STUB.calledOnce, true, "'LoggerService.Write' should be called only once");
-			deepStrictEqual(STUB.firstCall.args, [EXPECTED]);
+			strictEqual(WRITE_STUB.callCount, 1, "'LoggerService.Write' should be called only once");
+			deepStrictEqual(WRITE_STUB.firstCall.args, [EXPECTED]);
 		});
 
 		it("should log a message (multiline)", (): void => {
-			const STUB: SinonStub = asStub(Reflect.get(LoggerService, "Write"));
 			const LOGGER_SERVICE: LoggerService = new LoggerService();
 
 			const EXPECTED: string = pruneIndentTrim(`
@@ -123,14 +116,13 @@ describe("LoggerService", (): void => {
 				}
 			);
 
-			strictEqual(STUB.calledOnce, true, "'LoggerService.Write' should be called only once");
-			deepStrictEqual(STUB.firstCall.args, [EXPECTED]);
+			strictEqual(WRITE_STUB.callCount, 1, "'LoggerService.Write' should be called only once");
+			deepStrictEqual(WRITE_STUB.firstCall.args, [EXPECTED]);
 		});
 	});
 
 	describe("handleError", (): void => {
 		it("should log an error (simple)", (): void => {
-			const STUB: SinonStub = asStub(Reflect.get(LoggerService, "Write"));
 			const LOGGER_SERVICE: LoggerService = new LoggerService();
 
 			const EXPECTED: string = pruneIndentTrim(`
@@ -161,12 +153,11 @@ describe("LoggerService", (): void => {
 
 			LOGGER_SERVICE.handleError(ERROR, { level: LogLevelEnum.ERROR });
 
-			strictEqual(STUB.calledOnce, true, "'LoggerService.Write' should be called only once");
-			deepStrictEqual(STUB.firstCall.args, [EXPECTED]);
+			strictEqual(WRITE_STUB.callCount, 1, "'LoggerService.Write' should be called only once");
+			deepStrictEqual(WRITE_STUB.firstCall.args, [EXPECTED]);
 		});
 
 		it("should log an error (validation)", (): void => {
-			const STUB: SinonStub = asStub(Reflect.get(LoggerService, "Write"));
 			const LOGGER_SERVICE: LoggerService = new LoggerService();
 
 			const EXPECTED: string = pruneIndentTrim(`
@@ -213,8 +204,8 @@ describe("LoggerService", (): void => {
 
 			LOGGER_SERVICE.handleError(ERROR, { level: LogLevelEnum.ERROR });
 
-			strictEqual(STUB.calledOnce, true, "'LoggerService.Write' should be called only once");
-			deepStrictEqual(STUB.firstCall.args, [EXPECTED]);
+			strictEqual(WRITE_STUB.callCount, 1, "'LoggerService.Write' should be called only once");
+			deepStrictEqual(WRITE_STUB.firstCall.args, [EXPECTED]);
 		});
 	});
 });

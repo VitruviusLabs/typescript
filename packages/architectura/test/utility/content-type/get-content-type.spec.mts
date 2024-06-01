@@ -4,7 +4,11 @@ import { getContentType } from "../../../src/_index.mjs";
 
 describe("getContentType", (): void => {
 	it("should return 'application/octet-stream' for an unknown extension", (): void => {
-		strictEqual(getContentType(""), "application/octet-stream");
+		strictEqual(getContentType("-----"), "application/octet-stream");
+	});
+
+	it("should strip the initial dot if there", (): void => {
+		strictEqual(getContentType(".json"), "application/json");
 	});
 
 	it("should return 'text/html' for the 'html' extension", (): void => {

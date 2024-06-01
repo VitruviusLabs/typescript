@@ -26,13 +26,25 @@
 			"import": "./build/esm/_index.mjs",
 			"types": "./build/types/_index.d.mts"
 		},
-		"./json": {
-			"import": "./build/esm/utility/json/_index.mjs",
-			"types": "./build/types/utility/json/_index.d.mts"
+		"./assert": {
+			"import": "./build/esm/utility/assert/_index.mjs",
+			"types": "./build/types/utility/assert/_index.d.mts"
+		},
+		"./date": {
+			"import": "./build/esm/utility/date/_index.mjs",
+			"types": "./build/types/utility/date/_index.d.mts"
 		},
 		"./indent": {
 			"import": "./build/esm/utility/indent/_index.mjs",
 			"types": "./build/types/utility/indent/_index.d.mts"
+		},
+		"./json": {
+			"import": "./build/esm/utility/json/_index.mjs",
+			"types": "./build/types/utility/json/_index.d.mts"
+		},
+		"./reflect": {
+			"import": "./build/esm/utility/reflect.utility.mjs",
+			"types": "./build/types/utility/reflect.utility.d.mts"
 		},
 		"./split-once": {
 			"import": "./build/esm/utility/split-once.mjs",

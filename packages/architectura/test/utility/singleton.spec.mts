@@ -1,7 +1,7 @@
 import { doesNotThrow, strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
-import { Singleton } from "../../src/_index.mjs";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
+import { Singleton } from "../../src/_index.mjs";
 
 describe("Singleton", (): void => {
 	describe("constructor", (): void => {

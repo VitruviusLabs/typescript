@@ -2,33 +2,32 @@ import type { OutgoingHttpHeaders } from "node:http";
 import { describe, it } from "node:test";
 import { deepStrictEqual, rejects, strictEqual } from "node:assert";
 import { createBrotliCompress, createDeflate, createGzip } from "node:zlib";
-import { type SinonStub, stub } from "sinon";
-import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
-import { jsonSerialize } from "@vitruvius-labs/toolbox";
+import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
+import { ReflectUtility, instanceOf, jsonSerialize } from "@vitruvius-labs/toolbox";
 import { ContentEncodingEnum, ContentTypeEnum, type CookieDescriptorInterface, CookieSameSiteEnum, HTTPStatusCodeEnum, type ReplyInterface, RichServerResponse } from "../../../src/_index.mjs";
-import { mockRequest } from "../../utils/mock/mock-request.mjs";
-import { mockResponse } from "../../utils/mock/mock-response.mjs";
-import { instanceOf } from "../../utils/assert/instance-of.mjs";
-import { nullPrototype } from "../../utils/mock/null-prototype.mjs";
+import { type MockResponseInterface, mockRequest, mockResponse, nullPrototype } from "../../../mock/_index.mjs";
 
 describe("RichServerResponse", (): void => {
 	describe("constructor", (): void => {
 		it("should create a new response", (): void => {
-			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest());
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
 
-			strictEqual(Reflect.get(RESPONSE, "locked"), false);
-			strictEqual(Reflect.get(RESPONSE, "processed"), false);
-			strictEqual(Reflect.get(RESPONSE, "content"), undefined);
-			deepStrictEqual(Reflect.get(RESPONSE, "cookies"), new Map());
+			strictEqual(ReflectUtility.Get(RESPONSE, "locked"), false);
+			strictEqual(ReflectUtility.Get(RESPONSE, "processed"), false);
+			strictEqual(ReflectUtility.Get(RESPONSE, "content"), undefined);
+			deepStrictEqual(ReflectUtility.Get(RESPONSE, "cookies"), new Map());
 		});
 	});
 
 	describe("GetEncoder", (): void => {
 		it("should return the corresponding zlib encoder", (): void => {
-			const GZIP: unknown = Reflect.get(RichServerResponse, "GetEncoder").call(RichServerResponse, ContentEncodingEnum.GZIP);
-			const BROTLI: unknown = Reflect.get(RichServerResponse, "GetEncoder").call(RichServerResponse, ContentEncodingEnum.BROTLI);
-			const DEFLATE: unknown = Reflect.get(RichServerResponse, "GetEncoder").call(RichServerResponse, ContentEncodingEnum.DEFLATE);
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
+
+			const GZIP: unknown = ReflectUtility.StaticCall(RESPONSE, "GetEncoder", ContentEncodingEnum.GZIP);
+			const BROTLI: unknown = ReflectUtility.StaticCall(RESPONSE, "GetEncoder", ContentEncodingEnum.BROTLI);
+			const DEFLATE: unknown = ReflectUtility.StaticCall(RESPONSE, "GetEncoder", ContentEncodingEnum.DEFLATE);
 
 			/* Zlib do not expose the classes, so we retrieve them indirectly. */
 			/* Internal buffers prevent using deepStrictEqual on the created instances. */
@@ -40,10 +39,10 @@ describe("RichServerResponse", (): void => {
 
 	describe("json", (): void => {
 		it("should reply with the given JSON (object)", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
-			const STUB: SinonStub = stub(RESPONSE, "replyWith");
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
-			STUB.resolves();
+			RESPONSE_MOCK.stubs.replyWith.resolves();
 
 			const PARAMETER: ReplyInterface = {
 				status: HTTPStatusCodeEnum.OK,
@@ -58,15 +57,15 @@ describe("RichServerResponse", (): void => {
 
 			await RESPONSE.json(PARAMETER.payload);
 
-			strictEqual(STUB.calledOnce, true, "'replyWith' should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, [PARAMETER]);
+			strictEqual(RESPONSE_MOCK.stubs.replyWith.callCount, 1, "'replyWith' should be called exactly once");
+			deepStrictEqual(RESPONSE_MOCK.stubs.replyWith.firstCall.args, [PARAMETER]);
 		});
 
 		it("should reply with the given JSON (serialized)", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
-			const STUB: SinonStub = stub(RESPONSE, "replyWith");
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
-			STUB.resolves();
+			RESPONSE_MOCK.stubs.replyWith.resolves();
 
 			const DATA: object = {
 				message: "Hello, World!",
@@ -83,17 +82,17 @@ describe("RichServerResponse", (): void => {
 
 			await RESPONSE.json(PARAMETER.payload);
 
-			strictEqual(STUB.calledOnce, true, "'replyWith' should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, [PARAMETER]);
+			strictEqual(RESPONSE_MOCK.stubs.replyWith.callCount, 1, "'replyWith' should be called exactly once");
+			deepStrictEqual(RESPONSE_MOCK.stubs.replyWith.firstCall.args, [PARAMETER]);
 		});
 	});
 
 	describe("text", (): void => {
 		it("should reply with the given message (string)", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
-			const STUB: SinonStub = stub(RESPONSE, "replyWith");
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
-			STUB.resolves();
+			RESPONSE_MOCK.stubs.replyWith.resolves();
 
 			const PARAMETER: ReplyInterface = {
 				status: HTTPStatusCodeEnum.OK,
@@ -103,15 +102,15 @@ describe("RichServerResponse", (): void => {
 
 			await RESPONSE.text("Hello, World!");
 
-			strictEqual(STUB.calledOnce, true, "'replyWith' should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, [PARAMETER]);
+			strictEqual(RESPONSE_MOCK.stubs.replyWith.callCount, 1, "'replyWith' should be called exactly once");
+			deepStrictEqual(RESPONSE_MOCK.stubs.replyWith.firstCall.args, [PARAMETER]);
 		});
 
 		it("should reply with the given message (Buffer)", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
-			const STUB: SinonStub = stub(RESPONSE, "replyWith");
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
-			STUB.resolves();
+			RESPONSE_MOCK.stubs.replyWith.resolves();
 
 			const PARAMETER: ReplyInterface = {
 				status: HTTPStatusCodeEnum.OK,
@@ -121,58 +120,58 @@ describe("RichServerResponse", (): void => {
 
 			await RESPONSE.text(Buffer.from("Hello, World!"));
 
-			strictEqual(STUB.calledOnce, true, "'replyWith' should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, [PARAMETER]);
+			strictEqual(RESPONSE_MOCK.stubs.replyWith.callCount, 1, "'replyWith' should be called exactly once");
+			deepStrictEqual(RESPONSE_MOCK.stubs.replyWith.firstCall.args, [PARAMETER]);
 		});
 	});
 
 	describe("replyWith", (): void => {
 		it("should rejects if the response is locked", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
-			Reflect.set(RESPONSE, "locked", true);
+			ReflectUtility.Set(RESPONSE, "locked", true);
 
 			await rejects(RESPONSE.replyWith(HTTPStatusCodeEnum.OK));
 		});
 
 		it("should set the 'locked' flag when called, and the 'processed' flag when done", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
 			await RESPONSE.replyWith(HTTPStatusCodeEnum.CREATED);
 
-			strictEqual(Reflect.get(RESPONSE, "locked"), true);
-			strictEqual(Reflect.get(RESPONSE, "processed"), true);
+			strictEqual(ReflectUtility.Get(RESPONSE, "locked"), true);
+			strictEqual(ReflectUtility.Get(RESPONSE, "processed"), true);
 		});
 
 		it("should set the 'processed' flag when done, even if an error is thrown", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
-			stub(RESPONSE, "end").throws(new Error("For testing purposes"));
+			RESPONSE_MOCK.stubs.end.throws(new Error("For testing purposes"));
 
 			await rejects(RESPONSE.replyWith(HTTPStatusCodeEnum.CREATED), createErrorTest());
 
-			strictEqual(Reflect.get(RESPONSE, "processed"), true);
+			strictEqual(ReflectUtility.Get(RESPONSE, "processed"), true);
 		});
 
 		it("should accept a status code and send the response", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
-			const WRITE_STUB: SinonStub = stub(RESPONSE, "write");
-			const END_STUB: SinonStub = stub(RESPONSE, "end");
-
-			WRITE_STUB.returns(true);
-			END_STUB.returns(RESPONSE);
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
 			await RESPONSE.replyWith(HTTPStatusCodeEnum.CREATED);
 
-			strictEqual(WRITE_STUB.callCount, 0, "'write' should not be called");
-			strictEqual(END_STUB.calledOnce, true, "'end' should be called exactly once");
+			strictEqual(RESPONSE_MOCK.stubs.write.callCount, 0, "'write' should not be called");
+			strictEqual(RESPONSE_MOCK.stubs.end.callCount, 1, "'end' should be called exactly once");
 
 			strictEqual(RESPONSE.statusCode, HTTPStatusCodeEnum.CREATED);
 			deepStrictEqual(RESPONSE.getHeaders(), nullPrototype({}));
 		});
 
 		it("should add 'Set-Cookie' headers if needed", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
 			const COOKIES: Map<string, CookieDescriptorInterface> = new Map([
 				["lorem", { name: "lorem", value: "ipsum", secure: true }],
@@ -188,7 +187,7 @@ describe("RichServerResponse", (): void => {
 				],
 			});
 
-			Reflect.set(RESPONSE, "cookies", COOKIES);
+			ReflectUtility.Set(RESPONSE, "cookies", COOKIES);
 
 			await RESPONSE.replyWith(HTTPStatusCodeEnum.OK);
 
@@ -196,7 +195,8 @@ describe("RichServerResponse", (): void => {
 		});
 
 		it("should process the 'statusCode' property of the parameter", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
 			const PARAMETER: ReplyInterface = {
 				status: HTTPStatusCodeEnum.UNAUTHORIZED,
@@ -208,7 +208,8 @@ describe("RichServerResponse", (): void => {
 		});
 
 		it("should process the 'headers' property of the parameter", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
 			const HEADERS: OutgoingHttpHeaders = nullPrototype({
 				"accept": "text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8",
@@ -230,7 +231,8 @@ describe("RichServerResponse", (): void => {
 		});
 
 		it("should process the 'cookies' property of the parameter", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
 			const HEADERS: OutgoingHttpHeaders = nullPrototype({
 				"set-cookie": [
@@ -254,12 +256,8 @@ describe("RichServerResponse", (): void => {
 		});
 
 		it("should process the 'payload' property of the parameter (string)", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
-			const WRITE_STUB: SinonStub = stub(RESPONSE, "write");
-			const END_STUB: SinonStub = stub(RESPONSE, "end");
-
-			WRITE_STUB.returns(true);
-			END_STUB.returns(RESPONSE);
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
 			const PARAMETER: ReplyInterface = {
 				payload: "Hello, World!",
@@ -267,21 +265,17 @@ describe("RichServerResponse", (): void => {
 
 			await RESPONSE.replyWith(PARAMETER);
 
-			strictEqual(WRITE_STUB.calledOnce, true, "'write' should be called exactly once");
-			deepStrictEqual(WRITE_STUB.firstCall.args, ["Hello, World!"]);
-			strictEqual(END_STUB.calledOnce, true, "'end' should be called exactly once");
+			strictEqual(RESPONSE_MOCK.stubs.write.callCount, 1, "'write' should be called exactly once");
+			deepStrictEqual(RESPONSE_MOCK.stubs.write.firstCall.args, ["Hello, World!"]);
+			strictEqual(RESPONSE_MOCK.stubs.end.callCount, 1, "'end' should be called exactly once");
 
 			strictEqual(RESPONSE.getHeader("Content-Type"), ContentTypeEnum.TEXT);
-			strictEqual(Reflect.get(RESPONSE, "content"), "Hello, World!");
+			strictEqual(ReflectUtility.Get(RESPONSE, "content"), "Hello, World!");
 		});
 
 		it("should process the 'payload' property of the parameter (Buffer)", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
-			const WRITE_STUB: SinonStub = stub(RESPONSE, "write");
-			const END_STUB: SinonStub = stub(RESPONSE, "end");
-
-			WRITE_STUB.returns(true);
-			END_STUB.returns(RESPONSE);
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
 			const PARAMETER: ReplyInterface = {
 				payload: Buffer.from("Hello, World!"),
@@ -289,21 +283,17 @@ describe("RichServerResponse", (): void => {
 
 			await RESPONSE.replyWith(PARAMETER);
 
-			strictEqual(WRITE_STUB.calledOnce, true, "'write' should be called exactly once");
-			deepStrictEqual(WRITE_STUB.firstCall.args, [Buffer.from("Hello, World!")]);
-			strictEqual(END_STUB.calledOnce, true, "'end' should be called exactly once");
+			strictEqual(RESPONSE_MOCK.stubs.write.callCount, 1, "'write' should be called exactly once");
+			deepStrictEqual(RESPONSE_MOCK.stubs.write.firstCall.args, [Buffer.from("Hello, World!")]);
+			strictEqual(RESPONSE_MOCK.stubs.end.callCount, 1, "'end' should be called exactly once");
 
 			strictEqual(RESPONSE.getHeader("Content-Type"), ContentTypeEnum.BINARY);
-			deepStrictEqual(Reflect.get(RESPONSE, "content"), Buffer.from("Hello, World!"));
+			deepStrictEqual(ReflectUtility.Get(RESPONSE, "content"), Buffer.from("Hello, World!"));
 		});
 
 		it("should process the 'payload' property of the parameter (JSON)", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
-			const WRITE_STUB: SinonStub = stub(RESPONSE, "write");
-			const END_STUB: SinonStub = stub(RESPONSE, "end");
-
-			WRITE_STUB.returns(true);
-			END_STUB.returns(RESPONSE);
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
 			const DATA: object = {
 				message: "Hello, World!",
@@ -318,16 +308,17 @@ describe("RichServerResponse", (): void => {
 				payload: DATA,
 			});
 
-			strictEqual(WRITE_STUB.calledOnce, true, "'write' should be called exactly once");
-			deepStrictEqual(WRITE_STUB.firstCall.args, [SERIALIZED_DATA]);
-			strictEqual(END_STUB.calledOnce, true, "'end' should be called exactly once");
+			strictEqual(RESPONSE_MOCK.stubs.write.callCount, 1, "'write' should be called exactly once");
+			deepStrictEqual(RESPONSE_MOCK.stubs.write.firstCall.args, [SERIALIZED_DATA]);
+			strictEqual(RESPONSE_MOCK.stubs.end.callCount, 1, "'end' should be called exactly once");
 
 			strictEqual(RESPONSE.getHeader("Content-Type"), ContentTypeEnum.JSON);
-			strictEqual(Reflect.get(RESPONSE, "content"), SERIALIZED_DATA);
+			strictEqual(ReflectUtility.Get(RESPONSE, "content"), SERIALIZED_DATA);
 		});
 
 		it("should ignore the 'contentType' property of the parameter when without a 'payload' property", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
 			const PARAMETER: ReplyInterface = {
 				contentType: ContentTypeEnum.JSON,
@@ -339,7 +330,8 @@ describe("RichServerResponse", (): void => {
 		});
 
 		it("should process the 'contentType' property of the parameter", async (): Promise<void> => {
-			const RESPONSE: RichServerResponse = mockResponse();
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
 			const DATA: object = {
 				message: "Hello, World!",
@@ -356,7 +348,7 @@ describe("RichServerResponse", (): void => {
 			await RESPONSE.replyWith(PARAMETER);
 
 			strictEqual(RESPONSE.getHeader("Content-Type"), ContentTypeEnum.JSON);
-			strictEqual(Reflect.get(RESPONSE, "content"), PARAMETER.payload);
+			strictEqual(ReflectUtility.Get(RESPONSE, "content"), PARAMETER.payload);
 		});
 	});
 });

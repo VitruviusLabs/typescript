@@ -8,6 +8,7 @@ import type { BaseEndpoint } from "../../base.endpoint.mjs";
 interface EndpointMatchInterface
 {
 	endpoint: BaseEndpoint;
+	contextual: boolean;
 	matchGroups: Record<string, string> | undefined;
 }
 

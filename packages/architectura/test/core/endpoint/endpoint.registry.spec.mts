@@ -1,14 +1,17 @@
 import { deepStrictEqual } from "node:assert/strict";
-import { afterEach, beforeEach, describe, it } from "node:test";
+import { after, beforeEach, describe, it } from "node:test";
+import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { BaseEndpoint, type EndpointEntryInterface, type EndpointMatchInterface, EndpointRegistry, HTTPMethodEnum, HelloWorldEndpoint } from "../../../src/_index.mjs";
 
 describe("EndpointRegistry", (): void => {
+	const ENDPOINT_MAP: Map<string, EndpointEntryInterface> = Reflect.get(EndpointRegistry, "ENDPOINTS");
+
 	beforeEach((): void => {
-		Reflect.get(EndpointRegistry, "ENDPOINTS").clear();
+		ENDPOINT_MAP.clear();
 	});
 
-	afterEach((): void => {
-		Reflect.get(EndpointRegistry, "ENDPOINTS").clear();
+	after((): void => {
+		ENDPOINT_MAP.clear();
 	});
 
 	describe("FindEndpoint", (): void => {
@@ -17,16 +20,17 @@ describe("EndpointRegistry", (): void => {
 
 			const MATCHING_ENDPOINT: EndpointMatchInterface = {
 				endpoint: ENDPOINT,
+				contextual: true,
 				matchGroups: undefined,
 			};
 
 			const EMPTY_MAP: Map<string, BaseEndpoint> = new Map();
 
 			deepStrictEqual(EndpointRegistry.FindEndpoint(HTTPMethodEnum.GET, "/"), MATCHING_ENDPOINT);
-			deepStrictEqual(Reflect.get(EndpointRegistry, "ENDPOINTS"), EMPTY_MAP);
+			deepStrictEqual(ReflectUtility.Get(EndpointRegistry, "ENDPOINTS"), EMPTY_MAP);
 		});
 
-		it("should return the registered endpoint that matches", (): void => {
+		it("should return the registered endpoint that matches (stateful)", (): void => {
 			class DummyEndpoint extends BaseEndpoint
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
@@ -39,15 +43,45 @@ describe("EndpointRegistry", (): void => {
 
 			const MATCHING_ENDPOINT: EndpointMatchInterface = {
 				endpoint: ENDPOINT,
+				contextual: false,
 				matchGroups: undefined,
 			};
 
-			Reflect.get(EndpointRegistry, "ENDPOINTS").set(
+			ENDPOINT_MAP.set(
 				"dummy-key",
 				{
 					method: HTTPMethodEnum.GET,
 					route: /^\/test-dummy$/,
 					endpoint: ENDPOINT,
+				}
+			);
+
+			deepStrictEqual(EndpointRegistry.FindEndpoint(HTTPMethodEnum.GET, "/test-dummy"), MATCHING_ENDPOINT);
+		});
+
+		it("should return the registered endpoint that matches (contextual)", (): void => {
+			class DummyEndpoint extends BaseEndpoint
+			{
+				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected readonly route: string = "/test-dummy";
+
+				public execute(): void { }
+			}
+
+			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
+
+			const MATCHING_ENDPOINT: EndpointMatchInterface = {
+				endpoint: ENDPOINT,
+				contextual: true,
+				matchGroups: undefined,
+			};
+
+			ENDPOINT_MAP.set(
+				"dummy-key",
+				{
+					method: HTTPMethodEnum.GET,
+					route: /^\/test-dummy$/,
+					endpoint: DummyEndpoint,
 				}
 			);
 
@@ -65,7 +99,7 @@ describe("EndpointRegistry", (): void => {
 
 			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
 
-			Reflect.get(EndpointRegistry, "ENDPOINTS").set(
+			ENDPOINT_MAP.set(
 				"dummy-key",
 				{
 					method: HTTPMethodEnum.GET,
@@ -74,7 +108,7 @@ describe("EndpointRegistry", (): void => {
 				}
 			);
 
-			Reflect.get(EndpointRegistry, "ENDPOINTS").set(
+			ENDPOINT_MAP.set(
 				"dummy-key",
 				{
 					method: HTTPMethodEnum.POST,
@@ -114,12 +148,12 @@ describe("EndpointRegistry", (): void => {
 			]);
 
 			EndpointRegistry.AddEndpoint(ENDPOINT);
-			deepStrictEqual(Reflect.get(EndpointRegistry, "ENDPOINTS"), POPULATED_MAP);
+			deepStrictEqual(ReflectUtility.Get(EndpointRegistry, "ENDPOINTS"), POPULATED_MAP);
 		});
 	});
 
 	describe("AddEndpointsDirectory", (): void => {
-		it.todo("should explore a folder recursively and add endpoints to the registry", async (): Promise<void> => {});
-		it.todo("should ignore abstract endpoints", async (): Promise<void> => {});
+		it.skip("should explore a folder recursively and add endpoints to the registry", async (): Promise<void> => {});
+		it.skip("should ignore abstract endpoints", async (): Promise<void> => {});
 	});
 });

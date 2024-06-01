@@ -1,12 +1,10 @@
-import { randomUUID } from "node:crypto";
 import type { ExecutionContext } from "../../../core/execution-context/execution-context.mjs";
 import type { SessionDelegateInterface } from "../definition/interface/session-delegate.interface.mjs";
+import { randomUUID } from "node:crypto";
 import { BasePreHook } from "../../../core/hook/base.pre-hook.mjs";
-import { Server } from "../../../core/server/server.mjs";
 import { Session } from "../entity/session.mjs";
 import { SessionRegistry } from "../entity/session.registry.mjs";
 import { SessionConstantEnum } from "../definition/enum/session-constant.enum.mjs";
-import { MillisecondEnum } from "../../../definition/enum/millisecond.enum.mjs";
 
 /**
  * Session pre-hook
@@ -28,33 +26,6 @@ class SessionPreHook extends BasePreHook
 		super();
 
 		this.delegate = delegate;
-
-		const TIMER: NodeJS.Timeout = setInterval(
-			// eslint-disable-next-line @typescript-eslint/no-misused-promises -- Asynchronous callback
-			async (): Promise<void> =>
-			{
-				try
-				{
-					for (const SESSION of SessionRegistry.ListSessions())
-					{
-						if (!SESSION.isExpired())
-						{
-							continue;
-						}
-
-						SessionRegistry.RemoveSession(SESSION.getUUID());
-						await SESSION.clearData();
-					}
-				}
-				catch (error: unknown)
-				{
-					await Server.HandleError(error);
-				}
-			},
-			SessionConstantEnum.MINUTES_BETWEEN_CLEANUP * MillisecondEnum.MINUTE
-		);
-
-		TIMER.unref();
 	}
 
 	/**
@@ -88,15 +59,17 @@ class SessionPreHook extends BasePreHook
 		SessionRegistry.AddSession(NEW_SESSION);
 		context.setContextualItem(Session, NEW_SESSION);
 
-		if (SESSION_ID === undefined)
+		if (SESSION_ID !== undefined)
 		{
-			context.getResponse().setCookie({
-				name: SessionConstantEnum.COOKIE_NAME.toString(),
-				value: NEW_SESSION.getUUID(),
-			});
+			await NEW_SESSION.loadData();
+
+			return;
 		}
 
-		await NEW_SESSION.loadData();
+		context.getResponse().setCookie({
+			name: SessionConstantEnum.COOKIE_NAME.toString(),
+			value: NEW_SESSION.getUUID(),
+		});
 	}
 }
 

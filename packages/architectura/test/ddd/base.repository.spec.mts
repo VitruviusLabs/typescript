@@ -1,11 +1,9 @@
-import { afterEach, beforeEach, describe, it } from "node:test";
-import { deepStrictEqual, rejects, strictEqual } from "node:assert";
+import { after, beforeEach, describe, it } from "node:test";
+import { deepStrictEqual, doesNotReject, rejects, strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
-import { BaseFactory, BaseModel, type BaseModelInstantiationInterface, BaseRepository, type ModelMetadataInterface } from "../../src/_index.mjs";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
-import { strictResolves } from "../utils/assert/strict-resolves.mjs";
-import { deepStrictResolves } from "../utils/assert/deep-strict-resolves.mjs";
-import { asStub } from "../utils/as-stub.mjs";
+import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
+import { BaseFactory, BaseModel, type BaseModelInstantiationInterface, BaseRepository, type ModelMetadataInterface } from "../../src/_index.mjs";
 
 describe("BaseRepository", (): void => {
 	class DummyModel extends BaseModel
@@ -63,25 +61,36 @@ describe("BaseRepository", (): void => {
 		}
 	}
 
+	// @ts-expect-error: Stub protected method
+	const FETCH_UUID_STUB: SinonStub = stub(DummyRepository.prototype, "fetchByUUID");
+	// @ts-expect-error: Stub protected method
+	const FETCH_ID_STUB: SinonStub = stub(DummyRepository.prototype, "fetchById");
+	// @ts-expect-error: Stub protected method
+	const REGISTER_STUB: SinonStub = stub(DummyRepository.prototype, "register");
+	// @ts-expect-error: Stub protected method
+	const UPDATE_STUB: SinonStub = stub(DummyRepository.prototype, "update");
+	// @ts-expect-error: Stub protected method
+	const DESTROY_STUB: SinonStub = stub(DummyRepository.prototype, "destroy");
+
 	beforeEach((): void => {
-		// @ts-expect-error: Stub protected method
-		stub(DummyRepository.prototype, "fetchByUUID").rejects();
-		// @ts-expect-error: Stub protected method
-		stub(DummyRepository.prototype, "fetchById").rejects();
-		// @ts-expect-error: Stub protected method
-		stub(DummyRepository.prototype, "register").rejects();
-		// @ts-expect-error: Stub protected method
-		stub(DummyRepository.prototype, "update").rejects();
-		// @ts-expect-error: Stub protected method
-		stub(DummyRepository.prototype, "destroy").rejects();
+		FETCH_UUID_STUB.reset();
+		FETCH_UUID_STUB.rejects();
+		FETCH_ID_STUB.reset();
+		FETCH_ID_STUB.rejects();
+		REGISTER_STUB.reset();
+		REGISTER_STUB.rejects();
+		UPDATE_STUB.reset();
+		UPDATE_STUB.rejects();
+		DESTROY_STUB.reset();
+		DESTROY_STUB.rejects();
 	});
 
-	afterEach((): void => {
-		asStub(Reflect.get(DummyRepository.prototype, "fetchByUUID")).restore();
-		asStub(Reflect.get(DummyRepository.prototype, "fetchById")).restore();
-		asStub(Reflect.get(DummyRepository.prototype, "register")).restore();
-		asStub(Reflect.get(DummyRepository.prototype, "update")).restore();
-		asStub(Reflect.get(DummyRepository.prototype, "destroy")).restore();
+	after((): void => {
+		FETCH_UUID_STUB.restore();
+		FETCH_ID_STUB.restore();
+		REGISTER_STUB.restore();
+		UPDATE_STUB.restore();
+		DESTROY_STUB.restore();
 	});
 
 	describe("constructor", (): void => {
@@ -89,7 +98,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			strictEqual(Reflect.get(REPOSITORY, "factory"), FACTORY);
+			strictEqual(ReflectUtility.Get(REPOSITORY, "factory"), FACTORY);
 		});
 	});
 
@@ -100,7 +109,7 @@ describe("BaseRepository", (): void => {
 
 			const DATE: Date = new Date();
 
-			const MODEL: DummyModel = Reflect.get(REPOSITORY, "create").call(REPOSITORY, {
+			const MODEL: unknown = ReflectUtility.Call(REPOSITORY, "create", {
 				id: 1n,
 				uuid: "00000000-0000-0000-0000-000000000000",
 				createdAt: DATE,
@@ -108,11 +117,12 @@ describe("BaseRepository", (): void => {
 				deletedAt: null,
 			});
 
-			strictEqual(Reflect.get(MODEL, "id"), 1n);
-			strictEqual(Reflect.get(MODEL, "uuid"), "00000000-0000-0000-0000-000000000000");
-			strictEqual(Reflect.get(MODEL, "createdAt"), DATE);
-			strictEqual(Reflect.get(MODEL, "updatedAt"), DATE);
-			strictEqual(Reflect.get(MODEL, "deletedAt"), undefined);
+			instanceOf(MODEL, DummyModel);
+			strictEqual(ReflectUtility.Get(MODEL, "id"), 1n);
+			strictEqual(ReflectUtility.Get(MODEL, "uuid"), "00000000-0000-0000-0000-000000000000");
+			strictEqual(ReflectUtility.Get(MODEL, "createdAt"), DATE);
+			strictEqual(ReflectUtility.Get(MODEL, "updatedAt"), DATE);
+			strictEqual(ReflectUtility.Get(MODEL, "deletedAt"), undefined);
 		});
 	});
 
@@ -121,9 +131,13 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			asStub(Reflect.get(REPOSITORY, "fetchByUUID")).resolves(undefined);
+			FETCH_UUID_STUB.resolves(undefined);
 
-			await strictResolves(REPOSITORY.findByUUID("00000000-0000-0000-0000-000000000000"), undefined);
+			const RESULT: unknown = REPOSITORY.findByUUID("00000000-0000-0000-0000-000000000000");
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(await RESULT, undefined);
 		});
 
 		it("should return an instance of the model if an entity with this UUID exists", async (): Promise<void> => {
@@ -138,11 +152,16 @@ describe("BaseRepository", (): void => {
 				deletedAt: null,
 			};
 
-			const EXPECTED: DummyModel = Reflect.get(REPOSITORY, "create").call(REPOSITORY, METADATA);
+			const EXPECTED: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
 
-			asStub(Reflect.get(REPOSITORY, "fetchByUUID")).resolves(METADATA);
+			instanceOf(EXPECTED, DummyModel);
+			FETCH_UUID_STUB.resolves(METADATA);
 
-			await deepStrictResolves(REPOSITORY.findByUUID("00000000-0000-0000-0000-000000000000"), EXPECTED);
+			const RESULT: unknown = REPOSITORY.findByUUID("00000000-0000-0000-0000-000000000000");
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, EXPECTED);
 		});
 	});
 
@@ -151,7 +170,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			asStub(Reflect.get(REPOSITORY, "fetchByUUID")).resolves(undefined);
+			FETCH_UUID_STUB.resolves(undefined);
 
 			await rejects(REPOSITORY.getByUUID("00000000-0000-0000-0000-000000000000"), createErrorTest());
 		});
@@ -168,11 +187,16 @@ describe("BaseRepository", (): void => {
 				deletedAt: null,
 			};
 
-			const EXPECTED: DummyModel = Reflect.get(REPOSITORY, "create").call(REPOSITORY, METADATA);
+			const EXPECTED: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
 
-			asStub(Reflect.get(REPOSITORY, "fetchByUUID")).resolves(METADATA);
+			instanceOf(EXPECTED, DummyModel);
+			FETCH_UUID_STUB.resolves(METADATA);
 
-			await deepStrictResolves(REPOSITORY.getByUUID("00000000-0000-0000-0000-000000000000"), EXPECTED);
+			const RESULT: unknown = REPOSITORY.getByUUID("00000000-0000-0000-0000-000000000000");
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, EXPECTED);
 		});
 	});
 
@@ -181,9 +205,13 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			asStub(Reflect.get(REPOSITORY, "fetchById")).resolves(undefined);
+			FETCH_ID_STUB.resolves(undefined);
 
-			await strictResolves(REPOSITORY.findById(1n), undefined);
+			const RESULT: unknown = REPOSITORY.findById(1n);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(await RESULT, undefined);
 		});
 
 		it("should return an instance of the model if an entity with this id exists", async (): Promise<void> => {
@@ -198,11 +226,16 @@ describe("BaseRepository", (): void => {
 				deletedAt: null,
 			};
 
-			const EXPECTED: DummyModel = Reflect.get(REPOSITORY, "create").call(REPOSITORY, METADATA);
+			const EXPECTED: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
 
-			asStub(Reflect.get(REPOSITORY, "fetchById")).resolves(METADATA);
+			instanceOf(EXPECTED, DummyModel);
+			FETCH_ID_STUB.resolves(METADATA);
 
-			await deepStrictResolves(REPOSITORY.findById(1n), EXPECTED);
+			const RESULT: unknown = REPOSITORY.findById(1n);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, EXPECTED);
 		});
 	});
 
@@ -211,7 +244,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			asStub(Reflect.get(REPOSITORY, "fetchById")).resolves(undefined);
+			FETCH_ID_STUB.resolves(undefined);
 
 			await rejects(REPOSITORY.getById(1n), createErrorTest());
 		});
@@ -228,11 +261,16 @@ describe("BaseRepository", (): void => {
 				deletedAt: null,
 			};
 
-			const EXPECTED: DummyModel = Reflect.get(REPOSITORY, "create").call(REPOSITORY, METADATA);
+			const EXPECTED: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
 
-			asStub(Reflect.get(REPOSITORY, "fetchById")).resolves(METADATA);
+			instanceOf(EXPECTED, DummyModel);
+			FETCH_ID_STUB.resolves(METADATA);
 
-			await deepStrictResolves(REPOSITORY.getById(1n), EXPECTED);
+			const RESULT: unknown = REPOSITORY.getById(1n);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, EXPECTED);
 		});
 	});
 
@@ -250,16 +288,16 @@ describe("BaseRepository", (): void => {
 			};
 
 			const ENTITY: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
-			const EXPECTED: DummyModel = Reflect.get(REPOSITORY, "create").call(REPOSITORY, METADATA);
 
-			const STUB: SinonStub = asStub(Reflect.get(REPOSITORY, "register"));
+			const EXPECTED: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
 
-			STUB.resolves(METADATA);
+			instanceOf(EXPECTED, DummyModel);
+			REGISTER_STUB.resolves(METADATA);
 
 			await REPOSITORY.save(ENTITY);
 
-			strictEqual(STUB.calledOnce, true, "The 'register' method should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, [ENTITY]);
+			strictEqual(REGISTER_STUB.callCount, 1, "The 'register' method should be called exactly once");
+			deepStrictEqual(REGISTER_STUB.firstCall.args, [ENTITY]);
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -275,17 +313,20 @@ describe("BaseRepository", (): void => {
 				deletedAt: null,
 			};
 
-			const ENTITY: DummyModel = Reflect.get(REPOSITORY, "create").call(REPOSITORY, METADATA);
-			const EXPECTED: DummyModel = Reflect.get(REPOSITORY, "create").call(REPOSITORY, METADATA);
+			const ENTITY: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
 
-			const STUB: SinonStub = asStub(Reflect.get(REPOSITORY, "update"));
+			instanceOf(ENTITY, DummyModel);
 
-			STUB.resolves(METADATA);
+			const EXPECTED: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
+
+			instanceOf(EXPECTED, DummyModel);
+
+			UPDATE_STUB.resolves(METADATA);
 
 			await REPOSITORY.save(ENTITY);
 
-			strictEqual(STUB.calledOnce, true, "The 'update' method should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, [ENTITY]);
+			strictEqual(UPDATE_STUB.callCount, 1, "The 'update' method should be called exactly once");
+			deepStrictEqual(UPDATE_STUB.firstCall.args, [ENTITY]);
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 	});
@@ -303,17 +344,18 @@ describe("BaseRepository", (): void => {
 				deletedAt: null,
 			};
 
-			const ENTITY: DummyModel = Reflect.get(REPOSITORY, "create").call(REPOSITORY, METADATA);
+			const ENTITY: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
+
+			instanceOf(ENTITY, DummyModel);
+
 			const EXPECTED: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
-			const STUB: SinonStub = asStub(Reflect.get(REPOSITORY, "destroy"));
-
-			STUB.resolves(METADATA);
+			DESTROY_STUB.resolves(METADATA);
 
 			await REPOSITORY.delete(ENTITY);
 
-			strictEqual(STUB.calledOnce, true, "The 'destroy' method should be called exactly once");
-			deepStrictEqual(STUB.firstCall.args, [1n]);
+			strictEqual(DESTROY_STUB.callCount, 1, "The 'destroy' method should be called exactly once");
+			deepStrictEqual(DESTROY_STUB.firstCall.args, [1n]);
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 	});
