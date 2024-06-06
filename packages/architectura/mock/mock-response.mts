@@ -8,6 +8,13 @@ import { isMockResponse } from "./predicate/is-mock-response.mjs";
 import { baseMock } from "./base-mock.mjs";
 import { type RichClientRequest, RichServerResponse } from "../src/_index.mjs";
 
+/**
+ * Create a mock response.
+ *
+ * @remarks
+ * Whatever the parameter is, the function will return a mock response.
+ * Steps will be skipped according to the type of the parameter.
+ */
 function mockResponse(
 	parameter?:
 		| MockRequestInterface

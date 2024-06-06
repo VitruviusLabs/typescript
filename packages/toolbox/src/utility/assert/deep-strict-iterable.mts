@@ -2,6 +2,9 @@ import { deepStrictEqual, doesNotThrow, ok } from "node:assert";
 import { isFunction, isObject } from "@vitruvius-labs/ts-predicate/type-guard";
 import { getDetailedType } from "@vitruvius-labs/ts-predicate/type-hint";
 
+/**
+ * Asserts that a value is an iterable and that it contains the expected values.
+ */
 function deepStrictIterable<T>(value: unknown, expected_values: Array<T>): asserts value is Iterable<T>
 {
 	const MESSAGE: string = `Expected an iterable, but got ${getDetailedType(value)}.`;

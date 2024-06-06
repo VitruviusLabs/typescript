@@ -3,6 +3,9 @@ import type { MockSessionDelegateInterface } from "./definition/interface/mock-s
 import { type SinonStub, stub } from "sinon";
 import { baseMock } from "./base-mock.mjs";
 
+/**
+ * Create a mock session delegate.
+ */
 function mockSessionDelegate(): MockSessionDelegateInterface
 {
 	const FETCH_DATA_STUB: SinonStub = stub();

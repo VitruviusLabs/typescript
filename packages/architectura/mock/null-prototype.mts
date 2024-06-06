@@ -1,7 +1,16 @@
+/**
+ * Turn an object into a null-prototype copy.
+ *
+ * @remarks
+ * Helps with unit tests involving null-prototype objects.
+ */
 function nullPrototype<T extends object>(value: T): T
 {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Loosely typed
-	return Object.assign(Object.create(null), value);
+	const COPY: T = structuredClone(value);
+
+	Object.setPrototypeOf(COPY, null);
+
+	return COPY;
 }
 
 export { nullPrototype };

@@ -1,7 +1,10 @@
 import type { SinonStub } from "sinon";
 import type { BaseMockInterface } from "./definition/interface/base-mock.interface.mjs";
 
-function baseMock<T extends BaseMockInterface<object>>(mock: Omit<T, "callThroughAllStubs" | "reflect" | "resetAllStubs" | "restoreAllStubs">): T
+/**
+ * Add generic methods to a mock object.
+ */
+function baseMock<T extends BaseMockInterface<object>>(mock: Omit<T, "callThroughAllStubs" | "resetAllStubs" | "restoreAllStubs">): T
 {
 	// @ts-expect-error: Meta-programming
 	return {

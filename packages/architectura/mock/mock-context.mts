@@ -9,6 +9,13 @@ import { isMockContext } from "./predicate/is-mock-context.mjs";
 import { baseMock } from "./base-mock.mjs";
 import { ExecutionContext, type RichClientRequest, type RichServerResponse } from "../src/_index.mjs";
 
+/**
+ * Create a mock context.
+ *
+ * @remarks
+ * Whatever the parameter is, the function will return a mock context.
+ * Steps will be skipped according to the type of the parameter.
+ */
 function mockContext(
 	parameter?:
 		| ExecutionContext

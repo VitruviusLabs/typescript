@@ -3,6 +3,13 @@ import { Socket, type SocketConstructorOpts } from "node:net";
 import { isMockSocket } from "./predicate/is-mock-socket.mjs";
 import { baseMock } from "./base-mock.mjs";
 
+/**
+ * Create a mock socket.
+ *
+ * @remarks
+ * Whatever the parameter is, the function will return a mock socket.
+ * Steps will be skipped according to the type of the parameter.
+ */
 function mockSocket(parameter?: MockSocketInterface | Socket | SocketConstructorOpts): MockSocketInterface
 {
 	if (isMockSocket(parameter))

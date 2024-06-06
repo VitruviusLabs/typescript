@@ -3,6 +3,9 @@ import { fail } from "node:assert";
 import { isInstanceOf } from "@vitruvius-labs/ts-predicate/type-guard";
 import { getDetailedType } from "@vitruvius-labs/ts-predicate/type-hint";
 
+/**
+ * Asserts that a value is an instance of the expected class.
+ */
 function instanceOf<T extends object>(value: unknown, expected: ConstructorOf<T>): asserts value is T
 {
 	if (!isInstanceOf(value, expected))
