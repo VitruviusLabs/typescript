@@ -1060,7 +1060,7 @@ jobs:
         id: pnpm-install
         with:
           version: 8
-          run_install: false
+          run_install: true
 
       - name: Dependencies cache unpacking
         uses: actions/cache@v4
