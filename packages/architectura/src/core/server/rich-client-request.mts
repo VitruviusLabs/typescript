@@ -457,42 +457,38 @@ class RichClientRequest extends IncomingMessage
 			{
 				let body: Buffer = Buffer.alloc(0);
 
-				const CLEAR_LISTENERS = (): void =>
-				{
-					/* eslint-disable @typescript-eslint/no-use-before-define -- Closure */
-					this.removeListener("data", ON_DATA);
-					this.removeListener("end", ON_END);
-					this.removeListener("error", ON_ERROR);
-					/* eslint-enable @typescript-eslint/no-use-before-define -- Closure */
-				};
-
-				const ON_DATA = (chunk: Buffer): void =>
-				{
-					body = Buffer.concat([body, chunk]);
-				};
-
-				const ON_END = (): void =>
-				{
-					if (!this.complete)
+				this.addListener(
+					"data",
+					(chunk: Buffer): void =>
 					{
-						reject(new Error("The connection was terminated while the message was still being sent."));
-
-						return;
+						body = Buffer.concat([body, chunk]);
 					}
+				);
 
-					resolve(body);
-					CLEAR_LISTENERS();
-				};
+				this.addListener(
+					"end",
+					(): void =>
+					{
+						if (!this.complete)
+						{
+							reject(new Error("The connection was terminated while the message was still being sent."));
 
-				const ON_ERROR = (error: Error): void =>
-				{
-					reject(error);
-					CLEAR_LISTENERS();
-				};
+							return;
+						}
 
-				this.addListener("data", ON_DATA);
-				this.addListener("end", ON_END);
-				this.addListener("error", ON_ERROR);
+						resolve(body);
+						this.removeAllListeners();
+					}
+				);
+
+				this.addListener(
+					"error",
+					(error: Error): void =>
+					{
+						reject(error);
+						this.removeAllListeners();
+					}
+				);
 			}
 		);
 	}
