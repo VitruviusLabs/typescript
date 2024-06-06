@@ -7,7 +7,6 @@ const INSTANCES: Map<Function, object> = new Map();
  * A singleton class that can only be instantiated once.
  *
  * @remarks
- *
  * This class is a base class for singletons. It ensures that a class can only be
  * instantiated once. It also provides a method to get the instance of a singleton
  * class.
@@ -48,9 +47,10 @@ abstract class Singleton
 	 * Test if there is an instance of a singleton class.
 	 *
 	 * @sealed
-	 * @remarks
 	 *
-	 * This method returns a boolean if the instance of a singleton class exists.
+	 * @remarks
+	 * This method returns a boolean if the instance of a singleton class exists in the internal registry.
+	 * It takes a constructor as parameter for consistency with GetInstance and FindInstance.
 	 *
 	 * @example
 	 * ```typescript
@@ -84,10 +84,11 @@ abstract class Singleton
 	 * Retrieve the instance of a singleton class.
 	 *
 	 * @sealed
+	*
 	 * @remarks
-	 *
-	 * This method returns the instance of a singleton class.
-	 * If the class has not been instantiated yet, throws an error.
+	 * This method returns the instance of a singleton class from the internal registry.
+	 * If the class is not found in the internal registry, throws an error.
+	 * It takes a constructor as parameter because of a TypeScript typing limitation.
 	 *
 	 * @example
 	 * ```typescript
@@ -106,7 +107,7 @@ abstract class Singleton
 	 *
 	 * @param class_constructor - The constructor of the singleton class.
 	 * @returns The instance of the singleton class.
-	 * @throws If the instance doesn't exist.
+	 * @throws If the instance cannot be found.
 	 */
 	public static GetInstance<T extends Singleton>(class_constructor: ConstructorOf<T>): T
 	{
@@ -129,10 +130,11 @@ abstract class Singleton
 	 * Retrieve the instance of a singleton class.
 	 *
 	 * @sealed
+	*
 	 * @remarks
-	 *
 	 * This method returns the instance of a singleton class.
-	 * If the class has not been instantiated yet, it returns undefined.
+	 * If no instance is found in the internal registry, it returns undefined.
+	 * It takes a constructor as parameter because of a TypeScript typing limitation.
 	 *
 	 * @param class_constructor - The constructor of the singleton class.
 	 * @returns The instance of the singleton class, or undefined if it doesn't exists.
@@ -153,10 +155,10 @@ abstract class Singleton
 	 * Clears the instance of a singleton class.
 	 *
 	 * @sealed
+	*
 	 * @remarks
-	 *
-	 * This method clears the instance of a singleton class. It removes the instance from
-	 * the internal map.
+	 * This method remove the instance of a singleton class from the internal registry.
+	 * It takes a constructor as parameter for consistency with GetInstance and FindInstance.
 	 *
 	 * @example
 	 * ```typescript

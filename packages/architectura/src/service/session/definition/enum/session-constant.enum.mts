@@ -1,3 +1,8 @@
+/**
+ * Constants for managing sessions
+ *
+ * @internal
+ */
 const enum SessionConstantEnum
 {
 	COOKIE_NAME = "session_uuid",

@@ -1,6 +1,12 @@
 import { getHashes } from "node:crypto";
 
-/** @internal */
+/**
+ * Validates the algorithm
+ *
+ * @throws if the algorithm is invalid, with the list of supported algorithms
+ *
+ * @internal
+ */
 function validateAlgorithm(algorithm: string): void
 {
 	if (algorithm === "none")

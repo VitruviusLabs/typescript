@@ -1,11 +1,20 @@
+import type { FileSystemFlagEnum } from "./definition/enum/file-system-flag.enum.mjs";
 import { type Dirent, type ReadStream, type Stats, createReadStream } from "node:fs";
 import { type FileHandle, open, readFile, readdir, stat } from "node:fs/promises";
+import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { isErrorWithCode } from "../../predicate/is-error-with-code.mjs";
-import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
 
+/**
+ * Service for interacting with the file system
+ *
+ * @sealed
+ */
 class FileSystemService
 {
+	/**
+	 * Check if a directory exists
+	 */
 	public static async DirectoryExists(directory_path: string): Promise<boolean>
 	{
 		const STAT: Stats | undefined = await FileSystemService.GetStats(directory_path);
@@ -18,7 +27,12 @@ class FileSystemService
 		return STAT.isDirectory();
 	}
 
-	public static async ConfirmDirectoryExistence(directory_path: string): Promise<void>
+	/**
+	 * Assert that a directory exists
+	 *
+	 * @throws if the directory does not exist
+	 */
+	public static async AssertDirectoryExistence(directory_path: string): Promise<void>
 	{
 		if (!await FileSystemService.DirectoryExists(directory_path))
 		{
@@ -26,11 +40,17 @@ class FileSystemService
 		}
 	}
 
+	/**
+	 * List the children entities of a directory
+	 */
 	public static async ReadDirectory(directory: string): Promise<Array<Dirent>>
 	{
 		return await readdir(directory, { encoding: "utf-8", withFileTypes: true });
 	}
 
+	/**
+	 * Check if a file exists
+	 */
 	public static async FileExists(file_path: string): Promise<boolean>
 	{
 		const STAT: Stats | undefined = await FileSystemService.GetStats(file_path);
@@ -43,7 +63,12 @@ class FileSystemService
 		return STAT.isFile();
 	}
 
-	public static async ConfirmFileExistence(file_path: string): Promise<void>
+	/**
+	 * Assert that a file exists
+	 *
+	 * @throws if the file does not exist
+	 */
+	public static async AssertFileExistence(file_path: string): Promise<void>
 	{
 		if (!await FileSystemService.FileExists(file_path))
 		{
@@ -51,23 +76,26 @@ class FileSystemService
 		}
 	}
 
-	public static async ReadFile(file_path: string): Promise<Buffer | string>
+	/**
+	 * Create a read stream for a file
+	 */
+	public static GetFileReadStream(file_path: string): ReadStream
 	{
-		const EXISTS: boolean = await FileSystemService.FileExists(file_path);
+		const STREAM: ReadStream = createReadStream(file_path);
 
-		if (!EXISTS)
-		{
-			throw new Error(`Requested file ${file_path} does not exists.`);
-		}
-
-		const FILE: Buffer | string = await readFile(file_path);
-
-		return FILE;
+		return STREAM;
 	}
 
-	public static async ReadFileAsBuffer(file_path: string): Promise<Buffer>
+	/**
+	 * Read the content of a file as a buffer
+	 *
+	 * @throws if the file does not exist
+	 */
+	public static async ReadBinaryFile(file_path: string): Promise<Buffer>
 	{
-		const FILE: Buffer | string = await FileSystemService.ReadFile(file_path);
+		await FileSystemService.AssertFileExistence(file_path);
+
+		const FILE: Buffer | string = await readFile(file_path);
 
 		if (isString(FILE))
 		{
@@ -77,41 +105,40 @@ class FileSystemService
 		return FILE;
 	}
 
-	public static ReadFileAsStream(file_path: string): ReadStream
-	{
-		const STREAM: ReadStream = createReadStream(file_path);
-
-		return STREAM;
-	}
-
+	/**
+	 * Read the content of a file as a string
+	 *
+	 * @throws if the file does not exist
+	 */
 	public static async ReadTextFile(file_path: string): Promise<string>
 	{
-		const EXISTS: boolean = await FileSystemService.FileExists(file_path);
-
-		if (!EXISTS)
-		{
-			throw new Error(`Requested file ${file_path} does not exists.`);
-		}
+		await FileSystemService.AssertFileExistence(file_path);
 
 		const FILE: string = await readFile(file_path, { encoding: "utf-8" });
 
 		return FILE;
 	}
 
-	public static async OpenFile(file_path: string, flags: string): Promise<FileHandle>
+	/**
+	 * Create a file handle
+	 *
+	 * @throws if the file does not exist
+	 */
+	public static async OpenFile(file_path: string, flags?: FileSystemFlagEnum | number | string | undefined, permissions?: number | string | undefined): Promise<FileHandle>
 	{
-		const EXISTS: boolean = await FileSystemService.FileExists(file_path);
+		await FileSystemService.AssertFileExistence(file_path);
 
-		if (!EXISTS)
-		{
-			throw new Error(`Requested file ${file_path} does not exists.`);
-		}
-
-		const FILE: FileHandle = await open(file_path, flags);
+		const FILE: FileHandle = await open(file_path, flags, permissions);
 
 		return FILE;
 	}
 
+	/**
+	 * Get the informations of a file
+	 *
+	 * @remarks
+	 * Returns undefined if the file does not exist or is not readable.
+	 */
 	public static async GetStats(path: string): Promise<Stats | undefined>
 	{
 		try
@@ -145,8 +172,11 @@ class FileSystemService
 	}
 
 	/**
-	* This dynamic import proxy method allows mocking dynamic imports in your tests.
-	*/
+	 * Import a module
+	 *
+	 * @remarks
+	 * This dynamic import proxy method allows mocking dynamic imports in your tests.
+	 */
 	public static async Import(path: string): Promise<unknown>
 	{
 		const MODULE: unknown = await import(path);

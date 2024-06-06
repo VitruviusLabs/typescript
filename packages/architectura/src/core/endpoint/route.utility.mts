@@ -1,15 +1,26 @@
+/**
+ * Helper for endpoint routes.
+ *
+ * @internal
+ * @sealed
+ */
 class RouteUtility
 {
+	/**
+	 * Normalize an endpoint route
+	 *
+	 * @internal
+	 */
 	public static NormalizeRoute(route: RegExp | string): RegExp
 	{
 		const FLAGS: string = "u";
 
 		if (route instanceof RegExp)
 		{
-			return new RegExp(this.MakeRouteWhole(route.source), FLAGS);
+			return new RegExp(RouteUtility.MakeRouteWhole(route.source), FLAGS);
 		}
 
-		return new RegExp(this.MakeRouteWhole(route), FLAGS);
+		return new RegExp(RouteUtility.MakeRouteWhole(route), FLAGS);
 	}
 
 	private static MakeRouteWhole(route: string): string

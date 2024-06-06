@@ -1,29 +1,61 @@
-import type { Session } from "./session.model.mjs";
+import { Session } from "./session.mjs";
 
+/**
+ * Session registry
+ *
+ * @sealed
+ */
 class SessionRegistry
 {
 	private static readonly SESSIONS: Map<string, Session> = new Map();
 
-	private constructor() {}
-
+	/**
+	 * Get a session by its UUID
+	 */
 	public static GetSession(uuid: string): Session | undefined
 	{
-		return this.SESSIONS.get(uuid);
+		return SessionRegistry.SESSIONS.get(uuid);
 	}
 
+	/**
+	 * Add a session to the registry
+	 */
 	public static AddSession(session: Session): void
 	{
-		this.SESSIONS.set(session.getUUID(), session);
+		if (SessionRegistry.SESSIONS.has(session.getUUID()))
+		{
+			throw new Error("A session with this UUID already exists");
+		}
+
+		SessionRegistry.SESSIONS.set(session.getUUID(), session);
 	}
 
-	public static RemoveSession(uuid: string): void
+	/**
+	 * Remove a session from the registry
+	 */
+	public static RemoveSession(session_or_uuid: Session | string): void
 	{
-		this.SESSIONS.delete(uuid);
+		if (session_or_uuid instanceof Session)
+		{
+			SessionRegistry.SESSIONS.delete(session_or_uuid.getUUID());
+
+			return;
+		}
+
+		SessionRegistry.SESSIONS.delete(session_or_uuid);
 	}
 
+	/**
+	 * List all sessions
+	 *
+	 * @internal
+	 *
+	 * @privateRemarks
+	 * Used for cleaning expired sessions.
+	 */
 	public static ListSessions(): IterableIterator<Session>
 	{
-		return this.SESSIONS.values();
+		return SessionRegistry.SESSIONS.values();
 	}
 }
 

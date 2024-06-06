@@ -1,23 +1,38 @@
 import type { TokenType } from "../definition/type/token.type.mjs";
 import type { SecretType } from "../definition/type/secret.type.mjs";
 import type { JWTClaimsInterface } from "../definition/interface/jwt-claims.interface.mjs";
+import { ReflectUtility, jsonDeserialize } from "@vitruvius-labs/toolbox";
 import { Base64URL } from "../utility/base64-url.mjs";
+import { validateAlgorithm } from "../utility/validate-algorithm.mjs";
 import { validateSecret } from "../utility/validate-secret.mjs";
 import { assertToken } from "../predicate/assert-token.mjs";
 import { assertHeader } from "../predicate/assert-header.mjs";
-import { computeSignature } from "../utility/compute-signature.mjs";
 import { assertClaims } from "../predicate/assert-claims.mjs";
+import { computeSignature } from "../utility/compute-signature.mjs";
 import { JWT } from "./jwt.mjs";
-import { JSONUtility } from "../../../utility/json/json-utility.mjs";
-import { validateAlgorithm } from "../utility/validate-algorithm.mjs";
 
+/**
+ * Factory for creating JWTs
+ *
+ * @sealed
+ */
 class JWTFactory
 {
+	/**
+	 * Create a new JWT
+	 *
+	 * @throws if the some parameters are invalid
+	 */
 	public static Create(algorithm: string, secret: SecretType, claims?: JWTClaimsInterface): JWT
 	{
 		return new JWT(algorithm, secret, claims ?? {});
 	}
 
+	/**
+	 * Parse a JWT from an encoded token
+	 *
+	 * @throws if the token is invalid (tampered, truncated, expired, etc.)
+	 */
 	public static Parse(encoded_token: string, secret: SecretType): JWT
 	{
 		if (!/^[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+){2}$/.test(encoded_token))
@@ -51,11 +66,15 @@ class JWTFactory
 			throw new Error("Invalid token signature.");
 		}
 
-		const CLAIMS: unknown = JSONUtility.Parse(Base64URL.Decode(ENCODED_CLAIMS));
+		const CLAIMS: unknown = jsonDeserialize(Base64URL.Decode(ENCODED_CLAIMS));
 
 		assertClaims(CLAIMS);
 
-		const TOKEN: JWT = new JWT(HEADER.alg, secret, CLAIMS);
+		const TOKEN: JWT = new JWT(HEADER.alg, secret, {});
+
+		ReflectUtility.Set(TOKEN, "validateNBF", true);
+
+		TOKEN.setClaims(CLAIMS);
 
 		return TOKEN;
 	}

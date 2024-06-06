@@ -1,16 +1,16 @@
 import { deepStrictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
+import { createErrorTest } from "@vitruvius-labs/testing-ground";
 import { ExecutionContext, type ExecutionContextInstantiationInterface, ExecutionContextRegistry } from "../../../src/_index.mjs";
 
 describe("ExecutionContextRegistry", (): void => {
 	describe("GetExecutionContext", (): void => {
 		it("should throw when called outside of an async hook", (): void => {
-			const WRAPPER = (): void =>
-			{
+			const WRAPPER = (): void => {
 				ExecutionContextRegistry.GetExecutionContext();
 			};
 
-			throws(WRAPPER);
+			throws(WRAPPER, createErrorTest());
 		});
 
 		it("should return a context when called inside of an async hook", (): void => {

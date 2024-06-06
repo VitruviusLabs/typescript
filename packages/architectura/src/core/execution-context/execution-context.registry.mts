@@ -1,18 +1,38 @@
-import { AsyncLocalStorage } from "node:async_hooks";
 import type { ExecutionContext } from "./execution-context.mjs";
+import { AsyncLocalStorage } from "node:async_hooks";
 
-abstract class ExecutionContextRegistry
+/**
+ * Execution context registry.
+ *
+ * @remarks
+ * It's main purpose is to give access to the execution context from anywhere.
+ *
+ * @sealed
+ */
+class ExecutionContextRegistry
 {
 	private static readonly ContextAccessor: AsyncLocalStorage<ExecutionContext> = new AsyncLocalStorage();
 
+	/**
+	 * Returns the current execution context.
+	 *
+	 * @remarks
+	 * Also work outside the flow of a request processing.
+	 */
 	public static GetUnsafeExecutionContext(): ExecutionContext | undefined
 	{
-		return this.ContextAccessor.getStore();
+		return ExecutionContextRegistry.ContextAccessor.getStore();
 	}
 
+	/**
+	 * Returns the current execution context.
+	 *
+	 * @remarks
+	 * Only work inside the flow of a request processing.
+	 */
 	public static GetExecutionContext(): ExecutionContext
 	{
-		const CONTEXT: ExecutionContext | undefined = this.GetUnsafeExecutionContext();
+		const CONTEXT: ExecutionContext | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext();
 
 		if (CONTEXT === undefined)
 		{
@@ -22,9 +42,14 @@ abstract class ExecutionContextRegistry
 		return CONTEXT;
 	}
 
+	/**
+	 * Sets the current execution context.
+	 *
+	 * @internal
+	 */
 	public static SetExecutionContext(execution_context: ExecutionContext): void
 	{
-		this.ContextAccessor.enterWith(execution_context);
+		ExecutionContextRegistry.ContextAccessor.enterWith(execution_context);
 	}
 }
 

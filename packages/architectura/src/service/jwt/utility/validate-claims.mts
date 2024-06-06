@@ -1,8 +1,12 @@
 import type { JWTClaimsInterface } from "../definition/interface/jwt-claims.interface.mjs";
 import { isDefined } from "@vitruvius-labs/ts-predicate/type-guard";
 
-/** @internal */
-function validateClaims(claims: JWTClaimsInterface, check_active: boolean = true): void
+/**
+ * Validates the standard properties of a JWT claims
+ *
+ * @internal
+ */
+function validateClaims(claims: JWTClaimsInterface, validate_nbf: boolean = false): void
 {
 	const NOW: number = Date.now();
 
@@ -16,7 +20,8 @@ function validateClaims(claims: JWTClaimsInterface, check_active: boolean = true
 		throw new Error("JWT is expired.");
 	}
 
-	if (check_active && isDefined(claims.nbf) && claims.nbf > NOW)
+	/* A token may be created without being immediately usable */
+	if (validate_nbf && isDefined(claims.nbf) && claims.nbf > NOW)
 	{
 		throw new Error("JWT is not active yet.");
 	}

@@ -1,70 +1,122 @@
 import type { Dirent } from "node:fs";
-import { type ConstructorOf, getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
+import type { ConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 import { isFunction, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { BasePreHook } from "./base.pre-hook.mjs";
 import { BasePostHook } from "./base.post-hook.mjs";
 import { BaseErrorHook } from "./base.error-hook.mjs";
 
+/**
+ * Hook registry.
+ *
+ * @sealed
+ */
 class HookRegistry
 {
 	private static readonly PRE_HOOKS: Array<BasePreHook | ConstructorOf<BasePreHook>> = [];
 	private static readonly POST_HOOKS: Array<BasePostHook | ConstructorOf<BasePostHook>> = [];
 	private static readonly ERROR_HOOKS: Array<BaseErrorHook | ConstructorOf<BaseErrorHook>> = [];
 
-	/** @internal */
-	public static GetPreHooks(): ReadonlyArray<BasePreHook>
+	/**
+	 * Retrieve the global pre hooks
+	 *
+	 * @internal
+	 */
+	public static GetPreHooks(): Array<BasePreHook>
 	{
-		return this.PRE_HOOKS.map(this.Instantiate);
+		return HookRegistry.PRE_HOOKS.map(HookRegistry.Instantiate);
 	}
 
+	/**
+	 * Add a global pre hook
+	 *
+	 * @remarks
+	 * If given a hook constructor, it will be instantiated each request.
+	 * If given a hook instance, it will be reused as is each request.
+	 *
+	 * @internal
+	 */
 	public static AddPreHook(hook: BasePreHook | ConstructorOf<BasePreHook>): void
 	{
-		if (this.PRE_HOOKS.includes(hook))
+		if (HookRegistry.PRE_HOOKS.includes(hook))
 		{
-			throw new Error(`Pre hook ${this.GetConstructorName(hook)} already added.`);
+			throw new Error(`Pre hook ${HookRegistry.GetConstructorName(hook)} already added.`);
 		}
 
-		this.PRE_HOOKS.push(hook);
+		HookRegistry.PRE_HOOKS.push(hook);
 	}
 
-	/** @internal */
-	public static GetPostHooks(): ReadonlyArray<BasePostHook>
+	/**
+	 * Retrieve the global post hooks
+	 *
+	 * @internal
+	 */
+	public static GetPostHooks(): Array<BasePostHook>
 	{
-		return this.POST_HOOKS.map(this.Instantiate);
+		return HookRegistry.POST_HOOKS.map(HookRegistry.Instantiate);
 	}
 
+	/**
+	 * Add a global post hook
+	 *
+	 * @remarks
+	 * If given a hook constructor, it will be instantiated each request.
+	 * If given a hook instance, it will be reused as is each request.
+	 *
+	 * @internal
+	 */
 	public static AddPostHook(hook: BasePostHook | ConstructorOf<BasePostHook>): void
 	{
-		if (this.POST_HOOKS.includes(hook))
+		if (HookRegistry.POST_HOOKS.includes(hook))
 		{
-			throw new Error(`Post hook ${this.GetConstructorName(hook)} already added.`);
+			throw new Error(`Post hook ${HookRegistry.GetConstructorName(hook)} already added.`);
 		}
 
-		this.POST_HOOKS.push(hook);
+		HookRegistry.POST_HOOKS.push(hook);
 	}
 
-	/** @internal */
-	public static GetErrorHooks(): ReadonlyArray<BaseErrorHook>
+	/**
+	 * Retrieve the global error hooks
+	 *
+	 * @internal
+	 */
+	public static GetErrorHooks(): Array<BaseErrorHook>
 	{
-		return this.ERROR_HOOKS.map(this.Instantiate);
+		return HookRegistry.ERROR_HOOKS.map(HookRegistry.Instantiate);
 	}
 
+	/**
+	 * Add a global error hook
+	 *
+	 * @remarks
+	 * If given a hook constructor, it will be instantiated each request.
+	 * If given a hook instance, it will be reused as is each request.
+	 *
+	 * @internal
+	 */
 	public static AddErrorHook(hook: BaseErrorHook | ConstructorOf<BaseErrorHook>): void
 	{
-		if (this.ERROR_HOOKS.includes(hook))
+		if (HookRegistry.ERROR_HOOKS.includes(hook))
 		{
-			throw new Error(`Error hook ${this.GetConstructorName(hook)} already added.`);
+			throw new Error(`Error hook ${HookRegistry.GetConstructorName(hook)} already added.`);
 		}
 
-		this.ERROR_HOOKS.push(hook);
+		HookRegistry.ERROR_HOOKS.push(hook);
 	}
 
+	/**
+	 * Recursively explore a folder and add all hooks found.
+	 *
+	 * @remarks
+	 * Hook exporting files are identified by their name containing either ".pre-hook.", ".post-hook.", or ".error-hook.".
+	 * If the exported hook is a constructor, it will be instantiated for every request.
+	 * If the exported hook is an instance, it will be reused as is for every request.
+	 */
 	public static async AddHooksDirectory(directory: string): Promise<void>
 	{
-		await FileSystemService.ConfirmDirectoryExistence(directory);
+		await FileSystemService.AssertDirectoryExistence(directory);
 
-		await this.ParseDirectoryForHooks(directory);
+		await HookRegistry.ParseDirectoryForHooks(directory);
 	}
 
 	private static async ParseDirectoryForHooks(directory: string): Promise<void>
@@ -77,14 +129,14 @@ class HookRegistry
 
 			if (ENTITY.isDirectory())
 			{
-				await this.ParseDirectoryForHooks(ENTITY_PATH);
+				await HookRegistry.ParseDirectoryForHooks(ENTITY_PATH);
 
 				continue;
 			}
 
 			if (!ENTITY.isFile() && /\.(?:pre|post|error)-hook\./.test(ENTITY.name))
 			{
-				await this.ExtractHook(ENTITY_PATH);
+				await HookRegistry.ExtractHook(ENTITY_PATH);
 			}
 		}
 	}
@@ -97,23 +149,23 @@ class HookRegistry
 		{
 			for (const [, EXPORT] of Object.entries(EXPORTS))
 			{
-				if (this.IsPreHook(EXPORT))
+				if (HookRegistry.IsPreHook(EXPORT))
 				{
-					this.AddPreHook(EXPORT);
+					HookRegistry.AddPreHook(EXPORT);
 
 					return;
 				}
 
-				if (this.IsPostHook(EXPORT))
+				if (HookRegistry.IsPostHook(EXPORT))
 				{
-					this.AddPostHook(EXPORT);
+					HookRegistry.AddPostHook(EXPORT);
 
 					return;
 				}
 
-				if (this.IsErrorHook(EXPORT))
+				if (HookRegistry.IsErrorHook(EXPORT))
 				{
-					this.AddErrorHook(EXPORT);
+					HookRegistry.AddErrorHook(EXPORT);
 
 					return;
 				}
@@ -121,7 +173,7 @@ class HookRegistry
 		}
 	}
 
-	private static Instantiate<T extends object>(this: void, hook: ConstructorOf<T> | T): T
+	private static Instantiate<T extends BaseErrorHook | BasePostHook | BasePreHook>(this: void, hook: ConstructorOf<T> | T): T
 	{
 		if (isFunction(hook))
 		{
@@ -153,7 +205,7 @@ class HookRegistry
 			return value.name;
 		}
 
-		return getConstructorOf(value).name;
+		return value.constructor.name;
 	}
 }
 

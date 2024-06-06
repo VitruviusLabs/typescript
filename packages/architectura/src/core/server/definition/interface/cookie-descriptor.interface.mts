@@ -1,5 +1,8 @@
 import type { CookieSameSiteEnum } from "../enum/cookie-same-site.enum.mjs";
 
+/**
+ * Set-Cookie header descriptor
+ */
 interface CookieDescriptorInterface
 {
 	name: string;

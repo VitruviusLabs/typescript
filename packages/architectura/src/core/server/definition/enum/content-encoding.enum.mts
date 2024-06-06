@@ -1,3 +1,6 @@
+/**
+ * Supported content encoding types
+ */
 const enum ContentEncodingEnum
 {
 	GZIP = "gzip",

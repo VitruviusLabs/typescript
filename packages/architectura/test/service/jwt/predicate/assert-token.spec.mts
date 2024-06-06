@@ -4,10 +4,8 @@ import { createErrorTest } from "@vitruvius-labs/testing-ground";
 import { assertToken } from "../../../../src/service/jwt/predicate/assert-token.mjs";
 
 describe("isToken", (): void => {
-	it("should return when given a tuple of 3 strings", (): void =>
-	{
-		const WRAPPER = (): void =>
-		{
+	it("should return when given a tuple of 3 strings", (): void => {
+		const WRAPPER = (): void => {
 			assertToken(["", "", ""]);
 		};
 
@@ -15,8 +13,7 @@ describe("isToken", (): void => {
 	});
 
 	it("should throw when given an empty array", (): void => {
-		const WRAPPER = (): void =>
-		{
+		const WRAPPER = (): void => {
 			assertToken([]);
 		};
 
@@ -24,8 +21,7 @@ describe("isToken", (): void => {
 	});
 
 	it("should throw when given an array without enough elements", (): void => {
-		const WRAPPER = (): void =>
-		{
+		const WRAPPER = (): void => {
 			assertToken(["", ""]);
 		};
 
@@ -33,8 +29,7 @@ describe("isToken", (): void => {
 	});
 
 	it("should throw when given an array with too many elements", (): void => {
-		const WRAPPER = (): void =>
-		{
+		const WRAPPER = (): void => {
 			assertToken(["", "", "", ""]);
 		};
 

@@ -1,5 +1,14 @@
+/**
+ * Helper for parsing cookie header.
+ *
+ * @internal
+ * @sealed
+ */
 class CookieUtility
 {
+	/**
+	 * Parse a serialized cookie header.
+	 */
 	public static ParseCookies(serialized_cookies: string): Map<string, string>
 	{
 		const EXTRACTION_REGEXP: RegExp = /^(?<name>[^=]+)=(?<value>.+)$/;

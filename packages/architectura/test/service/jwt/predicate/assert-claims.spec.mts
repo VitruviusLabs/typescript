@@ -9,8 +9,7 @@ describe("assertClaims", (): void => {
 
 		for (const VALUE of VALUES)
 		{
-			const WRAPPER = (): void =>
-			{
+			const WRAPPER = (): void => {
 				assertClaims(VALUE);
 			};
 
@@ -23,8 +22,7 @@ describe("assertClaims", (): void => {
 
 		for (const VALUE of VALUES)
 		{
-			const WRAPPER = (): void =>
-			{
+			const WRAPPER = (): void => {
 				assertClaims(VALUE);
 			};
 

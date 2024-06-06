@@ -5,8 +5,7 @@ import { validateSecret } from "../../../../src/service/jwt/utility/validate-sec
 
 describe("validateSecret", (): void => {
 	it("should return when given a valid secret", (): void => {
-		const WRAPPER = (): void =>
-		{
+		const WRAPPER = (): void => {
 			return validateSecret("your-256-bit-secret-here");
 		};
 
@@ -14,13 +13,11 @@ describe("validateSecret", (): void => {
 	});
 
 	it("should reject empty secrets", (): void => {
-		const WRAPPER_STRING = (): void =>
-		{
+		const WRAPPER_STRING = (): void => {
 			return validateSecret("");
 		};
 
-		const WRAPPER_BUFFER_VIEW = (): void =>
-		{
+		const WRAPPER_BUFFER_VIEW = (): void => {
 			return validateSecret(new Uint8Array(0));
 		};
 

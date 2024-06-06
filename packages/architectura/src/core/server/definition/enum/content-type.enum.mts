@@ -1,6 +1,9 @@
+/**
+ * Predefined content types
+ */
 const enum ContentTypeEnum
 {
-	UNKNOWN = "application/octet-stream",
+	BINARY = "application/octet-stream",
 	TEXT = "text/plain",
 	// eslint-disable-next-line @typescript-eslint/no-shadow -- This rule incorrectly applies to enum keys
 	JSON = "application/json",

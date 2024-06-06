@@ -941,8 +941,8 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
-          run_install: false
+          version: 9
+          run_install: true
 
       - name: Dependencies cache unpacking
         uses: actions/cache@v4
@@ -952,8 +952,9 @@ jobs:
 
       - name: Building workspace dependencies
         run: |
-          pnpm --filter ts-predicate ci:build
           pnpm --filter testing-ground ci:build
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter toolbox ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura
@@ -973,8 +974,8 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
-          run_install: false
+          version: 9
+          run_install: true
 
       - name: Dependencies cache unpacking
         uses: actions/cache@v4
@@ -984,8 +985,9 @@ jobs:
 
       - name: Building workspace dependencies
         run: |
-          pnpm --filter ts-predicate ci:build
           pnpm --filter testing-ground ci:build
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter toolbox ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura
@@ -1005,8 +1007,8 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
-          run_install: false
+          version: 9
+          run_install: true
 
       - name: Dependencies cache unpacking
         uses: actions/cache@v4
@@ -1016,8 +1018,9 @@ jobs:
 
       - name: Building workspace dependencies
         run: |
-          pnpm --filter ts-predicate ci:build
           pnpm --filter testing-ground ci:build
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter toolbox ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura
@@ -1067,8 +1070,9 @@ jobs:
 
       - name: Building workspace dependencies
         run: |
-          pnpm --filter ts-predicate ci:build
           pnpm --filter testing-ground ci:build
+          pnpm --filter ts-predicate ci:build
+          pnpm --filter toolbox ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter architectura

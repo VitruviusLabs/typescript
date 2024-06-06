@@ -1,3 +1,6 @@
+/**
+ * List of standard HTTP methods
+ */
 const enum HTTPMethodEnum
 {
 	GET = "GET",

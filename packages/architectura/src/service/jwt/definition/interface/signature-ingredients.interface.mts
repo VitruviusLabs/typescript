@@ -1,5 +1,10 @@
 import type { SecretType } from "../type/secret.type.mjs";
 
+/**
+ * Ingredients to sign a JWT
+ *
+ * @internal
+ */
 interface SignatureIngredientsInterface
 {
 	algorithm: string;

@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-labs/architectura",
-	"version": "0.10.2",
+	"version": "0.11.0",
 	"description": "A light weight strongly typed Node.JS framework providing isolated context for each request.",
 	"author": {
 		"name": "VitruviusLabs"
@@ -46,6 +46,7 @@
 		"ci:build": "pnpm build"
 	},
 	"dependencies": {
-		"@vitruvius-labs/ts-predicate": "workspace:^"
+		"@vitruvius-labs/ts-predicate": "workspace:^",
+		"@vitruvius-labs/toolbox": "workspace:^"
 	}
 }
