@@ -21,7 +21,7 @@ class ExecutionContextRegistry
 	 */
 	public static GetUnsafeExecutionContext(): ExecutionContext | undefined
 	{
-		return this.ContextAccessor.getStore();
+		return ExecutionContextRegistry.ContextAccessor.getStore();
 	}
 
 	/**
@@ -32,7 +32,7 @@ class ExecutionContextRegistry
 	 */
 	public static GetExecutionContext(): ExecutionContext
 	{
-		const CONTEXT: ExecutionContext | undefined = this.GetUnsafeExecutionContext();
+		const CONTEXT: ExecutionContext | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext();
 
 		if (CONTEXT === undefined)
 		{
@@ -49,7 +49,7 @@ class ExecutionContextRegistry
 	 */
 	public static SetExecutionContext(execution_context: ExecutionContext): void
 	{
-		this.ContextAccessor.enterWith(execution_context);
+		ExecutionContextRegistry.ContextAccessor.enterWith(execution_context);
 	}
 }
 

@@ -79,7 +79,7 @@ class FileSystemService
 	/**
 	 * Create a read stream for a file
 	 */
-	public static ReadFileAsStream(file_path: string): ReadStream
+	public static GetFileReadStream(file_path: string): ReadStream
 	{
 		const STREAM: ReadStream = createReadStream(file_path);
 

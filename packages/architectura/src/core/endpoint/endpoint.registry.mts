@@ -26,7 +26,7 @@ class EndpointRegistry
 	 */
 	public static FindEndpoint(request_method: HTTPMethodEnum, request_path: string): EndpointMatchInterface | undefined
 	{
-		if (this.ENDPOINTS.size === 0)
+		if (EndpointRegistry.ENDPOINTS.size === 0)
 		{
 			LoggerProxy.Warning("No endpoint have been added. Default endpoint.");
 
@@ -37,7 +37,7 @@ class EndpointRegistry
 			};
 		}
 
-		for (const [, ENDPOINT_ENTRY] of this.ENDPOINTS)
+		for (const [, ENDPOINT_ENTRY] of EndpointRegistry.ENDPOINTS)
 		{
 			if (ENDPOINT_ENTRY.method !== request_method)
 			{
@@ -79,14 +79,14 @@ class EndpointRegistry
 	 */
 	public static AddEndpoint(endpoint: BaseEndpoint | ConstructorOf<BaseEndpoint>): void
 	{
-		const DETAILS: EndpointDetailsInterface = this.GetEndpointDetails(endpoint);
+		const DETAILS: EndpointDetailsInterface = EndpointRegistry.GetEndpointDetails(endpoint);
 
-		if (this.IsAbstractEndpoint(DETAILS.instance))
+		if (EndpointRegistry.IsAbstractEndpoint(DETAILS.instance))
 		{
 			throw new Error("Endpoint is missing properties method and route.");
 		}
 
-		this.AppendEndpoint(DETAILS);
+		EndpointRegistry.AppendEndpoint(DETAILS);
 	}
 
 	/**
@@ -112,7 +112,7 @@ class EndpointRegistry
 
 		const IDENTIFIER: string = `${METHOD}::${ROUTE.toString()}`;
 
-		const ENTRY: EndpointEntryInterface | undefined = this.ENDPOINTS.get(IDENTIFIER);
+		const ENTRY: EndpointEntryInterface | undefined = EndpointRegistry.ENDPOINTS.get(IDENTIFIER);
 
 		if (ENTRY !== undefined)
 		{
@@ -126,7 +126,7 @@ class EndpointRegistry
 
 		LoggerProxy.Debug(`Endpoint added ${METHOD} ${ROUTE.toString()}.`);
 
-		this.ENDPOINTS.set(
+		EndpointRegistry.ENDPOINTS.set(
 			IDENTIFIER,
 			{
 				method: METHOD,
@@ -146,14 +146,14 @@ class EndpointRegistry
 
 			if (ENTITY.isDirectory())
 			{
-				await this.ParseDirectoryForEndpoints(ENTITY_PATH);
+				await EndpointRegistry.ParseDirectoryForEndpoints(ENTITY_PATH);
 
 				continue;
 			}
 
 			if (ENTITY.isFile() && ENTITY.name.includes(".endpoint."))
 			{
-				await this.ExtractEndpoint(ENTITY_PATH);
+				await EndpointRegistry.ExtractEndpoint(ENTITY_PATH);
 			}
 		}
 	}
@@ -166,16 +166,16 @@ class EndpointRegistry
 		{
 			for (const [, EXPORT] of Object.entries(EXPORTS))
 			{
-				if (this.IsEndpoint(EXPORT))
+				if (EndpointRegistry.IsEndpoint(EXPORT))
 				{
-					const DETAILS: EndpointDetailsInterface = this.GetEndpointDetails(EXPORT);
+					const DETAILS: EndpointDetailsInterface = EndpointRegistry.GetEndpointDetails(EXPORT);
 
-					if (this.IsAbstractEndpoint(DETAILS.instance))
+					if (EndpointRegistry.IsAbstractEndpoint(DETAILS.instance))
 					{
 						continue;
 					}
 
-					this.AppendEndpoint(DETAILS);
+					EndpointRegistry.AppendEndpoint(DETAILS);
 				}
 			}
 		}

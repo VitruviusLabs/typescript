@@ -24,7 +24,7 @@ class HookRegistry
 	 */
 	public static GetPreHooks(): Array<BasePreHook>
 	{
-		return this.PRE_HOOKS.map(this.Instantiate);
+		return HookRegistry.PRE_HOOKS.map(HookRegistry.Instantiate);
 	}
 
 	/**
@@ -38,12 +38,12 @@ class HookRegistry
 	 */
 	public static AddPreHook(hook: BasePreHook | ConstructorOf<BasePreHook>): void
 	{
-		if (this.PRE_HOOKS.includes(hook))
+		if (HookRegistry.PRE_HOOKS.includes(hook))
 		{
-			throw new Error(`Pre hook ${this.GetConstructorName(hook)} already added.`);
+			throw new Error(`Pre hook ${HookRegistry.GetConstructorName(hook)} already added.`);
 		}
 
-		this.PRE_HOOKS.push(hook);
+		HookRegistry.PRE_HOOKS.push(hook);
 	}
 
 	/**
@@ -53,7 +53,7 @@ class HookRegistry
 	 */
 	public static GetPostHooks(): Array<BasePostHook>
 	{
-		return this.POST_HOOKS.map(this.Instantiate);
+		return HookRegistry.POST_HOOKS.map(HookRegistry.Instantiate);
 	}
 
 	/**
@@ -67,12 +67,12 @@ class HookRegistry
 	 */
 	public static AddPostHook(hook: BasePostHook | ConstructorOf<BasePostHook>): void
 	{
-		if (this.POST_HOOKS.includes(hook))
+		if (HookRegistry.POST_HOOKS.includes(hook))
 		{
-			throw new Error(`Post hook ${this.GetConstructorName(hook)} already added.`);
+			throw new Error(`Post hook ${HookRegistry.GetConstructorName(hook)} already added.`);
 		}
 
-		this.POST_HOOKS.push(hook);
+		HookRegistry.POST_HOOKS.push(hook);
 	}
 
 	/**
@@ -82,7 +82,7 @@ class HookRegistry
 	 */
 	public static GetErrorHooks(): Array<BaseErrorHook>
 	{
-		return this.ERROR_HOOKS.map(this.Instantiate);
+		return HookRegistry.ERROR_HOOKS.map(HookRegistry.Instantiate);
 	}
 
 	/**
@@ -96,12 +96,12 @@ class HookRegistry
 	 */
 	public static AddErrorHook(hook: BaseErrorHook | ConstructorOf<BaseErrorHook>): void
 	{
-		if (this.ERROR_HOOKS.includes(hook))
+		if (HookRegistry.ERROR_HOOKS.includes(hook))
 		{
-			throw new Error(`Error hook ${this.GetConstructorName(hook)} already added.`);
+			throw new Error(`Error hook ${HookRegistry.GetConstructorName(hook)} already added.`);
 		}
 
-		this.ERROR_HOOKS.push(hook);
+		HookRegistry.ERROR_HOOKS.push(hook);
 	}
 
 	/**
@@ -116,7 +116,7 @@ class HookRegistry
 	{
 		await FileSystemService.AssertDirectoryExistence(directory);
 
-		await this.ParseDirectoryForHooks(directory);
+		await HookRegistry.ParseDirectoryForHooks(directory);
 	}
 
 	private static async ParseDirectoryForHooks(directory: string): Promise<void>
@@ -129,14 +129,14 @@ class HookRegistry
 
 			if (ENTITY.isDirectory())
 			{
-				await this.ParseDirectoryForHooks(ENTITY_PATH);
+				await HookRegistry.ParseDirectoryForHooks(ENTITY_PATH);
 
 				continue;
 			}
 
 			if (!ENTITY.isFile() && /\.(?:pre|post|error)-hook\./.test(ENTITY.name))
 			{
-				await this.ExtractHook(ENTITY_PATH);
+				await HookRegistry.ExtractHook(ENTITY_PATH);
 			}
 		}
 	}
@@ -149,23 +149,23 @@ class HookRegistry
 		{
 			for (const [, EXPORT] of Object.entries(EXPORTS))
 			{
-				if (this.IsPreHook(EXPORT))
+				if (HookRegistry.IsPreHook(EXPORT))
 				{
-					this.AddPreHook(EXPORT);
+					HookRegistry.AddPreHook(EXPORT);
 
 					return;
 				}
 
-				if (this.IsPostHook(EXPORT))
+				if (HookRegistry.IsPostHook(EXPORT))
 				{
-					this.AddPostHook(EXPORT);
+					HookRegistry.AddPostHook(EXPORT);
 
 					return;
 				}
 
-				if (this.IsErrorHook(EXPORT))
+				if (HookRegistry.IsErrorHook(EXPORT))
 				{
-					this.AddErrorHook(EXPORT);
+					HookRegistry.AddErrorHook(EXPORT);
 
 					return;
 				}
@@ -173,7 +173,7 @@ class HookRegistry
 		}
 	}
 
-	private static Instantiate<T extends object>(this: void, hook: ConstructorOf<T> | T): T
+	private static Instantiate<T extends BaseErrorHook | BasePostHook | BasePreHook>(this: void, hook: ConstructorOf<T> | T): T
 	{
 		if (isFunction(hook))
 		{

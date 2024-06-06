@@ -51,7 +51,7 @@ class AssetRegistry
 	{
 		await FileSystemService.AssertDirectoryExistence(directory_path);
 
-		this.PUBLIC_DIRECTORIES.set(
+		AssetRegistry.PUBLIC_DIRECTORIES.set(
 			url_path.replace(/\/$/, ""),
 			directory_path.replace(/\/$/, "")
 		);

@@ -64,9 +64,9 @@ describe("FileSystemService", (): void => {
 		});
 	});
 
-	describe("ReadFileAsStream", (): void => {
+	describe("GetFileReadStream", (): void => {
 		it.skip("should return a readable stream of the file", (): void => {
-			FileSystemService.ReadFileAsStream("");
+			FileSystemService.GetFileReadStream("");
 		});
 	});
 

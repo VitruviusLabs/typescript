@@ -23,7 +23,7 @@ class DomainService
 	{
 		await FileSystemService.AssertDirectoryExistence(directory_path);
 
-		const FOUND: boolean = await this.Load(directory_path);
+		const FOUND: boolean = await DomainService.Load(directory_path);
 
 		if (!FOUND)
 		{
@@ -47,7 +47,7 @@ class DomainService
 		{
 			if (ENTITY.isDirectory())
 			{
-				await this.Load(`${directory_path}/${ENTITY.name}`);
+				await DomainService.Load(`${directory_path}/${ENTITY.name}`);
 			}
 		}
 	}
@@ -70,7 +70,7 @@ class DomainService
 				{
 					for (const [, EXPORT] of Object.entries(EXPORTS))
 					{
-						if (this.IsDomainConstructor(EXPORT))
+						if (DomainService.IsDomainConstructor(EXPORT))
 						{
 							LoggerProxy.Debug(`Initializing domain in file ${ENTITY.name}.`);
 
