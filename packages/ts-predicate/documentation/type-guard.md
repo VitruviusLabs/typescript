@@ -130,11 +130,6 @@ interface RecordConstraints<T>
 {
 	itemTest?: Test<T>;
 }
-
-type Test<T> =
-	| (item: unknown) => asserts item is T
-	| (item: unknown) => item is T
-;
 ```
 
 If `itemTest` is provided, it'll confirm that the predicate hold true for every item.

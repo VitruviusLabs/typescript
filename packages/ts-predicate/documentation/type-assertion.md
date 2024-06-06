@@ -93,11 +93,6 @@ interface ArrayConstraints<T>
 	minLength?: number;
 	itemTest?: Test<T>;
 }
-
-type Test<T> =
-	| (item: unknown) => asserts item is T
-	| (item: unknown) => item is T
-;
 ```
 
 If `minLength` is provided, it'll asserts that the value has at least that many items.
