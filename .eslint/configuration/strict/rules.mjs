@@ -1,4 +1,3 @@
-/** @type { import("typescript-eslint").ConfigWithExtends["rules"] } */
 const RULES = {
 	"@typescript/array-type": [
 		"error",

@@ -1,4 +1,3 @@
-/** @type { import("typescript-eslint").ConfigWithExtends["rules"] } */
 const RULES = {
 	"@stylistic/generator-star-spacing": "off",
 	"@stylistic/brace-style": "off",
