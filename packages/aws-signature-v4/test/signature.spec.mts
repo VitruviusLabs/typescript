@@ -2,7 +2,7 @@ import { before, describe, it } from "mocha";
 import { expect } from "chai";
 import { type SinonStub, stub, useFakeTimers } from "sinon";
 import { HTTPMethodEnum, Signature, SignatureEnum, type SignatureInstantiationInterface, type SignatureInterface } from "../src/_index.mjs";
-import { mockSignatureInstantiationInterface } from "../mocks/definitions/interfaces/signature-instantiation.interface.mjs";
+import { mockSignatureInstantiationInterface } from "../mock/definitions/interfaces/signature-instantiation.interface.mjs";
 import { createHash, createHmac } from "crypto";
 
 describe("Signature", (): void => {

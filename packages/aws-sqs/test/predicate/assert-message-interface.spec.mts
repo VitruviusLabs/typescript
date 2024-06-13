@@ -1,9 +1,9 @@
 import { describe, it } from "mocha";
 import { expect as chaiExpect } from "chai";
-import { mockDefaultMessageInterface } from "../../mocks/definition/interface/message.interface.mjs";
+import { mockDefaultMessageInterface } from "../../mock/definition/interface/message.interface.mjs";
+import { mockDefaultMessageAttributeInterface } from "../../mock/definition/interface/message-attribute.interface.mjs";
 import { assertMessageInterface } from "../../src/predicate/assert-message-interface.mjs";
 import type { MessageInterface } from "../../src/definition/interface/message.interface.mjs";
-import { mockDefaultMessageAttributeInterface } from "../../mocks/definition/interface/message-attribute.interface.mjs";
 
 describe("assertMessageInterface", (): void => {
 	it("should not throw an error when the value is a valid MessageInterface", (): void => {
