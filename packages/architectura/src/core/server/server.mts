@@ -87,7 +87,7 @@ class Server
 
 		SERVER.nativeServer.addListener(
 			"request",
-			// eslint-disable-next-line @typescript/no-misused-promises -- Asynchronous event listener
+			// eslint-disable-next-line @ts/no-misused-promises -- Asynchronous event listener
 			async (request: RichClientRequest, response: RichServerResponse): Promise<void> =>
 			{
 				try

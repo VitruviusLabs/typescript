@@ -1,6 +1,6 @@
 function create(): () => Promise<void>
 {
-	// eslint-disable-next-line @typescript/no-empty-function -- Dummy
+	// eslint-disable-next-line @ts/no-empty-function -- Dummy
 	return async function(): Promise<void> {};
 }
 

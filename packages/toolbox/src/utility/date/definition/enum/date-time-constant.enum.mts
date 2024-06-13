@@ -5,7 +5,7 @@
 */
 const enum DateTimeConstantEnum
 {
-	/* eslint-disable @typescript/no-duplicate-enum-values */
+	/* eslint-disable @ts/no-duplicate-enum-values */
 	PADDING_LENGTH = 2,
 	DAY_1 = 1,
 	DAY_4 = 4,
@@ -23,7 +23,7 @@ const enum DateTimeConstantEnum
 	YEAR_4 = 4,
 	YEAR_100 = 100,
 	YEAR_400 = 400,
-	/* eslint-enable @typescript/no-duplicate-enum-values */
+	/* eslint-enable @ts/no-duplicate-enum-values */
 }
 
 export { DateTimeConstantEnum };

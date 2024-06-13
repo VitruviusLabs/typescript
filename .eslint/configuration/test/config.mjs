@@ -1,7 +1,7 @@
 import { rules } from "./rules.mjs";
 
 const CONFIGURATION = {
-	name: "src",
+	name: "test",
 	files: [
 		"*.spec.mts",
 		"test/**/*.mts",

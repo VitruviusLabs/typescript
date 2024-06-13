@@ -1,13 +1,13 @@
 const RULES = {
-	"@typescript/array-type": [
+	"@ts/array-type": [
 		"error",
 		{
 			"default": "generic",
 			"readonly": "generic"
 		}
 	],
-	"@typescript/await-thenable": "error",
-	"@typescript/ban-ts-comment": [
+	"@ts/await-thenable": "error",
+	"@ts/ban-ts-comment": [
 		"error",
 		{
 			"ts-expect-error": "allow-with-description",
@@ -17,8 +17,8 @@ const RULES = {
 			"minimumDescriptionLength": 10
 		}
 	],
-	"@typescript/ban-tslint-comment": "error",
-	"@typescript/ban-types": [
+	"@ts/ban-tslint-comment": "error",
+	"@ts/ban-types": [
 		"error",
 		{
 			"types": {
@@ -67,24 +67,24 @@ const RULES = {
 			}
 		}
 	],
-	"@typescript/consistent-generic-constructors": [
+	"@ts/consistent-generic-constructors": [
 		"error",
 		"type-annotation"
 	],
-	"@typescript/consistent-type-assertions": [
+	"@ts/consistent-type-assertions": [
 		"error",
 		{
 			"assertionStyle": "as",
 			"objectLiteralTypeAssertions": "never"
 		}
 	],
-	"@typescript/consistent-type-exports": [
+	"@ts/consistent-type-exports": [
 		"error",
 		{
 			"fixMixedExportsWithInlineTypeSpecifier": true
 		}
 	],
-	"@typescript/consistent-type-imports": [
+	"@ts/consistent-type-imports": [
 		"error",
 		{
 			"prefer": "type-imports",
@@ -92,8 +92,8 @@ const RULES = {
 			"disallowTypeAnnotations": true
 		}
 	],
-	"@typescript/default-param-last": "error",
-	"@typescript/explicit-function-return-type": [
+	"@ts/default-param-last": "error",
+	"@ts/explicit-function-return-type": [
 		"error",
 		{
 			"allowExpressions": false,
@@ -106,7 +106,7 @@ const RULES = {
 			"allowIIFEs": false
 		}
 	],
-	"@typescript/explicit-member-accessibility": [
+	"@ts/explicit-member-accessibility": [
 		"error",
 		{
 			"accessibility": "explicit",
@@ -120,7 +120,7 @@ const RULES = {
 			}
 		}
 	],
-	"@typescript/explicit-module-boundary-types": [
+	"@ts/explicit-module-boundary-types": [
 		"error",
 		{
 			"allowArgumentsExplicitlyTypedAsAny": false,
@@ -130,37 +130,37 @@ const RULES = {
 			"allowedNames": []
 		}
 	],
-	"@typescript/init-declarations": [
+	"@ts/init-declarations": [
 		"error",
 		"always"
 	],
-	"@typescript/max-params": [
+	"@ts/max-params": [
 		"error",
 		{
 			"max": 3
 		}
 	],
-	"@typescript/no-array-constructor": "error",
-	"@typescript/no-array-delete": "error",
-	"@typescript/no-base-to-string": "error",
-	"@typescript/no-confusing-non-null-assertion": "error",
-	"@typescript/no-confusing-void-expression": [
+	"@ts/no-array-constructor": "error",
+	"@ts/no-array-delete": "error",
+	"@ts/no-base-to-string": "error",
+	"@ts/no-confusing-non-null-assertion": "error",
+	"@ts/no-confusing-void-expression": [
 		"error",
 		{
 			"ignoreArrowShorthand": false,
 			"ignoreVoidOperator": false
 		}
 	],
-	"@typescript/no-duplicate-enum-values": "error",
-	"@typescript/no-duplicate-type-constituents": [
+	"@ts/no-duplicate-enum-values": "error",
+	"@ts/no-duplicate-type-constituents": [
 		"error",
 		{
 			"ignoreIntersections": false,
 			"ignoreUnions": false
 		}
 	],
-	"@typescript/no-dynamic-delete": "error",
-	"@typescript/no-empty-function": [
+	"@ts/no-dynamic-delete": "error",
+	"@ts/no-empty-function": [
 		"error",
 		{
 			"allow": [
@@ -170,21 +170,21 @@ const RULES = {
 			]
 		}
 	],
-	"@typescript/no-empty-interface": [
+	"@ts/no-empty-interface": [
 		"error",
 		{
 			"allowSingleExtends": true
 		}
 	],
-	"@typescript/no-explicit-any": [
+	"@ts/no-explicit-any": [
 		"error",
 		{
 			"fixToUnknown": true,
 			"ignoreRestArgs": false
 		}
 	],
-	"@typescript/no-extra-non-null-assertion": "error",
-	"@typescript/no-extraneous-class": [
+	"@ts/no-extra-non-null-assertion": "error",
+	"@ts/no-extraneous-class": [
 		"error",
 		{
 			"allowConstructorOnly": false,
@@ -193,17 +193,17 @@ const RULES = {
 			"allowWithDecorator": false
 		}
 	],
-	"@typescript/no-floating-promises": [
+	"@ts/no-floating-promises": [
 		"error",
 		{
 			"ignoreIIFE": false,
 			"ignoreVoid": false
 		}
 	],
-	"@typescript/no-for-in-array": "error",
-	"@typescript/no-implied-eval": "error",
-	"@typescript/no-import-type-side-effects": "error",
-	"@typescript/no-invalid-void-type": [
+	"@ts/no-for-in-array": "error",
+	"@ts/no-implied-eval": "error",
+	"@ts/no-import-type-side-effects": "error",
+	"@ts/no-invalid-void-type": [
 		"error",
 		{
 			"allowAsThisParameter": true,
@@ -213,9 +213,9 @@ const RULES = {
 			]
 		}
 	],
-	"@typescript/no-loop-func": "error",
-	"@typescript/no-loss-of-precision": "error",
-	"@typescript/no-magic-numbers": [
+	"@ts/no-loop-func": "error",
+	"@ts/no-loss-of-precision": "error",
+	"@ts/no-magic-numbers": [
 		"error",
 		{
 			"enforceConst": true,
@@ -234,14 +234,14 @@ const RULES = {
 			]
 		}
 	],
-	"@typescript/no-meaningless-void-operator": [
+	"@ts/no-meaningless-void-operator": [
 		"error",
 		{
 			"checkNever": true
 		}
 	],
-	"@typescript/no-misused-new": "error",
-	"@typescript/no-misused-promises": [
+	"@ts/no-misused-new": "error",
+	"@ts/no-misused-promises": [
 		"error",
 		{
 			"checksConditionals": true,
@@ -249,19 +249,19 @@ const RULES = {
 			"checksSpreads": true
 		}
 	],
-	"@typescript/no-namespace": [
+	"@ts/no-namespace": [
 		"error",
 		{
 			"allowDeclarations": false,
 			"allowDefinitionFiles": false
 		}
 	],
-	"@typescript/no-non-null-asserted-nullish-coalescing": "error",
-	"@typescript/no-non-null-asserted-optional-chain": "error",
-	"@typescript/no-non-null-assertion": "error",
-	"@typescript/no-redundant-type-constituents": "error",
-	"@typescript/no-require-imports": "error",
-	"@typescript/no-shadow": [
+	"@ts/no-non-null-asserted-nullish-coalescing": "error",
+	"@ts/no-non-null-asserted-optional-chain": "error",
+	"@ts/no-non-null-assertion": "error",
+	"@ts/no-redundant-type-constituents": "error",
+	"@ts/no-require-imports": "error",
+	"@ts/no-shadow": [
 		"error",
 		{
 			"allow": [],
@@ -272,38 +272,38 @@ const RULES = {
 			"ignoreFunctionTypeParameterNameValueShadow": false
 		}
 	],
-	"@typescript/no-this-alias": [
+	"@ts/no-this-alias": [
 		"error",
 		{
 			"allowDestructuring": false,
 			"allowedNames": []
 		}
 	],
-	"@typescript/no-unnecessary-boolean-literal-compare": [
+	"@ts/no-unnecessary-boolean-literal-compare": [
 		"error",
 		{
 			"allowComparingNullableBooleansToTrue": false,
 			"allowComparingNullableBooleansToFalse": false
 		}
 	],
-	"@typescript/no-unnecessary-condition": [
+	"@ts/no-unnecessary-condition": [
 		"error",
 		{
 			"allowConstantLoopConditions": false,
 			"allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing": false
 		}
 	],
-	"@typescript/no-unnecessary-template-expression": "error",
-	"@typescript/no-unnecessary-type-assertion": "error",
-	"@typescript/no-unnecessary-type-constraint": "error",
-	"@typescript/no-unsafe-argument": "error",
-	"@typescript/no-unsafe-assignment": "error",
-	"@typescript/no-unsafe-call": "error",
-	"@typescript/no-unsafe-declaration-merging": "error",
-	"@typescript/no-unsafe-member-access": "error",
-	"@typescript/no-unsafe-return": "error",
-	"@typescript/no-unsafe-unary-minus": "error",
-	"@typescript/no-unused-expressions": [
+	"@ts/no-unnecessary-template-expression": "error",
+	"@ts/no-unnecessary-type-assertion": "error",
+	"@ts/no-unnecessary-type-constraint": "error",
+	"@ts/no-unsafe-argument": "error",
+	"@ts/no-unsafe-assignment": "error",
+	"@ts/no-unsafe-call": "error",
+	"@ts/no-unsafe-declaration-merging": "error",
+	"@ts/no-unsafe-member-access": "error",
+	"@ts/no-unsafe-return": "error",
+	"@ts/no-unsafe-unary-minus": "error",
+	"@ts/no-unused-expressions": [
 		"error",
 		{
 			"allowShortCircuit": false,
@@ -312,7 +312,7 @@ const RULES = {
 			"enforceForJSX": true
 		}
 	],
-	"@typescript/no-unused-vars": [
+	"@ts/no-unused-vars": [
 		"error",
 		{
 			"vars": "all",
@@ -323,7 +323,7 @@ const RULES = {
 			/* "argsIgnorePattern": undefined, */
 		}
 	],
-	"@typescript/no-use-before-define": [
+	"@ts/no-use-before-define": [
 		"error",
 		{
 			"functions": true,
@@ -335,40 +335,40 @@ const RULES = {
 			"allowNamedExports": false
 		}
 	],
-	"@typescript/no-useless-constructor": "error",
-	"@typescript/no-useless-empty-export": "error",
-	"@typescript/no-var-requires": "error",
-	"@typescript/only-throw-error": [
+	"@ts/no-useless-constructor": "error",
+	"@ts/no-useless-empty-export": "error",
+	"@ts/no-var-requires": "error",
+	"@ts/only-throw-error": [
 		"error",
 		{
 			"allowThrowingAny": false,
 			"allowThrowingUnknown": false
 		}
 	],
-	"@typescript/parameter-properties": [
+	"@ts/parameter-properties": [
 		"error",
 		{
 			"prefer": "class-property",
 			"allow": []
 		}
 	],
-	"@typescript/prefer-promise-reject-errors": [
+	"@ts/prefer-promise-reject-errors": [
 		"error",
 		{
 			"allowEmptyReject": false,
 		}
 	],
-	"@typescript/prefer-as-const": "error",
-	"@typescript/prefer-enum-initializers": "error",
-	"@typescript/prefer-find": "error",
-	"@typescript/prefer-includes": "error",
-	"@typescript/prefer-literal-enum-member": [
+	"@ts/prefer-as-const": "error",
+	"@ts/prefer-enum-initializers": "error",
+	"@ts/prefer-find": "error",
+	"@ts/prefer-includes": "error",
+	"@ts/prefer-literal-enum-member": [
 		"error",
 		{
 			"allowBitwiseExpressions": false
 		}
 	],
-	"@typescript/prefer-nullish-coalescing": [
+	"@ts/prefer-nullish-coalescing": [
 		"error",
 		{
 			"ignoreTernaryTests": false,
@@ -383,7 +383,7 @@ const RULES = {
 			"allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing": false
 		}
 	],
-	"@typescript/prefer-optional-chain": [
+	"@ts/prefer-optional-chain": [
 		"error",
 		{
 			"checkAny": true,
@@ -396,22 +396,22 @@ const RULES = {
 			"allowPotentiallyUnsafeFixesThatModifyTheReturnTypeIKnowWhatImDoing": false
 		}
 	],
-	"@typescript/prefer-promise-reject-errors": [
+	"@ts/prefer-promise-reject-errors": [
 		"error",
 		{
 			"allowEmptyReject": false
 		}
 	],
-	"@typescript/prefer-readonly": [
+	"@ts/prefer-readonly": [
 		"error",
 		{
 			"onlyInlineLambdas": false
 		}
 	],
-	"@typescript/prefer-regexp-exec": "error",
-	"@typescript/prefer-return-this-type": "error",
-	"@typescript/prefer-string-starts-ends-with": "error",
-	"@typescript/promise-function-async": [
+	"@ts/prefer-regexp-exec": "error",
+	"@ts/prefer-return-this-type": "error",
+	"@ts/prefer-string-starts-ends-with": "error",
+	"@ts/promise-function-async": [
 		"error",
 		{
 			"allowAny": true,
@@ -422,14 +422,14 @@ const RULES = {
 			"checkMethodDeclarations": true
 		}
 	],
-	"@typescript/require-array-sort-compare": [
+	"@ts/require-array-sort-compare": [
 		"error",
 		{
 			"ignoreStringArrays": false
 		}
 	],
-	"@typescript/require-await": "error",
-	"@typescript/restrict-plus-operands": [
+	"@ts/require-await": "error",
+	"@ts/restrict-plus-operands": [
 		"error",
 		{
 			"allowAny": false,
@@ -440,7 +440,7 @@ const RULES = {
 			"skipCompoundAssignments": false
 		}
 	],
-	"@typescript/restrict-template-expressions": [
+	"@ts/restrict-template-expressions": [
 		"error",
 		{
 			"allowAny": false,
@@ -450,11 +450,11 @@ const RULES = {
 			"allowRegExp": false
 		}
 	],
-	"@typescript/return-await": [
+	"@ts/return-await": [
 		"error",
 		"always"
 	],
-	"@typescript/strict-boolean-expressions": [
+	"@ts/strict-boolean-expressions": [
 		"error",
 		{
 			"allowString": false,
@@ -468,14 +468,14 @@ const RULES = {
 			"allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing": false
 		}
 	],
-	"@typescript/switch-exhaustiveness-check": [
+	"@ts/switch-exhaustiveness-check": [
 		"error",
 		{
 			"allowDefaultCaseForExhaustiveSwitch": false,
 			"requireDefaultForNonUnion": false
 		}
 	],
-	"@typescript/triple-slash-reference": [
+	"@ts/triple-slash-reference": [
 		"error",
 		{
 			"lib": "never",
@@ -483,7 +483,7 @@ const RULES = {
 			"types": "never"
 		}
 	],
-	"@typescript/typedef": [
+	"@ts/typedef": [
 		"error",
 		{
 			"arrayDestructuring": true,
@@ -496,7 +496,7 @@ const RULES = {
 			"variableDeclarationIgnoreFunction": true
 		}
 	],
-	"@typescript/unbound-method": [
+	"@ts/unbound-method": [
 		"error",
 		{
 			"ignoreStatic": false

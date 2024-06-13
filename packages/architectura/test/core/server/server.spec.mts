@@ -222,7 +222,7 @@ describe("Server", (): void => {
 			class DummyHook extends BaseErrorHook
 			{
 				// @ts-expect-error: For testing purposes
-				// eslint-disable-next-line @typescript/no-unused-vars -- For testing purposes
+				// eslint-disable-next-line @ts/no-unused-vars -- For testing purposes
 				public override execute(context: ExecutionContext, error: unknown): void
 				{
 				}
@@ -260,7 +260,7 @@ describe("Server", (): void => {
 			class DummyHook extends BaseErrorHook
 			{
 				// @ts-expect-error: For testing purposes
-				// eslint-disable-next-line @typescript/no-unused-vars -- For testing purposes
+				// eslint-disable-next-line @ts/no-unused-vars -- For testing purposes
 				public override execute(context: ExecutionContext, error: unknown): void
 				{
 				}

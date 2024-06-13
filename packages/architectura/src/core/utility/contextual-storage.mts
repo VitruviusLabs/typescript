@@ -8,7 +8,7 @@ import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
  */
 abstract class ContextualStorage
 {
-	// eslint-disable-next-line @typescript/ban-types -- Generic constructor type
+	// eslint-disable-next-line @ts/ban-types -- Generic constructor type
 	private readonly contextualItems: Map<Function, unknown>;
 
 	public constructor()

@@ -1,13 +1,13 @@
 const RULES = {
-	"@stylistic/generator-star-spacing": "off",
-	"@stylistic/brace-style": "off",
-	"@stylistic/max-statements-per-line": [
+	"@style/generator-star-spacing": "off",
+	"@style/brace-style": "off",
+	"@style/max-statements-per-line": [
 		"error",
 		{
 			"max": 2
 		}
 	],
-	"@typescript/dot-notation": [
+	"@ts/dot-notation": [
 		"error",
 		{
 			"allowKeywords": true,
@@ -16,20 +16,20 @@ const RULES = {
 			"allowIndexSignaturePropertyAccess": true
 		}
 	],
-	"@typescript/explicit-module-boundary-types": "off",
-	"@typescript/no-confusing-void-expression": "off",
-	"@typescript/no-empty-function": "off",
-	"@typescript/no-extraneous-class": "off",
-	"@typescript/no-floating-promises": "off",
-	"@typescript/no-magic-numbers": "off",
-	"@typescript/no-unsafe-assignment": "off",
-	"@typescript/no-unsafe-argument": "off",
-	"@typescript/no-unsafe-member-access": "off",
-	"@typescript/no-unused-expressions": "off",
-	"@typescript/no-unsafe-call": "off",
-	"@typescript/only-throw-error": "off",
-	"@typescript/prefer-promise-reject-errors": "off",
-	"@typescript/unbound-method": "off",
+	"@ts/explicit-module-boundary-types": "off",
+	"@ts/no-confusing-void-expression": "off",
+	"@ts/no-empty-function": "off",
+	"@ts/no-extraneous-class": "off",
+	"@ts/no-floating-promises": "off",
+	"@ts/no-magic-numbers": "off",
+	"@ts/no-unsafe-assignment": "off",
+	"@ts/no-unsafe-argument": "off",
+	"@ts/no-unsafe-member-access": "off",
+	"@ts/no-unused-expressions": "off",
+	"@ts/no-unsafe-call": "off",
+	"@ts/only-throw-error": "off",
+	"@ts/prefer-promise-reject-errors": "off",
+	"@ts/unbound-method": "off",
 	"consistent-return": "off",
 	"func-names": "off",
 	"func-style": "off",

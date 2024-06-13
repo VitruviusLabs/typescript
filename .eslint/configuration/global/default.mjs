@@ -1,6 +1,5 @@
 import typescript_eslint from "typescript-eslint";
 import stylistic from "@stylistic/eslint-plugin";
-import perfectionist from "eslint-plugin-perfectionist";
 
 /* Default configuration with plugins */
 const CONFIGURATION = {
@@ -19,9 +18,8 @@ const CONFIGURATION = {
 		reportUnusedDisableDirectives: "warn",
 	},
 	plugins: {
-		"@typescript": typescript_eslint.plugin,
-		"@stylistic": stylistic,
-		"@perfectionist": perfectionist,
+		"@ts": typescript_eslint.plugin,
+		"@style": stylistic,
 	},
 	settings: {},
 };

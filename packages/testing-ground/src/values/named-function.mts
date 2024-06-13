@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript/no-empty-function -- Dummy
+// eslint-disable-next-line @ts/no-empty-function -- Dummy
 function namedFunction(): void {}
 
 export { namedFunction };

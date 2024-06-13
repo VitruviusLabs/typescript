@@ -6,7 +6,7 @@ function normalizeErrorTree(error: Error): NormalizedError
 {
 	const ERROR: NormalizedError = {
 		message: error.message === "" ? "An unknown error occurred." : error.message,
-		// eslint-disable-next-line @typescript/no-use-before-define -- Circularity
+		// eslint-disable-next-line @ts/no-use-before-define -- Circularity
 		causes: getCauses(error),
 	};
 

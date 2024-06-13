@@ -1,4 +1,4 @@
-/* eslint-disable @stylistic/generator-star-spacing -- Test different spacing */
+/* eslint-disable @style/generator-star-spacing -- Test different spacing */
 function*namedGeneratorA(): Generator<number>
 {
 	yield 1;
@@ -18,7 +18,7 @@ function * namedGeneratorD(): Generator<number>
 {
 	yield 1;
 }
-/* eslint-enable @stylistic/generator-star-spacing -- Test different spacing */
+/* eslint-enable @style/generator-star-spacing -- Test different spacing */
 
 export {
 	namedGeneratorA,

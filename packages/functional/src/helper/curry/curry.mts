@@ -1,7 +1,7 @@
 import type { CallableType } from "./definition/type/callable.type.mjs";
 import { nextCurry } from "./next-curry.mjs";
 
-/* eslint-disable @stylistic/comma-spacing,id-denylist -- Compact */
+/* eslint-disable @style/comma-spacing,id-denylist -- Compact */
 function curry<Z>(callable: () => Z): () => Z;
 function curry<A,Z>(callable: (a: A) => Z): (a: A) => Z;
 function curry<A,B,Z>(callable: (a: A, b: B) => Z): (a: A) => (b: B) => Z;
@@ -11,11 +11,11 @@ function curry<A,B,C,D,E,Z>(callable: (a: A, b: B, c: C, d: D, e: E) => Z): (a: 
 function curry<A,B,C,D,E,F,Z>(callable: (a: A, b: B, c: C, d: D, e: E, f: F) => Z): (a: A) => (b: B) => (c: C) => (d: D) => (e: E) => (f: F) => Z;
 function curry<A,B,C,D,E,F,G,Z>(callable: (a: A, b: B, c: C, d: D, e: E, f: F, g: G) => Z): (a: A) => (b: B) => (c: C) => (d: D) => (e: E) => (f: F) => (g: G) => Z;
 function curry<A,B,C,D,E,F,G,H,Z>(callable: (a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H) => Z): (a: A) => (b: B) => (c: C) => (d: D) => (e: E) => (f: F) => (g: G) => (h: H) => Z;
-/* eslint-enable @stylistic/comma-spacing,id-denylist -- Compact */
+/* eslint-enable @style/comma-spacing,id-denylist -- Compact */
 
 function curry(callable: CallableType): CallableType
 {
-	// eslint-disable-next-line @typescript/no-magic-numbers -- Optimisation
+	// eslint-disable-next-line @ts/no-magic-numbers -- Optimisation
 	if (callable.length < 2)
 	{
 		return callable;
