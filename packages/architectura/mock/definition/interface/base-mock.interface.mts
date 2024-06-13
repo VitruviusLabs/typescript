@@ -18,7 +18,7 @@ interface BaseMockInterface<T extends object, ExcludedStubs = never>
 	 * ```
 	 */
 	stubs: {
-		// eslint-disable-next-line @typescript-eslint/ban-types -- Generic type
+		// eslint-disable-next-line @typescript/ban-types -- Generic type
 		[K in keyof T as (T[K] extends Function ? (K extends ExcludedStubs ? never : K) : never)]: SinonStub;
 	};
 	resetAllStubs: () => void;

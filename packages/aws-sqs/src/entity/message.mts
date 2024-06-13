@@ -12,7 +12,7 @@ class Message
 		this.messageId = parameters.MessageId;
 		this.receiptHandle = parameters.ReceiptHandle;
 
-		// This is an unforunate hack that is necessary to circumvent a bug in LocalStack.
+		// This is an unfortunate hack that is necessary to circumvent a bug in LocalStack.
 		// See: https://github.com/localstack/localstack/issues/8451
 		/* c8 ignore next */
 		const cleanedBody: string = parameters.Body.replaceAll(/(?:__marker__\\?)/g, "");

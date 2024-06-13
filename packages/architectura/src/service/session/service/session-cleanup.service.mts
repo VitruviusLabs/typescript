@@ -65,7 +65,7 @@ class SessionCleanupService
 		}
 
 		SessionCleanupService.TIMER = setInterval(
-			// eslint-disable-next-line @typescript-eslint/no-misused-promises -- Asynchronous callback
+			// eslint-disable-next-line @typescript/no-misused-promises -- Asynchronous callback
 			async (): Promise<void> =>
 			{
 				try

@@ -21,7 +21,8 @@
 		"vars",
 		"sonarjs",
 		"traefik",
-		"brotli"
+		"brotli",
+		"mocharc"
 	],
 	"flagWords": [
 		"hte"

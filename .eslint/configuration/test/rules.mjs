@@ -1,15 +1,14 @@
 /** @type { import("typescript-eslint").ConfigWithExtends["rules"] } */
 const RULES = {
-	"@stylistic/js/generator-star-spacing": "off",
-	"@stylistic/ts/brace-style": "off",
-	"@stylistic/js/max-statements-per-line": [
+	"@stylistic/generator-star-spacing": "off",
+	"@stylistic/brace-style": "off",
+	"@stylistic/max-statements-per-line": [
 		"error",
 		{
 			"max": 2
 		}
 	],
-	"@typescript-eslint/class-methods-use-this": "off",
-	"@typescript-eslint/dot-notation": [
+	"@typescript/dot-notation": [
 		"error",
 		{
 			"allowKeywords": true,
@@ -18,18 +17,20 @@ const RULES = {
 			"allowIndexSignaturePropertyAccess": true
 		}
 	],
-	"@typescript-eslint/explicit-module-boundary-types": "off",
-	"@typescript-eslint/no-confusing-void-expression": "off",
-	"@typescript-eslint/no-empty-function": "off",
-	"@typescript-eslint/no-extraneous-class": "off",
-	"@typescript-eslint/no-floating-promises": "off",
-	"@typescript-eslint/no-magic-numbers": "off",
-	"@typescript-eslint/no-unsafe-assignment": "off",
-	"@typescript-eslint/no-unsafe-argument": "off",
-	"@typescript-eslint/no-unsafe-member-access": "off",
-	"@typescript-eslint/no-unused-expressions": "off",
-	"@typescript-eslint/no-unsafe-call": "off",
-	"@typescript-eslint/unbound-method": "off",
+	"@typescript/explicit-module-boundary-types": "off",
+	"@typescript/no-confusing-void-expression": "off",
+	"@typescript/no-empty-function": "off",
+	"@typescript/no-extraneous-class": "off",
+	"@typescript/no-floating-promises": "off",
+	"@typescript/no-magic-numbers": "off",
+	"@typescript/no-unsafe-assignment": "off",
+	"@typescript/no-unsafe-argument": "off",
+	"@typescript/no-unsafe-member-access": "off",
+	"@typescript/no-unused-expressions": "off",
+	"@typescript/no-unsafe-call": "off",
+	"@typescript/only-throw-error": "off",
+	"@typescript/prefer-promise-reject-errors": "off",
+	"@typescript/unbound-method": "off",
 	"consistent-return": "off",
 	"func-names": "off",
 	"func-style": "off",
@@ -38,7 +39,7 @@ const RULES = {
 	"max-lines-per-function": "off",
 	"max-statements": "off",
 	"no-new": "off",
-	"symbol-description": "off"
+	"symbol-description": "off",
 };
 
 export { RULES as rules };

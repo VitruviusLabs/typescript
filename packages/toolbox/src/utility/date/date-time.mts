@@ -16,7 +16,7 @@ class DateTime extends Date
 	/**
 	 * Generate the UTC-0 timestamp
 	 */
-	// eslint-disable-next-line @typescript-eslint/max-params -- Consistent with Date constructor
+	// eslint-disable-next-line @typescript/max-params -- Consistent with Date constructor
 	public static GetISOTimestamp(
 		year: number,
 		month: ISOMonthEnum | number,
@@ -43,7 +43,7 @@ class DateTime extends Date
 	/**
 	 * Generate the UTC-0 timestamp
 	 */
-	// eslint-disable-next-line @typescript-eslint/max-params -- Consistent with Date constructor
+	// eslint-disable-next-line @typescript/max-params -- Consistent with Date constructor
 	public static GetISOFiscalTimestamp(
 		year: number,
 		week: number,
@@ -99,7 +99,7 @@ class DateTime extends Date
 	 * @remarks
 	 * - All values are presumed to be in UTC-0
 	 */
-	// eslint-disable-next-line @typescript-eslint/max-params -- Consistent with Date constructor
+	// eslint-disable-next-line @typescript/max-params -- Consistent with Date constructor
 	public static CreateISO(
 		year: number,
 		month: ISOMonthEnum | number,
@@ -119,7 +119,7 @@ class DateTime extends Date
 	 * @remarks
 	 * - All values are presumed to be in UTC-0
 	 */
-	// eslint-disable-next-line @typescript-eslint/max-params -- Consistent with Date constructor
+	// eslint-disable-next-line @typescript/max-params -- Consistent with Date constructor
 	public static CreateISOFiscal(
 		year: number,
 		week: number,
@@ -214,7 +214,7 @@ class DateTime extends Date
 	public getISOWeekDay(): ISOWeekDayEnum;
 	public getISOWeekDay(): ISOWeekDayEnum | number
 	{
-		// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions -- Shorthand
+		// eslint-disable-next-line @typescript/strict-boolean-expressions -- Shorthand
 		return this.getUTCDay() || ISOWeekDayEnum.SUNDAY;
 	}
 

@@ -1,6 +1,6 @@
 /** @type { import("typescript-eslint").ConfigWithExtends["rules"] } */
 const RULES = {
-	"@stylistic/js/array-bracket-newline": [
+	"@stylistic/array-bracket-newline": [
 		"error",
 		"consistent"
 		// unsupported combination
@@ -12,7 +12,7 @@ const RULES = {
 		}
 		*/
 	],
-	"@stylistic/js/array-bracket-spacing": [
+	"@stylistic/array-bracket-spacing": [
 		"error",
 		"never",
 		{
@@ -21,7 +21,7 @@ const RULES = {
 			"arraysInArrays": false
 		}
 	],
-	"@stylistic/js/array-element-newline": [
+	"@stylistic/array-element-newline": [
 		"error",
 		"consistent"
 		// unsupported combination
@@ -33,42 +33,42 @@ const RULES = {
 		},
 		*/
 	],
-	"@stylistic/js/arrow-parens": [
+	"@stylistic/arrow-parens": [
 		"error",
 		"always"
 	],
-	"@stylistic/js/arrow-spacing": [
+	"@stylistic/arrow-spacing": [
 		"error",
 		{
 			"before": true,
 			"after": true
 		}
 	],
-	"@stylistic/js/comma-style": [
+	"@stylistic/comma-style": [
 		"error",
 		"last"
 	],
-	"@stylistic/js/computed-property-spacing": [
+	"@stylistic/computed-property-spacing": [
 		"error",
 		"never"
 	],
-	"@stylistic/js/dot-location": [
+	"@stylistic/dot-location": [
 		"error",
 		"property"
 	],
-	"@stylistic/js/eol-last": [
+	"@stylistic/eol-last": [
 		"error",
 		"always"
 	],
-	"@stylistic/js/function-call-argument-newline": [
+	"@stylistic/function-call-argument-newline": [
 		"error",
 		"consistent"
 	],
-	"@stylistic/js/function-paren-newline": [
+	"@stylistic/function-paren-newline": [
 		"error",
 		"multiline-arguments"
 	],
-	"@stylistic/js/generator-star-spacing": [
+	"@stylistic/generator-star-spacing": [
 		"error",
 		{
 			"named": {
@@ -85,22 +85,28 @@ const RULES = {
 			}
 		}
 	],
-	"@stylistic/js/indent": [
+	"@stylistic/indent": [
 		"error",
 		"tab",
 		{
 			"SwitchCase": 1
 		}
 	],
-	"@stylistic/js/jsx-quotes": [
+	"@stylistic/jsx-quotes": [
 		"error",
 		"prefer-double"
 	],
-	"@stylistic/js/linebreak-style": [
+	"@stylistic/linebreak-style": [
 		"error",
 		"unix"
 	],
-	"@stylistic/js/max-len": [
+	"@stylistic/line-comment-position": [
+		"error",
+		{
+			"position": "above"
+		}
+	],
+	"@stylistic/max-len": [
 		"error",
 		{
 			"code": 200,
@@ -115,33 +121,33 @@ const RULES = {
 			"ignoreTemplateLiterals": true
 		}
 	],
-	"@stylistic/js/max-statements-per-line": [
+	"@stylistic/max-statements-per-line": [
 		"error",
 		{
 			"max": 1
 		}
 	],
-	"@stylistic/js/multiline-ternary": [
+	"@stylistic/multiline-ternary": [
 		"error",
 		"always-multiline"
 	],
-	"@stylistic/js/new-parens": [
+	"@stylistic/new-parens": [
 		"error",
 		"always"
 	],
-	"@stylistic/js/newline-per-chained-call": [
+	"@stylistic/newline-per-chained-call": [
 		"error",
 		{
 			/*"consistent": true,*/
 			"ignoreChainWithDepth": 3
 		}
 	],
-	"@stylistic/js/no-floating-decimal": "error",
-	"@stylistic/js/no-mixed-spaces-and-tabs": [
+	"@stylistic/no-floating-decimal": "error",
+	"@stylistic/no-mixed-spaces-and-tabs": [
 		"error",
 		"smart-tabs"
 	],
-	"@stylistic/js/no-multi-spaces": [
+	"@stylistic/no-multi-spaces": [
 		"error",
 		{
 			"includeTabs": false,
@@ -153,7 +159,7 @@ const RULES = {
 			}
 		}
 	],
-	"@stylistic/js/no-multiple-empty-lines": [
+	"@stylistic/no-multiple-empty-lines": [
 		"error",
 		{
 			"max": 1,
@@ -161,21 +167,21 @@ const RULES = {
 			"maxEOF": 1
 		}
 	],
-	"@stylistic/js/no-tabs": [
+	"@stylistic/no-tabs": [
 		"error",
 		{
 			"allowIndentationTabs": true
 		}
 	],
-	"@stylistic/js/no-trailing-spaces": [
+	"@stylistic/no-trailing-spaces": [
 		"error",
 		{
 			"skipBlankLines": false,
 			"ignoreComments": false
 		}
 	],
-	"@stylistic/js/no-whitespace-before-property": "error",
-	"@stylistic/js/object-curly-newline": [
+	"@stylistic/no-whitespace-before-property": "error",
+	"@stylistic/object-curly-newline": [
 		"error",
 		{
 			"ObjectExpression": {
@@ -196,47 +202,47 @@ const RULES = {
 			}
 		}
 	],
-	"@stylistic/js/object-property-newline": [
+	"@stylistic/object-property-newline": [
 		"error",
 		{
 			"allowAllPropertiesOnSameLine": true
 		}
 	],
-	"@stylistic/js/operator-linebreak": [
+	"@stylistic/operator-linebreak": [
 		"error",
 		"before"
 	],
-	"@stylistic/js/padded-blocks": [
+	"@stylistic/padded-blocks": [
 		"error",
 		"never"
 	],
-	"@stylistic/js/rest-spread-spacing": [
+	"@stylistic/rest-spread-spacing": [
 		"error",
 		"never"
 	],
-	"@stylistic/js/semi-spacing": [
+	"@stylistic/semi-spacing": [
 		"error",
 		{
 			"before": false,
 			"after": true
 		}
 	],
-	"@stylistic/js/semi-style": [
+	"@stylistic/semi-style": [
 		"error",
 		"last"
 	],
-	"@stylistic/js/space-in-parens": [
+	"@stylistic/space-in-parens": [
 		"error",
 		"never"
 	],
-	"@stylistic/js/space-unary-ops": [
+	"@stylistic/space-unary-ops": [
 		"error",
 		{
 			"words": true,
 			"nonwords": false
 		}
 	],
-	"@stylistic/js/spaced-comment": [
+	"@stylistic/spaced-comment": [
 		"error",
 		"always",
 		{
@@ -261,48 +267,48 @@ const RULES = {
 			}
 		}
 	],
-	"@stylistic/js/switch-colon-spacing": [
+	"@stylistic/switch-colon-spacing": [
 		"error",
 		{
 			"before": false,
 			"after": true
 		}
 	],
-	"@stylistic/js/template-curly-spacing": [
+	"@stylistic/template-curly-spacing": [
 		"error",
 		"never"
 	],
-	"@stylistic/js/template-tag-spacing": [
+	"@stylistic/template-tag-spacing": [
 		"error",
 		"never"
 	],
-	"@stylistic/js/wrap-iife": [
+	"@stylistic/wrap-iife": [
 		"error",
 		"inside",
 		{
 			"functionPrototypeMethods": true
 		}
 	],
-	"@stylistic/js/yield-star-spacing": [
+	"@stylistic/yield-star-spacing": [
 		"error",
 		{
 			"before": false,
 			"after": true
 		}
 	],
-	"@stylistic/ts/block-spacing": [
+	"@stylistic/block-spacing": [
 		// Possibly unnecessary
 		"error",
 		"always"
 	],
-	"@stylistic/ts/brace-style": [
+	"@stylistic/brace-style": [
 		"error",
 		"allman",
 		{
 			"allowSingleLine": true
 		}
 	],
-	"@stylistic/ts/comma-dangle": [
+	"@stylistic/comma-dangle": [
 		"error",
 		{
 			"arrays": "always-multiline",
@@ -315,19 +321,19 @@ const RULES = {
 			"tuples": "always-multiline"
 		}
 	],
-	"@stylistic/ts/comma-spacing": [
+	"@stylistic/comma-spacing": [
 		"error",
 		{
 			"before": false,
 			"after": true
 		}
 	],
-	"@stylistic/ts/function-call-spacing": [
+	"@stylistic/function-call-spacing": [
 		"error",
 		"never"
 	],
-	"@stylistic/ts/indent": "off", // Bugged
-	"@stylistic/ts/key-spacing": [
+	"@stylistic/indent": "off", // Bugged
+	"@stylistic/key-spacing": [
 		"error",
 		{
 			"beforeColon": false,
@@ -335,7 +341,7 @@ const RULES = {
 			"mode": "strict"
 		}
 	],
-	"@stylistic/ts/keyword-spacing": [
+	"@stylistic/keyword-spacing": [
 		"error",
 		{
 			"before": true,
@@ -360,7 +366,7 @@ const RULES = {
 			*/
 		}
 	],
-	"@stylistic/ts/lines-between-class-members": [
+	"@stylistic/lines-between-class-members": [
 		"error",
 		"always",
 		{
@@ -368,7 +374,7 @@ const RULES = {
 			"exceptAfterSingleLine": true
 		}
 	],
-	"@stylistic/ts/member-delimiter-style": [
+	"@stylistic/member-delimiter-style": [
 		"error",
 		{
 			"multilineDetection": "brackets",
@@ -382,7 +388,7 @@ const RULES = {
 			}
 		}
 	],
-	"@stylistic/ts/no-extra-parens": [
+	"@stylistic/no-extra-parens": [
 		"error",
 		"all",
 		{
@@ -397,8 +403,8 @@ const RULES = {
 			"ignoreJSX": "multi-line"
 		}
 	],
-	"@stylistic/ts/no-extra-semi": "error",
-	"@stylistic/ts/object-curly-spacing": [
+	"@stylistic/no-extra-semi": "error",
+	"@stylistic/object-curly-spacing": [
 		"error",
 		"always",
 		{
@@ -406,7 +412,7 @@ const RULES = {
 			"objectsInObjects": true
 		}
 	],
-	"@stylistic/ts/padding-line-between-statements": [
+	"@stylistic/padding-line-between-statements": [
 		"error",
 		{
 			"blankLine": "always",
@@ -497,11 +503,11 @@ const RULES = {
 			]
 		}
 	],
-	"@stylistic/ts/quote-props": [
+	"@stylistic/quote-props": [
 		"error",
 		"consistent-as-needed"
 	],
-	"@stylistic/ts/quotes": [
+	"@stylistic/quotes": [
 		"error",
 		"double",
 		{
@@ -509,7 +515,7 @@ const RULES = {
 			"allowTemplateLiterals": false
 		}
 	],
-	"@stylistic/ts/semi": [
+	"@stylistic/semi": [
 		"error",
 		"always",
 		{
@@ -517,12 +523,12 @@ const RULES = {
 			"omitLastInOneLineClassBody": false
 		}
 	],
-	"@stylistic/ts/space-before-blocks": [
+	"@stylistic/space-before-blocks": [
 		// Possibly unnecessary
 		"error",
 		"always"
 	],
-	"@stylistic/ts/space-before-function-paren": [
+	"@stylistic/space-before-function-paren": [
 		"error",
 		{
 			"anonymous": "never",
@@ -530,13 +536,13 @@ const RULES = {
 			"asyncArrow": "always"
 		}
 	],
-	"@stylistic/ts/space-infix-ops": [
+	"@stylistic/space-infix-ops": [
 		"error",
 		{
 			"int32Hint": false
 		}
 	],
-	"@stylistic/ts/type-annotation-spacing": [
+	"@stylistic/type-annotation-spacing": [
 		"error",
 		{
 			"before": false,
@@ -549,20 +555,20 @@ const RULES = {
 			}
 		}
 	],
-	"@typescript-eslint/adjacent-overload-signatures": "error",
-	"@typescript-eslint/class-literal-property-style": [
+	"@typescript/adjacent-overload-signatures": "error",
+	"@typescript/class-literal-property-style": [
 		"error",
 		"fields"
 	],
-	"@typescript-eslint/consistent-indexed-object-style": [
+	"@typescript/consistent-indexed-object-style": [
 		"error",
 		"record"
 	],
-	"@typescript-eslint/consistent-type-definitions": [
+	"@typescript/consistent-type-definitions": [
 		"error",
 		"interface"
 	],
-	"@typescript-eslint/dot-notation": [
+	"@typescript/dot-notation": [
 		"error",
 		{
 			"allowKeywords": true,
@@ -572,7 +578,7 @@ const RULES = {
 			"allowIndexSignaturePropertyAccess": true
 		}
 	],
-	"@typescript-eslint/member-ordering": [
+	"@typescript/member-ordering": [
 		"error",
 		{
 			"default": {
@@ -695,33 +701,12 @@ const RULES = {
 			}
 		}
 	],
-	"@typescript-eslint/method-signature-style": [
+	"@typescript/method-signature-style": [
 		"error",
 		"property"
 	],
-	"@typescript-eslint/prefer-for-of": "error",
-	"@typescript-eslint/prefer-function-type": "error",
-	"@typescript-eslint/sort-type-constituents": [
-		"error",
-		{
-			"checkIntersections": true,
-			"checkUnions": true,
-			"groupOrder": [
-				"named",
-				"keyword",
-				"operator",
-				"literal",
-				"function",
-				"import",
-				"conditional",
-				"object",
-				"tuple",
-				"intersection",
-				"union",
-				"nullish"
-			]
-		}
-	],
+	"@typescript/prefer-for-of": "error",
+	"@typescript/prefer-function-type": "error",
 	"arrow-body-style": [
 		"error",
 		"always"
@@ -779,12 +764,6 @@ const RULES = {
 				"up",
 				"pH"
 			]
-		}
-	],
-	"line-comment-position": [
-		"error",
-		{
-			"position": "above"
 		}
 	],
 	"logical-assignment-operators": [

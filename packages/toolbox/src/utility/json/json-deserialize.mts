@@ -9,7 +9,7 @@ import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
  */
 function jsonDeserialize(serialized_data: string): JSONValueType
 {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return -- JSON.parse can return anything
+	// eslint-disable-next-line @typescript/no-unsafe-return -- JSON.parse can return anything
 	return JSON.parse(
 		serialized_data,
 		// @ts-expect-error: Unused key parameter

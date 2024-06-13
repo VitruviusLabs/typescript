@@ -4,7 +4,7 @@ type A = [G, G, G, G];
 
 function create(): A
 {
-	/* eslint-disable @stylistic/js/generator-star-spacing -- Test different spacing */
+	/* eslint-disable @stylistic/generator-star-spacing -- Test different spacing */
 	return [
 		function*(): Generator<number>
 		{
@@ -23,17 +23,17 @@ function create(): A
 			yield 1;
 		},
 	];
-	/* eslint-enable @stylistic/js/generator-star-spacing -- Test different spacing */
+	/* eslint-enable @stylistic/generator-star-spacing -- Test different spacing */
 }
 
-/* eslint-disable @stylistic/js/array-bracket-newline -- Readability */
+/* eslint-disable @stylistic/array-bracket-newline -- Readability */
 const [
 	anonymousGeneratorA,
 	anonymousGeneratorB,
 	anonymousGeneratorC,
 	anonymousGeneratorD,
 ]: A = create();
-/* eslint-enable @stylistic/js/array-bracket-newline -- Readability */
+/* eslint-enable @stylistic/array-bracket-newline -- Readability */
 
 export {
 	anonymousGeneratorA,

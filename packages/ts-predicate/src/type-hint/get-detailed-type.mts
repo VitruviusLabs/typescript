@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-types -- Generic type is enough as we won't invoke it
+// eslint-disable-next-line @typescript/ban-types -- Generic type is enough as we won't invoke it
 function getDetailedFunctionType(value: Function): string
 {
 	const CODE: string = value.toString();
@@ -70,7 +70,7 @@ function getDetailedType(value: unknown): string
 			return `array (${value.length.toString()} items)`;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Prototype is loosely typed
+		// eslint-disable-next-line @typescript/no-unsafe-assignment -- Prototype is loosely typed
 		const PROTO: object | null = Object.getPrototypeOf(value);
 
 		if (PROTO === null)

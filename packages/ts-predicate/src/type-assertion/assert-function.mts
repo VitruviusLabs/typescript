@@ -1,7 +1,7 @@
 import { isFunction } from "../type-guard/is-function.mjs";
 import { ValidationError } from "./utils/validation-error.mjs";
 
-// eslint-disable-next-line @typescript-eslint/ban-types -- Allow proper function inference
+// eslint-disable-next-line @typescript/ban-types -- Allow proper function inference
 function assertFunction(value: unknown): asserts value is Function
 {
 	if (!isFunction(value))
