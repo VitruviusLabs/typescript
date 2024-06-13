@@ -1,0 +1,47 @@
+{
+	"name": "@vitruvius-labs/assert",
+	"version": "0.11.0",
+	"description": "A fluent assertion library.",
+	"author": {
+		"name": "VitruviusLabs"
+	},
+	"contributors": [
+		"Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>",
+		"Benjamin Blum <benjamin.blum.98@gmail.com>"
+	],
+	"license": "MIT",
+	"private": false,
+	"type": "module",
+	"files": [
+		"./build/**/*"
+	],
+	"exports": {
+		".": {
+			"import": "./build/esm/_index.mjs",
+			"types": "./build/types/_index.d.mts"
+		}
+	},
+	"scripts": {
+		"clean": "rm -rf reports coverage build dist lib .eslintcache",
+		"compile": "tsc -p tsconfig.build.json",
+		"build": "pnpm clean && pnpm compile",
+		"eslint:check": "eslint",
+		"eslint:fix": "eslint --fix",
+		"test:unit": "tsx --test */**/*.spec.mts",
+		"test:unit:only": "tsx --test --test-only */**/*.spec.mts",
+		"test:unit:stryker": "pnpm test:unit",
+		"test:mutation": "stryker run",
+		"node:coverage": "NODE_V8_COVERAGE=./reports/node-coverage tsx --experimental-test-coverage --test */**/*.spec.mts",
+		"c8:coverage": "c8 tsx --test-reporter spec --test */**/*.spec.mts",
+		"ts:check": "tsc -p tsconfig.json --noEmit",
+		"spell:check": "cspell -c ../../.vscode/cspell.json .",
+		"ci:lint": "pnpm eslint:check",
+		"ci:ts:check": "pnpm ts:check",
+		"ci:spell:check": "pnpm spell:check",
+		"ci:test:unit": "pnpm test:unit",
+		"ci:full": "pnpm ci:lint && pnpm ci:ts:check && pnpm ci:spell:check && pnpm ci:test:unit",
+		"ci:publish": "pnpm publish --access public --no-git-checks",
+		"ci:publish:dry": "pnpm publish --access public --dry-run --no-git-checks",
+		"ci:build": "pnpm build"
+	}
+}
