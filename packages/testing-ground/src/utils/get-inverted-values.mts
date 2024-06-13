@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { BaseType, type GroupType } from "../definition/_index.mjs";
 import { expandTypes } from "./expand-types.mjs";
 import { getValues } from "./get-values.mjs";

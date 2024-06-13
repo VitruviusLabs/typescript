@@ -7,7 +7,6 @@ function findIndex<A>(callable: (item: A) => boolean): (value: ReadonlyArray<A>)
 	{
 		const INDEX: number = value.findIndex(callable);
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Perfectly safe
 		if (INDEX === ArrayConstantEnum.NOT_FOUND)
 		{
 			return nothing();

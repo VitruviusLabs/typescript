@@ -449,7 +449,6 @@ describe("Signature", (): void => {
 	});
 
 	describe("generate", (): void => {
-		// eslint-disable-next-line max-statements
 		it("should return the signature interface with all the properties set to the expected values when called and follow the proper workflow", (): void => {
 			const mocked_instantiation_interface: SignatureInstantiationInterface = mockSignatureInstantiationInterface();
 
@@ -578,7 +577,6 @@ describe("Signature", (): void => {
 	});
 
 	describe("getPresignedURL", (): void => {
-		// eslint-disable-next-line max-statements
 		it("should return the url property with the query parameters appended when called and follow the appropriate workflow", (): void => {
 			const mocked_instantiation_interface: SignatureInstantiationInterface = mockSignatureInstantiationInterface();
 

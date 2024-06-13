@@ -32,7 +32,6 @@
 		".github/CODEOWNERS",
 		".gitignore",
 		".mocharc.json",
-		".tmp/",
 		"**/*.log",
 		"**/node_modules/**",
 		"build/",
