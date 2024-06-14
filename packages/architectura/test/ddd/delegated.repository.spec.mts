@@ -38,35 +38,35 @@ describe("DelegatedRepository", (): void => {
 	class DummyDelegate
 	{
 		// @ts-expect-error: Test class
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Test class
+		// eslint-disable-next-line @ts/no-unused-vars -- Test class
 		public async fetchByUUID(uuid: string): Promise<DummyInterface | undefined>
 		{
 			return await Promise.reject(new Error("Should not be called"));
 		}
 
 		// @ts-expect-error: Test class
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Test class
+		// eslint-disable-next-line @ts/no-unused-vars -- Test class
 		public async fetchById(id: bigint): Promise<DummyInterface | undefined>
 		{
 			return await Promise.reject(new Error("Should not be called"));
 		}
 
 		// @ts-expect-error: Test class
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Test class
+		// eslint-disable-next-line @ts/no-unused-vars -- Test class
 		public async register(model: DummyModel): Promise<DummyMetaInterface>
 		{
 			return await Promise.reject(new Error("Should not be called"));
 		}
 
 		// @ts-expect-error: Test class
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Test class
+		// eslint-disable-next-line @ts/no-unused-vars -- Test class
 		public async update(model: DummyModel): Promise<DummyMetaInterface>
 		{
 			return await Promise.reject(new Error("Should not be called"));
 		}
 
 		// @ts-expect-error: Test class
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Test class
+		// eslint-disable-next-line @ts/no-unused-vars -- Test class
 		public async destroy(id: bigint): Promise<void>
 		{
 			return await Promise.reject(new Error("Should not be called"));
