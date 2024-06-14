@@ -2,11 +2,10 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,linux,macos,visualstudiocode,git,node
 
 ### Custom ##
-.tmp/
-tmp/
-reports/
 build/
-.stryker-tmp
+reports/
+tmp/
+.stryker-tmp/
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:

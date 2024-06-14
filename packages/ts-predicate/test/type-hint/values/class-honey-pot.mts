@@ -1,4 +1,3 @@
-/* eslint-disable -- honeypot */
 class HoneyPot
 {
 	public static method(): unknown
@@ -19,6 +18,5 @@ class HoneyPot
 		yield await Promise.resolve(1);
 	}
 }
-/* eslint-enable -- honeypot */
 
 export { HoneyPot };

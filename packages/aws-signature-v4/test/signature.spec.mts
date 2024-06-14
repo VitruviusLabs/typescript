@@ -2,7 +2,7 @@ import { before, describe, it } from "mocha";
 import { expect } from "chai";
 import { type SinonStub, stub, useFakeTimers } from "sinon";
 import { HTTPMethodEnum, Signature, SignatureEnum, type SignatureInstantiationInterface, type SignatureInterface } from "../src/_index.mjs";
-import { mockSignatureInstantiationInterface } from "../mocks/definitions/interfaces/signature-instantiation.interface.mjs";
+import { mockSignatureInstantiationInterface } from "../mock/definitions/interfaces/signature-instantiation.interface.mjs";
 import { createHash, createHmac } from "crypto";
 
 describe("Signature", (): void => {
@@ -449,7 +449,6 @@ describe("Signature", (): void => {
 	});
 
 	describe("generate", (): void => {
-		// eslint-disable-next-line max-statements
 		it("should return the signature interface with all the properties set to the expected values when called and follow the proper workflow", (): void => {
 			const mocked_instantiation_interface: SignatureInstantiationInterface = mockSignatureInstantiationInterface();
 
@@ -578,7 +577,6 @@ describe("Signature", (): void => {
 	});
 
 	describe("getPresignedURL", (): void => {
-		// eslint-disable-next-line max-statements
 		it("should return the url property with the query parameters appended when called and follow the appropriate workflow", (): void => {
 			const mocked_instantiation_interface: SignatureInstantiationInterface = mockSignatureInstantiationInterface();
 

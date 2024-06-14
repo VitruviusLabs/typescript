@@ -26,35 +26,35 @@ describe("BaseRepository", (): void => {
 	class DummyRepository extends BaseRepository<DummyModel, BaseModelInstantiationInterface, typeof DummyModel>
 	{
 		// @ts-expect-error: Test class
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Test class
+		// eslint-disable-next-line @ts/no-unused-vars -- Test class
 		protected async fetchByUUID(uuid: string): Promise<(BaseModelInstantiationInterface & ModelMetadataInterface) | undefined>
 		{
 			return await Promise.reject(new Error("Should not be called"));
 		}
 
 		// @ts-expect-error: Test class
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Test class
+		// eslint-disable-next-line @ts/no-unused-vars -- Test class
 		protected async fetchById(id: bigint): Promise<(BaseModelInstantiationInterface & ModelMetadataInterface) | undefined>
 		{
 			return await Promise.reject(new Error("Should not be called"));
 		}
 
 		// @ts-expect-error: Test class
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Test class
+		// eslint-disable-next-line @ts/no-unused-vars -- Test class
 		protected async register(model: DummyModel): Promise<ModelMetadataInterface>
 		{
 			return await Promise.reject(new Error("Should not be called"));
 		}
 
 		// @ts-expect-error: Test class
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Test class
+		// eslint-disable-next-line @ts/no-unused-vars -- Test class
 		protected async update(model: DummyModel): Promise<ModelMetadataInterface>
 		{
 			return await Promise.reject(new Error("Should not be called"));
 		}
 
 		// @ts-expect-error: Test class
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Test class
+		// eslint-disable-next-line @ts/no-unused-vars -- Test class
 		protected async destroy(id: bigint): Promise<void>
 		{
 			return await Promise.reject(new Error("Should not be called"));

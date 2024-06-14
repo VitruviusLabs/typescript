@@ -7,7 +7,6 @@ function lastIndexOf<A>(item: A): (value: ReadonlyArray<A>) => OptionalType<numb
 	{
 		const INDEX: number = value.indexOf(item);
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Perfectly safe
 		if (INDEX === ArrayConstantEnum.NOT_FOUND)
 		{
 			return nothing();

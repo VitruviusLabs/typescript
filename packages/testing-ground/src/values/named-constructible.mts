@@ -1,6 +1,6 @@
 import type { OldClassConstructor } from "../definition/interface/old-class-constructor.mjs";
 
-/* eslint-disable @typescript-eslint/no-empty-function,func-names -- Test dummy */
+/* eslint-disable @ts/no-empty-function,func-names -- Test dummy */
 
 // @ts-expect-error: old notation
 // eslint-disable-next-line func-style -- old notation
@@ -14,6 +14,6 @@ NamedConstructible.prototype.asyncMethod = async function asyncMethod(): Promise
 
 NamedConstructible.prototype.method = function method(): void {};
 
-/* eslint-enable @typescript-eslint/no-empty-function,func-names -- Test dummy */
+/* eslint-enable @ts/no-empty-function,func-names -- Test dummy */
 
 export { NamedConstructible };

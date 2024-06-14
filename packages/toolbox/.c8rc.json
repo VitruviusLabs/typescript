@@ -1,12 +1,10 @@
 {
-	"src": "./tmp/test-build/src",
-	"exclude": [
-		"**/test/**",
-		"**/Types/**/*.*",
-		"**/_index.js"
+	"src": "./src",
+	"include": [
+		"**/src/**"
 	],
 	"extension": [
-		".js"
+		".mts"
 	],
 	"reporter": [
 		"html"

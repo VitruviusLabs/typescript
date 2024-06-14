@@ -6,7 +6,7 @@
 	"include": [
 		"./src/**/*",
 		"./test/**/*",
-		"./mocks/**/*"
+		"./mock/**/*"
 	],
 	"ts-node": {
 		"files": true,

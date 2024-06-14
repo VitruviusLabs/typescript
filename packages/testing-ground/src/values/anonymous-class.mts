@@ -1,6 +1,6 @@
 function create(): new () => object
 {
-	// eslint-disable-next-line @typescript-eslint/no-extraneous-class -- Dummy
+	// eslint-disable-next-line @ts/no-extraneous-class -- Dummy
 	return class {};
 }
 

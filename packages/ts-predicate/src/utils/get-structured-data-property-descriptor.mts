@@ -6,7 +6,7 @@ import type { StructuredDataPropertyDescriptor } from "../definition/type/struct
 function getStructuredDataPropertyDescriptor<Type>(descriptor: StructuredDataDescriptor<Type> | Test<NonNullable<Type>>, key: string): StructuredDataPropertyDescriptor<unknown>
 {
 	// @ts-expect-error: Key mapping
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- It is safe
+	// eslint-disable-next-line @ts/no-unsafe-assignment -- It is safe
 	const property_descriptor: StructuredDataPropertyDescriptor<unknown> = descriptor[key];
 
 	if (typeof property_descriptor === "function")

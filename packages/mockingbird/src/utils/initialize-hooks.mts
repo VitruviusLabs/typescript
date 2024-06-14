@@ -12,9 +12,9 @@ async function initializeHooks(): Promise<void>
 		return;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-invalid-void-type -- No returned value
+	// eslint-disable-next-line @ts/no-invalid-void-type -- No returned value
 	await new Promise<void>(
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any -- reason native type
+		// eslint-disable-next-line @ts/no-explicit-any -- reason native type
 		(resolve: () => void, reject: (reason?: any) => void): void =>
 		{
 			const CHANNEL: NodeMessageChannel = new NodeMessageChannel();

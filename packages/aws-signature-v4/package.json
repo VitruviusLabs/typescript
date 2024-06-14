@@ -34,11 +34,11 @@
 		"node": ">=18.0.0"
 	},
 	"scripts": {
-		"clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
+		"clean": "rm -rf reports coverage build dist lib .eslintcache",
 		"compile": "tsc -p tsconfig.build.json",
 		"build": "pnpm clean && pnpm compile",
-		"eslint:check": "eslint ./src ./test",
-		"eslint:fix": "eslint ./src ./test --fix",
+		"eslint:check": "eslint",
+		"eslint:fix": "eslint --fix",
 		"test:unit": "TS_NODE_PROJECT=./tsconfig.mocha.json c8 mocha --parallel",
 		"test:unit:stryker": "pnpm test:unit",
 		"test:mutation": "stryker run --fileLogLevel trace",

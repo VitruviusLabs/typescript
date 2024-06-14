@@ -1,6 +1,6 @@
 function create(): () => void
 {
-	// eslint-disable-next-line @typescript-eslint/no-empty-function -- Dummy
+	// eslint-disable-next-line @ts/no-empty-function -- Dummy
 	return (): void => {};
 }
 

@@ -20,7 +20,7 @@ describe("initialize", (): void => {
 
 		initialize(SHARED_DATA);
 
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Mutated in the hook
+		// eslint-disable-next-line @ts/no-unnecessary-condition -- Mutated in the hook
 		if (message === undefined)
 		{
 			fail("Expected a string");

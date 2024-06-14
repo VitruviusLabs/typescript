@@ -12,6 +12,7 @@
 	"homepage": "https://github.com/VitruviusLabs/typescript/tree/main/packages/aws-sqs#readme",
 	"bugs": "https://github.com/VitruviusLabs/typescript/issues",
 	"license": "MIT",
+	"keywords": [],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/VitruviusLabs/typescript.git"
@@ -34,11 +35,11 @@
 		"node": ">=18.0.0"
 	},
 	"scripts": {
-		"clean": "rm -rf reports coverage build dist lib .eslintcache tmp",
+		"clean": "rm -rf reports coverage build dist lib .eslintcache",
 		"compile": "tsc -p tsconfig.build.json",
 		"build": "pnpm clean && pnpm compile",
-		"eslint:check": "eslint ./src ./test",
-		"eslint:fix": "eslint ./src ./test --fix",
+		"eslint:check": "eslint",
+		"eslint:fix": "eslint --fix",
 		"test:unit": "TS_NODE_PROJECT=./tsconfig.mocha.json c8 mocha --parallel",
 		"test:unit:stryker": "pnpm test:unit",
 		"test:mutation": "stryker run --fileLogLevel trace",
@@ -53,7 +54,6 @@
 		"ci:publish:dry": "pnpm publish --access public --dry-run --no-git-checks",
 		"ci:build": "pnpm build"
 	},
-	"keywords": [],
 	"dependencies": {
 		"@vitruvius-labs/aws-signature-v4": "workspace:^",
 		"@vitruvius-labs/ts-predicate": "workspace:^"
