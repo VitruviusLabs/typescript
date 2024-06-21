@@ -75,8 +75,8 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@swc/core@1.5.29)(@types/node@20.14.7)(typescript@5.4.5)
       tsx:
-        specifier: ^4.15.4
-        version: 4.15.4
+        specifier: ^4.15.7
+        version: 4.15.7
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
@@ -3963,8 +3963,8 @@ packages:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
     dev: true
 
-  /tsx@4.15.4:
-    resolution: {integrity: sha512-d++FLCwJLrXaBFtRcqdPBzu6FiVOJ2j+UsvUZPtoTrnYtCGU5CEW7iHXtNZfA2fcRTvJFWPqA6SWBuB0GSva9w==}
+  /tsx@4.15.7:
+    resolution: {integrity: sha512-u3H0iSFDZM3za+VxkZ1kywdCeHCn+8/qHQS1MNoO2sONDgD95HlWtt8aB23OzeTmFP9IU4/8bZUdg58Uu5J4cg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
