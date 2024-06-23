@@ -352,12 +352,6 @@ const RULES = {
 			"allow": []
 		}
 	],
-	"@ts/prefer-promise-reject-errors": [
-		"error",
-		{
-			"allowEmptyReject": false,
-		}
-	],
 	"@ts/prefer-as-const": "error",
 	"@ts/prefer-enum-initializers": "error",
 	"@ts/prefer-find": "error",
