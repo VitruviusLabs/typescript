@@ -84,6 +84,8 @@ const RULES = {
 			}
 		}
 	],
+	// Bugged
+	/*
 	"@style/indent": [
 		"error",
 		"tab",
@@ -91,6 +93,7 @@ const RULES = {
 			"SwitchCase": 1
 		}
 	],
+	*/
 	"@style/jsx-quotes": [
 		"error",
 		"prefer-double"
@@ -331,7 +334,6 @@ const RULES = {
 		"error",
 		"never"
 	],
-	"@style/indent": "off", // Bugged
 	"@style/key-spacing": [
 		"error",
 		{
