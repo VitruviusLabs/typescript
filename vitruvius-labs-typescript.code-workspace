@@ -60,11 +60,20 @@
 			"javascript",
 			"typescript"
 		],
+		"eslint.useFlatConfig": true,
+		"eslint.options": {
+			"overrideConfigFile": "./eslint.config.mjs"
+		},
 		"eslint.workingDirectories": [
-			"./packages/ts-predicate",
-			"./packages/aws-signature-v4",
+			"./packages/architectura",
 			"./packages/aws-s3",
-			"./packages/mockingbird"
+			"./packages/aws-signature-v4",
+			"./packages/aws-sqs",
+			"./packages/functional",
+			"./packages/mockingbird",
+			"./packages/testing-ground",
+			"./packages/toolbox",
+			"./packages/ts-predicate"
 		],
 		"editor.formatOnSave": true,
 		"editor.codeActionsOnSave": {
