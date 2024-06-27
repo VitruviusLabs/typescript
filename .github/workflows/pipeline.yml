@@ -40,7 +40,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
-          cache: 'pnpm'
+          cache: pnpm
 
       - name: Get pnpm store directory
         # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
@@ -166,6 +166,11 @@ jobs:
           version: 9
           run_install: false
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: pnpm
+
       - name: Dependencies cache unpacking
         uses: actions/cache@v4
         with:
@@ -202,8 +207,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: PNPM installation
         uses: pnpm/action-setup@v4
@@ -346,8 +351,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: PNPM installation
         uses: pnpm/action-setup@v4
@@ -484,8 +489,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: PNPM installation
         uses: pnpm/action-setup@v4
@@ -631,8 +636,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: PNPM installation
         uses: pnpm/action-setup@v4
@@ -785,8 +790,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: PNPM installation
         uses: pnpm/action-setup@v4
@@ -900,8 +905,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: PNPM installation
         uses: pnpm/action-setup@v4
@@ -1058,8 +1063,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: PNPM installation
         uses: pnpm/action-setup@v4
