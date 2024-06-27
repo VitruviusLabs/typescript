@@ -163,7 +163,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.x'
-          cache: pnpm
 
       - name: Dependencies cache unpacking
         uses: actions/cache@v4
@@ -309,7 +308,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.x'
-          cache: pnpm
 
       - name: Dependencies cache unpacking
         uses: actions/cache@v4
