@@ -25,4 +25,10 @@ describe("splitOnce", (): void => {
 			["alpha", "beta---gamma"]
 		);
 	});
+
+	it("should return an empty value if there's no separator to be found", (): void => {
+		deepStrictEqual(splitOnce(":", "Alpha Omega"), ["Alpha Omega", ""]);
+		deepStrictEqual(splitOnce(" ", "Alpha:Omega"), ["Alpha:Omega", ""]);
+		deepStrictEqual(splitOnce("T", "2000-01-01 12:00:00"), ["2000-01-01 12:00:00", ""]);
+	});
 });

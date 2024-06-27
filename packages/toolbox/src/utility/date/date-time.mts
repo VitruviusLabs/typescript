@@ -188,9 +188,7 @@ class DateTime extends Date
 		this.setUTCFullYear(year);
 	}
 
-	public getISOMonth(): number;
-	public getISOMonth(): ISOMonthEnum;
-	public getISOMonth(): ISOMonthEnum | number
+	public getISOMonth(): ISOMonthEnum
 	{
 		return this.getUTCMonth() + 1;
 	}
@@ -210,9 +208,7 @@ class DateTime extends Date
 		this.setUTCDate(day);
 	}
 
-	public getISOWeekDay(): number;
-	public getISOWeekDay(): ISOWeekDayEnum;
-	public getISOWeekDay(): ISOWeekDayEnum | number
+	public getISOWeekDay(): ISOWeekDayEnum
 	{
 		// eslint-disable-next-line @ts/strict-boolean-expressions -- Shorthand
 		return this.getUTCDay() || ISOWeekDayEnum.SUNDAY;
@@ -288,8 +284,6 @@ class DateTime extends Date
 
 			case ISOMonthEnum.DECEMBER:
 				return DateTimeConstantEnum.LONG_MONTH_DAY_COUNT;
-
-			default: throw new Error("Invalid month");
 		}
 	}
 
@@ -336,9 +330,7 @@ class DateTime extends Date
 		this.setISODay(DATE.getISODay());
 	}
 
-	public getISOFiscalDay(): number;
-	public getISOFiscalDay(): ISOWeekDayEnum;
-	public getISOFiscalDay(): ISOWeekDayEnum | number
+	public getISOFiscalDay(): ISOWeekDayEnum
 	{
 		return this.getISOWeekDay();
 	}
@@ -470,8 +462,8 @@ class DateTime extends Date
 		const TIMEZONE_OFFSET: number = this.getTimezoneOffset();
 		const TIMEZONE_ABS_OFFSET: number = Math.abs(TIMEZONE_OFFSET);
 
-		const HOURS: number = Math.round(TIMEZONE_ABS_OFFSET / DateTimeConstantEnum.HOUR_MINUTES_COUNT);
-		const MINUTES: number = Math.round(TIMEZONE_ABS_OFFSET - HOURS * DateTimeConstantEnum.HOUR_MINUTES_COUNT);
+		const HOURS: number = Math.floor(TIMEZONE_ABS_OFFSET / DateTimeConstantEnum.HOUR_MINUTES_COUNT);
+		const MINUTES: number = TIMEZONE_ABS_OFFSET - HOURS * DateTimeConstantEnum.HOUR_MINUTES_COUNT;
 
 		const SIGN: string = TIMEZONE_OFFSET > 0 ? "-" : "+";
 		const PADDED_HOURS: string = HOURS.toFixed(0).padStart(DateTimeConstantEnum.PADDING_LENGTH, "0");

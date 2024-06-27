@@ -18,6 +18,7 @@ describe("DateTime", (): void => {
 	const GET_MINUTES_STUB: SinonStub = stub(DateTime.prototype, "getUTCMinutes");
 	const GET_SECONDS_STUB: SinonStub = stub(DateTime.prototype, "getUTCSeconds");
 	const GET_MILLISECONDS_STUB: SinonStub = stub(DateTime.prototype, "getUTCMilliseconds");
+	const GET_TIMEZONE_OFFSET_STUB: SinonStub = stub(DateTime.prototype, "getTimezoneOffset");
 
 	beforeEach((): void => {
 		CLOCK.reset();
@@ -43,6 +44,8 @@ describe("DateTime", (): void => {
 		GET_SECONDS_STUB.callThrough();
 		GET_MILLISECONDS_STUB.reset();
 		GET_MILLISECONDS_STUB.callThrough();
+		GET_TIMEZONE_OFFSET_STUB.reset();
+		GET_TIMEZONE_OFFSET_STUB.throws();
 	});
 
 	after((): void => {
@@ -58,6 +61,7 @@ describe("DateTime", (): void => {
 		GET_MINUTES_STUB.restore();
 		GET_SECONDS_STUB.restore();
 		GET_MILLISECONDS_STUB.restore();
+		GET_TIMEZONE_OFFSET_STUB.restore();
 	});
 
 	describe("GetISOTimestamp", (): void => {
@@ -235,6 +239,14 @@ describe("DateTime", (): void => {
 			deepStrictEqual(DateTime.CreateISOFiscalYearLastDay(2028), new DateTime("2028-12-31T00:00:00Z"));
 			deepStrictEqual(DateTime.CreateISOFiscalYearLastDay(2029), new DateTime("2029-12-30T00:00:00Z"));
 			deepStrictEqual(DateTime.CreateISOFiscalYearLastDay(2030), new DateTime("2030-12-29T00:00:00Z"));
+		});
+	});
+
+	describe("getTimestamp", (): void => {
+		it("should return the timestamp", (): void => {
+			deepStrictEqual(DateTime.CreateFrom(0).getTimestamp(), 0);
+			deepStrictEqual(DateTime.CreateFrom(1).getTimestamp(), 1);
+			deepStrictEqual(DateTime.CreateFrom(2).getTimestamp(), 2);
 		});
 	});
 
@@ -762,6 +774,17 @@ describe("DateTime", (): void => {
 			strictEqual(DateTime.CreateFrom("2000-10-20T12:34:56.912Z").getISOTag(), "2000-10-20_12-34-56");
 			strictEqual(DateTime.CreateFrom("2010-01-01T20:45:00.000Z").getISOTag(), "2010-01-01_20-45-00");
 			strictEqual(DateTime.CreateFrom("2020-10-20T16:00:00.000Z").getISOTag(), "2020-10-20_16-00-00");
+		});
+	});
+
+	describe("getTimezone", (): void => {
+		it("should return the timezone (CET)", (): void => {
+			GET_TIMEZONE_OFFSET_STUB.onFirstCall().returns(-60);
+			GET_TIMEZONE_OFFSET_STUB.onSecondCall().returns(-120);
+			GET_TIMEZONE_OFFSET_STUB.onThirdCall().returns(210);
+			strictEqual(DateTime.Create().getTimezone(), "+01:00");
+			strictEqual(DateTime.Create().getTimezone(), "+02:00");
+			strictEqual(DateTime.Create().getTimezone(), "-03:30");
 		});
 	});
 

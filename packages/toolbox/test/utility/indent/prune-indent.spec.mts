@@ -10,6 +10,13 @@ describe("pruneIndent", (): void => {
 		strictEqual(pruneIndent(TEXT), EXPECTED);
 	});
 
+	it("should skip already unindented text", (): void => {
+		const TEXT: string = "Alpha\n    Omega";
+		const EXPECTED: string = "Alpha\n    Omega";
+
+		strictEqual(pruneIndent(TEXT), EXPECTED);
+	});
+
 	it("shouldn't try to be smart about mixed tabs and spaces", (): void => {
 		const TEXT: string = "\tAlpha\n    Omega";
 		const EXPECTED: string = "Alpha\n    Omega";
