@@ -33,7 +33,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Get pnpm store directory
@@ -77,7 +77,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -103,7 +103,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -130,7 +130,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -157,7 +157,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -203,7 +203,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -238,7 +238,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -268,7 +268,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -298,7 +298,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -347,7 +347,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -385,7 +385,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -412,7 +412,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -439,7 +439,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -485,7 +485,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -520,7 +520,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -551,7 +551,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -582,7 +582,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -632,7 +632,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -671,7 +671,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -703,7 +703,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -735,7 +735,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -786,7 +786,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -826,7 +826,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -858,7 +858,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -901,7 +901,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Dependencies cache unpacking
@@ -1059,7 +1059,7 @@ jobs:
         uses: pnpm/action-setup@v3
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: true
 
       - name: Dependencies cache unpacking
