@@ -1,4 +1,4 @@
-import { doesNotThrow, strictEqual } from "node:assert";
+import { doesNotThrow, strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { itemGuard } from "../../../src/type-guard/utils/item-guard.mjs";
 import { ValidationError } from "../../../src/_index.mjs";
@@ -41,7 +41,7 @@ describe("TypeAssertion / utils / itemGuard", (): void => {
 	});
 
 	it("should return true when given a type assertion and a valid value", (): void => {
-		const GUARD = (value: unknown): asserts value is number =>
+		const ASSERTION = (value: unknown): asserts value is number =>
 		{
 			if (typeof value !== "number")
 			{
@@ -51,18 +51,18 @@ describe("TypeAssertion / utils / itemGuard", (): void => {
 
 		const WRAPPER = (): void =>
 		{
-			itemGuard(42, GUARD);
+			itemGuard(42, ASSERTION);
 		};
 
 		doesNotThrow(WRAPPER);
 
-		const RESULT: unknown = itemGuard(42, GUARD);
+		const RESULT: unknown = itemGuard(42, ASSERTION);
 
 		strictEqual(RESULT, true);
 	});
 
 	it("should return false when given a type assertion and an invalid value", (): void => {
-		const GUARD = (value: unknown): asserts value is number =>
+		const ASSERTION = (value: unknown): asserts value is number =>
 		{
 			if (typeof value !== "number")
 			{
@@ -72,13 +72,29 @@ describe("TypeAssertion / utils / itemGuard", (): void => {
 
 		const WRAPPER = (): void =>
 		{
-			itemGuard(null, GUARD);
+			itemGuard(null, ASSERTION);
 		};
 
 		doesNotThrow(WRAPPER);
 
-		const RESULT: unknown = itemGuard(null, GUARD);
+		const RESULT: unknown = itemGuard(null, ASSERTION);
 
 		strictEqual(RESULT, false);
+	});
+
+	it("should rethrow unexpected errors", (): void => {
+		const ERROR: Error = new Error("something bad happened");
+
+		const FAIL = (): never =>
+		{
+			throw ERROR;
+		};
+
+		const WRAPPER = (): void =>
+		{
+			itemGuard(null, FAIL);
+		};
+
+		throws(WRAPPER, ERROR);
 	});
 });

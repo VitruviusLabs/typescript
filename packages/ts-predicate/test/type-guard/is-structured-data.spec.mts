@@ -53,6 +53,15 @@ describe("TypeGuard.isStructuredData", (): void => {
 		strictEqual(RESULT, true);
 	});
 
+	it("should ignore a property when flagged so", (): void => {
+		const RESULT: unknown = TypeGuard.isStructuredData(
+			{ alpha: "1" },
+			{ alpha: { test: isNumberTest, ignore: true } }
+		);
+
+		strictEqual(RESULT, true);
+	});
+
 	it("should return true when every property of the object is valid", (): void => {
 		const RESULT: unknown = TypeGuard.isStructuredData({ alpha: 1, beta: 2 }, DESCRIPTOR);
 

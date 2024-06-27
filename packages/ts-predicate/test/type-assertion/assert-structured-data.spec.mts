@@ -17,8 +17,7 @@ function isNumberTest(value: unknown): asserts value is number
 	}
 }
 
-const DESCRIPTOR: StructuredDataDescriptor<TestData>
-= {
+const DESCRIPTOR: StructuredDataDescriptor<TestData> = {
 	alpha: {
 		nullable: true,
 		test: isNumberTest,
@@ -73,6 +72,18 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 		const WRAPPER = (): void =>
 		{
 			TypeAssertion.assertStructuredData({ alpha: 1, beta: 2 }, DESCRIPTOR);
+		};
+
+		doesNotThrow(WRAPPER);
+	});
+
+	it("should ignore properties flagged so", (): void => {
+		const WRAPPER = (): void =>
+		{
+			TypeAssertion.assertStructuredData(
+				{ alpha: "1" },
+				{ alpha: { test: isNumberTest, ignore: true } }
+			);
 		};
 
 		doesNotThrow(WRAPPER);
