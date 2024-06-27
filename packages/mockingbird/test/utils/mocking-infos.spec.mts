@@ -1,11 +1,11 @@
+import type { MockedDependency } from "../../src/definition/interface/mocked-dependency.mjs";
+import type { MockingInfos } from "../../src/definition/interface/mocking-infos.mjs";
 import { deepStrictEqual, strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { MockStorage } from "../../src/utils/mock-storage.mjs";
 import { decodeInfos, encodeInfos } from "../../src/utils/mocking-infos.mjs";
 import { resolveModuleIdentifier } from "../../src/utils/resolve-module-identifier.mjs";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
-import type { MockedDependency } from "../../src/definition/interface/mocked-dependency.mjs";
-import type { MockingInfos } from "../../src/definition/interface/mocking-infos.mjs";
 
 describe("MockingInfos", (): void => {
 	describe("decodeInfos", (): void => {

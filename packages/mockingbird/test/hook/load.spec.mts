@@ -1,3 +1,5 @@
+import type { LoadContext } from "../../src/definition/interface/load-context.mjs";
+import type { LoadResult } from "../../src/definition/interface/load-result.mjs";
 import { deepStrictEqual, rejects } from "node:assert";
 import { describe, it } from "node:test";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
@@ -6,8 +8,6 @@ import { load } from "../../src/hook/_index.mjs";
 import { MockStorage } from "../../src/utils/mock-storage.mjs";
 import { encodeInfos } from "../../src/utils/mocking-infos.mjs";
 import { prefix } from "../../src/utils/prefix.mjs";
-import type { LoadContext } from "../../src/definition/interface/load-context.mjs";
-import type { LoadResult } from "../../src/definition/interface/load-result.mjs";
 
 const CONTEXT: LoadContext = {
 	conditions: [],

@@ -1,11 +1,11 @@
+import type { ResolveContext } from "../../src/definition/interface/resolve-context.mjs";
+import type { ResolveResult } from "../../src/definition/interface/resolve-result.mjs";
 import { deepStrictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { ModuleFormat } from "../../src/definition/enum/module-format.mjs";
 import { resolve } from "../../src/hook/_index.mjs";
 import { prefix } from "../../src/utils/prefix.mjs";
 import { deepFreeze } from "../common/deep-freeze.mjs";
-import type { ResolveContext } from "../../src/definition/interface/resolve-context.mjs";
-import type { ResolveResult } from "../../src/definition/interface/resolve-result.mjs";
 
 describe("resolve", (): void => {
 	it("should ignore node modules", (): void => {

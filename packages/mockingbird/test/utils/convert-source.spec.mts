@@ -1,7 +1,7 @@
+import type { MockingInfos } from "../../src/definition/interface/mocking-infos.mjs";
 import { match, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { convertSource } from "../../src/utils/convert-source.mjs";
-import type { MockingInfos } from "../../src/definition/interface/mocking-infos.mjs";
 
 describe("convertSource", (): void => {
 	it("should prepend an import of the MockStorage module", (): void => {
