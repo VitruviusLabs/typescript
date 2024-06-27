@@ -36,12 +36,6 @@ jobs:
           version: 9
           run_install: false
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.x'
-          cache: pnpm
-
       - name: Get pnpm store directory
         # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
         id: pnpm-cache
