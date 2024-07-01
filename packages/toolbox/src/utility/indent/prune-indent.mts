@@ -11,16 +11,11 @@ function pruneIndent(text: string): string
 {
 	const TEXT: string = text.replaceAll(/^[\t ]+$/gm, "");
 
-	const MATCH: RegExpExecArray | null = /^[\t ]+/m.exec(TEXT);
+	const MATCH: RegExpExecArray | null = /^\n*(?<indent>[\t ]+)/.exec(TEXT);
 
-	if (MATCH === null)
-	{
-		return TEXT;
-	}
+	const INDENT: string | undefined = MATCH?.groups?.["indent"];
 
-	const INDENT: string = MATCH[0];
-
-	if (INDENT === "")
+	if (INDENT === undefined)
 	{
 		return TEXT;
 	}

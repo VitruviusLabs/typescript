@@ -36,7 +36,7 @@ describe("pruneIndentTrim", (): void => {
 			- Curabitur tincidunt
 			- Augue non euismod consectetur
 			- Lectus leo fringilla nisi
-		`.trim();
+		`;
 		/* cspell:enable */
 
 		const EXPECTED: string = [
