@@ -1,3 +1,7 @@
+import type { LoadContext } from "../definition/interface/load-context.mjs";
+import type { LoadResult } from "../definition/interface/load-result.mjs";
+import type { MockingInfos } from "../definition/interface/mocking-infos.mjs";
+import type { NextLoad } from "../definition/type/next-load.mjs";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { ModuleFormat } from "../definition/enum/module-format.mjs";
@@ -5,10 +9,6 @@ import { decodeInfos } from "../utils/mocking-infos.mjs";
 import { buildCause } from "../utils/build-cause.mjs";
 import { convertSource } from "../utils/convert-source.mjs";
 import { prefix } from "../utils/prefix.mjs";
-import type { LoadContext } from "../definition/interface/load-context.mjs";
-import type { LoadResult } from "../definition/interface/load-result.mjs";
-import type { MockingInfos } from "../definition/interface/mocking-infos.mjs";
-import type { NextLoad } from "../definition/type/next-load.mjs";
 
 async function load(module_identifier: string, context: LoadContext, next_load: NextLoad): Promise<LoadResult>
 {

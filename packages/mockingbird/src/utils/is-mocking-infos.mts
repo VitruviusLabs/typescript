@@ -1,5 +1,5 @@
-import { assertArray, assertString, assertStructuredData } from "@vitruvius-labs/ts-predicate/type-assertion";
 import type { MockingInfos } from "../definition/interface/mocking-infos.mjs";
+import { assertArray, assertString, assertStructuredData } from "@vitruvius-labs/ts-predicate/type-assertion";
 
 function isMockingInfos(value: unknown): asserts value is MockingInfos
 {
