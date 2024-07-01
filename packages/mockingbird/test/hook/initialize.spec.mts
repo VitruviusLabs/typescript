@@ -1,8 +1,8 @@
+import type { MessagePort as NodeMessagePort } from "node:worker_threads";
+import type { SharedData } from "../../src/definition/interface/shared-data.mjs";
 import { fail, match } from "node:assert";
 import { describe, it } from "node:test";
-import type { MessagePort as NodeMessagePort } from "node:worker_threads";
 import { initialize } from "../../src/hook/_index.mjs";
-import type { SharedData } from "../../src/definition/interface/shared-data.mjs";
 
 describe("initialize", (): void => {
 	it("should tell the main thread that the hooks are ready", (): void => {

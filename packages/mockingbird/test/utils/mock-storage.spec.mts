@@ -1,8 +1,8 @@
+import type { MockedDependency } from "../../src/definition/interface/mocked-dependency.mjs";
 import { deepStrictEqual, doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
 import { MockStorage } from "../../src/utils/mock-storage.mjs";
-import type { MockedDependency } from "../../src/definition/interface/mocked-dependency.mjs";
 
 describe("utils / MockStorage", (): void => {
 	it("should successfully store the given mock", (): void => {

@@ -1,7 +1,7 @@
+import type * as DummyModule from "./dummy/dummy-lib.mjs";
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { mockingbird } from "../src/_index.mjs";
-import type * as DummyModule from "./dummy/dummy-lib.mjs";
 
 describe("mockingbird", (): void => {
 	it("should be able to mock a dummy lib that has a module dependency", async (): Promise<void> => {

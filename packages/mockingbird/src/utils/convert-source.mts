@@ -1,6 +1,6 @@
+import type { MockingInfos } from "../definition/interface/mocking-infos.mjs";
 import { convertImport } from "./convert-import.mjs";
 import { resolveModuleIdentifier } from "./resolve-module-identifier.mjs";
-import type { MockingInfos } from "../definition/interface/mocking-infos.mjs";
 
 function convertSource(source: string, infos: MockingInfos): string
 {

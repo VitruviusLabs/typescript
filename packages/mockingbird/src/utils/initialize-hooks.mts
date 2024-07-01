@@ -1,7 +1,7 @@
 // Stryker disable all: This file is pure side effect
+import type { SharedData } from "../definition/interface/shared-data.mjs";
 import { register } from "node:module";
 import { MessageChannel as NodeMessageChannel } from "node:worker_threads";
-import type { SharedData } from "../definition/interface/shared-data.mjs";
 
 let is_ready: boolean = false;
 

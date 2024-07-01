@@ -1,10 +1,10 @@
+import type { MockedDependency } from "../definition/interface/mocked-dependency.mjs";
+import type { MockingInfos } from "../definition/interface/mocking-infos.mjs";
 import { randomUUID } from "node:crypto";
 import { MockStorage } from "./mock-storage.mjs";
 import { isMockedDependency } from "./is-mocked-dependency.mjs";
 import { isMockingInfos } from "./is-mocking-infos.mjs";
 import { resolveModuleIdentifier } from "./resolve-module-identifier.mjs";
-import type { MockedDependency } from "../definition/interface/mocked-dependency.mjs";
-import type { MockingInfos } from "../definition/interface/mocking-infos.mjs";
 
 interface ConvertTextOptions
 {

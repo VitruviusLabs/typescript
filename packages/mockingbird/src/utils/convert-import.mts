@@ -1,6 +1,6 @@
+import type { MockingInfos } from "../definition/interface/mocking-infos.mjs";
 import { fileURLToPath } from "node:url";
 import { resolveModuleIdentifier } from "./resolve-module-identifier.mjs";
-import type { MockingInfos } from "../definition/interface/mocking-infos.mjs";
 
 function convertImport(infos: MockingInfos, imported_items: string, dependency_identifier: string): string
 {

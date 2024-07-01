@@ -1,5 +1,5 @@
-import { randomUUID } from "node:crypto";
 import type { SharedData } from "../definition/interface/shared-data.mjs";
+import { randomUUID } from "node:crypto";
 
 function initialize(shared_data: SharedData): void
 {
