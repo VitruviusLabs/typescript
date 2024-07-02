@@ -1,5 +1,4 @@
 import type { OutgoingHttpHeaders } from "node:http";
-import type { SinonStub } from "sinon";
 import { describe, it } from "node:test";
 import { deepStrictEqual, rejects, strictEqual, throws } from "node:assert";
 import { createBrotliCompress, createDeflate, createGzip } from "node:zlib";
