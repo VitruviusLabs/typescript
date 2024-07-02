@@ -11,10 +11,14 @@ describe("SessionCleanupService", (): void => {
 	const SERVER_HANDLE_ERROR_STUB: SinonStub = stub(Server, "HandleError");
 	const CLEANUP_STUB: SinonStub = stub(SessionCleanupService, "Cleanup");
 	const CLEAR_DATA_STUB: SinonStub = stub(Session.prototype, "clearData");
+	const IS_EXPIRED_STUB: SinonStub = stub(Session.prototype, "isExpired");
+	const REMOVE_SESSION_STUB: SinonStub = stub(SessionRegistry, "RemoveSession");
+	const LIST_SESSIONS_STUB: SinonStub = stub(SessionRegistry, "ListSessions");
 
 	beforeEach((): void => {
 		clearInterval(Reflect.get(SessionCleanupService, "TIMER"));
 		ReflectUtility.Set(SessionCleanupService, "TIMER", undefined);
+		ReflectUtility.Set(SessionRegistry, "SESSIONS", new Map());
 
 		CLOCK.reset();
 		SET_INTERVAL_SPY.resetHistory();
@@ -22,40 +26,59 @@ describe("SessionCleanupService", (): void => {
 		SERVER_HANDLE_ERROR_STUB.reset();
 		SERVER_HANDLE_ERROR_STUB.callThrough();
 		CLEANUP_STUB.reset();
-		CLEANUP_STUB.resolves();
+		CLEANUP_STUB.callThrough();
 		CLEAR_DATA_STUB.reset();
-		CLEAR_DATA_STUB.resolves();
+		CLEAR_DATA_STUB.callThrough();
+		IS_EXPIRED_STUB.reset();
+		IS_EXPIRED_STUB.callThrough();
+		REMOVE_SESSION_STUB.reset();
+		REMOVE_SESSION_STUB.callThrough();
+		LIST_SESSIONS_STUB.reset();
+		LIST_SESSIONS_STUB.callThrough();
 	});
 
 	after((): void => {
+		clearInterval(Reflect.get(SessionCleanupService, "TIMER"));
+		ReflectUtility.Set(SessionCleanupService, "TIMER", undefined);
+		ReflectUtility.Set(SessionRegistry, "SESSIONS", new Map());
+
 		SET_INTERVAL_SPY.restore();
 		CLEAR_INTERVAL_SPY.restore();
 		CLOCK.restore();
 		SERVER_HANDLE_ERROR_STUB.restore();
 		CLEANUP_STUB.restore();
 		CLEAR_DATA_STUB.restore();
+		IS_EXPIRED_STUB.restore();
+		REMOVE_SESSION_STUB.restore();
+		LIST_SESSIONS_STUB.restore();
 	});
 
 	describe("Cleanup", (): void => {
-		beforeEach((): void => {
-			CLEANUP_STUB.callThrough();
-		});
-
 		it("should remove expired sessions and clear their data", async (): Promise<void> => {
 			const SESSION_1: Session = new Session("A");
 			const SESSION_2: Session = new Session("B");
 			const SESSION_3: Session = new Session("C");
 
-			SessionRegistry.AddSession(SESSION_1);
-			SessionRegistry.AddSession(SESSION_2);
-			SessionRegistry.AddSession(SESSION_3);
+			IS_EXPIRED_STUB.onFirstCall().returns(true);
+			IS_EXPIRED_STUB.onSecondCall().returns(false);
+			IS_EXPIRED_STUB.onThirdCall().returns(true);
 
-			ReflectUtility.Set(SESSION_1, "expirationTime", -1);
-			ReflectUtility.Set(SESSION_3, "expirationTime", -1);
+			REMOVE_SESSION_STUB.onFirstCall().returns(undefined);
+			REMOVE_SESSION_STUB.onSecondCall().returns(undefined);
+
+			const MAP: Map<string, Session> = new Map([["A", SESSION_1], ["B", SESSION_2], ["C", SESSION_3]]);
+
+			LIST_SESSIONS_STUB.returns(MAP.values());
 
 			await SessionCleanupService.Cleanup();
 
-			deepStrictEqual(ReflectUtility.Get(SessionRegistry, "SESSIONS"), new Map([["B", SESSION_2]]));
+			strictEqual(IS_EXPIRED_STUB.callCount, 3, "The 'isExpired' method should be called for each session");
+			strictEqual(IS_EXPIRED_STUB.firstCall.thisValue, SESSION_1);
+			strictEqual(IS_EXPIRED_STUB.secondCall.thisValue, SESSION_2);
+			strictEqual(IS_EXPIRED_STUB.thirdCall.thisValue, SESSION_3);
+			strictEqual(REMOVE_SESSION_STUB.callCount, 2, "The 'SessionRegistry.RemoveSession' method should be called for each expired session");
+			deepStrictEqual(REMOVE_SESSION_STUB.firstCall.args, [SESSION_1]);
+			deepStrictEqual(REMOVE_SESSION_STUB.secondCall.args, [SESSION_3]);
 			strictEqual(CLEAR_DATA_STUB.callCount, 2, "The 'clearData' method should be called for each expired session");
 			deepStrictEqual(CLEAR_DATA_STUB.firstCall.thisValue, SESSION_1);
 			deepStrictEqual(CLEAR_DATA_STUB.secondCall.thisValue, SESSION_3);
@@ -64,6 +87,8 @@ describe("SessionCleanupService", (): void => {
 
 	describe("StartWatching", (): void => {
 		it("should do nothing if the job is already running", (): void => {
+			CLEANUP_STUB.resolves();
+
 			const JOB: unknown = setInterval((): void => {}, 1000);
 
 			SET_INTERVAL_SPY.resetHistory();
@@ -76,6 +101,8 @@ describe("SessionCleanupService", (): void => {
 		});
 
 		it("should start the job if it is not running", (): void => {
+			CLEANUP_STUB.resolves();
+
 			SessionCleanupService.StartWatching();
 
 			CLOCK.tick(1 + SessionConstantEnum.MINUTES_BETWEEN_CLEANUP * MillisecondEnum.MINUTE);

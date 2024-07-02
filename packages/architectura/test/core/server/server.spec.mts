@@ -46,17 +46,17 @@ describe("Server", (): void => {
 
 	beforeEach((): void => {
 		HANDLE_PUBLIC_ASSETS_STUB.reset();
-		HANDLE_PUBLIC_ASSETS_STUB.resolves();
+		HANDLE_PUBLIC_ASSETS_STUB.callThrough();
 		HANDLE_ENDPOINTS_STUB.reset();
-		HANDLE_ENDPOINTS_STUB.resolves();
+		HANDLE_ENDPOINTS_STUB.callThrough();
 		RUN_PRE_HOOKS_STUB.reset();
-		RUN_PRE_HOOKS_STUB.resolves();
+		RUN_PRE_HOOKS_STUB.callThrough();
 		RUN_POST_HOOKS_STUB.reset();
-		RUN_POST_HOOKS_STUB.resolves();
+		RUN_POST_HOOKS_STUB.callThrough();
 		RUN_ERROR_HOOKS_STUB.reset();
-		RUN_ERROR_HOOKS_STUB.resolves();
+		RUN_ERROR_HOOKS_STUB.callThrough();
 		FINALIZE_RESPONSE_STUB.reset();
-		FINALIZE_RESPONSE_STUB.resolves();
+		FINALIZE_RESPONSE_STUB.callThrough();
 		LOGGER_DEBUG_STUB.reset();
 		LOGGER_DEBUG_STUB.returns(undefined);
 		LOGGER_INFORMATIONAL_STUB.reset();
@@ -86,21 +86,21 @@ describe("Server", (): void => {
 		CREATE_CONTEXT_STUB.reset();
 		CREATE_CONTEXT_STUB.callThrough();
 		GET_CONTEXT_STUB.reset();
-		GET_CONTEXT_STUB.returns(undefined);
+		GET_CONTEXT_STUB.callThrough();
 		SET_CONTEXT_STUB.reset();
-		SET_CONTEXT_STUB.returns(undefined);
+		SET_CONTEXT_STUB.callThrough();
 		GET_PRE_HOOKS_STUB.reset();
-		GET_PRE_HOOKS_STUB.returns([]);
+		GET_PRE_HOOKS_STUB.callThrough();
 		GET_POST_HOOKS_STUB.reset();
-		GET_POST_HOOKS_STUB.returns([]);
+		GET_POST_HOOKS_STUB.callThrough();
 		GET_ERROR_HOOKS_STUB.reset();
-		GET_ERROR_HOOKS_STUB.returns([]);
+		GET_ERROR_HOOKS_STUB.callThrough();
 		FIND_ENDPOINT_STUB.reset();
-		FIND_ENDPOINT_STUB.returns(undefined);
+		FIND_ENDPOINT_STUB.callThrough();
 		FIND_PUBLIC_ASSET_STUB.reset();
-		FIND_PUBLIC_ASSET_STUB.returns(undefined);
+		FIND_PUBLIC_ASSET_STUB.callThrough();
 		READ_FILE_STUB.reset();
-		READ_FILE_STUB.resolves();
+		READ_FILE_STUB.callThrough();
 	});
 
 	after((): void => {
@@ -336,6 +336,9 @@ describe("Server", (): void => {
 
 		it("should respond if nothing match", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+
+			HANDLE_PUBLIC_ASSETS_STUB.resolves(false);
+			HANDLE_ENDPOINTS_STUB.resolves(false);
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
 
