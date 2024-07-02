@@ -5,22 +5,34 @@ import type { BaseFactory } from "./base.factory.mjs";
 import { ReflectUtility } from "@vitruvius-labs/toolbox";
 
 /**
- * Base repository for storing entities
- */
-abstract class BaseRepository<
+ * Delegated repository for storing entities
+ *
+ * @remarks
+ * This repository delegates the actual storage and retrieval of entities data to another object.
+ * Adds three type variables compared to BaseRepository
+ * - D: The delegate object that will handle the actual storage and retrieval of entities data.
+ * - X: The type of the metadata that will be stored and retrieved.
+ * - T: The type of the data that will be stored and retrieved.
+  */
+abstract class DelegatedRepository<
 	M extends BaseModel,
 	I extends BaseModelInstantiationInterface,
-	C extends new (arg: I) => M
+	C extends new (arg: I) => M,
+	D extends object,
+	X extends object,
+	T extends X
 >
 {
+	protected readonly delegate: D;
 	private readonly factory: BaseFactory<M, I, C>;
 
 	/**
 	 * Create a new repository
 	 */
-	public constructor(factory: BaseFactory<M, I, C>)
+	public constructor(factory: BaseFactory<M, I, C>, delegate: D)
 	{
 		this.factory = factory;
+		this.delegate = delegate;
 	}
 
 	private static SetImmutableFields(model: BaseModel, data: ModelMetadataInterface): void
@@ -40,12 +52,22 @@ abstract class BaseRepository<
 	}
 
 	/**
+	 * Process metadata for model update.
+	 */
+	protected abstract convertMetaData(data: X): ModelMetadataInterface;
+
+	/**
+	 * Process data for model instantiation.
+	 */
+	protected abstract convertData(data: T): I & ModelMetadataInterface;
+
+	/**
 	 * Fetch an entity by its UUID.
 	 *
 	 * @remarks
 	 * Used by both the findByUUID and getByUUID methods.
 	 */
-	protected abstract fetchByUUID(uuid: string): Promise<(I & ModelMetadataInterface) | undefined>;
+	protected abstract fetchByUUID(uuid: string): Promise<T | undefined>;
 
 	/**
 	 * Fetch an entity by its id.
@@ -53,7 +75,7 @@ abstract class BaseRepository<
 	 * @remarks
 	 * Used by both the findById and getById methods.
 	 */
-	protected abstract fetchById(id: bigint): Promise<(I & ModelMetadataInterface) | undefined>;
+	protected abstract fetchById(id: bigint): Promise<T | undefined>;
 
 	/**
 	 * Register a new entity.
@@ -61,7 +83,7 @@ abstract class BaseRepository<
 	 * @remarks
 	 * Used by the save method.
 	 */
-	protected abstract register(model: M): Promise<ModelMetadataInterface>;
+	protected abstract register(model: M): Promise<X>;
 
 	/**
 	 * Update an existing entity.
@@ -69,7 +91,7 @@ abstract class BaseRepository<
 	 * @remarks
 	 * Used by the save method.
 	 */
-	protected abstract update(model: M): Promise<ModelMetadataInterface>;
+	protected abstract update(model: M): Promise<X>;
 
 	/**
 	 * Delete an existing entity.
@@ -84,7 +106,7 @@ abstract class BaseRepository<
 	 */
 	public async findByUUID(uuid: string): Promise<M | undefined>
 	{
-		const data: (I & ModelMetadataInterface) | undefined = await this.fetchByUUID(uuid);
+		const data: T | undefined = await this.fetchByUUID(uuid);
 
 		if (data === undefined)
 		{
@@ -118,7 +140,7 @@ abstract class BaseRepository<
 	 */
 	public async findById(id: bigint): Promise<M | undefined>
 	{
-		const data: (I & ModelMetadataInterface) | undefined = await this.fetchById(id);
+		const data: T | undefined = await this.fetchById(id);
 
 		if (data === undefined)
 		{
@@ -157,16 +179,16 @@ abstract class BaseRepository<
 	{
 		if (model.hasId())
 		{
-			const update_metadata: ModelMetadataInterface = await this.update(model);
+			const update_metadata: X = await this.update(model);
 
-			BaseRepository.SetImmutableFields(model, update_metadata);
+			DelegatedRepository.SetImmutableFields(model, this.convertMetaData(update_metadata));
 
 			return;
 		}
 
-		const register_metadata: ModelMetadataInterface = await this.register(model);
+		const register_metadata: X = await this.register(model);
 
-		BaseRepository.SetImmutableFields(model, register_metadata);
+		DelegatedRepository.SetImmutableFields(model, this.convertMetaData(register_metadata));
 	}
 
 	/**
@@ -178,7 +200,7 @@ abstract class BaseRepository<
 	{
 		await this.destroy(model.getId());
 
-		BaseRepository.ClearImmutableFields(model);
+		DelegatedRepository.ClearImmutableFields(model);
 	}
 
 	/**
@@ -187,17 +209,19 @@ abstract class BaseRepository<
 	 * @remarks
 	 * Use this method to create entities in custom getters.
 	 * Using the factory directly would erroneously create duplicate.
+	 * Depends on the `convert` method to properly format the data.
 	 *
 	 * @sealed
 	 */
-	protected create(parameters: I & ModelMetadataInterface): M
+	protected create(data: T): M
 	{
-		const model: M = this.factory.create(parameters);
+		const normalized_data: I & ModelMetadataInterface = this.convertData(data);
+		const model: M = this.factory.create(normalized_data);
 
-		BaseRepository.SetImmutableFields(model, parameters);
+		DelegatedRepository.SetImmutableFields(model, normalized_data);
 
 		return model;
 	}
 }
 
-export { BaseRepository };
+export { DelegatedRepository };

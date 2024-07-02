@@ -5,9 +5,9 @@ import type { BaseModel } from "./base.model.mjs";
  * Base factory for creating entities
  */
 abstract class BaseFactory<
-	T extends BaseModel,
+	M extends BaseModel,
 	I extends BaseModelInstantiationInterface,
-	C extends new (arg: I) => T
+	C extends new (arg: I) => M
 >
 {
 	protected readonly classConstructor: C;
@@ -26,7 +26,7 @@ abstract class BaseFactory<
 	 * @remarks
 	 * This is the method used by the repository to create new entities.
 	 */
-	public create(parameters: I): T
+	public create(parameters: I): M
 	{
 		return new this.classConstructor(parameters);
 	}
