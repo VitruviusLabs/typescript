@@ -30,7 +30,7 @@ class SessionCleanupService
 				continue;
 			}
 
-			SessionRegistry.RemoveSession(SESSION.getUUID());
+			SessionRegistry.RemoveSession(SESSION);
 
 			try
 			{

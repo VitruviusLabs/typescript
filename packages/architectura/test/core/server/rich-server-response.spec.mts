@@ -1,6 +1,6 @@
 import type { OutgoingHttpHeaders } from "node:http";
 import { describe, it } from "node:test";
-import { deepStrictEqual, rejects, strictEqual } from "node:assert";
+import { deepStrictEqual, rejects, strictEqual, throws } from "node:assert";
 import { createBrotliCompress, createDeflate, createGzip } from "node:zlib";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
 import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
@@ -174,16 +174,20 @@ describe("RichServerResponse", (): void => {
 			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
 
 			const COOKIES: Map<string, CookieDescriptorInterface> = new Map([
-				["lorem", { name: "lorem", value: "ipsum", secure: true }],
+				["dummy", { name: "dummy", value: "empty", httpOnly: false, secure: false }],
+				["lorem", { name: "lorem", value: "ipsum", secure: true, maxAge: 42, partitioned: true }],
 				["alpha", { name: "alpha", value: "omega", sameSite: CookieSameSiteEnum.STRICT }],
 				["hello", { name: "hello", value: "world", expires: new Date("2099-12-31T12:34:56Z") }],
+				["scoped", { name: "scoped", value: "test", domain: "example.com", path: "/test" }],
 			]);
 
 			const HEADERS: OutgoingHttpHeaders = nullPrototype({
 				"set-cookie": [
-					"lorem=ipsum; HttpOnly; Secure",
+					"dummy=empty",
+					"lorem=ipsum; HttpOnly; Secure; Max-Age=42; Partitioned",
 					"alpha=omega; HttpOnly; SameSite=Strict",
 					"hello=world; HttpOnly; Expires=Thu, 31 Dec 2099 12:34:56 GMT",
+					"scoped=test; HttpOnly; Domain=example.com; Path=/test",
 				],
 			});
 
@@ -349,6 +353,286 @@ describe("RichServerResponse", (): void => {
 
 			strictEqual(RESPONSE.getHeader("Content-Type"), ContentTypeEnum.JSON);
 			strictEqual(ReflectUtility.Get(RESPONSE, "content"), PARAMETER.payload);
+		});
+
+		it.todo("should encode the payload when possible");
+	});
+
+	describe("isLocked", (): void => {
+		it("should return false if the response is not locked", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "locked", false);
+			strictEqual(RESPONSE.isLocked(), false);
+		});
+
+		it("should return true if the response is locked", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "locked", true);
+			strictEqual(RESPONSE.isLocked(), true);
+		});
+	});
+
+	describe("hasContent", (): void => {
+		it("should return false if the content is empty", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "content", undefined);
+			strictEqual(RESPONSE.hasContent(), false);
+		});
+
+		it("should return true if the content is not empty", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "content", "");
+			strictEqual(RESPONSE.hasContent(), true);
+		});
+	});
+
+	describe("getUnsafeContent", (): void => {
+		it("should return the content as-is", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			const BUFFER: Buffer = Buffer.from("Hello, World!");
+
+			ReflectUtility.Set(RESPONSE, "content", BUFFER);
+			strictEqual(RESPONSE.getUnsafeContent(), BUFFER);
+		});
+	});
+
+	describe("getRawContent", (): void => {
+		it("should return the content as an empty Buffer if the content is empty", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "content", undefined);
+			deepStrictEqual(RESPONSE.getRawContent(), Buffer.alloc(0));
+		});
+
+		it("should return the content as-is if it's a buffer", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "content", Buffer.from("Hello, World!"));
+			deepStrictEqual(RESPONSE.getRawContent(), Buffer.from("Hello, World!"));
+		});
+
+		it("should return the content converted as a buffer if it's a string", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "content", "Hello, World!");
+			deepStrictEqual(RESPONSE.getRawContent(), Buffer.from("Hello, World!"));
+		});
+	});
+
+	describe("getContent", (): void => {
+		it("should return the content as an empty string if the content is empty", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "content", undefined);
+			strictEqual(RESPONSE.getContent(), "");
+		});
+
+		it("should return the content as a string if it's a buffer", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "content", Buffer.from("Hello, World!"));
+			strictEqual(RESPONSE.getContent(), "Hello, World!");
+		});
+
+		it("should return the content as-is if it's a string", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "content", "Hello, World!");
+			strictEqual(RESPONSE.getContent(), "Hello, World!");
+		});
+	});
+
+	describe("setContent", (): void => {
+		it("should throw if the request is locked", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "locked", true);
+
+			const WRAPPER = (): void => {
+				RESPONSE.setContent("Hello, World!");
+			};
+
+			throws(WRAPPER, new Error("This response is locked and will no longer accept changes."));
+		});
+
+		it("should set the content", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			RESPONSE.setContent("Hello, World!");
+			strictEqual(ReflectUtility.Get(RESPONSE, "content"), "Hello, World!");
+		});
+	});
+
+	describe("getStatusCode", (): void => {
+		it("should return the status code", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "statusCode", HTTPStatusCodeEnum.PAYLOAD_TOO_LARGE);
+			strictEqual(RESPONSE.getStatusCode(), HTTPStatusCodeEnum.PAYLOAD_TOO_LARGE);
+		});
+	});
+
+	describe("setStatusCode", (): void => {
+		it("should throw if the request is locked", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "locked", true);
+
+			const WRAPPER = (): void => {
+				RESPONSE.setStatusCode(HTTPStatusCodeEnum.PAYLOAD_TOO_LARGE);
+			};
+
+			throws(WRAPPER, new Error("This response is locked and will no longer accept changes."));
+		});
+
+		it("should set the status code", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			RESPONSE.setStatusCode(HTTPStatusCodeEnum.PAYLOAD_TOO_LARGE);
+			strictEqual(ReflectUtility.Get(RESPONSE, "statusCode"), HTTPStatusCodeEnum.PAYLOAD_TOO_LARGE);
+		});
+	});
+
+	describe("getHeaderRaw", (): void => {
+		it("should return the raw header value (missing)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			strictEqual(RESPONSE.getHeaderRaw("Content-Type"), undefined);
+		});
+
+		it("should return the raw header value (number)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			RESPONSE.setHeader("Content-Length", 42);
+			strictEqual(RESPONSE.getHeaderRaw("Content-Length"), 42);
+		});
+
+		it("should return the raw header value (string)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			RESPONSE.setHeader("Content-Type", "text/plain");
+			strictEqual(RESPONSE.getHeaderRaw("Content-Type"), "text/plain");
+		});
+
+		it("should return the raw header value (array)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			RESPONSE.setHeader("Set-Cookie", ["lorem=ipsum", "alpha=omega"]);
+			deepStrictEqual(RESPONSE.getHeaderRaw("Set-Cookie"), ["lorem=ipsum", "alpha=omega"]);
+		});
+	});
+
+	describe("getHeaderAll", (): void => {
+		it("should return all the values for that header (missing)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			deepStrictEqual(RESPONSE.getHeaderAll("Content-Type"), []);
+		});
+
+		it("should return all the values for that header (number)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			RESPONSE.setHeader("Content-Length", 42);
+			deepStrictEqual(RESPONSE.getHeaderAll("Content-Length"), ["42"]);
+		});
+
+		it("should return all the values for that header (string)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			RESPONSE.setHeader("Content-Type", "text/plain");
+			deepStrictEqual(RESPONSE.getHeaderAll("Content-Type"), ["text/plain"]);
+		});
+
+		it("should return all the values for that header (array)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			RESPONSE.setHeader("Set-Cookie", ["lorem=ipsum", "alpha=omega"]);
+			deepStrictEqual(RESPONSE.getHeaderAll("Set-Cookie"), ["lorem=ipsum", "alpha=omega"]);
+		});
+	});
+
+	describe("getHeader", (): void => {
+		it("should return the value for that header (missing)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			deepStrictEqual(RESPONSE.getHeader("Content-Type"), undefined);
+		});
+
+		it("should return the value for that header (number)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			RESPONSE.setHeader("Content-Length", 42);
+			deepStrictEqual(RESPONSE.getHeader("Content-Length"), "42");
+		});
+
+		it("should return the value for that header (string)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			RESPONSE.setHeader("Content-Type", "text/plain");
+			deepStrictEqual(RESPONSE.getHeader("Content-Type"), "text/plain");
+		});
+
+		it("should return the value for that header (array)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			RESPONSE.setHeader("Set-Cookie", ["lorem=ipsum", "alpha=omega"]);
+			deepStrictEqual(RESPONSE.getHeader("Set-Cookie"), "lorem=ipsum");
+		});
+	});
+
+	describe("setCookie", (): void => {
+		it("should throw if the request is locked", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "locked", true);
+
+			const WRAPPER = (): void => {
+				RESPONSE.setCookie({ name: "lorem", value: "ipsum" });
+			};
+
+			throws(WRAPPER, new Error("This response is locked and will no longer accept changes."));
+		});
+
+		it("should throw if the cookie has both an 'Expires' and 'Max-Age' attribute", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			const WRAPPER = (): void => {
+				RESPONSE.setCookie({ name: "lorem", value: "ipsum", expires: new Date("2099-12-31T12:34:56Z"), maxAge: 42 });
+			};
+
+			throws(WRAPPER, new Error("A cookie can't have both an 'Expires' and 'Max-Age' attribute."));
+		});
+
+		it("should throw if the cookie has 'Same-Site' to 'None' without being secure", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			const WRAPPER = (): void => {
+				RESPONSE.setCookie({ name: "lorem", value: "ipsum", sameSite: CookieSameSiteEnum.NONE, secure: false });
+			};
+
+			throws(WRAPPER, new Error("A cookie can't have the 'SameSite' attribute equals to 'None' without the 'Secure' attribute."));
+		});
+
+		it("should throw if the cookie has 'Same-Site' to 'None' without being secure (default)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			const WRAPPER = (): void => {
+				RESPONSE.setCookie({ name: "lorem", value: "ipsum", sameSite: CookieSameSiteEnum.NONE });
+			};
+
+			throws(WRAPPER, new Error("A cookie can't have the 'SameSite' attribute equals to 'None' without the 'Secure' attribute."));
+		});
+
+		it("should set the cookie (default)", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			RESPONSE.setCookie({ name: "lorem", value: "ipsum" });
+			deepStrictEqual(ReflectUtility.Get(RESPONSE, "cookies"), new Map([["lorem", { name: "lorem", value: "ipsum" }]]));
 		});
 	});
 });

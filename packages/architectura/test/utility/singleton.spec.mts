@@ -16,9 +16,9 @@ describe("Singleton", (): void => {
 
 			const INSTANCE: MySingleton = new MySingleton();
 
-			const INSTANCE2: MySingleton | undefined = MySingleton.GetInstance(MySingleton);
+			const INSTANCE_2: MySingleton | undefined = MySingleton.GetInstance(MySingleton);
 
-			strictEqual(INSTANCE, INSTANCE2);
+			strictEqual(INSTANCE, INSTANCE_2);
 		});
 
 		it("should throw an error when the constructor is called more than once.", (): void => {
@@ -40,7 +40,59 @@ describe("Singleton", (): void => {
 		});
 	});
 
+	describe("HasInstance", (): void => {
+		it("should return false if there is no instance of the singleton class.", (): void => {
+			class MySingleton extends Singleton
+			{
+				public constructor()
+				{
+					super();
+				}
+			}
+
+			strictEqual(MySingleton.HasInstance(MySingleton), false);
+		});
+
+		it("should return true if there is an instance of the singleton class.", (): void => {
+			class MySingleton extends Singleton
+			{
+				public constructor()
+				{
+					super();
+				}
+			}
+
+			new MySingleton();
+
+			strictEqual(MySingleton.HasInstance(MySingleton), true);
+		});
+	});
+
 	describe("GetInstance", (): void => {
+		it("should throw if there is no instance of the singleton class.", (): void => {
+			class MySingleton extends Singleton
+			{
+				public constructor()
+				{
+					super();
+				}
+			}
+
+			const WRAPPER = (): void => {
+				MySingleton.GetInstance(MySingleton);
+			};
+
+			throws(WRAPPER, createErrorTest());
+		});
+
+		it("should throw if there is no instance of the singleton class.", (): void => {
+			const WRAPPER = (): void => {
+				Singleton.GetInstance(class {});
+			};
+
+			throws(WRAPPER, createErrorTest());
+		});
+
 		it("should return the instance of the singleton class.", (): void => {
 			class MySingleton extends Singleton
 			{
@@ -52,9 +104,39 @@ describe("Singleton", (): void => {
 
 			const INSTANCE: MySingleton = new MySingleton();
 
-			const INSTANCE2: MySingleton | undefined = MySingleton.GetInstance(MySingleton);
+			const INSTANCE_2: MySingleton | undefined = MySingleton.GetInstance(MySingleton);
 
-			strictEqual(INSTANCE, INSTANCE2);
+			strictEqual(INSTANCE, INSTANCE_2);
+		});
+	});
+
+	describe("FindInstance", (): void => {
+		it("should return undefined if there is no instance of the singleton class.", (): void => {
+			class MySingleton extends Singleton
+			{
+				public constructor()
+				{
+					super();
+				}
+			}
+
+			strictEqual(MySingleton.FindInstance(MySingleton), undefined);
+		});
+
+		it("should return the instance of the singleton class.", (): void => {
+			class MySingleton extends Singleton
+			{
+				public constructor()
+				{
+					super();
+				}
+			}
+
+			const INSTANCE: MySingleton = new MySingleton();
+
+			const INSTANCE_2: MySingleton | undefined = MySingleton.FindInstance(MySingleton);
+
+			strictEqual(INSTANCE, INSTANCE_2);
 		});
 	});
 
@@ -72,9 +154,9 @@ describe("Singleton", (): void => {
 
 			MySingleton.RemoveInstance(MySingleton);
 
-			const INSTANCE2: MySingleton | undefined = MySingleton.FindInstance(MySingleton);
+			const INSTANCE_2: MySingleton | undefined = MySingleton.FindInstance(MySingleton);
 
-			strictEqual(INSTANCE2, undefined);
+			strictEqual(INSTANCE_2, undefined);
 		});
 	});
 });

@@ -78,7 +78,7 @@ describe("validateClaims", (): void => {
 
 	it("should throw when given claims that is issued already expired", (): void => {
 		const WRAPPER = (): void => {
-			validateClaims({ iat: Date.now(), exp: Date.now() - 2000 });
+			validateClaims({ iat: Date.now() - 1000, exp: Date.now() - 2000 });
 		};
 
 		throws(WRAPPER, createErrorTest());
@@ -86,7 +86,7 @@ describe("validateClaims", (): void => {
 
 	it("should throw when given claims that is active after it expires", (): void => {
 		const WRAPPER = (): void => {
-			validateClaims({ nbf: Date.now() - 1000, exp: Date.now() - 2000 });
+			validateClaims({ nbf: Date.now() + 2000, exp: Date.now() + 1000 });
 		};
 
 		throws(WRAPPER, createErrorTest());

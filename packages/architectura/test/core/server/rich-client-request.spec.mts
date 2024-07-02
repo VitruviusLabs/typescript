@@ -409,6 +409,12 @@ describe("RichClientRequest", (): void => {
 	});
 
 	describe("getPathMatchGroups", (): void => {
+		it("should return the path match groups (default)", (): void => {
+			const REQUEST: RichClientRequest = mockRequest().instance;
+
+			deepStrictEqual(REQUEST.getPathMatchGroups(), {});
+		});
+
 		it("should return the path match groups", (): void => {
 			const REQUEST: RichClientRequest = mockRequest().instance;
 

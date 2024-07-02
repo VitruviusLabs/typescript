@@ -46,17 +46,17 @@ describe("Server", (): void => {
 
 	beforeEach((): void => {
 		HANDLE_PUBLIC_ASSETS_STUB.reset();
-		HANDLE_PUBLIC_ASSETS_STUB.resolves();
+		HANDLE_PUBLIC_ASSETS_STUB.callThrough();
 		HANDLE_ENDPOINTS_STUB.reset();
-		HANDLE_ENDPOINTS_STUB.resolves();
+		HANDLE_ENDPOINTS_STUB.callThrough();
 		RUN_PRE_HOOKS_STUB.reset();
-		RUN_PRE_HOOKS_STUB.resolves();
+		RUN_PRE_HOOKS_STUB.callThrough();
 		RUN_POST_HOOKS_STUB.reset();
-		RUN_POST_HOOKS_STUB.resolves();
+		RUN_POST_HOOKS_STUB.callThrough();
 		RUN_ERROR_HOOKS_STUB.reset();
-		RUN_ERROR_HOOKS_STUB.resolves();
+		RUN_ERROR_HOOKS_STUB.callThrough();
 		FINALIZE_RESPONSE_STUB.reset();
-		FINALIZE_RESPONSE_STUB.resolves();
+		FINALIZE_RESPONSE_STUB.callThrough();
 		LOGGER_DEBUG_STUB.reset();
 		LOGGER_DEBUG_STUB.returns(undefined);
 		LOGGER_INFORMATIONAL_STUB.reset();
@@ -86,21 +86,21 @@ describe("Server", (): void => {
 		CREATE_CONTEXT_STUB.reset();
 		CREATE_CONTEXT_STUB.callThrough();
 		GET_CONTEXT_STUB.reset();
-		GET_CONTEXT_STUB.returns(undefined);
+		GET_CONTEXT_STUB.callThrough();
 		SET_CONTEXT_STUB.reset();
-		SET_CONTEXT_STUB.returns(undefined);
+		SET_CONTEXT_STUB.callThrough();
 		GET_PRE_HOOKS_STUB.reset();
-		GET_PRE_HOOKS_STUB.returns([]);
+		GET_PRE_HOOKS_STUB.callThrough();
 		GET_POST_HOOKS_STUB.reset();
-		GET_POST_HOOKS_STUB.returns([]);
+		GET_POST_HOOKS_STUB.callThrough();
 		GET_ERROR_HOOKS_STUB.reset();
-		GET_ERROR_HOOKS_STUB.returns([]);
+		GET_ERROR_HOOKS_STUB.callThrough();
 		FIND_ENDPOINT_STUB.reset();
-		FIND_ENDPOINT_STUB.returns(undefined);
+		FIND_ENDPOINT_STUB.callThrough();
 		FIND_PUBLIC_ASSET_STUB.reset();
-		FIND_PUBLIC_ASSET_STUB.returns(undefined);
+		FIND_PUBLIC_ASSET_STUB.callThrough();
 		READ_FILE_STUB.reset();
-		READ_FILE_STUB.resolves();
+		READ_FILE_STUB.callThrough();
 	});
 
 	after((): void => {
@@ -286,6 +286,9 @@ describe("Server", (): void => {
 		it("should initialize the request", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
 
+			HANDLE_PUBLIC_ASSETS_STUB.resolves(true);
+			HANDLE_ENDPOINTS_STUB.resolves(true);
+
 			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
@@ -297,6 +300,9 @@ describe("Server", (): void => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
+
+			HANDLE_PUBLIC_ASSETS_STUB.resolves(true);
+			HANDLE_ENDPOINTS_STUB.resolves(true);
 
 			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
@@ -313,6 +319,9 @@ describe("Server", (): void => {
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
 
+			HANDLE_PUBLIC_ASSETS_STUB.resolves(true);
+			HANDLE_ENDPOINTS_STUB.resolves(true);
+
 			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
@@ -321,10 +330,13 @@ describe("Server", (): void => {
 			deepStrictEqual(HANDLE_PUBLIC_ASSETS_STUB.firstCall.args, [CONTEXT_MOCK.instance]);
 		});
 
-		it("should test for endpoints", async (): Promise<void> => {
+		it("should test for endpoints if no public asset match", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
+
+			HANDLE_PUBLIC_ASSETS_STUB.resolves(false);
+			HANDLE_ENDPOINTS_STUB.resolves(true);
 
 			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
@@ -336,6 +348,9 @@ describe("Server", (): void => {
 
 		it("should respond if nothing match", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+
+			HANDLE_PUBLIC_ASSETS_STUB.resolves(false);
+			HANDLE_ENDPOINTS_STUB.resolves(false);
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
 
@@ -881,6 +896,86 @@ describe("Server", (): void => {
 	});
 
 	describe("RunErrorHooks", (): void => {});
+
+	describe("FinalizeResponse", (): void => {
+		it("should do nothing if the response is locked or processed", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+
+			FINALIZE_RESPONSE_STUB.callThrough();
+			CONTEXT_MOCK.response.stubs.isLocked.returns(true);
+			CONTEXT_MOCK.response.stubs.isProcessed.returns(true);
+
+			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, false);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 0, "The response method 'replyWith' should not have been called");
+		});
+
+		it("should log a warning if the response is locked but not processed", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+
+			FINALIZE_RESPONSE_STUB.callThrough();
+			CONTEXT_MOCK.response.stubs.isLocked.returns(true);
+			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
+
+			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, false);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 0, "The response method 'replyWith' should not have been called");
+			strictEqual(LOGGER_WARNING_STUB.callCount, 1, "The method 'LoggerProxy.Warning' should not have been called exactly once");
+			deepStrictEqual(LOGGER_WARNING_STUB.firstCall.args, ["Unfinished server response."]);
+		});
+
+		it("should respond with a 404 if no error occurred", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+
+			FINALIZE_RESPONSE_STUB.callThrough();
+			CONTEXT_MOCK.response.stubs.isLocked.returns(false);
+			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
+
+			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, false);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 1, "The response method 'replyWith' should have been called exactly once");
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{ status: HTTPStatusCodeEnum.NOT_FOUND, payload: "404 - Not found." }]);
+		});
+
+		it("should respond with a 500 if an error occurred", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+
+			FINALIZE_RESPONSE_STUB.callThrough();
+			CONTEXT_MOCK.response.stubs.isLocked.returns(false);
+			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
+
+			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, true);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 1, "The response method 'replyWith' should have been called exactly once");
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{ status: HTTPStatusCodeEnum.INTERNAL_SERVER_ERROR, payload: "500 - Internal Server Error." }]);
+		});
+
+		it("should remove existing headers if the response is not locked", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+
+			FINALIZE_RESPONSE_STUB.callThrough();
+			CONTEXT_MOCK.response.stubs.isLocked.returns(false);
+			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
+			CONTEXT_MOCK.response.stubs.getHeaderNames.returns(["Alpha", "Omega"]);
+
+			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, false);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.getHeaderNames.callCount, 1, "The response method 'getHeaderNames' should have been called exactly once");
+			strictEqual(CONTEXT_MOCK.response.stubs.removeHeader.callCount, 2, "The response method 'getHeaderNames' should have been called for each header");
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.removeHeader.firstCall.args, ["Alpha"]);
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.removeHeader.secondCall.args, ["Omega"]);
+		});
+	});
 
 	describe("start", (): void => {
 		it("should start the server", (): void => {

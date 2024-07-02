@@ -36,7 +36,7 @@ describe("HookRegistry", (): void => {
 	});
 
 	describe("AddPreHook", (): void => {
-		it("should add a pre hook", (): void => {
+		it("should add a pre hook (constructor)", (): void => {
 			class DummyPreHook extends BasePreHook
 			{
 				public async execute(): Promise<void> { }
@@ -47,7 +47,20 @@ describe("HookRegistry", (): void => {
 			deepStrictEqual(ReflectUtility.Get(HookRegistry, "PRE_HOOKS"), [DummyPreHook]);
 		});
 
-		it("should throw when a pre hook is added more than once", (): void => {
+		it("should add a pre hook (instance)", (): void => {
+			class DummyPreHook extends BasePreHook
+			{
+				public async execute(): Promise<void> { }
+			}
+
+			const HOOK: DummyPreHook = new DummyPreHook();
+
+			HookRegistry.AddPreHook(HOOK);
+
+			deepStrictEqual(ReflectUtility.Get(HookRegistry, "PRE_HOOKS"), [HOOK]);
+		});
+
+		it("should throw when a pre hook constructor is added more than once", (): void => {
 			class DummyPreHook extends BasePreHook
 			{
 				public async execute(): Promise<void> { }
@@ -87,7 +100,7 @@ describe("HookRegistry", (): void => {
 	});
 
 	describe("AddPostHook", (): void => {
-		it("should add a post hook", (): void => {
+		it("should add a post hook (constructor)", (): void => {
 			class DummyPostHook extends BasePostHook
 			{
 				public async execute(): Promise<void> { }
@@ -98,7 +111,20 @@ describe("HookRegistry", (): void => {
 			deepStrictEqual(ReflectUtility.Get(HookRegistry, "POST_HOOKS"), [DummyPostHook]);
 		});
 
-		it("should throw when a post hook is added more than once", (): void => {
+		it("should add a post hook (instance)", (): void => {
+			class DummyPostHook extends BasePostHook
+			{
+				public async execute(): Promise<void> { }
+			}
+
+			const HOOK: DummyPostHook = new DummyPostHook();
+
+			HookRegistry.AddPostHook(HOOK);
+
+			deepStrictEqual(ReflectUtility.Get(HookRegistry, "POST_HOOKS"), [HOOK]);
+		});
+
+		it("should throw when a post hook constructor is added more than once", (): void => {
 			class DummyPostHook extends BasePostHook
 			{
 				public async execute(): Promise<void> { }
@@ -138,7 +164,7 @@ describe("HookRegistry", (): void => {
 	});
 
 	describe("AddErrorHook", (): void => {
-		it("should add a error hook", (): void => {
+		it("should add a error hook (constructor)", (): void => {
 			class DummyErrorHook extends BaseErrorHook
 			{
 				public async execute(): Promise<void> { }
@@ -149,7 +175,20 @@ describe("HookRegistry", (): void => {
 			deepStrictEqual(ReflectUtility.Get(HookRegistry, "ERROR_HOOKS"), [DummyErrorHook]);
 		});
 
-		it("should throw when a error hook is added more than once", (): void => {
+		it("should add a error hook (instance)", (): void => {
+			class DummyErrorHook extends BaseErrorHook
+			{
+				public async execute(): Promise<void> { }
+			}
+
+			const HOOK: DummyErrorHook = new DummyErrorHook();
+
+			HookRegistry.AddErrorHook(HOOK);
+
+			deepStrictEqual(ReflectUtility.Get(HookRegistry, "ERROR_HOOKS"), [HOOK]);
+		});
+
+		it("should throw when a error hook constructor is added more than once", (): void => {
 			class DummyErrorHook extends BaseErrorHook
 			{
 				public async execute(): Promise<void> { }

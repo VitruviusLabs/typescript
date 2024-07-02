@@ -38,9 +38,9 @@ class HookRegistry
 	 */
 	public static AddPreHook(hook: BasePreHook | ConstructorOf<BasePreHook>): void
 	{
-		if (HookRegistry.PRE_HOOKS.includes(hook))
+		if (isFunction(hook) && HookRegistry.PRE_HOOKS.includes(hook))
 		{
-			throw new Error(`Pre hook ${HookRegistry.GetConstructorName(hook)} already added.`);
+			throw new Error(`Pre hook ${hook.name} already added.`);
 		}
 
 		HookRegistry.PRE_HOOKS.push(hook);
@@ -67,9 +67,9 @@ class HookRegistry
 	 */
 	public static AddPostHook(hook: BasePostHook | ConstructorOf<BasePostHook>): void
 	{
-		if (HookRegistry.POST_HOOKS.includes(hook))
+		if (isFunction(hook) && HookRegistry.POST_HOOKS.includes(hook))
 		{
-			throw new Error(`Post hook ${HookRegistry.GetConstructorName(hook)} already added.`);
+			throw new Error(`Post hook ${hook.name} already added.`);
 		}
 
 		HookRegistry.POST_HOOKS.push(hook);
@@ -96,9 +96,9 @@ class HookRegistry
 	 */
 	public static AddErrorHook(hook: BaseErrorHook | ConstructorOf<BaseErrorHook>): void
 	{
-		if (HookRegistry.ERROR_HOOKS.includes(hook))
+		if (isFunction(hook) && HookRegistry.ERROR_HOOKS.includes(hook))
 		{
-			throw new Error(`Error hook ${HookRegistry.GetConstructorName(hook)} already added.`);
+			throw new Error(`Error hook ${hook.name} already added.`);
 		}
 
 		HookRegistry.ERROR_HOOKS.push(hook);
@@ -196,16 +196,6 @@ class HookRegistry
 	private static IsErrorHook(value: unknown): value is BaseErrorHook | ConstructorOf<BaseErrorHook>
 	{
 		return value instanceof BaseErrorHook || isFunction(value) && value.prototype instanceof BaseErrorHook;
-	}
-
-	private static GetConstructorName(value: ConstructorOf<object> | object): string
-	{
-		if (isFunction(value))
-		{
-			return value.name;
-		}
-
-		return value.constructor.name;
 	}
 }
 
