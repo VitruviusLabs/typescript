@@ -1018,6 +1018,10 @@ jobs:
           version: 9
           run_install: true
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
       - name: Dependencies cache unpacking
         uses: actions/cache@v4
         with:
