@@ -457,17 +457,14 @@ class RichClientRequest extends IncomingMessage
 			{
 				let body: Buffer = Buffer.alloc(0);
 
-				this.addListener(
-					"data",
-					(chunk: Buffer): void =>
+				const ABORT_CONTROLLER: AbortController = new AbortController();
+
+				const LISTENERS: Record<string, Parameters<IncomingMessage["addListener"]>[1]> = {
+					data: (chunk: Buffer): void =>
 					{
 						body = Buffer.concat([body, chunk]);
-					}
-				);
-
-				this.addListener(
-					"end",
-					(): void =>
+					},
+					end: (): void =>
 					{
 						if (!this.complete)
 						{
@@ -477,18 +474,27 @@ class RichClientRequest extends IncomingMessage
 						}
 
 						resolve(body);
-						this.removeAllListeners();
-					}
-				);
-
-				this.addListener(
-					"error",
-					(error: Error): void =>
+						ABORT_CONTROLLER.abort();
+					},
+					error: (error: Error): void =>
 					{
 						reject(error);
-						this.removeAllListeners();
-					}
-				);
+						ABORT_CONTROLLER.abort();
+					},
+				};
+
+				for (const [EVENT_NAME, LISTENER] of Object.entries(LISTENERS))
+				{
+					this.addListener(EVENT_NAME, LISTENER);
+
+					ABORT_CONTROLLER.signal.addEventListener(
+						"abort",
+						(): void =>
+						{
+							this.removeListener(EVENT_NAME, LISTENER);
+						}
+					);
+				}
 			}
 		);
 	}

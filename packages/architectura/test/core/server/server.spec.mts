@@ -286,6 +286,9 @@ describe("Server", (): void => {
 		it("should initialize the request", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
 
+			HANDLE_PUBLIC_ASSETS_STUB.resolves(true);
+			HANDLE_ENDPOINTS_STUB.resolves(true);
+
 			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
@@ -297,6 +300,9 @@ describe("Server", (): void => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
+
+			HANDLE_PUBLIC_ASSETS_STUB.resolves(true);
+			HANDLE_ENDPOINTS_STUB.resolves(true);
 
 			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
@@ -313,6 +319,9 @@ describe("Server", (): void => {
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
 
+			HANDLE_PUBLIC_ASSETS_STUB.resolves(true);
+			HANDLE_ENDPOINTS_STUB.resolves(true);
+
 			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
@@ -321,10 +330,13 @@ describe("Server", (): void => {
 			deepStrictEqual(HANDLE_PUBLIC_ASSETS_STUB.firstCall.args, [CONTEXT_MOCK.instance]);
 		});
 
-		it("should test for endpoints", async (): Promise<void> => {
+		it("should test for endpoints if no public asset match", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
+
+			HANDLE_PUBLIC_ASSETS_STUB.resolves(false);
+			HANDLE_ENDPOINTS_STUB.resolves(true);
 
 			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
@@ -884,6 +896,86 @@ describe("Server", (): void => {
 	});
 
 	describe("RunErrorHooks", (): void => {});
+
+	describe("FinalizeResponse", (): void => {
+		it("should do nothing if the response is locked or processed", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+
+			FINALIZE_RESPONSE_STUB.callThrough();
+			CONTEXT_MOCK.response.stubs.isLocked.returns(true);
+			CONTEXT_MOCK.response.stubs.isProcessed.returns(true);
+
+			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, false);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 0, "The response method 'replyWith' should not have been called");
+		});
+
+		it("should log a warning if the response is locked but not processed", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+
+			FINALIZE_RESPONSE_STUB.callThrough();
+			CONTEXT_MOCK.response.stubs.isLocked.returns(true);
+			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
+
+			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, false);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 0, "The response method 'replyWith' should not have been called");
+			strictEqual(LOGGER_WARNING_STUB.callCount, 1, "The method 'LoggerProxy.Warning' should not have been called exactly once");
+			deepStrictEqual(LOGGER_WARNING_STUB.firstCall.args, ["Unfinished server response."]);
+		});
+
+		it("should respond with a 404 if no error occurred", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+
+			FINALIZE_RESPONSE_STUB.callThrough();
+			CONTEXT_MOCK.response.stubs.isLocked.returns(false);
+			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
+
+			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, false);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 1, "The response method 'replyWith' should have been called exactly once");
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{ status: HTTPStatusCodeEnum.NOT_FOUND, payload: "404 - Not found." }]);
+		});
+
+		it("should respond with a 500 if an error occurred", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+
+			FINALIZE_RESPONSE_STUB.callThrough();
+			CONTEXT_MOCK.response.stubs.isLocked.returns(false);
+			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
+
+			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, true);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 1, "The response method 'replyWith' should have been called exactly once");
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{ status: HTTPStatusCodeEnum.INTERNAL_SERVER_ERROR, payload: "500 - Internal Server Error." }]);
+		});
+
+		it("should remove existing headers if the response is not locked", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+
+			FINALIZE_RESPONSE_STUB.callThrough();
+			CONTEXT_MOCK.response.stubs.isLocked.returns(false);
+			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
+			CONTEXT_MOCK.response.stubs.getHeaderNames.returns(["Alpha", "Omega"]);
+
+			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, false);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.getHeaderNames.callCount, 1, "The response method 'getHeaderNames' should have been called exactly once");
+			strictEqual(CONTEXT_MOCK.response.stubs.removeHeader.callCount, 2, "The response method 'getHeaderNames' should have been called for each header");
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.removeHeader.firstCall.args, ["Alpha"]);
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.removeHeader.secondCall.args, ["Omega"]);
+		});
+	});
 
 	describe("start", (): void => {
 		it("should start the server", (): void => {

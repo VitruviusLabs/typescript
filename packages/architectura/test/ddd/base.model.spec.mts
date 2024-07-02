@@ -1,5 +1,5 @@
 import { describe, it } from "node:test";
-import { strictEqual, throws } from "node:assert";
+import { match, strictEqual, throws } from "node:assert";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
 import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { BaseModel } from "../../src/_index.mjs";
@@ -27,6 +27,15 @@ describe("BaseModel", (): void => {
 			strictEqual(ReflectUtility.Get(MODEL, "createdAt"), undefined);
 			strictEqual(ReflectUtility.Get(MODEL, "updatedAt"), undefined);
 			strictEqual(ReflectUtility.Get(MODEL, "deletedAt"), undefined);
+		});
+
+		it("should create a new model with a random UUID by default", (): void => {
+			const MODEL: DummyModel = new DummyModel({});
+
+			// @ts-expect-error -- Ignore type error
+			const UUID: string = ReflectUtility.Get(MODEL, "uuid");
+
+			match(UUID, /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
 		});
 	});
 
@@ -125,7 +134,7 @@ describe("BaseModel", (): void => {
 			const MODEL: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
 
 			const WRAPPER = (): void => {
-				MODEL.getUpdatedAt();
+				MODEL.getDeletedAt();
 			};
 
 			throws(WRAPPER, createErrorTest());

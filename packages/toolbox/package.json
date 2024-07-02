@@ -68,7 +68,7 @@
 		"test:unit:stryker": "pnpm test:unit",
 		"test:mutation": "stryker run",
 		"node:coverage": "NODE_V8_COVERAGE=./reports/node-coverage tsx --experimental-test-coverage --test **/*.spec.mts",
-		"c8:coverage": "c8 tsx --test-reporter spec --test **/*.spec.mts",
+		"c8:coverage": "c8 --exclude mock --exclude test tsx --test-reporter spec --test **/*.spec.mts",
 		"ts:check": "tsc -p tsconfig.json --noEmit",
 		"spell:check": "cspell -c ../../.vscode/cspell.json .",
 		"ci:lint": "pnpm eslint:check",

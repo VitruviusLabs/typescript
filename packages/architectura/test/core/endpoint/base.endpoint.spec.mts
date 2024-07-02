@@ -1,6 +1,8 @@
-import { deepStrictEqual } from "node:assert";
+import { deepStrictEqual, doesNotThrow, strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
+import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, HTTPMethodEnum } from "../../../src/_index.mjs";
+import { type MockContextInterface, mockContext } from "../../../mock/_index.mjs";
 
 describe("BaseEndpoint", (): void => {
 	describe("getPreHooks", (): void => {
@@ -138,6 +140,51 @@ describe("BaseEndpoint", (): void => {
 			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
 
 			deepStrictEqual(ENDPOINT.getExcludedGlobalErrorHooks(), [DummyErrorHook]);
+		});
+	});
+
+	describe("getContext", (): void => {
+		it("should throw if there's no context", (): void => {
+			class DummyEndpoint extends BaseEndpoint
+			{
+				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected readonly route: string = "/test-dummy";
+
+				public execute(): void { }
+			}
+
+			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
+
+			const WRAPPER = (): void => {
+				ReflectUtility.Call(ENDPOINT, "getContext", []);
+			};
+
+			throws(WRAPPER, new Error("This is not a contextual endpoint."));
+		});
+
+		it("should return the context", (): void => {
+			const MOCK_CONTEXT: MockContextInterface = mockContext();
+
+			class DummyEndpoint extends BaseEndpoint
+			{
+				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected readonly route: string = "/test-dummy";
+
+				public execute(): void { }
+			}
+
+			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
+
+			ReflectUtility.Set(ENDPOINT, "context", MOCK_CONTEXT.instance);
+
+			let result: unknown = undefined;
+
+			const WRAPPER = (): void => {
+				result = ReflectUtility.Call(ENDPOINT, "getContext", []);
+			};
+
+			doesNotThrow(WRAPPER);
+			strictEqual(result, MOCK_CONTEXT.instance);
 		});
 	});
 });

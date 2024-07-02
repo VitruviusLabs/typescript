@@ -22,6 +22,7 @@ import { parseQualityValues } from "../../utility/parse-quality-values.mjs";
 class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 {
 	private readonly cookies: Map<string, CookieDescriptorInterface>;
+	/* @TODO: Add support for ReadableStream */
 	private content: Buffer | string | undefined;
 	private locked: boolean;
 	private processed: boolean;
@@ -525,7 +526,7 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 
 	private findAcceptedEncoding(): ContentEncodingEnum | undefined
 	{
-		const ACCEPT_ENCODING_HEADER: string | undefined = this.req.getHeader("accept-encoding");
+		const ACCEPT_ENCODING_HEADER: string | undefined = this.req.getHeader("Accept-Encoding");
 
 		if (ACCEPT_ENCODING_HEADER === undefined)
 		{

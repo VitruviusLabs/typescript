@@ -1,8 +1,10 @@
 import { after, beforeEach, describe, it } from "node:test";
-import { deepStrictEqual, doesNotThrow, strictEqual } from "node:assert";
+import { deepStrictEqual, doesNotThrow, rejects, strictEqual } from "node:assert";
 import { type SinonFakeTimers, type SinonSpy, type SinonStub, spy, stub, useFakeTimers } from "sinon";
 import { MillisecondEnum, ReflectUtility } from "@vitruvius-labs/toolbox";
 import { Server, Session, SessionCleanupService, SessionConstantEnum, SessionRegistry } from "../../../../src/_index.mjs";
+import { type MockSessionDelegateInterface, mockSessionDelegate } from "../../../../mock/_index.mjs";
+import { createErrorTest } from "@vitruvius-labs/testing-ground";
 
 describe("SessionCleanupService", (): void => {
 	const CLOCK: SinonFakeTimers = useFakeTimers({ toFake: ["Date", "setInterval", "clearInterval"] });
@@ -82,6 +84,33 @@ describe("SessionCleanupService", (): void => {
 			strictEqual(CLEAR_DATA_STUB.callCount, 2, "The 'clearData' method should be called for each expired session");
 			deepStrictEqual(CLEAR_DATA_STUB.firstCall.thisValue, SESSION_1);
 			deepStrictEqual(CLEAR_DATA_STUB.secondCall.thisValue, SESSION_3);
+		});
+
+		it("should handle errors while clearing data", async (): Promise<void> => {
+			const ERRORS: Array<Error> = [
+				new Error("Test error 1"),
+				new Error("Test error 2"),
+				new Error("Test error 3"),
+			];
+
+			const MOCK_DELEGATE: MockSessionDelegateInterface = mockSessionDelegate();
+
+			MOCK_DELEGATE.stubs.removeData.onFirstCall().rejects(ERRORS[0]);
+			MOCK_DELEGATE.stubs.removeData.onSecondCall().rejects(ERRORS[1]);
+			MOCK_DELEGATE.stubs.removeData.onThirdCall().rejects(ERRORS[2]);
+
+			const SESSION_1: Session = new Session("A", MOCK_DELEGATE.instance);
+			const SESSION_2: Session = new Session("B", MOCK_DELEGATE.instance);
+			const SESSION_3: Session = new Session("C", MOCK_DELEGATE.instance);
+
+			IS_EXPIRED_STUB.returns(true);
+			REMOVE_SESSION_STUB.callThrough();
+
+			const MAP: Map<string, Session> = new Map([["A", SESSION_1], ["B", SESSION_2], ["C", SESSION_3]]);
+
+			LIST_SESSIONS_STUB.returns(MAP.values());
+
+			await rejects(SessionCleanupService.Cleanup(), createErrorTest(new AggregateError(ERRORS, "Failed to cleanup some expired sessions")));
 		});
 	});
 
