@@ -5,6 +5,7 @@ interface S3ServiceInstantiationInterface
 	region: string;
 	host: string;
 	https: boolean;
+	localStack?: boolean;
 }
 
 export type { S3ServiceInstantiationInterface };
