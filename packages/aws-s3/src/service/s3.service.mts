@@ -136,7 +136,6 @@ class S3Service
 			key: request.key,
 			parameters: parameters,
 		});
-		// const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}`;
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
