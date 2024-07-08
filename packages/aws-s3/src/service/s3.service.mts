@@ -8,6 +8,7 @@ import type { S3GetPresignedUrlRequestInterface } from "../definition/interface/
 import { type Blob as NodeBlob, Buffer as NodeBuffer } from "node:buffer";
 import { HTTPMethodEnum, Signature } from "@vitruvius-labs/aws-signature-v4";
 import { HTTPStatusCodeEnum } from "../definition/enum/http-status-code.enum.mjs";
+import type { S3ComputeAddressInterface } from "../definition/interface/s3-compute-address.interface.mjs";
 
 class S3Service
 {
@@ -17,6 +18,7 @@ class S3Service
 	private readonly host: string;
 	private readonly https: boolean;
 	private readonly protocol: "http" | "https";
+	private readonly localStack: boolean;
 
 	public constructor(instantiationInterface: S3ServiceInstantiationInterface)
 	{
@@ -26,11 +28,20 @@ class S3Service
 		this.host = instantiationInterface.host;
 		this.https = instantiationInterface.https;
 		this.protocol = this.https ? "https" : "http";
+		this.localStack = instantiationInterface.localStack ?? false;
 	}
 
 	public async getObject(request: S3RequestInterface): Promise<NodeBuffer>
 	{
-		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}`;
+		const parameters: URLSearchParams = new URLSearchParams();
+
+		const address: string = this.computeAddress({
+			protocol: this.protocol,
+			host: this.host,
+			bucket: request.bucket,
+			key: request.key,
+			parameters: parameters,
+		});
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
@@ -66,7 +77,15 @@ class S3Service
 
 	public async putObject(request: S3PutObjectRequestInterface): Promise<void>
 	{
-		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}`;
+		const parameters: URLSearchParams = new URLSearchParams();
+
+		const address: string = this.computeAddress({
+			protocol: this.protocol,
+			host: this.host,
+			bucket: request.bucket,
+			key: request.key,
+			parameters: parameters,
+		});
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
@@ -104,7 +123,15 @@ class S3Service
 
 	public getPresignedUrlForObject(request: S3GetPresignedUrlRequestInterface): string
 	{
-		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}`;
+		const parameters: URLSearchParams = new URLSearchParams();
+
+		const address: string = this.computeAddress({
+			protocol: this.protocol,
+			host: this.host,
+			bucket: request.bucket,
+			key: request.key,
+			parameters: parameters,
+		});
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
@@ -130,7 +157,13 @@ class S3Service
 
 		parameters.append("uploads", "");
 
-		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}?${parameters.toString()}`;
+		const address: string = this.computeAddress({
+			protocol: this.protocol,
+			host: this.host,
+			bucket: request.bucket,
+			key: request.key,
+			parameters: parameters,
+		});
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
@@ -181,7 +214,13 @@ class S3Service
 		parameters.append("partNumber", request.partNumber.toString());
 		parameters.append("uploadId", request.uploadId);
 
-		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}?${parameters.toString()}`;
+		const address: string = this.computeAddress({
+			protocol: this.protocol,
+			host: this.host,
+			bucket: request.bucket,
+			key: request.key,
+			parameters: parameters,
+		});
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
@@ -231,6 +270,14 @@ class S3Service
 
 		parameters.append("uploadId", request.uploadId);
 
+		const address: string = this.computeAddress({
+			protocol: this.protocol,
+			host: this.host,
+			bucket: request.bucket,
+			key: request.key,
+			parameters: parameters,
+		});
+
 		const bodyHeader: string = '<CompleteMultipartUpload xmlns="http://s3.amazonaws.com/doc/2006-03-01/">';
 		const bodyFooter: string = "</CompleteMultipartUpload>";
 		const bodyParts: Array<string> = [];
@@ -245,8 +292,6 @@ class S3Service
 
 		const joinedParts: string = bodyParts.join("");
 		const body: string = `${bodyHeader}${joinedParts}${bodyFooter}`;
-
-		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}?${parameters.toString()}`;
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
@@ -286,7 +331,13 @@ class S3Service
 
 		parameters.append("uploadId", request.uploadId);
 
-		const address: string = `${this.protocol}://${request.bucket}.${this.host}/${request.key}?${parameters.toString()}`;
+		const address: string = this.computeAddress({
+			protocol: this.protocol,
+			host: this.host,
+			bucket: request.bucket,
+			key: request.key,
+			parameters: parameters,
+		});
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
@@ -317,6 +368,16 @@ class S3Service
 		{
 			throw new Error("Unable to abort multipart upload.");
 		}
+	}
+
+	private computeAddress(parameters: S3ComputeAddressInterface): string
+	{
+		if (this.localStack)
+		{
+			return `${this.protocol}://${this.host}/${parameters.bucket}/${parameters.key}?${parameters.parameters.toString()}`.replace(/\?$/, "");
+		}
+
+		return `${this.protocol}://${parameters.bucket}.${this.host}/${parameters.key}?${parameters.parameters.toString()}`.replace(/\?$/, "");
 	}
 }
 
