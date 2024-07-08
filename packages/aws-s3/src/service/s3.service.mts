@@ -377,10 +377,10 @@ class S3Service
 
 	private computeAddress(parameters: S3ComputeAddressInterface): string
 	{
-    if (this.localStack)
+		if (this.localStack)
 		{
-      return `${this.protocol}://${this.host}/${parameters.bucket}/${parameters.key}?${parameters.parameters.toString()}`.replace(/\?$/, "");
-    }
+			return `${this.protocol}://${this.host}/${parameters.bucket}/${parameters.key}?${parameters.parameters.toString()}`.replace(/\?$/, "");
+		}
 
 		return `${this.protocol}://${parameters.bucket}.${this.host}/${parameters.key}?${parameters.parameters.toString()}`.replace(/\?$/, "");
 	}
