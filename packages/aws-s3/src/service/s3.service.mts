@@ -110,8 +110,6 @@ class S3Service
 
 		finalHeaders.append("Authorization", signature.getAuthorizationHeader());
 
-		console.debug(address);
-
 		const response: Response = await fetch(address, {
 			method: HTTPMethodEnum.PUT,
 			headers: finalHeaders,
@@ -123,12 +121,6 @@ class S3Service
 
 		if (responseText !== "")
 		{
-			console.debug("=======================");
-			console.debug(signature.getStringToSign());
-			console.debug("=======================");
-			console.debug(signature.getCanonicalRequest());
-			console.debug("=======================");
-
 			throw new Error(responseText);
 		}
 	}
