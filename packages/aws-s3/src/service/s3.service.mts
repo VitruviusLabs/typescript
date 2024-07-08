@@ -18,7 +18,7 @@ class S3Service
 	private readonly host: string;
 	private readonly https: boolean;
 	private readonly protocol: "http" | "https";
-	private readonly localStack: boolean = false;
+	private readonly localStack: boolean;
 
 	public constructor(instantiationInterface: S3ServiceInstantiationInterface)
 	{
@@ -28,11 +28,7 @@ class S3Service
 		this.host = instantiationInterface.host;
 		this.https = instantiationInterface.https;
 		this.protocol = this.https ? "https" : "http";
-
-		if (instantiationInterface.localStack !== undefined)
-		{
-			this.localStack = instantiationInterface.localStack;
-		}
+		this.localStack = instantiationInterface.localStack ?? false;
 	}
 
 	public async getObject(request: S3RequestInterface): Promise<NodeBuffer>
