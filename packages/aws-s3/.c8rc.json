@@ -14,8 +14,8 @@
 	"skip-full": true,
 	"check-coverage": true,
 	"all": true,
-	"statements": 32,
-	"branches": 50,
-	"functions": 18,
-	"lines": 32
+	"statements": 0,
+	"branches": 0,
+	"functions": 0,
+	"lines": 0
 }

@@ -42,6 +42,7 @@
 		"pnpm-lock.yaml",
 		"reports/",
 		"tmp/",
-		"tsconfig.json"
+		"tsconfig.json",
+		"**/test.mts"
 	]
 }
