@@ -10,6 +10,7 @@ import { HTTPMethodEnum, Signature } from "@vitruvius-labs/aws-signature-v4";
 import { HTTPStatusCodeEnum } from "../definition/enum/http-status-code.enum.mjs";
 import type { S3ComputeAddressInterface } from "../definition/interface/s3-compute-address.interface.mjs";
 import type { S3HeadObjectResponseInterface } from "../definition/interface/s3-head-object-response.interface.mjs";
+import type { S3GetObjectRequestInterface } from "../definition/interface/s3-get-object-request.interface.mjs";
 
 class S3Service
 {
@@ -94,7 +95,7 @@ class S3Service
 		return result;
 	}
 
-	public async getObject(request: S3RequestInterface): Promise<NodeBuffer>
+	public async getObject(request: S3GetObjectRequestInterface): Promise<NodeBuffer>
 	{
 		const parameters: URLSearchParams = new URLSearchParams();
 
@@ -106,6 +107,15 @@ class S3Service
 			parameters: parameters,
 		});
 
+		const headers: Record<string, string> = {};
+
+		if (request.range !== undefined)
+		{
+			headers["Range"] = request.range;
+		}
+
+		headers["Host"] = `${request.bucket}.${this.host}`;
+
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
 			accessSecret: this.accessSecret,
@@ -113,9 +123,7 @@ class S3Service
 			service: "s3",
 			url: address,
 			method: HTTPMethodEnum.GET,
-			headers: {
-				Host: `${request.bucket}.${this.host}`,
-			},
+			headers: headers,
 			body: "",
 		});
 
