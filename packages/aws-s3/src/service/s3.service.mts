@@ -9,6 +9,7 @@ import { type Blob as NodeBlob, Buffer as NodeBuffer } from "node:buffer";
 import { HTTPMethodEnum, Signature } from "@vitruvius-labs/aws-signature-v4";
 import { HTTPStatusCodeEnum } from "../definition/enum/http-status-code.enum.mjs";
 import type { S3ComputeAddressInterface } from "../definition/interface/s3-compute-address.interface.mjs";
+import type { S3HeadObjectResponseInterface } from "../definition/interface/s3-head-object-response.interface.mjs";
 
 class S3Service
 {
@@ -29,6 +30,68 @@ class S3Service
 		this.https = instantiationInterface.https;
 		this.protocol = this.https ? "https" : "http";
 		this.localStack = instantiationInterface.localStack ?? false;
+	}
+
+	public async headObject(request: S3RequestInterface): Promise<S3HeadObjectResponseInterface>
+	{
+		const parameters: URLSearchParams = new URLSearchParams();
+
+		const address: string = this.computeAddress({
+			protocol: this.protocol,
+			host: this.host,
+			bucket: request.bucket,
+			key: request.key,
+			parameters: parameters,
+		});
+
+		const signature: Signature = new Signature({
+			accessKeyId: this.accessKeyId,
+			accessSecret: this.accessSecret,
+			region: this.region,
+			service: "s3",
+			url: address,
+			method: HTTPMethodEnum.HEAD,
+			headers: {
+				Host: `${request.bucket}.${this.host}`,
+			},
+			body: "",
+		});
+
+		signature.generate();
+
+		const finalHeaders: Headers = signature.getComputedHeaders();
+
+		finalHeaders.append("Authorization", signature.getAuthorizationHeader());
+
+		const response: Response = await fetch(address, {
+			method: HTTPMethodEnum.HEAD,
+			headers: finalHeaders,
+			keepalive: true,
+		});
+
+		const headers: Headers = response.headers;
+
+		const eTag: string | undefined = headers.get("ETag") ?? undefined;
+		const contentType: string | undefined = headers.get("Content-Type") ?? undefined;
+		const contentLength: number = parseInt(headers.get("Content-Length") ?? "0", 10);
+		const lastModified: Date = new Date(headers.get("Last-Modified") ?? "0");
+
+		const result: S3HeadObjectResponseInterface = {};
+
+		if (eTag !== undefined)
+		{
+			result.eTag = eTag.replaceAll("\"", "");
+		}
+
+		if (contentType !== undefined)
+		{
+			result.contentType = contentType;
+		}
+
+		result.contentLength = contentLength;
+		result.lastModified = lastModified;
+
+		return result;
 	}
 
 	public async getObject(request: S3RequestInterface): Promise<NodeBuffer>
