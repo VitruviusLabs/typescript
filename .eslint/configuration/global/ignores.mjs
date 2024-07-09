@@ -11,6 +11,7 @@ const CONFIGURATION = {
 		"reports",
 		"tmp",
 		".stryker-tmp",
+		"**/test.mts"
 	],
 };
 
