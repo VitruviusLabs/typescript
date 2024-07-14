@@ -44,7 +44,7 @@ interface MockedDependency
 
 `meta_url` is simply the value of `import.meta.url`. It is used to resolve paths.
 
-`mocks` is a mapping of the module dependencies to replace and with what to replace them.
+`mocks` is a mapping of the module dependencies to replace, with what to replace them.
 
 If you have aliases in your imports, you must name the imported items by their original name.
 
@@ -93,7 +93,7 @@ export { generateId };
 
 Test file
 ```ts
-import type * as TestedModule from '../src/my-module.mjs';
+import type * as TestedModule from "../src/my-module.mjs";
 
 const MODULE: typeof TestedModule = await mockingbird<typeof TestedModule>(
 	"../src/my-module.mjs",
@@ -105,7 +105,7 @@ const MODULE: typeof TestedModule = await mockingbird<typeof TestedModule>(
 				return "fixed-uuid";
 			}
 		},
-		"./validateId.mjs": {
+		"./validate-id.mjs": {
 			default: (): boolean =>
 			{
 				return true;
