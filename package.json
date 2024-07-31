@@ -30,7 +30,7 @@
 		"c8": "^10.1.2",
 		"chai": "^5.1.1",
 		"chai-as-promised": "^8.0.0",
-		"cspell": "^8.10.4",
+		"cspell": "^8.13.0",
 		"eslint": "^9.6.0",
 		"eslint-plugin-perfectionist": "^2.11.0",
 		"husky": "^9.0.11",
