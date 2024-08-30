@@ -1,6 +1,6 @@
 import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 
-// eslint-disable-next-line @ts/ban-types -- Generic constructor
+// eslint-disable-next-line @ts/no-unsafe-function-type -- Generic constructor
 const INSTANCES: Map<Function, object> = new Map();
 
 /**
