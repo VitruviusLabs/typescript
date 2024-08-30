@@ -18,55 +18,6 @@ const RULES = {
 		}
 	],
 	"@ts/ban-tslint-comment": "error",
-	"@ts/ban-types": [
-		"error",
-		{
-			"types": {
-				"Boolean": {
-					"message": "Use boolean instead",
-					"fixWith": "boolean"
-				},
-				"Number": {
-					"message": "Use number instead",
-					"fixWith": "number"
-				},
-				"BigInt": {
-					"message": "Use bigint instead",
-					"fixWith": "bigint"
-				},
-				"String": {
-					"message": "Use string instead",
-					"fixWith": "string"
-				},
-				"Symbol": {
-					"message": "Use symbol instead",
-					"fixWith": "symbol"
-				},
-				"Function": {
-					"message": "Use an arrow function or a constructor instead",
-					"suggest": [
-						"() => void",
-						"new () => void"
-					]
-				},
-				"Object": {
-					"message": "Use object, a Record, a class, or an interface instead",
-					"suggest": [
-						"object",
-						"Record<string, unknown>"
-					]
-				},
-				"{}": {
-					"message": "Use type object if you mean any object value, or use a more precise type",
-					"suggest": [
-						"unknown",
-						"object",
-						"Record<string, unknown>"
-					]
-				}
-			}
-		}
-	],
 	"@ts/consistent-generic-constructors": [
 		"error",
 		"type-annotation"
@@ -174,6 +125,13 @@ const RULES = {
 		"error",
 		{
 			"allowSingleExtends": true
+		}
+	],
+	"@ts/no-empty-object-type": [
+		"error",
+		{
+			"allowInterfaces": "with-single-extends",
+			"allowObjectTypes": "never"
 		}
 	],
 	"@ts/no-explicit-any": [
@@ -300,6 +258,7 @@ const RULES = {
 	"@ts/no-unsafe-assignment": "error",
 	"@ts/no-unsafe-call": "error",
 	"@ts/no-unsafe-declaration-merging": "error",
+	"@ts/no-unsafe-function-type": "error",
 	"@ts/no-unsafe-member-access": "error",
 	"@ts/no-unsafe-return": "error",
 	"@ts/no-unsafe-unary-minus": "error",
@@ -338,6 +297,7 @@ const RULES = {
 	"@ts/no-useless-constructor": "error",
 	"@ts/no-useless-empty-export": "error",
 	"@ts/no-var-requires": "error",
+	"@ts/no-wrapper-object-types": "error",
 	"@ts/only-throw-error": [
 		"error",
 		{

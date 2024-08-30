@@ -1,4 +1,4 @@
-// eslint-disable-next-line @ts/ban-types -- Generic type is enough as we won't invoke it
+// eslint-disable-next-line @ts/no-unsafe-function-type -- Generic type is enough as we won't invoke it
 function getDetailedFunctionType(value: Function): string
 {
 	const CODE: string = value.toString();
