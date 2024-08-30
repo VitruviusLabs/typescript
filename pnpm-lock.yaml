@@ -18,8 +18,8 @@ importers:
         specifier: ^8.2.6
         version: 8.2.6(@stryker-mutator/core@8.2.6)(typescript@5.5.2)
       '@stylistic/eslint-plugin':
-        specifier: ^2.3.0
-        version: 2.3.0(eslint@9.9.1)(typescript@5.5.2)
+        specifier: ^2.7.2
+        version: 2.7.2(eslint@9.9.1)(typescript@5.5.2)
       '@swc/core':
         specifier: ^1.7.18
         version: 1.7.18
@@ -784,31 +784,8 @@ packages:
   '@stryker-mutator/util@8.2.6':
     resolution: {integrity: sha512-2jmSYmrbGqt59JBkv1TvoOwQpUccCL3c90FLZIWg1zBNwj6zeOrwh734E5dKswDaC+BudQ3FtwlWB5augSuo1w==}
 
-  '@stylistic/eslint-plugin-js@2.3.0':
-    resolution: {integrity: sha512-lQwoiYb0Fs6Yc5QS3uT8+T9CPKK2Eoxc3H8EnYJgM26v/DgtW+1lvy2WNgyBflU+ThShZaHm3a6CdD9QeKx23w==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      eslint: '>=8.40.0'
-
-  '@stylistic/eslint-plugin-jsx@2.3.0':
-    resolution: {integrity: sha512-tsQ0IEKB195H6X9A4iUSgLLLKBc8gUBWkBIU8tp1/3g2l8stu+PtMQVV/VmK1+3bem5FJCyvfcZIQ/WF1fsizA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      eslint: '>=8.40.0'
-
-  '@stylistic/eslint-plugin-plus@2.3.0':
-    resolution: {integrity: sha512-xboPWGUU5yaPlR+WR57GwXEuY4PSlPqA0C3IdNA/+1o2MuBi95XgDJcZiJ9N+aXsqBXAPIpFFb+WQ7QEHo4f7g==}
-    peerDependencies:
-      eslint: '*'
-
-  '@stylistic/eslint-plugin-ts@2.3.0':
-    resolution: {integrity: sha512-wqOR38/uz/0XPnHX68ftp8sNMSAqnYGjovOTN7w00xnjS6Lxr3Sk7q6AaxWWqbMvOj7V2fQiMC5HWAbTruJsCg==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      eslint: '>=8.40.0'
-
-  '@stylistic/eslint-plugin@2.3.0':
-    resolution: {integrity: sha512-rtiz6u5gRyyEZp36FcF1/gHJbsbT3qAgXZ1qkad6Nr/xJ9wrSJkiSFFQhpYVTIZ7FJNRJurEcumZDCwN9dEI4g==}
+  '@stylistic/eslint-plugin@2.7.2':
+    resolution: {integrity: sha512-3DVLU5HEuk2pQoBmXJlzvrxbKNpu2mJ0SRqz5O/CJjyNCr12ZiPcYMEtuArTyPOk5i7bsAU44nywh1rGfe3gKQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=8.40.0'
@@ -906,8 +883,8 @@ packages:
   '@types/chai@4.3.16':
     resolution: {integrity: sha512-PatH4iOdyh3MyWtmHVFXLWCCIhUbopaltqddG9BzB+gMIzee2MJrvd+jouii9Z3wzQJruGWAm7WOMjgfG8hQlQ==}
 
-  '@types/eslint@8.56.10':
-    resolution: {integrity: sha512-Shavhk87gCtY2fhXDctcfS3e6FdxWkCx1iUZ9eEUbh7rTqlZT0/IzOkCOVt0fCjcFuZ9FPYfuezTBImfHCDBGQ==}
+  '@types/eslint@9.6.1':
+    resolution: {integrity: sha512-FXx2pKgId/WyYo2jXw63kk7/+TY7u7AziEJxJAnSFzHlqTAS3Ync6SvgYAN/k4/PQpnnVuzoMuVnByKK2qp0ag==}
 
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
@@ -3178,49 +3155,15 @@ snapshots:
 
   '@stryker-mutator/util@8.2.6': {}
 
-  '@stylistic/eslint-plugin-js@2.3.0(eslint@9.9.1)':
+  '@stylistic/eslint-plugin@2.7.2(eslint@9.9.1)(typescript@5.5.2)':
     dependencies:
-      '@types/eslint': 8.56.10
-      acorn: 8.12.0
+      '@types/eslint': 9.6.1
+      '@typescript-eslint/utils': 8.3.0(eslint@9.9.1)(typescript@5.5.2)
       eslint: 9.9.1
       eslint-visitor-keys: 4.0.0
       espree: 10.1.0
-
-  '@stylistic/eslint-plugin-jsx@2.3.0(eslint@9.9.1)':
-    dependencies:
-      '@stylistic/eslint-plugin-js': 2.3.0(eslint@9.9.1)
-      '@types/eslint': 8.56.10
-      eslint: 9.9.1
       estraverse: 5.3.0
       picomatch: 4.0.2
-
-  '@stylistic/eslint-plugin-plus@2.3.0(eslint@9.9.1)(typescript@5.5.2)':
-    dependencies:
-      '@types/eslint': 8.56.10
-      '@typescript-eslint/utils': 7.16.0(eslint@9.9.1)(typescript@5.5.2)
-      eslint: 9.9.1
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-
-  '@stylistic/eslint-plugin-ts@2.3.0(eslint@9.9.1)(typescript@5.5.2)':
-    dependencies:
-      '@stylistic/eslint-plugin-js': 2.3.0(eslint@9.9.1)
-      '@types/eslint': 8.56.10
-      '@typescript-eslint/utils': 7.16.0(eslint@9.9.1)(typescript@5.5.2)
-      eslint: 9.9.1
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-
-  '@stylistic/eslint-plugin@2.3.0(eslint@9.9.1)(typescript@5.5.2)':
-    dependencies:
-      '@stylistic/eslint-plugin-js': 2.3.0(eslint@9.9.1)
-      '@stylistic/eslint-plugin-jsx': 2.3.0(eslint@9.9.1)
-      '@stylistic/eslint-plugin-plus': 2.3.0(eslint@9.9.1)(typescript@5.5.2)
-      '@stylistic/eslint-plugin-ts': 2.3.0(eslint@9.9.1)(typescript@5.5.2)
-      '@types/eslint': 8.56.10
-      eslint: 9.9.1
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -3291,7 +3234,7 @@ snapshots:
 
   '@types/chai@4.3.16': {}
 
-  '@types/eslint@8.56.10':
+  '@types/eslint@9.6.1':
     dependencies:
       '@types/estree': 1.0.5
       '@types/json-schema': 7.0.15

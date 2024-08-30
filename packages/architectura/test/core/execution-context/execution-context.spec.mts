@@ -1,12 +1,14 @@
 import { describe, it } from "node:test";
 import { match, strictEqual } from "node:assert";
 import { ExecutionContext, type RichClientRequest, type RichServerResponse } from "../../../src/_index.mjs";
+import { mockRequest } from "../../../mock/mock-request.mjs";
+import { mockResponse } from "../../../mock/mock-response.mjs";
 
 describe("ExecutionContext", (): void => {
 	describe("constructor", (): void => {
 		it("should create a new instance of ExecutionContext", (): void => {
-			const REQUEST: RichClientRequest = {} as unknown as RichClientRequest;
-			const RESPONSE: RichServerResponse = {} as unknown as RichServerResponse;
+			const REQUEST: RichClientRequest = mockRequest().instance;
+			const RESPONSE: RichServerResponse = mockResponse().instance;
 
 			const CONTEXT: ExecutionContext = new ExecutionContext({
 				request: REQUEST,
@@ -21,8 +23,8 @@ describe("ExecutionContext", (): void => {
 
 	describe("getUUID", (): void => {
 		it("should return the UUID", (): void => {
-			const REQUEST: RichClientRequest = {} as unknown as RichClientRequest;
-			const RESPONSE: RichServerResponse = {} as unknown as RichServerResponse;
+			const REQUEST: RichClientRequest = mockRequest().instance;
+			const RESPONSE: RichServerResponse = mockResponse().instance;
 
 			const CONTEXT: ExecutionContext = new ExecutionContext({
 				request: REQUEST,
@@ -35,8 +37,8 @@ describe("ExecutionContext", (): void => {
 
 	describe("getRequest", (): void => {
 		it("should return the request", (): void => {
-			const REQUEST: RichClientRequest = {} as unknown as RichClientRequest;
-			const RESPONSE: RichServerResponse = {} as unknown as RichServerResponse;
+			const REQUEST: RichClientRequest = mockRequest().instance;
+			const RESPONSE: RichServerResponse = mockResponse().instance;
 
 			const CONTEXT: ExecutionContext = new ExecutionContext({
 				request: REQUEST,
@@ -49,8 +51,8 @@ describe("ExecutionContext", (): void => {
 
 	describe("getResponse", (): void => {
 		it("should return the response", (): void => {
-			const REQUEST: RichClientRequest = {} as unknown as RichClientRequest;
-			const RESPONSE: RichServerResponse = {} as unknown as RichServerResponse;
+			const REQUEST: RichClientRequest = mockRequest().instance;
+			const RESPONSE: RichServerResponse = mockResponse().instance;
 
 			const CONTEXT: ExecutionContext = new ExecutionContext({
 				request: REQUEST,
