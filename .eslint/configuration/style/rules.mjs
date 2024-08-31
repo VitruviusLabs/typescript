@@ -6,8 +6,7 @@ const RULES = {
 		/*
 		{
 			"consistent": true,
-			"multiline": true,
-			"minItems": null
+			"multiline": true
 		}
 		*/
 	],
@@ -22,15 +21,10 @@ const RULES = {
 	],
 	"@style/array-element-newline": [
 		"error",
-		"consistent"
-		// unsupported combination
-		/*
 		{
 			"consistent": true,
-			"multiline": true,
-			"minItems": null
-		},
-		*/
+			"multiline": true
+		}
 	],
 	"@style/arrow-parens": [
 		"error",
@@ -63,6 +57,10 @@ const RULES = {
 		"error",
 		"consistent"
 	],
+	"@style/func-call-spacing": [
+		"error",
+		"never"
+	],
 	"@style/function-paren-newline": [
 		"error",
 		"multiline-arguments"
@@ -84,16 +82,6 @@ const RULES = {
 			}
 		}
 	],
-	// Bugged
-	/*
-	"@style/indent": [
-		"error",
-		"tab",
-		{
-			"SwitchCase": 1
-		}
-	],
-	*/
 	"@style/jsx-quotes": [
 		"error",
 		"prefer-double"
@@ -334,6 +322,10 @@ const RULES = {
 		"error",
 		"never"
 	],
+	"@style/implicit-arrow-linebreak": [
+		"error",
+		"beside"
+	],
 	"@style/key-spacing": [
 		"error",
 		{
@@ -556,6 +548,7 @@ const RULES = {
 			}
 		}
 	],
+	"@style/type-named-tuple-spacing": "error",
 	"@ts/adjacent-overload-signatures": "error",
 	"@ts/class-literal-property-style": [
 		"error",
