@@ -18,6 +18,16 @@ const RULES = {
 		}
 	],
 	"@ts/ban-tslint-comment": "error",
+	"@ts/class-methods-use-this": [
+		"error",
+		{
+			"enforceForClassFields": false,
+			"ignoreClassesThatImplementAnInterface": true,
+			"exceptMethods": [
+				"execute"
+			],
+		}
+	],
 	"@ts/consistent-generic-constructors": [
 		"error",
 		"type-annotation"
@@ -102,6 +112,7 @@ const RULES = {
 			"ignoreVoidOperator": false
 		}
 	],
+	"@ts/no-deprecated": "error",
 	"@ts/no-duplicate-enum-values": "error",
 	"@ts/no-duplicate-type-constituents": [
 		"error",
@@ -119,12 +130,6 @@ const RULES = {
 				"protected-constructors",
 				"decoratedFunctions"
 			]
-		}
-	],
-	"@ts/no-empty-interface": [
-		"error",
-		{
-			"allowSingleExtends": true
 		}
 	],
 	"@ts/no-empty-object-type": [
@@ -172,7 +177,6 @@ const RULES = {
 		}
 	],
 	"@ts/no-loop-func": "error",
-	"@ts/no-loss-of-precision": "error",
 	"@ts/no-magic-numbers": [
 		"error",
 		{
@@ -296,7 +300,6 @@ const RULES = {
 	],
 	"@ts/no-useless-constructor": "error",
 	"@ts/no-useless-empty-export": "error",
-	"@ts/no-var-requires": "error",
 	"@ts/no-wrapper-object-types": "error",
 	"@ts/only-throw-error": [
 		"error",
@@ -456,6 +459,7 @@ const RULES = {
 			"ignoreStatic": false
 		}
 	],
+	"@ts/use-unknown-in-catch-callback-variable": "error",
 	"accessor-pairs": [
 		"warn",
 		{
@@ -555,6 +559,7 @@ const RULES = {
 		}
 	],
 	"no-constructor-return": "error",
+	"no-debugger": "error",
 	"no-delete-var": "error",
 	"no-dupe-else-if": "error",
 	"no-duplicate-case": "error",
@@ -631,12 +636,14 @@ const RULES = {
 		"error",
 		{
 			"allowConstructorFlags": [
+				"d",
 				"g",
 				"i",
 				"m",
+				"s",
 				"u",
+				"v",
 				"y",
-				"s"
 			]
 		}
 	],
@@ -659,6 +666,13 @@ const RULES = {
 		}
 	],
 	"no-lonely-if": "error",
+	"no-loss-of-precision": "error",
+	"no-misleading-character-class": [
+		"error",
+		{
+			"allowEscape": false
+		}
+	],
 	"no-multi-assign": [
 		"error",
 		{
@@ -689,6 +703,7 @@ const RULES = {
 		}
 	],
 	"no-proto": "error",
+	"no-prototype-builtins": "error",
 	"no-restricted-properties": [
 		"error",
 		{
@@ -771,6 +786,12 @@ const RULES = {
 	"no-useless-backreference": "error",
 	"no-useless-call": "error",
 	"no-useless-catch": "error",
+	"no-useless-computed-key": [
+		"error",
+		{
+			"enforceForClassMembers": true
+		}
+	],
 	"no-useless-concat": "error",
 	"no-useless-escape": "error",
 	"no-useless-rename": [

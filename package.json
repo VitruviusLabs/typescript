@@ -11,10 +11,12 @@
 		"Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>",
 		"Benjamin Blum <benjamin.blum.98@gmail.com>"
 	],
-	"scripts": {},
 	"keywords": [],
 	"license": "UNLICENSED",
 	"type": "module",
+	"scripts": {
+		"eslint:inspect-config": "eslint --inspect-config"
+	},
 	"devDependencies": {
 		"@stryker-mutator/core": "^8.2.6",
 		"@stryker-mutator/mocha-runner": "^8.2.6",

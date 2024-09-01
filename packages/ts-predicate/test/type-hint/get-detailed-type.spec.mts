@@ -55,8 +55,7 @@ describe("TypeHint.getDetailedType", (): void => {
 		strictEqual(TypeHint.getDetailedType(BigInt(Number.MAX_SAFE_INTEGER + 4)), "bigint (9007199254740996)");
 	});
 
-	// eslint-disable-next-line @style/quotes -- Both single and double quotes are used in the description
-	it(`should return "string ("content")" when given a string with a length up to 36 characters`, (): void => {
+	it(`should return 'string ("content")' when given a string with a length up to 36 characters`, (): void => {
 		strictEqual(TypeHint.getDetailedType(""), 'string ("")');
 		strictEqual(TypeHint.getDetailedType("Hello, World!"), 'string ("Hello, World!")');
 		strictEqual(TypeHint.getDetailedType("0".repeat(36)), `string ("${"0".repeat(36)}")`);

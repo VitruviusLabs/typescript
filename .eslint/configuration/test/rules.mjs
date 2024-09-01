@@ -7,6 +7,7 @@ const RULES = {
 			"max": 2
 		}
 	],
+	"@ts/class-methods-use-this": "off",
 	"@ts/dot-notation": [
 		"error",
 		{
@@ -30,7 +31,6 @@ const RULES = {
 	"@ts/only-throw-error": "off",
 	"@ts/prefer-promise-reject-errors": "off",
 	"@ts/unbound-method": "off",
-	"consistent-return": "off",
 	"func-names": "off",
 	"func-style": "off",
 	"max-classes-per-file": "off",
