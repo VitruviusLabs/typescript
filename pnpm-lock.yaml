@@ -24,8 +24,8 @@ importers:
         specifier: ^1.7.26
         version: 1.7.26
       '@types/chai':
-        specifier: ^4.3.19
-        version: 4.3.19
+        specifier: ^5.0.0
+        version: 5.0.0
       '@types/chai-as-promised':
         specifier: ^8.0.0
         version: 8.0.0
@@ -892,6 +892,9 @@ packages:
 
   '@types/chai@4.3.19':
     resolution: {integrity: sha512-2hHHvQBVE2FiSK4eN0Br6snX9MtolHaTo/batnLjlGRhoQzlCL61iVpxoqO7SfFyOw+P/pwv+0zNHzKoGWz9Cw==}
+
+  '@types/chai@5.0.0':
+    resolution: {integrity: sha512-+DwhEHAaFPPdJ2ral3kNHFQXnTfscEEFsUxzD+d7nlcLrFK23JtNjH71RGasTcHb88b4vVi4mTyfpf8u2L8bdA==}
 
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
@@ -3219,6 +3222,8 @@ snapshots:
       '@types/chai': 4.3.19
 
   '@types/chai@4.3.19': {}
+
+  '@types/chai@5.0.0': {}
 
   '@types/estree@1.0.6': {}
 
