@@ -37,9 +37,7 @@ class Server
 	private readonly port: number = PortsEnum.DEFAULT_HTTPS;
 	private readonly https: boolean = false;
 	private readonly nativeServer: (
-		// @ts-expect-error: It can't be incompatible
 		| SecureServer<typeof RichClientRequest, typeof RichServerResponse>
-		// @ts-expect-error: It can't be incompatible
 		| UnsafeServer<typeof RichClientRequest, typeof RichServerResponse>
 	);
 
@@ -52,19 +50,16 @@ class Server
 
 		if (!options.https)
 		{
-			// @ts-expect-error: It can't be incompatible
 			const UNSAFE_OPTIONS: UnsafeServerOptions<typeof RichClientRequest, typeof RichServerResponse> = {
 				IncomingMessage: RichClientRequest,
 				ServerResponse: RichServerResponse,
 			};
 
-			// @ts-expect-error: It can't be incompatible
 			this.nativeServer = new UnsafeServer(UNSAFE_OPTIONS);
 
 			return;
 		}
 
-		// @ts-expect-error: It can't be incompatible
 		const SECURE_OPTIONS: SecureServerOptions<typeof RichClientRequest, typeof RichServerResponse> = {
 			IncomingMessage: RichClientRequest,
 			ServerResponse: RichServerResponse,
@@ -72,7 +67,6 @@ class Server
 			key: options.key,
 		};
 
-		// @ts-expect-error: It can't be incompatible
 		this.nativeServer = new SecureServer(SECURE_OPTIONS);
 	}
 
