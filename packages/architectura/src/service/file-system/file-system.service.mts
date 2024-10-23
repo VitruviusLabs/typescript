@@ -124,7 +124,7 @@ class FileSystemService
 	 *
 	 * @throws if the file does not exist
 	 */
-	public static async OpenFile(file_path: string, flags?: FileSystemFlagEnum | number | string | undefined, permissions?: number | string | undefined): Promise<FileHandle>
+	public static async OpenFile(file_path: string, flags?: FileSystemFlagEnum | number | string, permissions?: number | string): Promise<FileHandle>
 	{
 		await FileSystemService.AssertFileExistence(file_path);
 

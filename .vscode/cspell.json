@@ -43,6 +43,7 @@
 		"reports/",
 		"tmp/",
 		"tsconfig.json",
-		"**/test.mts"
+		"**/test.mts",
+		"**/coverage/**"
 	]
 }
