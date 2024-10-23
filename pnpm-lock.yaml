@@ -27,8 +27,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       '@types/chai-as-promised':
-        specifier: ^8.0.0
-        version: 8.0.0
+        specifier: ^8.0.1
+        version: 8.0.1
       '@types/mocha':
         specifier: ^10.0.8
         version: 10.0.8
@@ -887,11 +887,8 @@ packages:
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
-  '@types/chai-as-promised@8.0.0':
-    resolution: {integrity: sha512-YbYaXFqJwSABp9OXQTVrPPmstZgNjkRieWVd/xAl5Yc/e5+F44bXLeQggpvm0sjsS1bg+2Y5cwU+rquwwD2dXA==}
-
-  '@types/chai@4.3.19':
-    resolution: {integrity: sha512-2hHHvQBVE2FiSK4eN0Br6snX9MtolHaTo/batnLjlGRhoQzlCL61iVpxoqO7SfFyOw+P/pwv+0zNHzKoGWz9Cw==}
+  '@types/chai-as-promised@8.0.1':
+    resolution: {integrity: sha512-dAlDhLjJlABwAVYObo9TPWYTRg9NaQM5CXeaeJYcYAkvzUf0JRLIiog88ao2Wqy/20WUnhbbUZcgvngEbJ3YXQ==}
 
   '@types/chai@5.0.0':
     resolution: {integrity: sha512-+DwhEHAaFPPdJ2ral3kNHFQXnTfscEEFsUxzD+d7nlcLrFK23JtNjH71RGasTcHb88b4vVi4mTyfpf8u2L8bdA==}
@@ -3217,11 +3214,9 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
-  '@types/chai-as-promised@8.0.0':
+  '@types/chai-as-promised@8.0.1':
     dependencies:
-      '@types/chai': 4.3.19
-
-  '@types/chai@4.3.19': {}
+      '@types/chai': 5.0.0
 
   '@types/chai@5.0.0': {}
 
