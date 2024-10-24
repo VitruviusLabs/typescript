@@ -17,12 +17,13 @@ Architectura also follows the SOLID principles; however, we do not believe that 
 
 <details>
 
-	<summary>Note regarding dependency-injection</summary>
+<summary>Note regarding dependency-injection</summary>
 
-	Whilst you can add any dependency-injection third party package, we invite you to reconsider before doing so.
-	Dependency-injection has many downsides and pitfalls that are often brushed over. This can rapidly make the technical debt of your project spiral out of control.
-	We encourage you to learn how to implement dependency-inversion in a more conventional, rigorous way than rely on magic.
-	Again, Architectura does not enforce this idea on you, you are still free to use any package that you consider appropriate to your project.
+> [!IMPORTANT]
+> Whilst you can add any dependency-injection third party package, we invite you to reconsider before doing so.
+> Dependency-injection has many downsides and pitfalls that are often brushed over. This can rapidly make the technical debt of your project spiral out of control.
+> We encourage you to learn how to implement dependency-inversion in a more conventional, rigorous way than rely on magic.
+> Again, Architectura does not enforce this idea on you, you are still free to use any package that you consider appropriate to your project.
 
 </details>
 

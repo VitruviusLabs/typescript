@@ -4,6 +4,11 @@ This section details the endpoints system of the Architectura framework.
 Specifically this page will give you an overview of the design philosophy around endpoints.
 If you want to get even more information, you can explore the sub-sections.
 
+## Navigation
+
+- [Documentation home](../../README.md)
+- [Registering endpoints](registering_endpoints.md)
+
 ## Table of contents
 
 - [Rationale](#rationale)
