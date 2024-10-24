@@ -30,7 +30,7 @@ Architectura is non-intrusive because you can easily onboard yourself on it and 
 > \- *Nicolas "SmashingQuasar" Lebacq, co-creator of Architectura*
 
 The objective is not to retain the user base by introducing unique patterns, a large number of dependencies or even an interlinking of services.
-The objective is to convince the user base that Architectura is the right fit for their project and needs.
+The objective is to convince the user base that Architectura is the right fit for their project and needs. If they realise it wasn't due to their software needs sliding out of the scope of Architectura, they are not prisoners and can easily offboard themselves from it.
 
 ## Domains structure
 
@@ -52,7 +52,7 @@ Here is an example of a basic domain file that inherits from the `BaseDomain` cl
 ```ts
 import { BaseDomain } from "@vitruvius-labs/architectura";
 
-class DeviceDomain extends BaseDomain
+class MyDomain extends BaseDomain
 {
 	public static override async Initialize(): Promise<void>
 	{
@@ -60,7 +60,7 @@ class DeviceDomain extends BaseDomain
 	}
 }
 
-export { DeviceDomain };
+export { MyDomain };
 ```
 
 On it's own, this class does nothing.
@@ -130,7 +130,6 @@ const server: Server = await Server.Create({
 });
 
 server.start();
-
 ```
 
 This code will create and start a server listening on port 80 and not providing HTTPS.
@@ -140,5 +139,3 @@ This code will create and start a server listening on port 80 and not providing 
 > This example is provided as-is for simplicity. Refer to the corresponding documentation to know how to setup your server.
 
 Architectura does minimal work when it comes to the server. It uses the native Node.js server technology and wraps it within a unified `Server` class for simplification purposes.
-
-

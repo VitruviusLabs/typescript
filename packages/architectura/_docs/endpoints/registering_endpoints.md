@@ -1,4 +1,6 @@
-# Architectura - Endpoints - Registering Endpoints
+# Architectura - Registering Endpoints
+
+###### [Architectura](../../README.md) > [Endpoints](./readme.md) > Registering Endpoints
 
 This section will help you get started by registering your first endpoints!
 
