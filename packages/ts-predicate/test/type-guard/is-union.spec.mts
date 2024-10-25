@@ -13,7 +13,7 @@ describe("TypeGuard.isUnion", (): void => {
 		}
 	});
 
-	it("should return false  when given anything else", (): void => {
+	it("should return false when given anything else", (): void => {
 		const VALUES: Array<unknown> = getInvertedValues(GroupType.STRING, GroupType.NUMBER);
 
 		for (const ITEM of VALUES)

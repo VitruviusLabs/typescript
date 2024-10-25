@@ -1,6 +1,8 @@
 {
 	"packageManager": "pnpm",
-	"mutate": ["./src/**/*.mts"],
+	"mutate": [
+		"./src/**/*.mts"
+	],
 	"ignorePatterns": [
 		"**/node_modules/**",
 		"**/.github/**",
@@ -16,7 +18,11 @@
 		"**/lib/**"
 	],
 	"concurrency": 6,
-	"reporters": ["html", "clear-text", "progress"],
+	"reporters": [
+		"html",
+		"clear-text",
+		"progress"
+	],
 	"htmlReporter": {
 		"fileName": "./reports/stryker/mutation.html"
 	},
@@ -28,12 +34,14 @@
 	},
 	"coverageAnalysis": "perTest",
 	"ignoreStatic": true,
-	"checkers": ["typescript"],
+	"checkers": [
+		"typescript"
+	],
 	"tsconfigFile": "tsconfig.stryker.json",
 	"plugins": [
 		"@stryker-mutator/typescript-checker"
 	],
 	"typescriptChecker": {
-	  "prioritizePerformanceOverAccuracy": false
+		"prioritizePerformanceOverAccuracy": false
 	}
 }

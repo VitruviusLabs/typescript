@@ -22,15 +22,15 @@ class S3Service
 	private readonly protocol: "http" | "https";
 	private readonly localStack: boolean;
 
-	public constructor(instantiationInterface: S3ServiceInstantiationInterface)
+	public constructor(parameters: S3ServiceInstantiationInterface)
 	{
-		this.accessKeyId = instantiationInterface.accessKeyId;
-		this.accessSecret = instantiationInterface.accessSecret;
-		this.region = instantiationInterface.region;
-		this.host = instantiationInterface.host;
-		this.https = instantiationInterface.https;
+		this.accessKeyId = parameters.accessKeyId;
+		this.accessSecret = parameters.accessSecret;
+		this.region = parameters.region;
+		this.host = parameters.host;
+		this.https = parameters.https;
 		this.protocol = this.https ? "https" : "http";
-		this.localStack = instantiationInterface.localStack ?? false;
+		this.localStack = parameters.localStack ?? false;
 	}
 
 	public async headObject(request: S3RequestInterface): Promise<S3HeadObjectResponseInterface>

@@ -88,14 +88,14 @@ describe("Helper.isSimilar", (): void => {
 	it("should return false when given symbols, or interchangeable functions, classes, or objects", (): void => {
 		const VALUES_LEFT: Array<unknown> = [
 			Symbol(),
-			((): void => {}),
+			(): void => {},
 			class {},
 			new Map(),
 		];
 
 		const VALUES_RIGHT: Array<unknown> = [
 			Symbol(),
-			((): void => {}),
+			(): void => {},
 			class {},
 			new Map(),
 		];

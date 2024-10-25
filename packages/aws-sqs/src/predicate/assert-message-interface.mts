@@ -8,9 +8,9 @@ function assertMessageInterface(value: unknown): asserts value is MessageInterfa
 {
 	assertStructuredData<MessageInterface>(value, {
 		Attributes: {
-			test: (scopedValue: unknown): asserts scopedValue is Array<MessageAttributeInterface> =>
+			test: (attributes: unknown): asserts attributes is Array<MessageAttributeInterface> =>
 			{
-				assertArray<MessageAttributeInterface>(scopedValue, {
+				assertArray<MessageAttributeInterface>(attributes, {
 					itemTest: assertMessageAttributeInterface,
 				});
 			},
@@ -35,9 +35,9 @@ function assertMessageInterface(value: unknown): asserts value is MessageInterfa
 			nullable: true,
 		},
 		MessageAttributes: {
-			test: (scopedValue: unknown): asserts scopedValue is Record<string, unknown> =>
+			test: (message_attributes: unknown): asserts message_attributes is Record<string, unknown> =>
 			{
-				assertRecord<unknown>(scopedValue);
+				assertRecord<unknown>(message_attributes);
 			},
 			optional: true,
 			nullable: true,
