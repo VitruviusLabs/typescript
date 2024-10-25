@@ -1,8 +1,12 @@
 {
 	"extends": "./tsconfig.json",
-	"include": [".", "./**/.*", "./**/*.json"],
+	"include": [
+		".",
+		"./**/.*",
+		"./**/*.json"
+	],
 	"ts-node": {
-	  "files": true,
-	  "swc": true
+		"files": true,
+		"swc": true
 	}
-  }
+}

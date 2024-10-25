@@ -26,7 +26,7 @@ class SQSService
 		this.protocol = this.https ? "https" : "http";
 	}
 
-	public async receiveMessage(queueName: string): Promise<ResponseEnvelope>
+	public async receiveMessage(queue_name: string): Promise<ResponseEnvelope>
 	{
 		const parameters: URLSearchParams = new URLSearchParams();
 
@@ -38,7 +38,7 @@ class SQSService
 
 		parameters.append("Action", "ReceiveMessage");
 
-		const address: string = `${this.protocol}://${this.host}/${this.accountId}/${queueName}`;
+		const address: string = `${this.protocol}://${this.host}/${this.accountId}/${queue_name}`;
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,
@@ -74,7 +74,7 @@ class SQSService
 		return envelope;
 	}
 
-	public async sendMessage(queueName: string, message: string): Promise<unknown>
+	public async sendMessage(queue_name: string, message: string): Promise<unknown>
 	{
 		const parameters: URLSearchParams = new URLSearchParams();
 
@@ -95,7 +95,7 @@ class SQSService
 			"Host": this.host,
 		};
 
-		const address: string = `${this.protocol}://${this.host}/${this.accountId}/${queueName}`;
+		const address: string = `${this.protocol}://${this.host}/${this.accountId}/${queue_name}`;
 
 		const signature: Signature = new Signature({
 			accessKeyId: this.accessKeyId,

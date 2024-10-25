@@ -56,10 +56,10 @@ abstract class Singleton
 	 * ```typescript
 	 * class MySingleton extends Singleton
 	 * {
-	 *      public constructor()
-	 *      {
-	 *          super();
-	 *      }
+	 *     public constructor()
+	 *     {
+	 *         super();
+	 *     }
 	 * }
 	 *
 	 * if (!MySingleton.HasInstance(MySingleton))
@@ -94,10 +94,10 @@ abstract class Singleton
 	 * ```typescript
 	 * class MySingleton extends Singleton
 	 * {
-	 *      public constructor()
-	 *      {
-	 *          super();
-	 *      }
+	 *     public constructor()
+	 *     {
+	 *         super();
+	 *     }
 	 * }
 	 *
 	 * const instance = new MySingleton();
