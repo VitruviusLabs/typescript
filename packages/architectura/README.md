@@ -34,6 +34,31 @@ The objective is not to retain the user base by introducing unique patterns, a l
 The objective is to convince the user base that Architectura is the right fit for their project and needs.
 If they realise it wasn't due to their software needs sliding out of the scope of Architectura, they are not prisoners and can easily offboard themselves from it.
 
+## Getting started
+
+To get started with Architectura, you do not need much.
+In fact, you need as little as this code:
+
+```ts
+import { Server } from "@vitruvius-labs/architectura";
+
+const server: Server = await Server.Create({
+	https: false,
+	port: 80,
+});
+
+server.start();
+```
+
+It will create and start an HTTP server listening on port 80, but it won't do anything without endpoints.
+
+> [!IMPORTANT]
+> Architectura supports native Node.js HTTPS servers. Always use HTTPS in production.
+> This example is provided as-is for simplicity. Refer to the corresponding documentation to know how to setup your server.
+
+Architectura does minimal work when it comes to the server.
+It uses the native Node.js server technology and wraps it within a unified `Server` class for simplification purposes.
+
 ## Endpoints concept
 
 Architectura differentiate itself from other framework by the use of endpoints.
@@ -75,7 +100,17 @@ It will automatically map to the absolute route provided and use the correspondi
 By using this approach, new developers can quickly understand what they are looking out with minimal cognitive load.
 It also has the benefit of making the removal of any route trivial.
 This is an important part regarding application security.
-Being able to safely remove a route without letting opened channels is a way to ensure you keep a clear understanding what you expose to the world.
+Being able to safely remove a route without letting opened channels is a way to ensure you keep a clear understanding what you expose publicly.
+
+Then you only need to add the endpoint to the endpoint registry to activate it.
+It can be done before or after starting the server, but we recommend doing it before.
+
+```ts
+import { EndpointRegistry } from "@vitruvius-labs/architectura";
+import { HealthCheckEndpoint } from "./endpoint/healthcheck.endpoint.mjs";
+
+EndpointRegistry.AddEndpoint(HealthCheckEndpoint);
+```
 
 If you want to know more about endpoints within Architectura, please refer to the [Endpoints](_docs/endpoints/readme.md) documentation.
 
@@ -131,32 +166,14 @@ If you work within a specific domain that embarks an entity called `Dog` that yo
 This entity will most likely have a model called `dog.model.mts`, a factory called `dog.factory.mts` and a repository called `dog.repository.mts`.
 It would make sense to create a `GetDogFactory` method on your domain to make sure the factory is accessed in a unified way everywhere within your code.
 
-If you want to know more about domains within Architectura specifically, please refer to the [Domains](_docs/domains/readme.md) documentation.
-
-## Getting started
-
-To get started with Architectura, you do not need much.
-In fact, you need as little as this code:
-
+You can automate the loading of your domains.
+It can be done before or after starting the server, but we recommend doing it before.
 ```ts
-import { DomainService, Server } from "@vitruvius-labs/architectura";
+import { DomainService } from "@vitruvius-labs/architectura";
 
 await DomainService.LoadMultipleFromRootDirectory(`${import.meta.dirname}/domain`);
-
-const server: Server = await Server.Create({
-	https: false,
-	port: 80, // This is an example, try to avoid using magic numbers here and rely on configurations or enums.
-});
-
-server.start();
 ```
 
 This code will load your domains in the `domain` sibling directory.
-It will then create and start an HTTP server listening on port 80.
 
-> [!IMPORTANT]
-> Architectura supports native Node.js HTTPS servers. Always use HTTPS in production.
-> This example is provided as-is for simplicity. Refer to the corresponding documentation to know how to setup your server.
-
-Architectura does minimal work when it comes to the server.
-It uses the native Node.js server technology and wraps it within a unified `Server` class for simplification purposes.
+If you want to know more about domains within Architectura specifically, please refer to the [Domains](_docs/domains/readme.md) documentation.

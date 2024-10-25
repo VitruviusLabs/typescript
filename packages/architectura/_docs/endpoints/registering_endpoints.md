@@ -55,3 +55,58 @@ You can also add your endpoint manually.
 ```ts
 EndpointRegistry.AddEndpoint(HealthCheckEndpoint);
 ```
+
+## How endpoints associate with domains
+
+Using purely endpoints has shortcomings.
+Mainly because this will eventually lead to a situation where it becomes unclear what is where.
+This is why Architectura encourages you to separate your business logic among distinct domains.
+
+Let's take an example of how endpoints architecture may look like.
+
+```mermaid
+	graph TD;
+	System --> RegisterCustomerEndpoint
+	System --> DeleteCustomerEndpoint
+	System --> AddProductToCartEndpoint
+	System --> CheckoutCartEndpoint
+```
+
+If we were to add 5 more endpoints, this structure will look as follows.
+
+```mermaid
+	graph TD;
+	System --> RegisterCustomerEndpoint
+	System --> DeleteCustomerEndpoint
+	System --> AddProductToCartEndpoint
+	System --> CheckoutCartEndpoint
+	System --> ResetPasswordEndpoint
+	System --> ConfirmEmailEndpoint
+	System --> RemoveProductFromCartEndpoint
+	System --> AddVoucherEndpoint
+	System --> RemoveVoucherEndpoint
+```
+
+It is indeed starting to look confusing, difficult to maintain, and overall not sustainable.
+
+We are going to look at how this would look when separated within domains.
+
+```mermaid
+	graph TD;
+	System --> CustomerDomain
+	CustomerDomain --> RegisterCustomerEndpoint
+	CustomerDomain --> DeleteCustomerEndpoint
+	CustomerDomain --> ResetPasswordEndpoint
+	CustomerDomain --> ConfirmEmailEndpoint
+	System --> CartDomain
+	CartDomain --> AddProductToCartEndpoint
+	CartDomain --> CheckoutCartEndpoint
+	CartDomain --> RemoveProductFromCartEndpoint
+	CartDomain --> AddVoucherEndpoint
+	CartDomain --> RemoveVoucherEndpoint
+```
+
+This is starting to look more structured!
+
+If we were to only use one domain level, we would simply postpone the problem we previously exposed.
+This is why Architectura supports an infinite nesting of subdomains. See [Subdomains](../domains/readme.md#subdomains).

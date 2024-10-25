@@ -6,7 +6,7 @@ Architectura provide natively the tools to handle JWTs.
 It will process an `Authorization` header to extract a JWT.
 The found JWT will be added to the execution context.
 
-### Installation
+### Activation
 
 Instantiate and register the pre-hook.
 
@@ -33,7 +33,7 @@ Architectura provide natively the tools to handle sessions using cookies.
 It will process a cookie named `session_uuid`.
 The found session will be added to the execution context.
 
-### Installation
+### Activation
 
 Instantiate and register the pre-hook.
 The delegate handle the persistent storage of session data.

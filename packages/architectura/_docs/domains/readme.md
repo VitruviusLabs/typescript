@@ -184,58 +184,10 @@ export { UserDomain };
 > At this point, you are ready to start your application. Architectura will automatically register your domain, that will then explicitly register your endpoints.
 > Since the `main.mts` file starts the server, both endpoints will become accessible as `POST /user/login` and `POST /user/logout`.
 
-## How endpoints associate with domains
+## Subdomains
 
-Using purely endpoints has shortcomings. Mainly because this will eventually lead to a situation where it becomes unclear what is where.
-This is why Architectura encourages you to separate your business logic among distinct domains.
-
-Let's take the previous diagram again on how endpoints architecture looks like.
-
-```mermaid
-	graph TD;
-	System --> RegisterCustomerEndpoint
-	System --> DeleteCustomerEndpoint
-	System --> AddProductToCartEndpoint
-	System --> CheckoutCartEndpoint
-```
-
-If we were to add 5 more endpoints, this structure will look as follows.
-
-```mermaid
-	graph TD;
-	System --> RegisterCustomerEndpoint
-	System --> DeleteCustomerEndpoint
-	System --> AddProductToCartEndpoint
-	System --> CheckoutCartEndpoint
-	System --> ResetPasswordEndpoint
-	System --> ConfirmEmailEndpoint
-	System --> RemoveProductFromCartEndpoint
-	System --> AddVoucherEndpoint
-	System --> RemoveVoucherEndpoint
-```
-
-It is indeed starting to look confusing, difficult to maintain, and overall not sustainable.
-
-We are going to look at how this would look when separated within domains.
-
-```mermaid
-	graph TD;
-	System --> CustomerDomain
-	CustomerDomain --> RegisterCustomerEndpoint
-	CustomerDomain --> DeleteCustomerEndpoint
-	CustomerDomain --> ResetPasswordEndpoint
-	CustomerDomain --> ConfirmEmailEndpoint
-	System --> CartDomain
-	CartDomain --> AddProductToCartEndpoint
-	CartDomain --> CheckoutCartEndpoint
-	CartDomain --> RemoveProductFromCartEndpoint
-	CartDomain --> AddVoucherEndpoint
-	CartDomain --> RemoveVoucherEndpoint
-```
-
-This is starting to look more structured!
-If we were to only use one domain level, we would simply postpone the problem we previously exposed.
-This is why Architectura supports an infinite nesting of subdomains.
+Architectura supports an infinite nesting of subdomains.
+Subdomains helps structure and organize your logic, while making your intent clear for yourself and others.
 
 ```mermaid
 	graph TD;
@@ -257,5 +209,4 @@ This is why Architectura supports an infinite nesting of subdomains.
 	AppointmentManagementDomain --> CancellationDomain
 ```
 
-These subdomains helps simplify your logic.
-It makes your intent clear for yourself and others.
+See [How endpoints associate with domains](../endpoints/registering_endpoints.md#how-endpoints-associate-with-domains).

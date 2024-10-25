@@ -108,7 +108,7 @@ If you were to delete this endpoint, this route would be permanently removed fro
 This has multiple benefits:
 - It makes onboarding developers considerably faster on your application.
 - It encourages you to get a more atomic approach to your software by making you consider your endpoint as a single unit of an application rather than a derivate member of a controller.
-- It helps you maintain a secure application by giving you full and explicit control over what you expose to the world.
+- It helps you maintain a secure application by giving you full and explicit control over what you expose publicly.
 
 ### Non-ambiguous
 
