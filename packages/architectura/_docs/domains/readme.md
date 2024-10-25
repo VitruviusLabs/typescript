@@ -19,7 +19,8 @@ If you want to get even more information, you can explore the sub-sections.
 
 ## Rationale
 
-We are convinced that business logic is tightly linked to software development. It is not possible to develop a solution that meets end-user exceptations without understanding the business logic.
+We are convinced that business logic is tightly linked to software development.
+It is not possible to develop a solution that meets end-user exceptations without understanding the business logic.
 This is not a new concept. It has been explained and detailed as early as 2003 by Eric Evans in his book *Domain-Driven Design: Tackling Complexity in the Heart of Software*.
 We are not going to go over the concept of domains in within the Domain Driven Design philosophy. We are simply going to explain how they work within Architectura.
 
@@ -83,6 +84,9 @@ const server: Server = await Server.Create({
 server.start();
 ```
 
+> [!IMPORTANT]
+> Your file name need to contain `.domain.` to be identified by Architectura.
+
 > [!NOTE]
 > Unlike endpoints, we encourage you to recursively register your domains. This will help you lessen the required work to add new domains to your solution.
 
@@ -106,7 +110,6 @@ src/
 The first endpoint will handle user login.
 
 `user-login.endpoint.mts`
-
 ```ts
 import { type ExecutionContext, HTTPMethodEnum } from "@vitruvius-labs/architectura";
 import { BaseEndpoint } from "@vitruvius-labs/architectura";
@@ -130,7 +133,6 @@ export { UserLoginEndpoint };
 The second endpoint will handle user logout.
 
 `user-logout.endpoint.mts`
-
 ```ts
 import { type ExecutionContext, HTTPMethodEnum } from "@vitruvius-labs/architectura";
 import { BaseEndpoint } from "@vitruvius-labs/architectura";
@@ -179,5 +181,81 @@ export { UserDomain };
 > We recommend you to create more methods within your domain class to keep your code structured and organised.
 
 > [!NOTE]
-> At this point, you are ready to start your application. Architectura will automatically register your domain, that will then explicitly register your endpoints. Since the `main.mts` file starts the server, both endpoints will become accessible as `POST /user/login` and `POST /user/logout`.
+> At this point, you are ready to start your application. Architectura will automatically register your domain, that will then explicitly register your endpoints.
+> Since the `main.mts` file starts the server, both endpoints will become accessible as `POST /user/login` and `POST /user/logout`.
 
+## How endpoints associate with domains
+
+Using purely endpoints has shortcomings. Mainly because this will eventually lead to a situation where it becomes unclear what is where.
+This is why Architectura encourages you to separate your business logic among distinct domains.
+
+Let's take the previous diagram again on how endpoints architecture looks like.
+
+```mermaid
+	graph TD;
+	System --> RegisterCustomerEndpoint
+	System --> DeleteCustomerEndpoint
+	System --> AddProductToCartEndpoint
+	System --> CheckoutCartEndpoint
+```
+
+If we were to add 5 more endpoints, this structure will look as follows.
+
+```mermaid
+	graph TD;
+	System --> RegisterCustomerEndpoint
+	System --> DeleteCustomerEndpoint
+	System --> AddProductToCartEndpoint
+	System --> CheckoutCartEndpoint
+	System --> ResetPasswordEndpoint
+	System --> ConfirmEmailEndpoint
+	System --> RemoveProductFromCartEndpoint
+	System --> AddVoucherEndpoint
+	System --> RemoveVoucherEndpoint
+```
+
+It is indeed starting to look confusing, difficult to maintain, and overall not sustainable.
+
+We are going to look at how this would look when separated within domains.
+
+```mermaid
+	graph TD;
+	System --> CustomerDomain
+	CustomerDomain --> RegisterCustomerEndpoint
+	CustomerDomain --> DeleteCustomerEndpoint
+	CustomerDomain --> ResetPasswordEndpoint
+	CustomerDomain --> ConfirmEmailEndpoint
+	System --> CartDomain
+	CartDomain --> AddProductToCartEndpoint
+	CartDomain --> CheckoutCartEndpoint
+	CartDomain --> RemoveProductFromCartEndpoint
+	CartDomain --> AddVoucherEndpoint
+	CartDomain --> RemoveVoucherEndpoint
+```
+
+This is starting to look more structured!
+If we were to only use one domain level, we would simply postpone the problem we previously exposed.
+This is why Architectura supports an infinite nesting of subdomains.
+
+```mermaid
+	graph TD;
+	System --> HospitalDomain
+	HospitalDomain --> PatientManagementDomain
+	PatientManagementDomain --> PatientRegistrationDomain
+	PatientRegistrationDomain --> PatientIdentityDomain
+	PatientRegistrationDomain --> HealthcareDomain
+	PatientRegistrationDomain --> InsuranceDomain
+	PatientManagementDomain --> MedicalHistoryDomain
+	MedicalHistoryDomain --> ConsultationDomain
+	MedicalHistoryDomain --> LabResultsDomain
+	HospitalDomain --> AppointmentDomain
+	AppointmentDomain --> BookingDomain
+	BookingDomain --> OnlineBookingDomain
+	BookingDomain --> DoctorBookingDomain
+	AppointmentDomain --> AppointmentManagementDomain
+	AppointmentManagementDomain --> ReschedulingDomain
+	AppointmentManagementDomain --> CancellationDomain
+```
+
+These subdomains helps simplify your logic.
+It makes your intent clear for yourself and others.

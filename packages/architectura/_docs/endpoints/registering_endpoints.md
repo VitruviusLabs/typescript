@@ -35,26 +35,23 @@ export { HealthCheckEndpoint };
 We are taking our rudimentary healthcheck as an example again.
 
 As you can see, this endpoint inherits from [BaseEndpoint](../../src/core/endpoint/base.endpoint.mts).
-This allows Architectura to automatically detect your endpoint when you point to the directory containing this file.
+This allows Architectura to automatically detect your endpoint when you add the directory containing this file to the registry.
 
 > [!IMPORTANT]
-> You need your file name to contain `.endpoint.` to be detected by Architectura.
-
-<!--
-> [!NOTE]
-> There is no forced file naming in Architectura. You can call your files as you prefer.
-> We prefer naming all our files in lower case and suffixing them with their purpose. For example, the `BaseEndpoint` class is contained within the `base.endpoints.mts` file. Feel free to use whichever nomenclature you prefer. As usual, Architectura is non-intrusive. -->
+> Your file name need to contain `.endpoint.` to be identified by Architectura.
 
 ### 2. Registering your endpoint
 
 Once you have created and saved your file, all you need is the following code.
-
 ```ts
-import {EndpointRegistry } from "@vitruvius-labs/architectura";
+import { EndpointRegistry } from "@vitruvius-labs/architectura";
 
 await EndpointRegistry.AddEndpointsDirectory(`${import.meta.dirname}/endpoint`); // Adapt the path to your own needs!
 ```
 
-When you start Architectura, it will automatically look for all available endpoints within this directory.
+It will automatically look for all available endpoints within this directory, recursively.
 
-
+You can also add your endpoint manually.
+```ts
+EndpointRegistry.AddEndpoint(HealthCheckEndpoint);
+```

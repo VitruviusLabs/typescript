@@ -10,6 +10,8 @@ If you want to get even more information, you can explore the sub-sections.
 
 - [Documentation home](../../README.md)
 - [Registering endpoints](registering_endpoints.md)
+- [Hooks](hooks.md)
+- [Execution Context](execution_context.md)
 
 ## Table of contents
 
@@ -17,11 +19,10 @@ If you want to get even more information, you can explore the sub-sections.
 - [Endpoint structure](#endpoint-structure)
 	- [Self-contained](#self-contained)
 	- [Non-ambiguous](#non-ambiguous)
-- [How endpoints associate with domains](#how-endpoints-associate-with-domains)
 
 ## Rationale
 
-The most traditional approach to implementing routes tied to actions is to follow the MVC pattern.
+The most common approach to implementing routes tied to actions is to follow the MVC design pattern.
 
 Let's take an example of a simple e-commerce website:
 
@@ -56,7 +57,7 @@ Let's take an example for the same e-commerce website with only endpoints (we wi
 ```
 
 This software architecture is more streamlined. It allows developers to quickly understand how the code is structured.
-There is a notable challenge from this architecture: With time and feature increase, the purely horizontal approach will create a hard to maintain code base. **This is where domains come to play, but we will get to that later.**
+There is a notable challenge from this architecture: With time and feature increase, the purely horizontal approach will create a hard to maintain code base.
 
 ## Endpoint structure
 
@@ -77,11 +78,10 @@ MyEndpoint : execute(context)
 
 ### Self-contained
 
-As we explained previously, an endpoint is self-contained in Architectura.
+As mentioned, an endpoint is self-contained in Architectura.
 This means all information necessary to the understanding of a specific endpoint is contained within the file declaring the endpoint.
 
 Let's take an example of a simple endpoint handling a rudimentary application healthcheck:
-
 
 ```ts
 import { type ExecutionContext, HTTPMethodEnum } from "@vitruvius-labs/architectura";
@@ -107,87 +107,11 @@ If you were to delete this endpoint, this route would be permanently removed fro
 
 This has multiple benefits:
 - It makes onboarding developers considerably faster on your application.
-- It encourages you to get a more unit-based approach to your software by making you consider your endpoint as a single unit of an application rather than a derivate member of a controller.
-- It helps you maintain a secure application by giving you full control over what you expose to the internet.
+- It encourages you to get a more atomic approach to your software by making you consider your endpoint as a single unit of an application rather than a derivate member of a controller.
+- It helps you maintain a secure application by giving you full and explicit control over what you expose to the world.
 
 ### Non-ambiguous
 
 The endpoints approach reduces ambiguity within your code. Since you are not relying on resolution magic, your intent is clear. As we stated, you want to run the code within the `execute` method when the `/health` route is called with a `GET` HTTP verb.
 
 Reducing ambiguity helps maintaining a clean code base and reduces cognitive load. It allows you to focus on the most important parts of your code base, instead of trying to understand the basics of what you are looking at.
-
-## How endpoints associate with domains
-
-Using purely endpoints has shortcomings. Mainly because this will eventually lead to a situation where it becomes unclear what is where.
-This is why Architectura encourages you to separate your business logic among distinct domains.
-
-Let's take the previous diagram again on how endpoints architecture looks like.
-
-```mermaid
-	graph TD;
-	System --> RegisterCustomerEndpoint
-	System --> DeleteCustomerEndpoint
-	System --> AddProductToCartEndpoint
-	System --> CheckoutCartEndpoint
-```
-
-If we were to add 5 more endpoints, this structure will look as follows.
-
-```mermaid
-	graph TD;
-	System --> RegisterCustomerEndpoint
-	System --> DeleteCustomerEndpoint
-	System --> AddProductToCartEndpoint
-	System --> CheckoutCartEndpoint
-	System --> ResetPasswordEndpoint
-	System --> ConfirmEmailEndpoint
-	System --> RemoveProductFromCartEndpoint
-	System --> AddVoucherEndpoint
-	System --> RemoveVoucherEndpoint
-```
-
-It is indeed starting to look confusing, difficult to maintain, and overall not sustainable.
-
-We are going to look at how this would look when separated within domains.
-
-```mermaid
-	graph TD;
-	System --> CustomerDomain
-	CustomerDomain --> RegisterCustomerEndpoint
-	CustomerDomain --> DeleteCustomerEndpoint
-	CustomerDomain --> ResetPasswordEndpoint
-	CustomerDomain --> ConfirmEmailEndpoint
-	System --> CartDomain
-	CartDomain --> AddProductToCartEndpoint
-	CartDomain --> CheckoutCartEndpoint
-	CartDomain --> RemoveProductFromCartEndpoint
-	CartDomain --> AddVoucherEndpoint
-	CartDomain --> RemoveVoucherEndpoint
-```
-
-This is starting to look more structured! If we were to only use one domain level, we would simply postpone the problem we previously exposed.
-This is why Architectura supports an infinite number of levels of domains.
-You could improve the previous structure by adding a new domain level.
-
-
-```mermaid
-	graph TD;
-	System --> CustomerDomain
-	CustomerDomain --> AdminCustomerDomain
-	CustomerDomain --> PublicCustomerDomain
-	AdminCustomerDomain --> DeleteCustomerEndpoint
-	PublicCustomerDomain --> RegisterCustomerEndpoint
-	PublicCustomerDomain --> ResetPasswordEndpoint
-	PublicCustomerDomain --> ConfirmEmailEndpoint
-	System --> CartDomain
-	CartDomain --> CartProductDomain
-	CartDomain --> CartVoucherDomain
-	CartDomain --> CartProcessDomain
-	CartProductDomain --> AddProductToCartEndpoint
-	CartProductDomain --> CheckoutCartEndpoint
-	CartVoucherDomain --> RemoveProductFromCartEndpoint
-	CartVoucherDomain --> AddVoucherEndpoint
-	CartProcessDomain --> RemoveVoucherEndpoint
-```
-
-This new level of domain helps simplify your logic. It makes your intent clear for yourself and others.
