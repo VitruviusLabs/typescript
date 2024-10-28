@@ -2,19 +2,15 @@ import type { ServerConfigurationType } from "./definition/type/server-configura
 import type { ServerInstantiationType } from "./definition/type/server-instantiation.type.mjs";
 import type { EndpointMatchInterface } from "../endpoint/definition/interface/endpoint-match.interface.mjs";
 import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
-import type { BasePreHook } from "../hook/base.pre-hook.mjs";
-import type { BasePostHook } from "../hook/base.post-hook.mjs";
-import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import { Server as UnsafeServer, type ServerOptions as UnsafeServerOptions } from "node:http";
 import { Server as SecureServer, type ServerOptions as SecureServerOptions } from "node:https";
 import { extname } from "node:path";
-import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 import { assertInteger } from "@vitruvius-labs/ts-predicate/type-assertion";
 import { ReflectUtility } from "@vitruvius-labs/toolbox/reflect";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { EndpointRegistry } from "../endpoint/endpoint.registry.mjs";
-import { HookRegistry } from "../hook/hook.registry.mjs";
+import { HookService } from "../hook/hook.service.mjs";
 import { AssetRegistry } from "./asset.registry.mjs";
 import { ExecutionContext } from "../execution-context/execution-context.mjs";
 import { ExecutionContextRegistry } from "../execution-context/execution-context.registry.mjs";
@@ -122,10 +118,7 @@ class Server
 
 			try
 			{
-				for (const HOOK of HookRegistry.GetErrorHooks())
-				{
-					await HOOK.execute(CONTEXT, error);
-				}
+				await HookService.RunFallbackErrorHooks(CONTEXT, error);
 			}
 			catch (scoped_error: unknown)
 			{
@@ -243,9 +236,9 @@ class Server
 
 		try
 		{
-			await Server.RunPreHooks(ENDPOINT, context);
+			await HookService.RunPreHooks(ENDPOINT, context);
 			await ENDPOINT.execute(context);
-			await Server.RunPostHooks(ENDPOINT, context);
+			await HookService.RunPostHooks(ENDPOINT, context);
 
 			has_error_occurred = false;
 		}
@@ -253,7 +246,7 @@ class Server
 		{
 			LoggerProxy.Error(error);
 
-			await Server.RunErrorHooks(ENDPOINT, context, error);
+			await HookService.RunErrorHooks(ENDPOINT, context, error);
 		}
 		finally
 		{
@@ -261,66 +254,6 @@ class Server
 		}
 
 		return true;
-	}
-
-	private static async RunPreHooks(endpoint: BaseEndpoint, context: ExecutionContext): Promise<void>
-	{
-		const EXCLUDED_HOOKS: Array<typeof BasePreHook> = endpoint.getExcludedGlobalPreHooks();
-
-		for (const HOOK of HookRegistry.GetPreHooks())
-		{
-			if (EXCLUDED_HOOKS.includes(getConstructorOf(HOOK)))
-			{
-				continue;
-			}
-
-			await HOOK.execute(context);
-		}
-
-		for (const HOOK of endpoint.getPreHooks())
-		{
-			await HOOK.execute(context);
-		}
-	}
-
-	private static async RunPostHooks(endpoint: BaseEndpoint, context: ExecutionContext): Promise<void>
-	{
-		const EXCLUDED_HOOKS: Array<typeof BasePostHook> = endpoint.getExcludedGlobalPostHooks();
-
-		for (const HOOK of HookRegistry.GetPostHooks())
-		{
-			if (EXCLUDED_HOOKS.includes(getConstructorOf(HOOK)))
-			{
-				continue;
-			}
-
-			await HOOK.execute(context);
-		}
-
-		for (const HOOK of endpoint.getPostHooks())
-		{
-			await HOOK.execute(context);
-		}
-	}
-
-	private static async RunErrorHooks(endpoint: BaseEndpoint, context: ExecutionContext, error: unknown): Promise<void>
-	{
-		const EXCLUDED_HOOKS: Array<typeof BaseErrorHook> = endpoint.getExcludedGlobalErrorHooks();
-
-		for (const HOOK of HookRegistry.GetErrorHooks())
-		{
-			if (EXCLUDED_HOOKS.includes(getConstructorOf(HOOK)))
-			{
-				continue;
-			}
-
-			await HOOK.execute(context, error);
-		}
-
-		for (const HOOK of endpoint.getErrorHooks())
-		{
-			await HOOK.execute(context, error);
-		}
 	}
 
 	private static async FinalizeResponse(context: ExecutionContext, has_error_occurred: boolean): Promise<void>

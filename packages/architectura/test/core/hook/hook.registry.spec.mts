@@ -18,20 +18,9 @@ describe("HookRegistry", (): void => {
 				public async execute(): Promise<void> { }
 			}
 
-			ReflectUtility.Set(HookRegistry, "PRE_HOOKS", [new DummyPreHook()]);
+			ReflectUtility.Set(HookRegistry, "PRE_HOOKS", [DummyPreHook, new DummyPreHook()]);
 
-			deepStrictEqual(HookRegistry.GetPreHooks(), [new DummyPreHook()]);
-		});
-
-		it("should instantiate pre hook constructors", (): void => {
-			class DummyPreHook extends BasePreHook
-			{
-				public async execute(): Promise<void> { }
-			}
-
-			ReflectUtility.Set(HookRegistry, "PRE_HOOKS", [DummyPreHook]);
-
-			deepStrictEqual(HookRegistry.GetPreHooks(), [new DummyPreHook()]);
+			deepStrictEqual(HookRegistry.GetPreHooks(), [DummyPreHook, new DummyPreHook()]);
 		});
 	});
 
@@ -82,20 +71,9 @@ describe("HookRegistry", (): void => {
 				public async execute(): Promise<void> { }
 			}
 
-			ReflectUtility.Set(HookRegistry, "POST_HOOKS", [new DummyPostHook()]);
+			ReflectUtility.Set(HookRegistry, "POST_HOOKS", [DummyPostHook, new DummyPostHook()]);
 
-			deepStrictEqual(HookRegistry.GetPostHooks(), [new DummyPostHook()]);
-		});
-
-		it("should instantiate post hook constructors", (): void => {
-			class DummyPostHook extends BasePostHook
-			{
-				public async execute(): Promise<void> { }
-			}
-
-			ReflectUtility.Set(HookRegistry, "POST_HOOKS", [DummyPostHook]);
-
-			deepStrictEqual(HookRegistry.GetPostHooks(), [new DummyPostHook()]);
+			deepStrictEqual(HookRegistry.GetPostHooks(), [DummyPostHook, new DummyPostHook()]);
 		});
 	});
 
@@ -146,20 +124,9 @@ describe("HookRegistry", (): void => {
 				public async execute(): Promise<void> { }
 			}
 
-			ReflectUtility.Set(HookRegistry, "ERROR_HOOKS", [new DummyErrorHook()]);
+			ReflectUtility.Set(HookRegistry, "ERROR_HOOKS", [DummyErrorHook, new DummyErrorHook()]);
 
-			deepStrictEqual(HookRegistry.GetErrorHooks(), [new DummyErrorHook()]);
-		});
-
-		it("should instantiate error hook constructors", (): void => {
-			class DummyErrorHook extends BaseErrorHook
-			{
-				public async execute(): Promise<void> { }
-			}
-
-			ReflectUtility.Set(HookRegistry, "ERROR_HOOKS", [DummyErrorHook]);
-
-			deepStrictEqual(HookRegistry.GetErrorHooks(), [new DummyErrorHook()]);
+			deepStrictEqual(HookRegistry.GetErrorHooks(), [DummyErrorHook, new DummyErrorHook()]);
 		});
 	});
 

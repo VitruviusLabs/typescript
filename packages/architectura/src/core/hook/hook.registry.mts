@@ -22,9 +22,9 @@ class HookRegistry
 	 *
 	 * @internal
 	 */
-	public static GetPreHooks(): Array<BasePreHook>
+	public static GetPreHooks(): Array<BasePreHook | ConstructorOf<BasePreHook>>
 	{
-		return HookRegistry.PRE_HOOKS.map(HookRegistry.Instantiate);
+		return HookRegistry.PRE_HOOKS;
 	}
 
 	/**
@@ -51,9 +51,9 @@ class HookRegistry
 	 *
 	 * @internal
 	 */
-	public static GetPostHooks(): Array<BasePostHook>
+	public static GetPostHooks(): Array<BasePostHook | ConstructorOf<BasePostHook>>
 	{
-		return HookRegistry.POST_HOOKS.map(HookRegistry.Instantiate);
+		return HookRegistry.POST_HOOKS;
 	}
 
 	/**
@@ -80,9 +80,9 @@ class HookRegistry
 	 *
 	 * @internal
 	 */
-	public static GetErrorHooks(): Array<BaseErrorHook>
+	public static GetErrorHooks(): Array<BaseErrorHook | ConstructorOf<BaseErrorHook>>
 	{
-		return HookRegistry.ERROR_HOOKS.map(HookRegistry.Instantiate);
+		return HookRegistry.ERROR_HOOKS;
 	}
 
 	/**
@@ -171,16 +171,6 @@ class HookRegistry
 				}
 			}
 		}
-	}
-
-	private static Instantiate<T extends BaseErrorHook | BasePostHook | BasePreHook>(this: void, hook: ConstructorOf<T> | T): T
-	{
-		if (isFunction(hook))
-		{
-			return new hook();
-		}
-
-		return hook;
 	}
 
 	private static IsPreHook(value: unknown): value is BasePreHook | ConstructorOf<BasePreHook>
