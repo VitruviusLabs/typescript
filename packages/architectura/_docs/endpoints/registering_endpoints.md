@@ -56,6 +56,14 @@ You can also add your endpoint manually.
 EndpointRegistry.AddEndpoint(HealthCheckEndpoint);
 ```
 
+### Instance vs constructor
+
+You can either register an endpoint instance or an endpoint constructor.
+- If you register an instance, it'll be reused each time and should likely be stateless.
+- If you register a constructor, it'll be instantiated each time with no parameter.
+
+It's safer to register them as constructors.
+
 ## How endpoints associate with domains
 
 Using purely endpoints has shortcomings.

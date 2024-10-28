@@ -1,6 +1,7 @@
 import { deepStrictEqual, doesNotThrow, strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { ReflectUtility } from "@vitruvius-labs/toolbox";
+import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import { BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, HTTPMethodEnum } from "../../../src/_index.mjs";
 import { type MockContextInterface, mockContext } from "../../../mock/_index.mjs";
 
@@ -40,7 +41,7 @@ describe("BaseEndpoint", (): void => {
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
 				protected readonly route: string = "/test-dummy";
-				protected override readonly excludedGlobalPreHooks: Array<typeof BasePreHook> = [DummyPreHook];
+				protected override readonly excludedGlobalPreHooks: Array<ConstructorOf<BasePreHook>> = [DummyPreHook];
 
 				public execute(): void { }
 			}
@@ -86,7 +87,7 @@ describe("BaseEndpoint", (): void => {
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
 				protected readonly route: string = "/test-dummy";
-				protected override readonly excludedGlobalPostHooks: Array<typeof BasePostHook> = [DummyPostHook];
+				protected override readonly excludedGlobalPostHooks: Array<ConstructorOf<BasePostHook>> = [DummyPostHook];
 
 				public execute(): void { }
 			}
@@ -132,7 +133,7 @@ describe("BaseEndpoint", (): void => {
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
 				protected readonly route: string = "/test-dummy";
-				protected override readonly excludedGlobalErrorHooks: Array<typeof BaseErrorHook> = [DummyErrorHook];
+				protected override readonly excludedGlobalErrorHooks: Array<ConstructorOf<BaseErrorHook>> = [DummyErrorHook];
 
 				public execute(): void { }
 			}

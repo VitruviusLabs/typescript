@@ -17,6 +17,7 @@
 		"architectura",
 	],
 	"ignoreWords": [
+		"Lebacq",
 		"Zamralik",
 		"vars",
 		"sonarjs",

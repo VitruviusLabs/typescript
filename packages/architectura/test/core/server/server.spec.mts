@@ -4,7 +4,7 @@ import { Server as UnsafeServer } from "node:http";
 import { Server as SecureServer } from "node:https";
 import { type SinonStub, stub } from "sinon";
 import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
-import { AssetRegistry, BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, type EndpointMatchInterface, EndpointRegistry, ExecutionContext, ExecutionContextRegistry, FileSystemService, HTTPMethodEnum, HTTPStatusCodeEnum, HookRegistry, LoggerProxy, type SecureServerInstantiationInterface, Server, type UnsafeServerInstantiationInterface } from "../../../src/_index.mjs";
+import { AssetRegistry, BaseEndpoint, type EndpointMatchInterface, EndpointRegistry, ExecutionContext, ExecutionContextRegistry, FileSystemService, HTTPMethodEnum, HTTPStatusCodeEnum, HookService, LoggerProxy, type SecureServerInstantiationInterface, Server, type UnsafeServerInstantiationInterface } from "../../../src/_index.mjs";
 import { mockContext } from "../../../mock/mock-context.mjs";
 import type { MockContextInterface } from "../../../mock/_index.mjs";
 
@@ -13,12 +13,6 @@ describe("Server", (): void => {
 	const HANDLE_PUBLIC_ASSETS_STUB: SinonStub = stub(Server, "HandlePublicAssets");
 	// @ts-expect-error: Stubbing a private method
 	const HANDLE_ENDPOINTS_STUB: SinonStub = stub(Server, "HandleEndpoints");
-	// @ts-expect-error: Stubbing a private method
-	const RUN_PRE_HOOKS_STUB: SinonStub = stub(Server, "RunPreHooks");
-	// @ts-expect-error: Stubbing a private method
-	const RUN_POST_HOOKS_STUB: SinonStub = stub(Server, "RunPostHooks");
-	// @ts-expect-error: Stubbing a private method
-	const RUN_ERROR_HOOKS_STUB: SinonStub = stub(Server, "RunErrorHooks");
 	// @ts-expect-error: Stubbing a private method
 	const FINALIZE_RESPONSE_STUB: SinonStub = stub(Server, "FinalizeResponse");
 	const LOGGER_DEBUG_STUB: SinonStub = stub(LoggerProxy, "Debug");
@@ -37,9 +31,10 @@ describe("Server", (): void => {
 	const CREATE_CONTEXT_STUB: SinonStub = stub(ExecutionContext, "Create");
 	const GET_CONTEXT_STUB: SinonStub = stub(ExecutionContextRegistry, "GetUnsafeExecutionContext");
 	const SET_CONTEXT_STUB: SinonStub = stub(ExecutionContextRegistry, "SetExecutionContext");
-	const GET_PRE_HOOKS_STUB: SinonStub = stub(HookRegistry, "GetPreHooks");
-	const GET_POST_HOOKS_STUB: SinonStub = stub(HookRegistry, "GetPostHooks");
-	const GET_ERROR_HOOKS_STUB: SinonStub = stub(HookRegistry, "GetErrorHooks");
+	const RUN_PRE_HOOKS_STUB: SinonStub = stub(HookService, "RunPreHooks");
+	const RUN_POST_HOOKS_STUB: SinonStub = stub(HookService, "RunPostHooks");
+	const RUN_ERROR_HOOKS_STUB: SinonStub = stub(HookService, "RunErrorHooks");
+	const RUN_FALLBACK_ERROR_HOOKS_STUB: SinonStub = stub(HookService, "RunFallbackErrorHooks");
 	const FIND_ENDPOINT_STUB: SinonStub = stub(EndpointRegistry, "FindEndpoint");
 	const FIND_PUBLIC_ASSET_STUB: SinonStub = stub(AssetRegistry, "FindPublicAsset");
 	const READ_FILE_STUB: SinonStub = stub(FileSystemService, "ReadBinaryFile");
@@ -49,12 +44,6 @@ describe("Server", (): void => {
 		HANDLE_PUBLIC_ASSETS_STUB.callThrough();
 		HANDLE_ENDPOINTS_STUB.reset();
 		HANDLE_ENDPOINTS_STUB.callThrough();
-		RUN_PRE_HOOKS_STUB.reset();
-		RUN_PRE_HOOKS_STUB.callThrough();
-		RUN_POST_HOOKS_STUB.reset();
-		RUN_POST_HOOKS_STUB.callThrough();
-		RUN_ERROR_HOOKS_STUB.reset();
-		RUN_ERROR_HOOKS_STUB.callThrough();
 		FINALIZE_RESPONSE_STUB.reset();
 		FINALIZE_RESPONSE_STUB.callThrough();
 		LOGGER_DEBUG_STUB.reset();
@@ -89,12 +78,14 @@ describe("Server", (): void => {
 		GET_CONTEXT_STUB.callThrough();
 		SET_CONTEXT_STUB.reset();
 		SET_CONTEXT_STUB.callThrough();
-		GET_PRE_HOOKS_STUB.reset();
-		GET_PRE_HOOKS_STUB.callThrough();
-		GET_POST_HOOKS_STUB.reset();
-		GET_POST_HOOKS_STUB.callThrough();
-		GET_ERROR_HOOKS_STUB.reset();
-		GET_ERROR_HOOKS_STUB.callThrough();
+		RUN_PRE_HOOKS_STUB.reset();
+		RUN_PRE_HOOKS_STUB.resolves();
+		RUN_POST_HOOKS_STUB.reset();
+		RUN_POST_HOOKS_STUB.resolves();
+		RUN_ERROR_HOOKS_STUB.reset();
+		RUN_ERROR_HOOKS_STUB.resolves();
+		RUN_FALLBACK_ERROR_HOOKS_STUB.reset();
+		RUN_FALLBACK_ERROR_HOOKS_STUB.resolves();
 		FIND_ENDPOINT_STUB.reset();
 		FIND_ENDPOINT_STUB.callThrough();
 		FIND_PUBLIC_ASSET_STUB.reset();
@@ -106,9 +97,6 @@ describe("Server", (): void => {
 	after((): void => {
 		HANDLE_PUBLIC_ASSETS_STUB.restore();
 		HANDLE_ENDPOINTS_STUB.restore();
-		RUN_PRE_HOOKS_STUB.restore();
-		RUN_POST_HOOKS_STUB.restore();
-		RUN_ERROR_HOOKS_STUB.restore();
 		FINALIZE_RESPONSE_STUB.restore();
 		LOGGER_DEBUG_STUB.restore();
 		LOGGER_INFORMATIONAL_STUB.restore();
@@ -126,9 +114,10 @@ describe("Server", (): void => {
 		CREATE_CONTEXT_STUB.restore();
 		GET_CONTEXT_STUB.restore();
 		SET_CONTEXT_STUB.restore();
-		GET_PRE_HOOKS_STUB.restore();
-		GET_POST_HOOKS_STUB.restore();
-		GET_ERROR_HOOKS_STUB.restore();
+		RUN_PRE_HOOKS_STUB.restore();
+		RUN_POST_HOOKS_STUB.restore();
+		RUN_ERROR_HOOKS_STUB.restore();
+		RUN_FALLBACK_ERROR_HOOKS_STUB.restore();
 		FIND_ENDPOINT_STUB.restore();
 		FIND_PUBLIC_ASSET_STUB.restore();
 		READ_FILE_STUB.restore();
@@ -219,34 +208,19 @@ describe("Server", (): void => {
 		});
 
 		it("should process an error in the error hooks when there is a context", async (): Promise<void> => {
-			class DummyHook extends BaseErrorHook
-			{
-				// @ts-expect-error: For testing purposes
-				// eslint-disable-next-line @ts/no-unused-vars -- For testing purposes
-				public override execute(context: ExecutionContext, error: unknown): void
-				{
-				}
-			}
-
-			const HOOK: DummyHook = new DummyHook();
-			const HOOK_STUB: SinonStub = stub(HOOK, "execute");
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
 
 			GET_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
-			GET_ERROR_HOOKS_STUB.returns([HOOK]);
-			HOOK_STUB.rejects();
-			FINALIZE_RESPONSE_STUB.rejects();
+			FINALIZE_RESPONSE_STUB.resolves();
 
 			const ERROR: Error = new Error("Test Error");
 
 			await Server.HandleError(ERROR);
 
-			strictEqual(GET_ERROR_HOOKS_STUB.callCount, 1, "'HookRegistry.GetErrorHooks' should have been called");
-			strictEqual(HOOK_STUB.callCount, 1, "All hooks method 'execute' should have been called");
-			deepStrictEqual(HOOK_STUB.firstCall.args, [CONTEXT_MOCK.instance, ERROR]);
+			strictEqual(RUN_FALLBACK_ERROR_HOOKS_STUB.callCount, 1, "'HookService.RunFallbackErrorHooks' should have been called");
+			deepStrictEqual(RUN_FALLBACK_ERROR_HOOKS_STUB.firstCall.args, [CONTEXT_MOCK.instance, ERROR]);
 			strictEqual(FINALIZE_RESPONSE_STUB.callCount, 1, "'Server.FinalizeResponse' should have been called");
 			deepStrictEqual(FINALIZE_RESPONSE_STUB.firstCall.args, [CONTEXT_MOCK.instance, true]);
-			strictEqual(LOGGER_ERROR_STUB.callCount, 1, "'LoggerProxy.Error' should have been called");
 		});
 
 		it("should be safe (without context)", async (): Promise<void> => {
@@ -257,23 +231,11 @@ describe("Server", (): void => {
 		});
 
 		it("should be safe (with context)", async (): Promise<void> => {
-			class DummyHook extends BaseErrorHook
-			{
-				// @ts-expect-error: For testing purposes
-				// eslint-disable-next-line @ts/no-unused-vars -- For testing purposes
-				public override execute(context: ExecutionContext, error: unknown): void
-				{
-				}
-			}
-
-			const HOOK: DummyHook = new DummyHook();
-			const HOOK_STUB: SinonStub = stub(HOOK, "execute");
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
 
 			GET_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
-			GET_ERROR_HOOKS_STUB.returns([HOOK]);
 
-			HOOK_STUB.rejects();
+			RUN_FALLBACK_ERROR_HOOKS_STUB.rejects();
 			FINALIZE_RESPONSE_STUB.rejects();
 
 			await doesNotReject(Server.HandleError(new Error("Test Error")));
@@ -720,182 +682,6 @@ describe("Server", (): void => {
 			ok(RUN_ERROR_HOOKS_STUB.firstCall.calledBefore(FINALIZE_RESPONSE_STUB.firstCall), "The error-hooks should have been run before finalizing the response");
 		});
 	});
-
-	describe("RunPreHooks", (): void => {
-		it("should run all global, unless excluded, and local pre-hooks", async (): Promise<void> => {
-			const CONTEXT_MOCK: MockContextInterface = mockContext();
-
-			class GlobalHook extends BasePreHook
-			{
-				public override execute(): void {}
-			}
-
-			class IgnoredHook extends BasePreHook
-			{
-				public override execute(): void {}
-			}
-
-			class LocalHook extends BasePreHook
-			{
-				public override execute(): void {}
-			}
-
-			const GLOBAL_HOOK: GlobalHook = new GlobalHook();
-			const IGNORED_HOOK: IgnoredHook = new IgnoredHook();
-			const LOCAL_HOOK: LocalHook = new LocalHook();
-			const GLOBAL_HOOK_STUB: SinonStub = stub(GLOBAL_HOOK, "execute");
-			const IGNORED_HOOK_STUB: SinonStub = stub(IGNORED_HOOK, "execute");
-			const LOCAL_HOOK_STUB: SinonStub = stub(LOCAL_HOOK, "execute");
-
-			class DummyEndpoint extends BaseEndpoint
-			{
-				protected method: HTTPMethodEnum = HTTPMethodEnum.GET;
-				protected route: string = "/alpha-omega/(?<slug>[a-z-]+)";
-
-				public async execute(): Promise<void> {}
-			}
-
-			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
-			const GET_LOCAL_HOOKS_STUB: SinonStub = stub(ENDPOINT, "getPreHooks");
-			const GET_EXCLUDED_GLOBAL_HOOKS_STUB: SinonStub = stub(ENDPOINT, "getExcludedGlobalPreHooks");
-
-			GET_PRE_HOOKS_STUB.returns([GLOBAL_HOOK, IGNORED_HOOK]);
-			GET_LOCAL_HOOKS_STUB.returns([LOCAL_HOOK]);
-			GET_EXCLUDED_GLOBAL_HOOKS_STUB.returns([IgnoredHook]);
-			RUN_PRE_HOOKS_STUB.callThrough();
-
-			const RESULT: unknown = ReflectUtility.Call(Server, "RunPreHooks", ENDPOINT, CONTEXT_MOCK.instance);
-
-			instanceOf(RESULT, Promise);
-			await doesNotReject(RESULT);
-			strictEqual(GET_PRE_HOOKS_STUB.callCount, 1, "'HookRegistry.GetPreHooks' should have been called exactly once");
-			strictEqual(GET_LOCAL_HOOKS_STUB.callCount, 1, "Endpoint method 'getPreHooks' should have been called exactly once");
-			strictEqual(GET_EXCLUDED_GLOBAL_HOOKS_STUB.callCount, 1, "Endpoint method 'getExcludedGlobalPreHooks' should have been called exactly once");
-			strictEqual(GLOBAL_HOOK_STUB.callCount, 1, "Global pre-hook method 'execute' should have been called exactly once");
-			deepStrictEqual(GLOBAL_HOOK_STUB.firstCall.args, [CONTEXT_MOCK.instance]);
-			strictEqual(IGNORED_HOOK_STUB.callCount, 0, "Excluded global pre-hook method 'execute' should not have been called");
-			strictEqual(LOCAL_HOOK_STUB.callCount, 1, "Local pre-hook method 'execute' should have been called exactly once");
-			deepStrictEqual(LOCAL_HOOK_STUB.firstCall.args, [CONTEXT_MOCK.instance]);
-		});
-	});
-
-	describe("RunPostHooks", (): void => {
-		it("should run all global, unless excluded, and local post-hooks", async (): Promise<void> => {
-			const CONTEXT_MOCK: MockContextInterface = mockContext();
-
-			class GlobalHook extends BasePostHook
-			{
-				public override execute(): void {}
-			}
-
-			class IgnoredHook extends BasePostHook
-			{
-				public override execute(): void {}
-			}
-
-			class LocalHook extends BasePostHook
-			{
-				public override execute(): void {}
-			}
-
-			const GLOBAL_HOOK: GlobalHook = new GlobalHook();
-			const IGNORED_HOOK: IgnoredHook = new IgnoredHook();
-			const LOCAL_HOOK: LocalHook = new LocalHook();
-			const GLOBAL_HOOK_STUB: SinonStub = stub(GLOBAL_HOOK, "execute");
-			const IGNORED_HOOK_STUB: SinonStub = stub(IGNORED_HOOK, "execute");
-			const LOCAL_HOOK_STUB: SinonStub = stub(LOCAL_HOOK, "execute");
-
-			class DummyEndpoint extends BaseEndpoint
-			{
-				protected method: HTTPMethodEnum = HTTPMethodEnum.GET;
-				protected route: string = "/alpha-omega/(?<slug>[a-z-]+)";
-
-				public async execute(): Promise<void> {}
-			}
-
-			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
-			const GET_LOCAL_HOOKS_STUB: SinonStub = stub(ENDPOINT, "getPostHooks");
-			const GET_EXCLUDED_GLOBAL_HOOKS_STUB: SinonStub = stub(ENDPOINT, "getExcludedGlobalPostHooks");
-
-			GET_POST_HOOKS_STUB.returns([GLOBAL_HOOK, IGNORED_HOOK]);
-			GET_LOCAL_HOOKS_STUB.returns([LOCAL_HOOK]);
-			GET_EXCLUDED_GLOBAL_HOOKS_STUB.returns([IgnoredHook]);
-			RUN_POST_HOOKS_STUB.callThrough();
-
-			const RESULT: unknown = ReflectUtility.Call(Server, "RunPostHooks", ENDPOINT, CONTEXT_MOCK.instance);
-
-			instanceOf(RESULT, Promise);
-			await doesNotReject(RESULT);
-			strictEqual(GET_POST_HOOKS_STUB.callCount, 1, "'HookRegistry.GetPostHooks' should have been called exactly once");
-			strictEqual(GET_LOCAL_HOOKS_STUB.callCount, 1, "Endpoint method 'getPostHooks' should have been called exactly once");
-			strictEqual(GET_EXCLUDED_GLOBAL_HOOKS_STUB.callCount, 1, "Endpoint method 'getExcludedGlobalPostHooks' should have been called exactly once");
-			strictEqual(GLOBAL_HOOK_STUB.callCount, 1, "Global post-hook method 'execute' should have been called exactly once");
-			deepStrictEqual(GLOBAL_HOOK_STUB.firstCall.args, [CONTEXT_MOCK.instance]);
-			strictEqual(IGNORED_HOOK_STUB.callCount, 0, "Excluded global post-hook method 'execute' should not have been called");
-			strictEqual(LOCAL_HOOK_STUB.callCount, 1, "Local post-hook method 'execute' should have been called exactly once");
-			deepStrictEqual(LOCAL_HOOK_STUB.firstCall.args, [CONTEXT_MOCK.instance]);
-		});
-
-		it("should run all global, unless excluded, and local error-hooks", async (): Promise<void> => {
-			const CONTEXT_MOCK: MockContextInterface = mockContext();
-
-			class GlobalHook extends BaseErrorHook
-			{
-				public override execute(): void {}
-			}
-
-			class IgnoredHook extends BaseErrorHook
-			{
-				public override execute(): void {}
-			}
-
-			class LocalHook extends BaseErrorHook
-			{
-				public override execute(): void {}
-			}
-
-			const GLOBAL_HOOK: GlobalHook = new GlobalHook();
-			const IGNORED_HOOK: IgnoredHook = new IgnoredHook();
-			const LOCAL_HOOK: LocalHook = new LocalHook();
-			const GLOBAL_HOOK_STUB: SinonStub = stub(GLOBAL_HOOK, "execute");
-			const IGNORED_HOOK_STUB: SinonStub = stub(IGNORED_HOOK, "execute");
-			const LOCAL_HOOK_STUB: SinonStub = stub(LOCAL_HOOK, "execute");
-
-			class DummyEndpoint extends BaseEndpoint
-			{
-				protected method: HTTPMethodEnum = HTTPMethodEnum.GET;
-				protected route: string = "/alpha-omega/(?<slug>[a-z-]+)";
-
-				public async execute(): Promise<void> {}
-			}
-
-			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
-			const GET_LOCAL_HOOKS_STUB: SinonStub = stub(ENDPOINT, "getErrorHooks");
-			const GET_EXCLUDED_GLOBAL_HOOKS_STUB: SinonStub = stub(ENDPOINT, "getExcludedGlobalErrorHooks");
-
-			GET_ERROR_HOOKS_STUB.returns([GLOBAL_HOOK, IGNORED_HOOK]);
-			GET_LOCAL_HOOKS_STUB.returns([LOCAL_HOOK]);
-			GET_EXCLUDED_GLOBAL_HOOKS_STUB.returns([IgnoredHook]);
-			RUN_ERROR_HOOKS_STUB.callThrough();
-
-			const ERROR: Error = new Error("Test Error");
-
-			const RESULT: unknown = ReflectUtility.Call(Server, "RunErrorHooks", ENDPOINT, CONTEXT_MOCK.instance, ERROR);
-
-			instanceOf(RESULT, Promise);
-			await doesNotReject(RESULT);
-			strictEqual(GET_ERROR_HOOKS_STUB.callCount, 1, "'HookRegistry.GetErrorHooks' should have been called exactly once");
-			strictEqual(GET_LOCAL_HOOKS_STUB.callCount, 1, "Endpoint method 'getErrorHooks' should have been called exactly once");
-			strictEqual(GET_EXCLUDED_GLOBAL_HOOKS_STUB.callCount, 1, "Endpoint method 'getExcludedGlobalErrorHooks' should have been called exactly once");
-			strictEqual(GLOBAL_HOOK_STUB.callCount, 1, "Global error hook method 'execute' should have been called exactly once");
-			deepStrictEqual(GLOBAL_HOOK_STUB.firstCall.args, [CONTEXT_MOCK.instance, ERROR]);
-			strictEqual(IGNORED_HOOK_STUB.callCount, 0, "Excluded global error hook method 'execute' should not have been called");
-			strictEqual(LOCAL_HOOK_STUB.callCount, 1, "Local error hook method 'execute' should have been called exactly once");
-			deepStrictEqual(LOCAL_HOOK_STUB.firstCall.args, [CONTEXT_MOCK.instance, ERROR]);
-		});
-	});
-
-	describe("RunErrorHooks", (): void => {});
 
 	describe("FinalizeResponse", (): void => {
 		it("should do nothing if the response is locked or processed", async (): Promise<void> => {

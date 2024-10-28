@@ -1,3 +1,4 @@
+import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import type { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 import type { BasePreHook } from "../hook/base.pre-hook.mjs";
 import type { BasePostHook } from "../hook/base.post-hook.mjs";
@@ -23,12 +24,12 @@ abstract class BaseEndpoint
 	 * You can use capture groups to extract parameters from the path.
 	 */
 	protected abstract readonly route: RegExp | string;
-	protected readonly preHooks: Array<BasePreHook> = [];
-	protected readonly excludedGlobalPreHooks: Array<typeof BasePreHook> = [];
-	protected readonly postHooks: Array<BasePostHook> = [];
-	protected readonly excludedGlobalPostHooks: Array<typeof BasePostHook> = [];
-	protected readonly errorHooks: Array<BaseErrorHook> = [];
-	protected readonly excludedGlobalErrorHooks: Array<typeof BaseErrorHook> = [];
+	protected readonly preHooks: Array<BasePreHook | ConstructorOf<BasePreHook>> = [];
+	protected readonly excludedGlobalPreHooks: Array<ConstructorOf<BasePreHook>> = [];
+	protected readonly postHooks: Array<BasePostHook | ConstructorOf<BasePostHook>> = [];
+	protected readonly excludedGlobalPostHooks: Array<ConstructorOf<BasePostHook>> = [];
+	protected readonly errorHooks: Array<BaseErrorHook | ConstructorOf<BaseErrorHook>> = [];
+	protected readonly excludedGlobalErrorHooks: Array<ConstructorOf<BaseErrorHook>> = [];
 	private readonly context: ExecutionContext | undefined = undefined;
 
 	/**
@@ -66,7 +67,7 @@ abstract class BaseEndpoint
 	 * If you rather want to dynamically build the pre hook array, override this method.
 	 * Otherwise, assign the {@link BaseEndpoint.preHooks | preHooks} property.
 	 */
-	public getPreHooks(): Array<BasePreHook>
+	public getPreHooks(): Array<BasePreHook | ConstructorOf<BasePreHook>>
 	{
 		return this.preHooks;
 	}
@@ -78,7 +79,7 @@ abstract class BaseEndpoint
 	 * If you rather want to dynamically build the pre hook array, override this method.
 	 * Otherwise, assign the {@link BaseEndpoint.excludedGlobalPreHooks | excludedGlobalPreHooks} property.
 	 */
-	public getExcludedGlobalPreHooks(): Array<typeof BasePreHook>
+	public getExcludedGlobalPreHooks(): Array<ConstructorOf<BasePreHook>>
 	{
 		return this.excludedGlobalPreHooks;
 	}
@@ -90,7 +91,7 @@ abstract class BaseEndpoint
 	 * If you rather want to dynamically build the post hook array, override this method.
 	 * Otherwise, assign the {@link BaseEndpoint.postHooks | postHooks} property.
 	 */
-	public getPostHooks(): Array<BasePostHook>
+	public getPostHooks(): Array<BasePostHook | ConstructorOf<BasePostHook>>
 	{
 		return this.postHooks;
 	}
@@ -102,7 +103,7 @@ abstract class BaseEndpoint
 	 * If you rather want to dynamically build the post hook array, override this method.
 	 * Otherwise, assign the {@link BaseEndpoint.excludedGlobalPostHooks | excludedGlobalPostHooks} property.
 	 */
-	public getExcludedGlobalPostHooks(): Array<typeof BasePostHook>
+	public getExcludedGlobalPostHooks(): Array<ConstructorOf<BasePostHook>>
 	{
 		return this.excludedGlobalPostHooks;
 	}
@@ -114,7 +115,7 @@ abstract class BaseEndpoint
 	 * If you rather want to dynamically build the error hook array, override this method.
 	 * Otherwise, assign the {@link BaseEndpoint.errorHooks | errorHooks} property.
 	 */
-	public getErrorHooks(): Array<BaseErrorHook>
+	public getErrorHooks(): Array<BaseErrorHook | ConstructorOf<BaseErrorHook>>
 	{
 		return this.errorHooks;
 	}
@@ -126,7 +127,7 @@ abstract class BaseEndpoint
 	 * If you rather want to dynamically build the error hook array, override this method.
 	 * Otherwise, assign the {@link BaseEndpoint.excludedGlobalErrorHooks | excludedGlobalErrorHooks} property.
 	 */
-	public getExcludedGlobalErrorHooks(): Array<typeof BaseErrorHook>
+	public getExcludedGlobalErrorHooks(): Array<ConstructorOf<BaseErrorHook>>
 	{
 		return this.excludedGlobalErrorHooks;
 	}
