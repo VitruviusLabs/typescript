@@ -30,7 +30,7 @@
 		"@types/sinon": "^17.0.3",
 		"@vitruvius-labs/testing-ground": "workspace:^",
 		"c8": "^10.1.2",
-		"chai": "^5.1.1",
+		"chai": "^5.1.2",
 		"chai-as-promised": "^8.0.0",
 		"cspell": "^8.15.4",
 		"eslint": "^9.13.0",
