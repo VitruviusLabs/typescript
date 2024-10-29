@@ -89,6 +89,8 @@ const RULES = {
 	"@ts/no-unnecessary-type-arguments": "off",
 	// Being explicit is never bad
 	"@ts/no-unnecessary-type-parameters": "off",
+	// Enum comparison is necessary for comparing values with magic numbers or string constants
+	"@ts/no-unsafe-enum-comparison": "off",
 	// Traditional type assertion is more explicit
 	"@ts/non-nullable-type-assertion-style": "off",
 	// Destructuring is not always the best choice
