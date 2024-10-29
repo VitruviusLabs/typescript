@@ -1,6 +1,7 @@
 const RULES = {
 	"@style/generator-star-spacing": "off",
 	"@style/brace-style": "off",
+	"@style/curly-newline": "off",
 	"@style/max-statements-per-line": [
 		"error",
 		{

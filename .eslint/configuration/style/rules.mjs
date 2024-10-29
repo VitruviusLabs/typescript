@@ -45,6 +45,14 @@ const RULES = {
 		"error",
 		"never"
 	],
+	"@style/curly-newline": [
+		"error",
+		{
+			"multiline": true,
+			"minElements": 1,
+			"consistent": true,
+		}
+	],
 	"@style/dot-location": [
 		"error",
 		"property"
