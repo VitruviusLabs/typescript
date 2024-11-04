@@ -22,7 +22,7 @@
 		"@stryker-mutator/mocha-runner": "^8.6.0",
 		"@stryker-mutator/typescript-checker": "^8.6.0",
 		"@stylistic/eslint-plugin": "^2.9.0",
-		"@swc/core": "^1.7.40",
+		"@swc/core": "^1.8.0",
 		"@types/chai": "^5.0.1",
 		"@types/chai-as-promised": "^8.0.1",
 		"@types/mocha": "^10.0.9",
