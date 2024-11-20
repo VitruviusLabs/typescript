@@ -1,7 +1,8 @@
 {
 	"src": "./src",
-	"include": [
-		"**/src/**"
+	"exclude": [
+		"mock",
+		"test"
 	],
 	"extension": [
 		".mts"
@@ -9,7 +10,7 @@
 	"reporter": [
 		"html"
 	],
-	"report-dir": "./reports/c8",
+	"report-dir": "./coverage",
 	"skip-full": true,
 	"check-coverage": true,
 	"all": true,

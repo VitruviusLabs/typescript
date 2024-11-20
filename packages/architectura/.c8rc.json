@@ -1,9 +1,8 @@
 {
 	"src": "./src",
 	"exclude": [
-		"**/__tests__/**",
-		"src/Core/ExecutionContext/ExecutionContextInstantiationInterface.mts",
-		"src/Service/FileSystem/FileSystemErrorInterface.mts"
+		"mock",
+		"test"
 	],
 	"extension": [
 		".mts"

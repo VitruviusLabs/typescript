@@ -1,11 +1,9 @@
 {
 	"extension": [
-		"ts"
+		"mts"
 	],
 	"node-option": [
-		"experimental-specifier-resolution=node",
-		"loader=ts-node/esm",
-		"loader=esmock"
+		"loader=tsx"
 	],
 	"spec": [
 		"test/**/*.spec.mts"
