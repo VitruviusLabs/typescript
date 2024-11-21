@@ -4,7 +4,7 @@ import { type SinonStub, stub } from "sinon";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
 import { instanceOf } from "@vitruvius-labs/toolbox";
 import type { ModelMetadataInterface } from "../../src/_index.mjs";
-import { DummyFactory, type DummyInstantiationInterface, type DummyModel, DummyRepository, getDummy } from "../../mock/_index.mjs";
+import { DummyAdvancedFactory, type DummyInstantiationInterface, DummyModel, DummyRepository, getDummy } from "../../mock/_index.mjs";
 
 describe("BaseRepository", (): void => {
 	// @ts-expect-error: Stub protected method
@@ -41,7 +41,7 @@ describe("BaseRepository", (): void => {
 
 	describe("constructor", (): void => {
 		it("should create a new repository", (): void => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			strictEqual(REPOSITORY["factory"], FACTORY);
@@ -50,7 +50,7 @@ describe("BaseRepository", (): void => {
 
 	describe("create", (): void => {
 		it("should return a new instance of the model then set the metadata", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			const DATE: Date = new Date();
@@ -73,7 +73,7 @@ describe("BaseRepository", (): void => {
 
 	describe("findByUUID", (): void => {
 		it("should return undefined if no entity with this UUID exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			FETCH_UUID_STUB.resolves(undefined);
@@ -86,7 +86,7 @@ describe("BaseRepository", (): void => {
 		});
 
 		it("should return an instance of the model if an entity with this UUID exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			const DATE: Date = new Date();
@@ -113,7 +113,7 @@ describe("BaseRepository", (): void => {
 
 	describe("getByUUID", (): void => {
 		it("should throw if no entity with this UUID exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			FETCH_UUID_STUB.resolves(undefined);
@@ -122,7 +122,7 @@ describe("BaseRepository", (): void => {
 		});
 
 		it("should return an instance of the model if an entity with this UUID exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			const DATE: Date = new Date();
@@ -149,7 +149,7 @@ describe("BaseRepository", (): void => {
 
 	describe("findById", (): void => {
 		it("should return undefined if no entity with this id exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			FETCH_ID_STUB.resolves(undefined);
@@ -162,7 +162,7 @@ describe("BaseRepository", (): void => {
 		});
 
 		it("should return an instance of the model if an entity with this id exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			const DATE: Date = new Date();
@@ -189,7 +189,7 @@ describe("BaseRepository", (): void => {
 
 	describe("getById", (): void => {
 		it("should throw if no entity with this id exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			FETCH_ID_STUB.resolves(undefined);
@@ -198,7 +198,7 @@ describe("BaseRepository", (): void => {
 		});
 
 		it("should return an instance of the model if an entity with this id exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			const DATE: Date = new Date();
@@ -225,7 +225,7 @@ describe("BaseRepository", (): void => {
 
 	describe("save", (): void => {
 		it("should register a new entity, then update its metadata", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			const DATE: Date = new Date();
@@ -252,7 +252,7 @@ describe("BaseRepository", (): void => {
 		});
 
 		it("should update an existing entity, then update its metadata", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			const DATE: Date = new Date();
@@ -281,7 +281,7 @@ describe("BaseRepository", (): void => {
 
 	describe("delete", (): void => {
 		it("should destroy an existing entity, then clear its metadata", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory();
+			const FACTORY: DummyAdvancedFactory = new DummyAdvancedFactory(DummyModel);
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			const DATE: Date = new Date();

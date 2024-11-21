@@ -1,16 +1,24 @@
 import { describe, it } from "node:test";
 import { strictEqual } from "node:assert";
 import { instanceOf } from "@vitruvius-labs/toolbox";
-import { DummyModel, DummyTransformFactory } from "../../mock/_index.mjs";
+import { DummyFactory, DummyModel } from "../../mock/_index.mjs";
 
 describe("BaseFactory", (): void => {
-	describe("create", (): void => {
-		it("should return a new instance of the model", async (): Promise<void> => {
-			const FACTORY: DummyTransformFactory = new DummyTransformFactory();
+	describe("constructor", (): void => {
+		it("should create a new factory", (): void => {
+			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
 
-			const RESULT: DummyModel = await FACTORY.create({
+			strictEqual(FACTORY["modelConstructor"], DummyModel);
+		});
+	});
+
+	describe("create", (): void => {
+		it("should return a new instance of the model", (): void => {
+			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+
+			const RESULT: DummyModel = FACTORY.create({
 				uuid: "00000000-0000-0000-0000-000000000000",
-				value: "0",
+				value: 0,
 			});
 
 			instanceOf(RESULT, DummyModel);

@@ -1,6 +1,6 @@
 import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import type { BaseModel } from "./base.model.mjs";
-import type { BaseFactory } from "./base.factory.mjs";
+import type { AdvancedFactory } from "./advanced.factory.mjs";
 import { BaseRepository } from "./base.repository.mjs";
 
 /**
@@ -25,8 +25,11 @@ abstract class DelegatedRepository<
 
 	/**
 	 * Create a new repository
+	 *
+	 * @remarks
+	 * Keeping the factory and delegate as parameters of the repository avoid potential circular dependencies issues.
 	 */
-	public constructor(factory: BaseFactory<M, C, I>, delegate: D)
+	public constructor(factory: AdvancedFactory<M, C, I>, delegate: D)
 	{
 		super(factory);
 

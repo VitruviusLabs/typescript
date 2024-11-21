@@ -1,7 +1,7 @@
 import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import type { BaseModel } from "./base.model.mjs";
 import type { ModelMetadataInterface } from "./definition/interface/model-metadata.interface.mjs";
-import type { BaseFactory } from "./base.factory.mjs";
+import type { AdvancedFactory } from "./advanced.factory.mjs";
 import { ReflectUtility } from "@vitruvius-labs/toolbox";
 
 /**
@@ -19,12 +19,15 @@ abstract class BaseRepository<
 	I = ConstructorParameters<C>[0]
 >
 {
-	private readonly factory: BaseFactory<M, C, I>;
+	private readonly factory: AdvancedFactory<M, C, I>;
 
 	/**
 	 * Create a new repository
-	 */
-	public constructor(factory: BaseFactory<M, C, I>)
+	 *
+	 * @remarks
+	 * Keeping the factory as a parameter of the repository avoid potential circular dependencies issues.
+	**/
+	public constructor(factory: AdvancedFactory<M, C, I>)
 	{
 		this.factory = factory;
 	}
@@ -199,7 +202,7 @@ abstract class BaseRepository<
 	 */
 	protected async create(parameters: I & ModelMetadataInterface): Promise<M>
 	{
-		const model: M = await this.factory.create(parameters);
+		const model: M = await this.factory.createFromRepositoryData(parameters);
 
 		BaseRepository.SetImmutableFields(model, parameters);
 
