@@ -3,10 +3,10 @@ import type { MockRequestInterface } from "./definition/interface/mock-request.i
 import type { MockSocketInterface } from "./definition/interface/mock-socket.interface.mjs";
 import type { Socket, SocketConstructorOpts } from "node:net";
 import { stub } from "sinon";
+import { baseMock } from "../mock-utility/base-mock.mjs";
 import { mockRequest } from "./mock-request.mjs";
 import { isMockResponse } from "./predicate/is-mock-response.mjs";
-import { baseMock } from "./base-mock.mjs";
-import { type RichClientRequest, RichServerResponse } from "../src/_index.mjs";
+import { type RichClientRequest, RichServerResponse } from "../../src/_index.mjs";
 
 /**
  * Create a mock response.
@@ -51,6 +51,7 @@ function mockResponse(
 		request: mock_request,
 		stubs: {
 			json: stub(response, "json"),
+			html: stub(response, "html"),
 			text: stub(response, "text"),
 			replyWith: stub(response, "replyWith"),
 			isLocked: stub(response, "isLocked"),

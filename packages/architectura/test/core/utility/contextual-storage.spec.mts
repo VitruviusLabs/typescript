@@ -60,7 +60,7 @@ describe("ContextualStorage", (): void => {
 
 			STORAGE.setContextualItem(Date, DATE);
 
-			deepStrictEqual(ReflectUtility.Get(STORAGE, "contextualItems"), new Map([[Date, DATE]]));
+			deepStrictEqual(STORAGE["contextualItems"], new Map([[Date, DATE]]));
 		});
 
 		it("should throw when given an invalid item.", (): void => {
@@ -87,7 +87,7 @@ describe("ContextualStorage", (): void => {
 
 			STORAGE.removeContextualItem(Date);
 
-			deepStrictEqual(ReflectUtility.Get(STORAGE, "contextualItems"), new Map());
+			deepStrictEqual(STORAGE["contextualItems"], new Map());
 		});
 
 		it("should do nothing if the item is not there.", (): void => {
@@ -113,7 +113,7 @@ describe("ContextualStorage", (): void => {
 
 			STORAGE.clearContextualItems();
 
-			deepStrictEqual(ReflectUtility.Get(STORAGE, "contextualItems"), new Map());
+			deepStrictEqual(STORAGE["contextualItems"], new Map());
 		});
 	});
 });

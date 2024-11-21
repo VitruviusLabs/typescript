@@ -1,7 +1,6 @@
 import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, ok, rejects, strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
-import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { type ExecutorInstantiationInterface, ExecutorService } from "../../../src/_index.mjs";
 
 describe("ExecutorService", (): void => {
@@ -30,10 +29,10 @@ describe("ExecutorService", (): void => {
 
 			const EXECUTOR: ExecutorService = new ExecutorService(PARAMETERS);
 
-			strictEqual(ReflectUtility.Get(EXECUTOR, "maxTries"), PARAMETERS.maxTries);
-			strictEqual(ReflectUtility.Get(EXECUTOR, "retryDelay"), PARAMETERS.retryDelay);
-			strictEqual(ReflectUtility.Get(EXECUTOR, "callable"), PARAMETERS.callable);
-			strictEqual(ReflectUtility.Get(EXECUTOR, "customComputeDelay"), PARAMETERS.customDelayComputor);
+			strictEqual(EXECUTOR["maxTries"], PARAMETERS.maxTries);
+			strictEqual(EXECUTOR["retryDelay"], PARAMETERS.retryDelay);
+			strictEqual(EXECUTOR["callable"], PARAMETERS.callable);
+			strictEqual(EXECUTOR["customComputeDelay"], PARAMETERS.customDelayComputor);
 		});
 	});
 

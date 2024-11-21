@@ -5,6 +5,7 @@ const CONFIGURATION = {
 	files: [
 		"*.spec.mts",
 		"test/**/*.mts",
+		"mock/**/*.mts",
 	],
 	ignores: [],
 	rules: rules,

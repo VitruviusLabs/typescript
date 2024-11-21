@@ -2,10 +2,10 @@ import type { MockSocketInterface } from "./definition/interface/mock-socket.int
 import type { MockRequestInterface } from "./definition/interface/mock-request.interface.mjs";
 import type { Socket, SocketConstructorOpts } from "node:net";
 import { stub } from "sinon";
+import { baseMock } from "../mock-utility/base-mock.mjs";
 import { mockSocket } from "./mock-socket.mjs";
 import { isMockRequest } from "./predicate/is-mock-request.mjs";
-import { baseMock } from "./base-mock.mjs";
-import { RichClientRequest } from "../src/_index.mjs";
+import { RichClientRequest } from "../../src/_index.mjs";
 
 /**
  * Create a mock request.

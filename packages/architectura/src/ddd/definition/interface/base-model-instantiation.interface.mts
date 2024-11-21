@@ -9,7 +9,7 @@ interface BaseModelInstantiationInterface
 	 * Set it to bypass random generation if needed,
 	 * or in your tests to have a predictable UUID.
 	 */
-	uuid?: string;
+	uuid?: string | undefined;
 }
 
 export type { BaseModelInstantiationInterface };

@@ -1,4 +1,3 @@
-export * from "./base-mock.interface.mjs";
 export * from "./mock-context.interface.mjs";
 export * from "./mock-request.interface.mjs";
 export * from "./mock-response.interface.mjs";

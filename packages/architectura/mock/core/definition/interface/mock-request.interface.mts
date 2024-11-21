@@ -1,8 +1,8 @@
 import type { IncomingMessage } from "node:http";
 import type { SinonStub } from "sinon";
-import type { BaseMockInterface } from "./base-mock.interface.mjs";
+import type { BaseMockInterface } from "../../../_index.mjs";
 import type { MockSocketInterface } from "./mock-socket.interface.mjs";
-import type { RichClientRequest } from "../../../src/_index.mjs";
+import type { RichClientRequest } from "../../../../src/_index.mjs";
 
 /**
  * @privateRemarks

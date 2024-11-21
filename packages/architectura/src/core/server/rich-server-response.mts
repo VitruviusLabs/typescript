@@ -78,6 +78,23 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 	}
 
 	/**
+	 * Send a html document as response.
+	 *
+	 * @remarks
+	 * Locks the response to prevent further modifications.
+	 *
+	 * @see {@link RichServerResponse.replyWith | replyWith}
+	 */
+	public async html(content: Buffer | string): Promise<void>
+	{
+		await this.replyWith({
+			status: HTTPStatusCodeEnum.OK,
+			payload: content,
+			contentType: ContentTypeEnum.HTML,
+		});
+	}
+
+	/**
 	 * Send a plain text payload as response.
 	 *
 	 * @remarks
@@ -502,9 +519,6 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		const ENCODER: Transform = RichServerResponse.GetEncoder(ENCODING);
 
 		const PROMISE: Promise<void> = pipeline(ENCODER, this);
-
-		ENCODER.write(this.content);
-		ENCODER.end();
 
 		try
 		{

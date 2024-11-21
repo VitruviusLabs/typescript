@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import { doesNotThrow, strictEqual, throws } from "node:assert";
 import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { BasePostHook } from "../../../src/_index.mjs";
-import { type MockContextInterface, mockContext } from "../../../mock/_index.mjs";
+import { type MockContextInterface, mockContext } from "../../../mock/core/_index.mjs";
 
 describe("BasePostHook", (): void => {
 	describe("getContext", (): void => {
@@ -15,7 +15,7 @@ describe("BasePostHook", (): void => {
 			const HOOK: DummyHook = new DummyHook();
 
 			const WRAPPER = (): void => {
-				ReflectUtility.Call(HOOK, "getContext", []);
+				HOOK["getContext"]();
 			};
 
 			throws(WRAPPER, new Error("This is not a contextual post-hook."));
@@ -36,7 +36,7 @@ describe("BasePostHook", (): void => {
 			let result: unknown = undefined;
 
 			const WRAPPER = (): void => {
-				result = ReflectUtility.Call(HOOK, "getContext", []);
+				result = HOOK["getContext"]();
 			};
 
 			doesNotThrow(WRAPPER);

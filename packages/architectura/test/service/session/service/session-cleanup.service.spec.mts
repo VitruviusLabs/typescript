@@ -3,7 +3,7 @@ import { deepStrictEqual, doesNotThrow, rejects, strictEqual } from "node:assert
 import { type SinonFakeTimers, type SinonSpy, type SinonStub, spy, stub, useFakeTimers } from "sinon";
 import { MillisecondEnum, ReflectUtility } from "@vitruvius-labs/toolbox";
 import { Server, Session, SessionCleanupService, SessionConstantEnum, SessionRegistry } from "../../../../src/_index.mjs";
-import { type MockSessionDelegateInterface, mockSessionDelegate } from "../../../../mock/_index.mjs";
+import { type MockSessionDelegateInterface, mockSessionDelegate } from "../../../../mock/core/_index.mjs";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
 
 describe("SessionCleanupService", (): void => {
@@ -137,7 +137,7 @@ describe("SessionCleanupService", (): void => {
 			CLOCK.tick(1 + SessionConstantEnum.MINUTES_BETWEEN_CLEANUP * MillisecondEnum.MINUTE);
 
 			strictEqual(SET_INTERVAL_SPY.callCount, 1, "'setInterval' should be called exactly once");
-			strictEqual(ReflectUtility.Get(SessionCleanupService, "TIMER"), SET_INTERVAL_SPY.firstCall.returnValue);
+			strictEqual(SessionCleanupService["TIMER"], SET_INTERVAL_SPY.firstCall.returnValue);
 			strictEqual(CLEANUP_STUB.callCount, 1, "The 'Cleanup' method should be called by the job");
 		});
 
@@ -152,7 +152,7 @@ describe("SessionCleanupService", (): void => {
 			CLOCK.tick(1 + SessionConstantEnum.MINUTES_BETWEEN_CLEANUP * MillisecondEnum.MINUTE);
 
 			strictEqual(SET_INTERVAL_SPY.callCount, 1, "'setInterval' should be called exactly once");
-			strictEqual(ReflectUtility.Get(SessionCleanupService, "TIMER"), SET_INTERVAL_SPY.firstCall.returnValue);
+			strictEqual(SessionCleanupService["TIMER"], SET_INTERVAL_SPY.firstCall.returnValue);
 			strictEqual(CLEANUP_STUB.callCount, 1, "The 'Cleanup' method should be called by the job");
 
 			await Promise.allSettled([CLEANUP_STUB.firstCall.returnValue]);
@@ -182,7 +182,7 @@ describe("SessionCleanupService", (): void => {
 
 			strictEqual(CLEAR_INTERVAL_SPY.callCount, 1, "'clearInterval' should be called exactly once");
 			deepStrictEqual(CLEAR_INTERVAL_SPY.firstCall.args, [JOB]);
-			strictEqual(ReflectUtility.Get(SessionCleanupService, "TIMER"), undefined);
+			strictEqual(SessionCleanupService["TIMER"], undefined);
 		});
 	});
 });

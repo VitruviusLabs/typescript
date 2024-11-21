@@ -1,15 +1,14 @@
 import { describe, it } from "node:test";
 import { strictEqual } from "node:assert";
-import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { ContentTypeEnum, type ExecutionContext, HTTPMethodEnum, HTTPStatusCodeEnum, HelloWorldEndpoint } from "../../src/_index.mjs";
-import { mockContext } from "../../mock/_index.mjs";
+import { mockContext } from "../../mock/core/_index.mjs";
 
 describe("HelloWorldEndpoint", (): void => {
 	describe("method", (): void => {
 		it("should be GET", (): void => {
 			const ENDPOINT: HelloWorldEndpoint = new HelloWorldEndpoint();
 
-			strictEqual(ReflectUtility.Get(ENDPOINT, "method"), HTTPMethodEnum.GET);
+			strictEqual(ENDPOINT["method"], HTTPMethodEnum.GET);
 		});
 	});
 
@@ -17,7 +16,7 @@ describe("HelloWorldEndpoint", (): void => {
 		it("should match everything", (): void => {
 			const ENDPOINT: HelloWorldEndpoint = new HelloWorldEndpoint();
 
-			strictEqual(ReflectUtility.Get(ENDPOINT, "route"), ".*");
+			strictEqual(ENDPOINT["route"], ".*");
 		});
 	});
 
@@ -28,9 +27,9 @@ describe("HelloWorldEndpoint", (): void => {
 
 			await ENDPOINT.execute(CONTEXT);
 
-			strictEqual(ReflectUtility.Get(CONTEXT.getResponse(), "statusCode"), HTTPStatusCodeEnum.OK);
+			strictEqual(CONTEXT.getResponse().statusCode, HTTPStatusCodeEnum.OK);
 			strictEqual(CONTEXT.getResponse().getHeader("Content-Type"), ContentTypeEnum.TEXT);
-			strictEqual(ReflectUtility.Get(CONTEXT.getResponse(), "content"), "Hello World!");
+			strictEqual(CONTEXT.getResponse()["content"], "Hello World!");
 		});
 	});
 });

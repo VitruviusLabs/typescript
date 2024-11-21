@@ -23,7 +23,7 @@ abstract class BaseErrorHook
 	 *
 	 * @sealed
 	 */
-	public getContext(): ExecutionContext
+	protected getContext(): ExecutionContext
 	{
 		if (this.context === undefined)
 		{

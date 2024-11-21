@@ -4,10 +4,10 @@ import type { MockResponseInterface } from "./definition/interface/mock-response
 import type { MockRequestInterface } from "./definition/interface/mock-request.interface.mjs";
 import type { MockSocketInterface } from "./definition/interface/mock-socket.interface.mjs";
 import { stub } from "sinon";
+import { baseMock } from "../mock-utility/base-mock.mjs";
 import { mockResponse } from "./mock-response.mjs";
 import { isMockContext } from "./predicate/is-mock-context.mjs";
-import { baseMock } from "./base-mock.mjs";
-import { ExecutionContext, type RichClientRequest, type RichServerResponse } from "../src/_index.mjs";
+import { ExecutionContext, type RichClientRequest, type RichServerResponse } from "../../src/_index.mjs";
 
 /**
  * Create a mock context.

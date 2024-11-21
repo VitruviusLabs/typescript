@@ -2,7 +2,6 @@ import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, strictEqual, throws } from "node:assert";
 import { type SinonFakeTimers, useFakeTimers } from "sinon";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
-import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { JWT, type JWTClaimsInterface, type SecretType } from "../../../../src/_index.mjs";
 
 describe("JWT", (): void => {
@@ -28,9 +27,9 @@ describe("JWT", (): void => {
 
 			const TOKEN: JWT = new JWT(ALGORITHM, SECRET, CLAIMS);
 
-			deepStrictEqual(ReflectUtility.Get(TOKEN, "header"), { typ: "JWT", alg: ALGORITHM });
-			strictEqual(ReflectUtility.Get(TOKEN, "secret"), SECRET);
-			deepStrictEqual(ReflectUtility.Get(TOKEN, "claims"), CLAIMS);
+			deepStrictEqual(TOKEN["header"], { typ: "JWT", alg: ALGORITHM });
+			strictEqual(TOKEN["secret"], SECRET);
+			deepStrictEqual(TOKEN["claims"], CLAIMS);
 		});
 
 		it("should validate the algorithm", (): void => {
@@ -74,7 +73,7 @@ describe("JWT", (): void => {
 
 			CLAIMS.iat = 1;
 
-			deepStrictEqual(ReflectUtility.Get(TOKEN, "claims"), { iat: -1 });
+			deepStrictEqual(TOKEN["claims"], { iat: -1 });
 			deepStrictEqual(CLAIMS, { iat: 1 });
 		});
 	});
@@ -99,7 +98,7 @@ describe("JWT", (): void => {
 
 			TOKEN.getClaims().iat = 1;
 
-			deepStrictEqual(ReflectUtility.Get(TOKEN, "claims"), { iat: -1 });
+			deepStrictEqual(TOKEN["claims"], { iat: -1 });
 		});
 	});
 
@@ -115,7 +114,7 @@ describe("JWT", (): void => {
 
 			TOKEN.setClaims(CLAIMS);
 
-			deepStrictEqual(ReflectUtility.Get(TOKEN, "claims"), CLAIMS);
+			deepStrictEqual(TOKEN["claims"], CLAIMS);
 		});
 
 		it("should validate the claims", (): void => {
@@ -141,7 +140,7 @@ describe("JWT", (): void => {
 
 			CLAIMS.iat = 1;
 
-			deepStrictEqual(ReflectUtility.Get(TOKEN, "claims"), { iat: -1 });
+			deepStrictEqual(TOKEN["claims"], { iat: -1 });
 			deepStrictEqual(CLAIMS, { iat: 1 });
 		});
 	});

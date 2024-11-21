@@ -1,9 +1,9 @@
 import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, doesNotReject, fail, strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
-import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
+import { instanceOf } from "@vitruvius-labs/toolbox";
 import { BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, HTTPMethodEnum, HookRegistry, HookService, type HooksInterface } from "../../../src/_index.mjs";
-import { type MockContextInterface, mockContext } from "../../../mock/_index.mjs";
+import { type MockContextInterface, mockContext } from "../../../mock/core/_index.mjs";
 
 describe("HookService", (): void => {
 	// @ts-expect-error: Stubbing a private method
@@ -44,7 +44,7 @@ describe("HookService", (): void => {
 
 			const HOOK: DummyPreHook = new DummyPreHook();
 
-			strictEqual(ReflectUtility.Call(HookService, "InstantiateHook", HOOK), HOOK);
+			strictEqual(HookService["InstantiateHook"](HOOK), HOOK);
 		});
 
 		it("should instantiate a pre-hook class", (): void => {
@@ -53,7 +53,7 @@ describe("HookService", (): void => {
 				public async execute(): Promise<void> { }
 			}
 
-			deepStrictEqual(ReflectUtility.Call(HookService, "InstantiateHook", DummyPreHook), new DummyPreHook());
+			deepStrictEqual(HookService["InstantiateHook"](DummyPreHook), new DummyPreHook());
 		});
 
 		it("should return a post-hook instance as is", (): void => {
@@ -64,7 +64,7 @@ describe("HookService", (): void => {
 
 			const HOOK: DummyPostHook = new DummyPostHook();
 
-			strictEqual(ReflectUtility.Call(HookService, "InstantiateHook", HOOK), HOOK);
+			strictEqual(HookService["InstantiateHook"](HOOK), HOOK);
 		});
 
 		it("should instantiate a post-hook class", (): void => {
@@ -73,7 +73,7 @@ describe("HookService", (): void => {
 				public async execute(): Promise<void> { }
 			}
 
-			deepStrictEqual(ReflectUtility.Call(HookService, "InstantiateHook", DummyPostHook), new DummyPostHook());
+			deepStrictEqual(HookService["InstantiateHook"](DummyPostHook), new DummyPostHook());
 		});
 
 		it("should return an error hook instance as is", (): void => {
@@ -84,7 +84,7 @@ describe("HookService", (): void => {
 
 			const HOOK: DummyErrorHook = new DummyErrorHook();
 
-			strictEqual(ReflectUtility.Call(HookService, "InstantiateHook", HOOK), HOOK);
+			strictEqual(HookService["InstantiateHook"](HOOK), HOOK);
 		});
 
 		it("should instantiate an error hook class", (): void => {
@@ -93,7 +93,7 @@ describe("HookService", (): void => {
 				public async execute(): Promise<void> { }
 			}
 
-			deepStrictEqual(ReflectUtility.Call(HookService, "InstantiateHook", DummyErrorHook), new DummyErrorHook());
+			deepStrictEqual(HookService["InstantiateHook"](DummyErrorHook), new DummyErrorHook());
 		});
 	});
 
@@ -120,7 +120,7 @@ describe("HookService", (): void => {
 				local: [DUMMY_HOOK, IGNORED_HOOK],
 			};
 
-			const RESULT: unknown = ReflectUtility.Call(HookService, "RunHooks", PARAMETERS, RUNNER_STUB);
+			const RESULT: unknown = HookService["RunHooks"](PARAMETERS, RUNNER_STUB);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -178,7 +178,7 @@ describe("HookService", (): void => {
 				local: [DUMMY_HOOK, IGNORED_HOOK],
 			};
 
-			const RESULT: unknown = ReflectUtility.Call(HookService, "RunPreHooks", ENDPOINT, CONTEXT_MOCK.instance);
+			const RESULT: unknown = HookService.RunPreHooks(ENDPOINT, CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -249,7 +249,7 @@ describe("HookService", (): void => {
 				local: [DUMMY_HOOK, IGNORED_HOOK],
 			};
 
-			const RESULT: unknown = ReflectUtility.Call(HookService, "RunPostHooks", ENDPOINT, CONTEXT_MOCK.instance);
+			const RESULT: unknown = HookService.RunPostHooks(ENDPOINT, CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -321,7 +321,7 @@ describe("HookService", (): void => {
 				local: [DUMMY_HOOK, IGNORED_HOOK],
 			};
 
-			const RESULT: unknown = ReflectUtility.Call(HookService, "RunErrorHooks", ENDPOINT, CONTEXT_MOCK.instance, ERROR);
+			const RESULT: unknown = HookService.RunErrorHooks(ENDPOINT, CONTEXT_MOCK.instance, ERROR);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -374,7 +374,7 @@ describe("HookService", (): void => {
 				local: [],
 			};
 
-			const RESULT: unknown = ReflectUtility.Call(HookService, "RunFallbackErrorHooks", CONTEXT_MOCK.instance, ERROR);
+			const RESULT: unknown = HookService.RunFallbackErrorHooks(CONTEXT_MOCK.instance, ERROR);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);

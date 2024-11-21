@@ -1,24 +1,30 @@
+import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import type { BaseModel } from "./base.model.mjs";
-import type { BaseModelInstantiationInterface } from "./definition/interface/base-model-instantiation.interface.mjs";
 import type { ModelMetadataInterface } from "./definition/interface/model-metadata.interface.mjs";
 import type { BaseFactory } from "./base.factory.mjs";
 import { ReflectUtility } from "@vitruvius-labs/toolbox";
 
 /**
  * Base repository for storing entities
+ *
+ * @remarks
+ * The type parameters are as follows:
+ * - M: The model that will be stored and retrieved.
+ * - C: The constructor of the model that will be stored and retrieved.
+ * - I: The parameter expected by the factory.
  */
 abstract class BaseRepository<
 	M extends BaseModel,
-	I extends BaseModelInstantiationInterface,
-	C extends new (arg: I) => M
+	C extends ConstructorOf<M>,
+	I = ConstructorParameters<C>[0]
 >
 {
-	private readonly factory: BaseFactory<M, I, C>;
+	private readonly factory: BaseFactory<M, C, I>;
 
 	/**
 	 * Create a new repository
 	 */
-	public constructor(factory: BaseFactory<M, I, C>)
+	public constructor(factory: BaseFactory<M, C, I>)
 	{
 		this.factory = factory;
 	}
@@ -29,6 +35,7 @@ abstract class BaseRepository<
 		ReflectUtility.Set(model, "createdAt", data.createdAt);
 		ReflectUtility.Set(model, "updatedAt", data.updatedAt);
 		ReflectUtility.Set(model, "deletedAt", data.deletedAt ?? undefined);
+		ReflectUtility.Set(model, "uuid", data.uuid);
 	}
 
 	private static ClearImmutableFields(model: BaseModel): void
@@ -91,7 +98,7 @@ abstract class BaseRepository<
 			return undefined;
 		}
 
-		const model: M = this.create(data);
+		const model: M = await this.create(data);
 
 		return model;
 	}
@@ -125,7 +132,7 @@ abstract class BaseRepository<
 			return undefined;
 		}
 
-		const model: M = this.create(data);
+		const model: M = await this.create(data);
 
 		return model;
 	}
@@ -190,9 +197,9 @@ abstract class BaseRepository<
 	 *
 	 * @sealed
 	 */
-	protected create(parameters: I & ModelMetadataInterface): M
+	protected async create(parameters: I & ModelMetadataInterface): Promise<M>
 	{
-		const model: M = this.factory.create(parameters);
+		const model: M = await this.factory.create(parameters);
 
 		BaseRepository.SetImmutableFields(model, parameters);
 

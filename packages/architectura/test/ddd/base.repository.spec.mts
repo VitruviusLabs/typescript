@@ -2,65 +2,11 @@ import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, doesNotReject, rejects, strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
-import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
-import { BaseFactory, BaseModel, type BaseModelInstantiationInterface, BaseRepository, type ModelMetadataInterface } from "../../src/_index.mjs";
+import { instanceOf } from "@vitruvius-labs/toolbox";
+import type { ModelMetadataInterface } from "../../src/_index.mjs";
+import { DummyFactory, type DummyInstantiationInterface, type DummyModel, DummyRepository, getDummy } from "../../mock/_index.mjs";
 
 describe("BaseRepository", (): void => {
-	class DummyModel extends BaseModel
-	{
-		public async save(): Promise<void>
-		{
-			return await Promise.resolve();
-		}
-
-		public async delete(): Promise<void>
-		{
-			return await Promise.resolve();
-		}
-	}
-
-	class DummyFactory extends BaseFactory<DummyModel, BaseModelInstantiationInterface, typeof DummyModel>
-	{
-	}
-
-	class DummyRepository extends BaseRepository<DummyModel, BaseModelInstantiationInterface, typeof DummyModel>
-	{
-		// @ts-expect-error: Test class
-		// eslint-disable-next-line @ts/no-unused-vars -- Test class
-		protected async fetchByUUID(uuid: string): Promise<(BaseModelInstantiationInterface & ModelMetadataInterface) | undefined>
-		{
-			return await Promise.reject(new Error("Should not be called"));
-		}
-
-		// @ts-expect-error: Test class
-		// eslint-disable-next-line @ts/no-unused-vars -- Test class
-		protected async fetchById(id: bigint): Promise<(BaseModelInstantiationInterface & ModelMetadataInterface) | undefined>
-		{
-			return await Promise.reject(new Error("Should not be called"));
-		}
-
-		// @ts-expect-error: Test class
-		// eslint-disable-next-line @ts/no-unused-vars -- Test class
-		protected async register(model: DummyModel): Promise<ModelMetadataInterface>
-		{
-			return await Promise.reject(new Error("Should not be called"));
-		}
-
-		// @ts-expect-error: Test class
-		// eslint-disable-next-line @ts/no-unused-vars -- Test class
-		protected async update(model: DummyModel): Promise<ModelMetadataInterface>
-		{
-			return await Promise.reject(new Error("Should not be called"));
-		}
-
-		// @ts-expect-error: Test class
-		// eslint-disable-next-line @ts/no-unused-vars -- Test class
-		protected async destroy(id: bigint): Promise<void>
-		{
-			return await Promise.reject(new Error("Should not be called"));
-		}
-	}
-
 	// @ts-expect-error: Stub protected method
 	const FETCH_UUID_STUB: SinonStub = stub(DummyRepository.prototype, "fetchByUUID");
 	// @ts-expect-error: Stub protected method
@@ -95,40 +41,39 @@ describe("BaseRepository", (): void => {
 
 	describe("constructor", (): void => {
 		it("should create a new repository", (): void => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			strictEqual(ReflectUtility.Get(REPOSITORY, "factory"), FACTORY);
+			strictEqual(REPOSITORY["factory"], FACTORY);
 		});
 	});
 
 	describe("create", (): void => {
-		it("should return a new instance of the model then set the metadata", (): void => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+		it("should return a new instance of the model then set the metadata", async (): Promise<void> => {
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			const DATE: Date = new Date();
+			const EXPECTED: DummyModel = getDummy(DATE);
 
-			const MODEL: unknown = ReflectUtility.Call(REPOSITORY, "create", {
-				id: 1n,
+			const RESULT: unknown = REPOSITORY["create"]({
+				id: 0n,
 				uuid: "00000000-0000-0000-0000-000000000000",
 				createdAt: DATE,
 				updatedAt: DATE,
 				deletedAt: null,
+				value: 0,
 			});
 
-			instanceOf(MODEL, DummyModel);
-			strictEqual(ReflectUtility.Get(MODEL, "id"), 1n);
-			strictEqual(ReflectUtility.Get(MODEL, "uuid"), "00000000-0000-0000-0000-000000000000");
-			strictEqual(ReflectUtility.Get(MODEL, "createdAt"), DATE);
-			strictEqual(ReflectUtility.Get(MODEL, "updatedAt"), DATE);
-			strictEqual(ReflectUtility.Get(MODEL, "deletedAt"), undefined);
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, EXPECTED);
 		});
 	});
 
 	describe("findByUUID", (): void => {
 		it("should return undefined if no entity with this UUID exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			FETCH_UUID_STUB.resolves(undefined);
@@ -141,21 +86,22 @@ describe("BaseRepository", (): void => {
 		});
 
 		it("should return an instance of the model if an entity with this UUID exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			const METADATA: ModelMetadataInterface = {
-				id: 1n,
+			const DATE: Date = new Date();
+			const EXPECTED: DummyModel = getDummy(DATE);
+
+			const DATA: DummyInstantiationInterface & ModelMetadataInterface = {
+				id: 0n,
 				uuid: "00000000-0000-0000-0000-000000000000",
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				createdAt: DATE,
+				updatedAt: DATE,
 				deletedAt: null,
+				value: 0,
 			};
 
-			const EXPECTED: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
-
-			instanceOf(EXPECTED, DummyModel);
-			FETCH_UUID_STUB.resolves(METADATA);
+			FETCH_UUID_STUB.resolves(DATA);
 
 			const RESULT: unknown = REPOSITORY.findByUUID("00000000-0000-0000-0000-000000000000");
 
@@ -167,7 +113,7 @@ describe("BaseRepository", (): void => {
 
 	describe("getByUUID", (): void => {
 		it("should throw if no entity with this UUID exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			FETCH_UUID_STUB.resolves(undefined);
@@ -176,21 +122,22 @@ describe("BaseRepository", (): void => {
 		});
 
 		it("should return an instance of the model if an entity with this UUID exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			const METADATA: ModelMetadataInterface = {
-				id: 1n,
+			const DATE: Date = new Date();
+			const EXPECTED: DummyModel = getDummy(DATE);
+
+			const DATA: DummyInstantiationInterface & ModelMetadataInterface = {
+				id: 0n,
 				uuid: "00000000-0000-0000-0000-000000000000",
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				createdAt: DATE,
+				updatedAt: DATE,
 				deletedAt: null,
+				value: 0,
 			};
 
-			const EXPECTED: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
-
-			instanceOf(EXPECTED, DummyModel);
-			FETCH_UUID_STUB.resolves(METADATA);
+			FETCH_UUID_STUB.resolves(DATA);
 
 			const RESULT: unknown = REPOSITORY.getByUUID("00000000-0000-0000-0000-000000000000");
 
@@ -202,7 +149,7 @@ describe("BaseRepository", (): void => {
 
 	describe("findById", (): void => {
 		it("should return undefined if no entity with this id exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			FETCH_ID_STUB.resolves(undefined);
@@ -215,21 +162,22 @@ describe("BaseRepository", (): void => {
 		});
 
 		it("should return an instance of the model if an entity with this id exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			const METADATA: ModelMetadataInterface = {
-				id: 1n,
+			const DATE: Date = new Date();
+			const EXPECTED: DummyModel = getDummy(DATE);
+
+			const DATA: DummyInstantiationInterface & ModelMetadataInterface = {
+				id: 0n,
 				uuid: "00000000-0000-0000-0000-000000000000",
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				createdAt: DATE,
+				updatedAt: DATE,
 				deletedAt: null,
+				value: 0,
 			};
 
-			const EXPECTED: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
-
-			instanceOf(EXPECTED, DummyModel);
-			FETCH_ID_STUB.resolves(METADATA);
+			FETCH_ID_STUB.resolves(DATA);
 
 			const RESULT: unknown = REPOSITORY.findById(1n);
 
@@ -241,7 +189,7 @@ describe("BaseRepository", (): void => {
 
 	describe("getById", (): void => {
 		it("should throw if no entity with this id exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
 			FETCH_ID_STUB.resolves(undefined);
@@ -250,21 +198,22 @@ describe("BaseRepository", (): void => {
 		});
 
 		it("should return an instance of the model if an entity with this id exists", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			const METADATA: ModelMetadataInterface = {
-				id: 1n,
+			const DATE: Date = new Date();
+			const EXPECTED: DummyModel = getDummy(DATE);
+
+			const DATA: DummyInstantiationInterface & ModelMetadataInterface = {
+				id: 0n,
 				uuid: "00000000-0000-0000-0000-000000000000",
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				createdAt: DATE,
+				updatedAt: DATE,
 				deletedAt: null,
+				value: 0,
 			};
 
-			const EXPECTED: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
-
-			instanceOf(EXPECTED, DummyModel);
-			FETCH_ID_STUB.resolves(METADATA);
+			FETCH_ID_STUB.resolves(DATA);
 
 			const RESULT: unknown = REPOSITORY.getById(1n);
 
@@ -276,55 +225,54 @@ describe("BaseRepository", (): void => {
 
 	describe("save", (): void => {
 		it("should register a new entity, then update its metadata", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			const METADATA: ModelMetadataInterface = {
-				id: 1n,
+			const DATE: Date = new Date();
+			const EXPECTED: DummyModel = getDummy(DATE);
+			const ENTITY: DummyModel = getDummy();
+
+			const DATA: ModelMetadataInterface = {
+				id: 0n,
 				uuid: "00000000-0000-0000-0000-000000000000",
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				createdAt: DATE,
+				updatedAt: DATE,
 				deletedAt: null,
 			};
 
-			const ENTITY: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
+			REGISTER_STUB.resolves(DATA);
 
-			const EXPECTED: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
+			const RESULT: unknown = REPOSITORY.save(ENTITY);
 
-			instanceOf(EXPECTED, DummyModel);
-			REGISTER_STUB.resolves(METADATA);
-
-			await REPOSITORY.save(ENTITY);
-
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
 			strictEqual(REGISTER_STUB.callCount, 1, "The 'register' method should be called exactly once");
 			deepStrictEqual(REGISTER_STUB.firstCall.args, [ENTITY]);
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
 		it("should update an existing entity, then update its metadata", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			const METADATA: ModelMetadataInterface = {
-				id: 1n,
+			const DATE: Date = new Date();
+			const EXPECTED: DummyModel = getDummy(DATE);
+			const ENTITY: DummyModel = getDummy(DATE);
+
+			const DATA: ModelMetadataInterface = {
+				id: 0n,
 				uuid: "00000000-0000-0000-0000-000000000000",
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				createdAt: DATE,
+				updatedAt: DATE,
 				deletedAt: null,
 			};
 
-			const ENTITY: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
+			UPDATE_STUB.resolves(DATA);
 
-			instanceOf(ENTITY, DummyModel);
+			const RESULT: unknown = REPOSITORY.save(ENTITY);
 
-			const EXPECTED: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
-
-			instanceOf(EXPECTED, DummyModel);
-
-			UPDATE_STUB.resolves(METADATA);
-
-			await REPOSITORY.save(ENTITY);
-
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
 			strictEqual(UPDATE_STUB.callCount, 1, "The 'update' method should be called exactly once");
 			deepStrictEqual(UPDATE_STUB.firstCall.args, [ENTITY]);
 			deepStrictEqual(ENTITY, EXPECTED);
@@ -333,29 +281,29 @@ describe("BaseRepository", (): void => {
 
 	describe("delete", (): void => {
 		it("should destroy an existing entity, then clear its metadata", async (): Promise<void> => {
-			const FACTORY: DummyFactory = new DummyFactory(DummyModel);
+			const FACTORY: DummyFactory = new DummyFactory();
 			const REPOSITORY: DummyRepository = new DummyRepository(FACTORY);
 
-			const METADATA: ModelMetadataInterface = {
-				id: 1n,
+			const DATE: Date = new Date();
+			const EXPECTED: DummyModel = getDummy();
+			const ENTITY: DummyModel = getDummy(DATE);
+
+			const DATA: ModelMetadataInterface = {
+				id: 0n,
 				uuid: "00000000-0000-0000-0000-000000000000",
-				createdAt: new Date(),
-				updatedAt: new Date(),
-				deletedAt: null,
+				createdAt: DATE,
+				updatedAt: DATE,
+				deletedAt: DATE,
 			};
 
-			const ENTITY: unknown = ReflectUtility.Call(REPOSITORY, "create", METADATA);
+			DESTROY_STUB.resolves(DATA);
 
-			instanceOf(ENTITY, DummyModel);
+			const RESULT: unknown = REPOSITORY.delete(ENTITY);
 
-			const EXPECTED: DummyModel = new DummyModel({ uuid: "00000000-0000-0000-0000-000000000000" });
-
-			DESTROY_STUB.resolves(METADATA);
-
-			await REPOSITORY.delete(ENTITY);
-
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
 			strictEqual(DESTROY_STUB.callCount, 1, "The 'destroy' method should be called exactly once");
-			deepStrictEqual(DESTROY_STUB.firstCall.args, [1n]);
+			deepStrictEqual(DESTROY_STUB.firstCall.args, [0n]);
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 	});
