@@ -25,10 +25,10 @@ describe("Session", (): void => {
 
 			const SESSION: Session = new Session("00000000-0000-0000-0000-000000000000", DELEGATE);
 
-			strictEqual(ReflectUtility.Get(SESSION, "uuid"), "00000000-0000-0000-0000-000000000000");
-			strictEqual(ReflectUtility.Get(SESSION, "delegate"), DELEGATE);
-			strictEqual(ReflectUtility.Get(SESSION, "expirationTime"), SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE);
-			deepStrictEqual(ReflectUtility.Get(SESSION, "data"), {});
+			strictEqual(SESSION["uuid"], "00000000-0000-0000-0000-000000000000");
+			strictEqual(SESSION["delegate"], DELEGATE);
+			strictEqual(SESSION["expirationTime"], SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE);
+			deepStrictEqual(SESSION["data"], {});
 		});
 	});
 
@@ -71,7 +71,7 @@ describe("Session", (): void => {
 			CLOCK.now = 5_000;
 			SESSION.postponeExpiration();
 
-			strictEqual(ReflectUtility.Get(SESSION, "expirationTime"), 5_000 + SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE);
+			strictEqual(SESSION["expirationTime"], 5_000 + SessionConstantEnum.MINUTES_TO_LIVE * MillisecondEnum.MINUTE);
 		});
 	});
 
@@ -95,7 +95,7 @@ describe("Session", (): void => {
 
 			SESSION.setData(DATA);
 
-			deepStrictEqual(ReflectUtility.Get(SESSION, "data"), DATA);
+			deepStrictEqual(SESSION["data"], DATA);
 		});
 	});
 
@@ -117,7 +117,7 @@ describe("Session", (): void => {
 
 			strictEqual(STUB.callCount, 1, "'fetchData' should be called exactly once");
 			deepStrictEqual(STUB.firstCall.args, ["00000000-0000-0000-0000-000000000000"]);
-			deepStrictEqual(ReflectUtility.Get(SESSION, "data"), DATA);
+			deepStrictEqual(SESSION["data"], DATA);
 		});
 	});
 
@@ -160,7 +160,7 @@ describe("Session", (): void => {
 
 			strictEqual(STUB.callCount, 1, "'clearData' should be called exactly once");
 			deepStrictEqual(STUB.firstCall.args, ["00000000-0000-0000-0000-000000000000"]);
-			deepStrictEqual(ReflectUtility.Get(SESSION, "data"), {});
+			deepStrictEqual(SESSION["data"], {});
 		});
 	});
 });

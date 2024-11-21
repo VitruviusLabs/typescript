@@ -33,7 +33,7 @@ describe("HookRegistry", (): void => {
 
 			HookRegistry.AddPreHook(DummyPreHook);
 
-			deepStrictEqual(ReflectUtility.Get(HookRegistry, "PRE_HOOKS"), [DummyPreHook]);
+			deepStrictEqual(HookRegistry["PRE_HOOKS"], [DummyPreHook]);
 		});
 
 		it("should add a pre hook (instance)", (): void => {
@@ -46,7 +46,7 @@ describe("HookRegistry", (): void => {
 
 			HookRegistry.AddPreHook(HOOK);
 
-			deepStrictEqual(ReflectUtility.Get(HookRegistry, "PRE_HOOKS"), [HOOK]);
+			deepStrictEqual(HookRegistry["PRE_HOOKS"], [HOOK]);
 		});
 
 		it("should throw when a pre hook constructor is added more than once", (): void => {
@@ -86,7 +86,7 @@ describe("HookRegistry", (): void => {
 
 			HookRegistry.AddPostHook(DummyPostHook);
 
-			deepStrictEqual(ReflectUtility.Get(HookRegistry, "POST_HOOKS"), [DummyPostHook]);
+			deepStrictEqual(HookRegistry["POST_HOOKS"], [DummyPostHook]);
 		});
 
 		it("should add a post hook (instance)", (): void => {
@@ -99,7 +99,7 @@ describe("HookRegistry", (): void => {
 
 			HookRegistry.AddPostHook(HOOK);
 
-			deepStrictEqual(ReflectUtility.Get(HookRegistry, "POST_HOOKS"), [HOOK]);
+			deepStrictEqual(HookRegistry["POST_HOOKS"], [HOOK]);
 		});
 
 		it("should throw when a post hook constructor is added more than once", (): void => {
@@ -139,7 +139,7 @@ describe("HookRegistry", (): void => {
 
 			HookRegistry.AddErrorHook(DummyErrorHook);
 
-			deepStrictEqual(ReflectUtility.Get(HookRegistry, "ERROR_HOOKS"), [DummyErrorHook]);
+			deepStrictEqual(HookRegistry["ERROR_HOOKS"], [DummyErrorHook]);
 		});
 
 		it("should add a error hook (instance)", (): void => {
@@ -152,7 +152,7 @@ describe("HookRegistry", (): void => {
 
 			HookRegistry.AddErrorHook(HOOK);
 
-			deepStrictEqual(ReflectUtility.Get(HookRegistry, "ERROR_HOOKS"), [HOOK]);
+			deepStrictEqual(HookRegistry["ERROR_HOOKS"], [HOOK]);
 		});
 
 		it("should throw when a error hook constructor is added more than once", (): void => {

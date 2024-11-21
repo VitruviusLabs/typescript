@@ -1,6 +1,5 @@
 import { deepStrictEqual } from "node:assert/strict";
 import { after, beforeEach, describe, it } from "node:test";
-import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { BaseEndpoint, type EndpointEntryInterface, type EndpointMatchInterface, EndpointRegistry, HTTPMethodEnum, HelloWorldEndpoint } from "../../../src/_index.mjs";
 import { throws } from "node:assert";
 
@@ -28,7 +27,7 @@ describe("EndpointRegistry", (): void => {
 			const EMPTY_MAP: Map<string, BaseEndpoint> = new Map();
 
 			deepStrictEqual(EndpointRegistry.FindEndpoint(HTTPMethodEnum.GET, "/"), MATCHING_ENDPOINT);
-			deepStrictEqual(ReflectUtility.Get(EndpointRegistry, "ENDPOINTS"), EMPTY_MAP);
+			deepStrictEqual(EndpointRegistry["ENDPOINTS"], EMPTY_MAP);
 		});
 
 		it("should return the registered endpoint that matches (stateful)", (): void => {
@@ -149,7 +148,7 @@ describe("EndpointRegistry", (): void => {
 			]);
 
 			EndpointRegistry.AddEndpoint(ENDPOINT);
-			deepStrictEqual(ReflectUtility.Get(EndpointRegistry, "ENDPOINTS"), POPULATED_MAP);
+			deepStrictEqual(EndpointRegistry["ENDPOINTS"], POPULATED_MAP);
 		});
 
 		it("should throw if the endpoint is missing a method and route", (): void => {

@@ -2,7 +2,7 @@ import type { MockResponseInterface } from "../definition/interface/mock-respons
 import { isInstanceOf, isStructuredData, unary } from "@vitruvius-labs/ts-predicate/type-guard";
 import { isMockSocket } from "./is-mock-socket.mjs";
 import { isMockRequest } from "./is-mock-request.mjs";
-import { RichServerResponse } from "../../src/_index.mjs";
+import { RichServerResponse } from "../../../src/_index.mjs";
 
 function isMockResponse(value: unknown): value is MockResponseInterface
 {

@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import { BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, HTTPMethodEnum } from "../../../src/_index.mjs";
-import { type MockContextInterface, mockContext } from "../../../mock/_index.mjs";
+import { type MockContextInterface, mockContext } from "../../../mock/core/_index.mjs";
 
 describe("BaseEndpoint", (): void => {
 	describe("getPreHooks", (): void => {
@@ -157,7 +157,7 @@ describe("BaseEndpoint", (): void => {
 			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
 
 			const WRAPPER = (): void => {
-				ReflectUtility.Call(ENDPOINT, "getContext", []);
+				ENDPOINT["getContext"]();
 			};
 
 			throws(WRAPPER, new Error("This is not a contextual endpoint."));
@@ -181,7 +181,7 @@ describe("BaseEndpoint", (): void => {
 			let result: unknown = undefined;
 
 			const WRAPPER = (): void => {
-				result = ReflectUtility.Call(ENDPOINT, "getContext", []);
+				result = ENDPOINT["getContext"]();
 			};
 
 			doesNotThrow(WRAPPER);

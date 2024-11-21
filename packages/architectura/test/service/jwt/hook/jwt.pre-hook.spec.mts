@@ -1,9 +1,8 @@
 import { beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
-import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { JWT, JWTFactory, JWTPreHook } from "../../../../src/_index.mjs";
-import { type MockContextInterface, mockContext } from "../../../../mock/_index.mjs";
+import { type MockContextInterface, mockContext } from "../../../../mock/core/_index.mjs";
 
 describe("JWTPreHook", (): void => {
 	const JWT_FACTORY_PARSE_STUB: SinonStub = stub(JWTFactory, "Parse");
@@ -16,7 +15,7 @@ describe("JWTPreHook", (): void => {
 		it("should create a new JWT pre-hook", (): void => {
 			const HOOK: JWTPreHook = new JWTPreHook("your-256-bit-secret-here");
 
-			strictEqual(ReflectUtility.Get(HOOK, "secret"), "your-256-bit-secret-here");
+			strictEqual(HOOK["secret"], "your-256-bit-secret-here");
 		});
 	});
 

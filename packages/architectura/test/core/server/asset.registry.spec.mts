@@ -2,7 +2,7 @@ import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, doesNotReject, rejects, strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
-import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
+import { instanceOf } from "@vitruvius-labs/toolbox";
 import { AssetRegistry, FileSystemService } from "../../../src/_index.mjs";
 
 describe("AssetRegistry", (): void => {
@@ -83,7 +83,7 @@ describe("AssetRegistry", (): void => {
 
 			ASSERT_DIRECTORY_EXISTENCE_STUB.resolves();
 
-			deepStrictEqual(ReflectUtility.Get(AssetRegistry, "PUBLIC_DIRECTORIES"), new Map([["/lorem-ipsum", "/foo/bar"]]));
+			deepStrictEqual(AssetRegistry["PUBLIC_DIRECTORIES"], new Map([["/lorem-ipsum", "/foo/bar"]]));
 		});
 
 		it("should throw if the directory doesn't exist", (): void => {

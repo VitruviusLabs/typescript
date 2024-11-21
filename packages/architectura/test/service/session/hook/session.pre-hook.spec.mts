@@ -2,7 +2,7 @@ import { after, beforeEach, describe, it } from "node:test";
 import { strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
 import { Session, type SessionDelegateInterface, SessionPreHook, SessionRegistry } from "../../../../src/_index.mjs";
-import { type MockContextInterface, type MockSessionDelegateInterface, mockContext, mockSessionDelegate } from "../../../../mock/_index.mjs";
+import { type MockContextInterface, type MockSessionDelegateInterface, mockContext, mockSessionDelegate } from "../../../../mock/core/_index.mjs";
 
 describe("SessionPreHook", (): void => {
 	const CONTEXT: MockContextInterface = mockContext();

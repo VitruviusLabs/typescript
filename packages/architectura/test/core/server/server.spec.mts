@@ -5,8 +5,8 @@ import { Server as SecureServer } from "node:https";
 import { type SinonStub, stub } from "sinon";
 import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
 import { AssetRegistry, BaseEndpoint, type EndpointMatchInterface, EndpointRegistry, ExecutionContext, ExecutionContextRegistry, FileSystemService, HTTPMethodEnum, HTTPStatusCodeEnum, HookService, LoggerProxy, type SecureServerInstantiationInterface, Server, type UnsafeServerInstantiationInterface } from "../../../src/_index.mjs";
-import { mockContext } from "../../../mock/mock-context.mjs";
-import type { MockContextInterface } from "../../../mock/_index.mjs";
+import { mockContext } from "../../../mock/core/mock-context.mjs";
+import type { MockContextInterface } from "../../../mock/core/_index.mjs";
 
 describe("Server", (): void => {
 	// @ts-expect-error: Stubbing a private method
@@ -133,8 +133,8 @@ describe("Server", (): void => {
 			// @ts-expect-error: For testing purposes
 			const SERVER: Server = new Server(CONFIG);
 
-			strictEqual(ReflectUtility.Get(SERVER, "https"), false);
-			strictEqual(ReflectUtility.Get(SERVER, "port"), 80);
+			strictEqual(SERVER["https"], false);
+			strictEqual(SERVER["port"], 80);
 		});
 
 		it.skip("should create a new server instance (secure)", (): void => {
@@ -148,8 +148,8 @@ describe("Server", (): void => {
 			// @ts-expect-error: For testing purposes
 			const SERVER: Server = new Server(CONFIG);
 
-			strictEqual(ReflectUtility.Get(SERVER, "https"), false);
-			strictEqual(ReflectUtility.Get(SERVER, "port"), 80);
+			strictEqual(SERVER["https"], false);
+			strictEqual(SERVER["port"], 80);
 		});
 	});
 
@@ -251,7 +251,7 @@ describe("Server", (): void => {
 			HANDLE_PUBLIC_ASSETS_STUB.resolves(true);
 			HANDLE_ENDPOINTS_STUB.resolves(true);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
+			const RESULT: unknown = Server["RequestListener"](CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -266,7 +266,7 @@ describe("Server", (): void => {
 			HANDLE_PUBLIC_ASSETS_STUB.resolves(true);
 			HANDLE_ENDPOINTS_STUB.resolves(true);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
+			const RESULT: unknown = Server["RequestListener"](CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -284,7 +284,7 @@ describe("Server", (): void => {
 			HANDLE_PUBLIC_ASSETS_STUB.resolves(true);
 			HANDLE_ENDPOINTS_STUB.resolves(true);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
+			const RESULT: unknown = Server["RequestListener"](CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -300,7 +300,7 @@ describe("Server", (): void => {
 			HANDLE_PUBLIC_ASSETS_STUB.resolves(false);
 			HANDLE_ENDPOINTS_STUB.resolves(true);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
+			const RESULT: unknown = Server["RequestListener"](CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -316,7 +316,7 @@ describe("Server", (): void => {
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "RequestListener", CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
+			const RESULT: unknown = Server["RequestListener"](CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -349,7 +349,7 @@ describe("Server", (): void => {
 				CONTEXT_MOCK.request.stubs.getMethod.reset();
 				CONTEXT_MOCK.request.stubs.getMethod.returns(METHOD);
 
-				const RESULT: unknown = ReflectUtility.Call(Server, "HandlePublicAssets", CONTEXT_MOCK.instance);
+				const RESULT: unknown = Server["HandlePublicAssets"](CONTEXT_MOCK.instance);
 
 				instanceOf(RESULT, Promise);
 				await doesNotReject(RESULT);
@@ -365,7 +365,7 @@ describe("Server", (): void => {
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum.png");
 			FIND_PUBLIC_ASSET_STUB.resolves(undefined);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "HandlePublicAssets", CONTEXT_MOCK.instance);
+			const RESULT: unknown = Server["HandlePublicAssets"](CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -383,7 +383,7 @@ describe("Server", (): void => {
 			READ_FILE_STUB.resolves(Buffer.from("Hello, World!"));
 			CONTEXT_MOCK.response.stubs.replyWith.resolves();
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "HandlePublicAssets", CONTEXT_MOCK.instance);
+			const RESULT: unknown = Server["HandlePublicAssets"](CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -403,7 +403,7 @@ describe("Server", (): void => {
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
 			FIND_ENDPOINT_STUB.returns(undefined);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "HandleEndpoints", CONTEXT_MOCK.instance);
+			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -438,12 +438,12 @@ describe("Server", (): void => {
 
 			FIND_ENDPOINT_STUB.returns(MATCH);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "HandleEndpoints", CONTEXT_MOCK.instance);
+			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
 			strictEqual(await RESULT, true);
-			deepStrictEqual(ReflectUtility.Get(CONTEXT_MOCK.request.instance, "pathMatchGroups"), { slug: "lorem-ipsum" });
+			deepStrictEqual(CONTEXT_MOCK.request.instance["pathMatchGroups"], { slug: "lorem-ipsum" });
 		});
 
 		it("should initialize the endpoint's context if it's contextual", async (): Promise<void> => {
@@ -470,12 +470,12 @@ describe("Server", (): void => {
 
 			FIND_ENDPOINT_STUB.returns(MATCH);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "HandleEndpoints", CONTEXT_MOCK.instance);
+			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
 			strictEqual(await RESULT, true);
-			deepStrictEqual(ReflectUtility.Get(ENDPOINT, "context"), CONTEXT_MOCK.instance);
+			deepStrictEqual(ENDPOINT["context"], CONTEXT_MOCK.instance);
 		});
 
 		it("should not initialize the endpoint's context if it's not contextual", async (): Promise<void> => {
@@ -502,12 +502,12 @@ describe("Server", (): void => {
 
 			FIND_ENDPOINT_STUB.returns(MATCH);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "HandleEndpoints", CONTEXT_MOCK.instance);
+			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
 			strictEqual(await RESULT, true);
-			deepStrictEqual(ReflectUtility.Get(ENDPOINT, "context"), undefined);
+			deepStrictEqual(ENDPOINT["context"], undefined);
 		});
 
 		it("should execute endpoint and hooks, then finalize the response", async (): Promise<void> => {
@@ -536,7 +536,7 @@ describe("Server", (): void => {
 
 			FIND_ENDPOINT_STUB.returns(MATCH);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "HandleEndpoints", CONTEXT_MOCK.instance);
+			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -581,7 +581,7 @@ describe("Server", (): void => {
 			FIND_ENDPOINT_STUB.returns(MATCH);
 			RUN_PRE_HOOKS_STUB.rejects(ERROR);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "HandleEndpoints", CONTEXT_MOCK.instance);
+			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -625,7 +625,7 @@ describe("Server", (): void => {
 			FIND_ENDPOINT_STUB.returns(MATCH);
 			ENDPOINT_EXECUTE_STUB.rejects(ERROR);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "HandleEndpoints", CONTEXT_MOCK.instance);
+			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -667,7 +667,7 @@ describe("Server", (): void => {
 			FIND_ENDPOINT_STUB.returns(MATCH);
 			RUN_POST_HOOKS_STUB.rejects(ERROR);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "HandleEndpoints", CONTEXT_MOCK.instance);
+			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -691,7 +691,7 @@ describe("Server", (): void => {
 			CONTEXT_MOCK.response.stubs.isLocked.returns(true);
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(true);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, false);
+			const RESULT: unknown = Server["FinalizeResponse"](CONTEXT_MOCK.instance, false);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -705,7 +705,7 @@ describe("Server", (): void => {
 			CONTEXT_MOCK.response.stubs.isLocked.returns(true);
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, false);
+			const RESULT: unknown = Server["FinalizeResponse"](CONTEXT_MOCK.instance, false);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -721,7 +721,7 @@ describe("Server", (): void => {
 			CONTEXT_MOCK.response.stubs.isLocked.returns(false);
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, false);
+			const RESULT: unknown = Server["FinalizeResponse"](CONTEXT_MOCK.instance, false);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -736,7 +736,7 @@ describe("Server", (): void => {
 			CONTEXT_MOCK.response.stubs.isLocked.returns(false);
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, true);
+			const RESULT: unknown = Server["FinalizeResponse"](CONTEXT_MOCK.instance, true);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -752,7 +752,7 @@ describe("Server", (): void => {
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
 			CONTEXT_MOCK.response.stubs.getHeaderNames.returns(["Alpha", "Omega"]);
 
-			const RESULT: unknown = ReflectUtility.Call(Server, "FinalizeResponse", CONTEXT_MOCK.instance, false);
+			const RESULT: unknown = Server["FinalizeResponse"](CONTEXT_MOCK.instance, false);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);

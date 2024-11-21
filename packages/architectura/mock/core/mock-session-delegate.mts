@@ -1,7 +1,7 @@
-import type { SessionDelegateInterface } from "../src/_index.mjs";
+import type { SessionDelegateInterface } from "../../src/_index.mjs";
 import type { MockSessionDelegateInterface } from "./definition/interface/mock-session-delegate.interface.mjs";
 import { type SinonStub, stub } from "sinon";
-import { baseMock } from "./base-mock.mjs";
+import { baseMock } from "../mock-utility/base-mock.mjs";
 
 /**
  * Create a mock session delegate.

@@ -1,8 +1,8 @@
 import { describe, it } from "node:test";
 import { match, strictEqual } from "node:assert";
 import { ExecutionContext, type RichClientRequest, type RichServerResponse } from "../../../src/_index.mjs";
-import { mockRequest } from "../../../mock/mock-request.mjs";
-import { mockResponse } from "../../../mock/mock-response.mjs";
+import { mockRequest } from "../../../mock/core/mock-request.mjs";
+import { mockResponse } from "../../../mock/core/mock-response.mjs";
 
 describe("ExecutionContext", (): void => {
 	describe("constructor", (): void => {

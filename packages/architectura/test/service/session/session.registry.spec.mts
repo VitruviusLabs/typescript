@@ -1,6 +1,6 @@
 import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, strictEqual } from "node:assert";
-import { ReflectUtility, deepStrictIterable } from "@vitruvius-labs/toolbox";
+import { deepStrictIterable } from "@vitruvius-labs/toolbox";
 import { Session, SessionRegistry } from "../../../src/_index.mjs";
 
 describe("SessionRegistry", (): void => {
@@ -34,7 +34,7 @@ describe("SessionRegistry", (): void => {
 
 			SessionRegistry.AddSession(SESSION);
 
-			deepStrictEqual(ReflectUtility.Get(SessionRegistry, "SESSIONS"), new Map([["00000000-0000-0000-0000-000000000000", SESSION]]));
+			deepStrictEqual(SessionRegistry["SESSIONS"], new Map([["00000000-0000-0000-0000-000000000000", SESSION]]));
 		});
 	});
 
@@ -46,7 +46,7 @@ describe("SessionRegistry", (): void => {
 
 			SessionRegistry.RemoveSession("00000000-0000-0000-0000-000000000000");
 
-			deepStrictEqual(ReflectUtility.Get(SessionRegistry, "SESSIONS"), new Map());
+			deepStrictEqual(SessionRegistry["SESSIONS"], new Map());
 		});
 	});
 

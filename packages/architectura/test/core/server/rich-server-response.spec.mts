@@ -6,17 +6,17 @@ import { createErrorTest } from "@vitruvius-labs/testing-ground";
 import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 import { ReflectUtility, instanceOf, jsonSerialize } from "@vitruvius-labs/toolbox";
 import { ContentEncodingEnum, ContentTypeEnum, type CookieDescriptorInterface, CookieSameSiteEnum, HTTPStatusCodeEnum, type ReplyInterface, RichServerResponse } from "../../../src/_index.mjs";
-import { type MockResponseInterface, mockRequest, mockResponse, nullPrototype } from "../../../mock/_index.mjs";
+import { type MockRequestInterface, type MockResponseInterface, mockRequest, mockResponse, nullPrototype } from "../../../mock/_index.mjs";
 
 describe("RichServerResponse", (): void => {
 	describe("constructor", (): void => {
 		it("should create a new response", (): void => {
 			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
 
-			strictEqual(ReflectUtility.Get(RESPONSE, "locked"), false);
-			strictEqual(ReflectUtility.Get(RESPONSE, "processed"), false);
-			strictEqual(ReflectUtility.Get(RESPONSE, "content"), undefined);
-			deepStrictEqual(ReflectUtility.Get(RESPONSE, "cookies"), new Map());
+			strictEqual(RESPONSE["locked"], false);
+			strictEqual(RESPONSE["processed"], false);
+			strictEqual(RESPONSE["content"], undefined);
+			deepStrictEqual(RESPONSE["cookies"], new Map());
 		});
 	});
 
@@ -87,6 +87,44 @@ describe("RichServerResponse", (): void => {
 		});
 	});
 
+	describe("html", (): void => {
+		it("should reply with the given message (string)", async (): Promise<void> => {
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
+
+			RESPONSE_MOCK.stubs.replyWith.resolves();
+
+			const PARAMETER: ReplyInterface = {
+				status: HTTPStatusCodeEnum.OK,
+				contentType: ContentTypeEnum.HTML,
+				payload: "Hello, World!",
+			};
+
+			await RESPONSE.html("Hello, World!");
+
+			strictEqual(RESPONSE_MOCK.stubs.replyWith.callCount, 1, "'replyWith' should be called exactly once");
+			deepStrictEqual(RESPONSE_MOCK.stubs.replyWith.firstCall.args, [PARAMETER]);
+		});
+
+		it("should reply with the given message (Buffer)", async (): Promise<void> => {
+			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
+			const RESPONSE: RichServerResponse = RESPONSE_MOCK.instance;
+
+			RESPONSE_MOCK.stubs.replyWith.resolves();
+
+			const PARAMETER: ReplyInterface = {
+				status: HTTPStatusCodeEnum.OK,
+				contentType: ContentTypeEnum.HTML,
+				payload: Buffer.from("Hello, World!"),
+			};
+
+			await RESPONSE.html(Buffer.from("Hello, World!"));
+
+			strictEqual(RESPONSE_MOCK.stubs.replyWith.callCount, 1, "'replyWith' should be called exactly once");
+			deepStrictEqual(RESPONSE_MOCK.stubs.replyWith.firstCall.args, [PARAMETER]);
+		});
+	});
+
 	describe("text", (): void => {
 		it("should reply with the given message (string)", async (): Promise<void> => {
 			const RESPONSE_MOCK: MockResponseInterface = mockResponse();
@@ -141,8 +179,8 @@ describe("RichServerResponse", (): void => {
 
 			await RESPONSE.replyWith(HTTPStatusCodeEnum.CREATED);
 
-			strictEqual(ReflectUtility.Get(RESPONSE, "locked"), true);
-			strictEqual(ReflectUtility.Get(RESPONSE, "processed"), true);
+			strictEqual(RESPONSE["locked"], true);
+			strictEqual(RESPONSE["processed"], true);
 		});
 
 		it("should set the 'processed' flag when done, even if an error is thrown", async (): Promise<void> => {
@@ -153,7 +191,7 @@ describe("RichServerResponse", (): void => {
 
 			await rejects(RESPONSE.replyWith(HTTPStatusCodeEnum.CREATED), createErrorTest());
 
-			strictEqual(ReflectUtility.Get(RESPONSE, "processed"), true);
+			strictEqual(RESPONSE["processed"], true);
 		});
 
 		it("should accept a status code and send the response", async (): Promise<void> => {
@@ -274,7 +312,7 @@ describe("RichServerResponse", (): void => {
 			strictEqual(RESPONSE_MOCK.stubs.end.callCount, 1, "'end' should be called exactly once");
 
 			strictEqual(RESPONSE.getHeader("Content-Type"), ContentTypeEnum.TEXT);
-			strictEqual(ReflectUtility.Get(RESPONSE, "content"), "Hello, World!");
+			strictEqual(RESPONSE["content"], "Hello, World!");
 		});
 
 		it("should process the 'payload' property of the parameter (Buffer)", async (): Promise<void> => {
@@ -292,7 +330,7 @@ describe("RichServerResponse", (): void => {
 			strictEqual(RESPONSE_MOCK.stubs.end.callCount, 1, "'end' should be called exactly once");
 
 			strictEqual(RESPONSE.getHeader("Content-Type"), ContentTypeEnum.BINARY);
-			deepStrictEqual(ReflectUtility.Get(RESPONSE, "content"), Buffer.from("Hello, World!"));
+			deepStrictEqual(RESPONSE["content"], Buffer.from("Hello, World!"));
 		});
 
 		it("should process the 'payload' property of the parameter (JSON)", async (): Promise<void> => {
@@ -317,7 +355,7 @@ describe("RichServerResponse", (): void => {
 			strictEqual(RESPONSE_MOCK.stubs.end.callCount, 1, "'end' should be called exactly once");
 
 			strictEqual(RESPONSE.getHeader("Content-Type"), ContentTypeEnum.JSON);
-			strictEqual(ReflectUtility.Get(RESPONSE, "content"), SERIALIZED_DATA);
+			strictEqual(RESPONSE["content"], SERIALIZED_DATA);
 		});
 
 		it("should ignore the 'contentType' property of the parameter when without a 'payload' property", async (): Promise<void> => {
@@ -352,7 +390,7 @@ describe("RichServerResponse", (): void => {
 			await RESPONSE.replyWith(PARAMETER);
 
 			strictEqual(RESPONSE.getHeader("Content-Type"), ContentTypeEnum.JSON);
-			strictEqual(ReflectUtility.Get(RESPONSE, "content"), PARAMETER.payload);
+			strictEqual(RESPONSE["content"], PARAMETER.payload);
 		});
 
 		it.todo("should encode the payload when possible");
@@ -371,6 +409,22 @@ describe("RichServerResponse", (): void => {
 
 			ReflectUtility.Set(RESPONSE, "locked", true);
 			strictEqual(RESPONSE.isLocked(), true);
+		});
+	});
+
+	describe("isProcessed", (): void => {
+		it("should return false if the response is not processed", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "processed", false);
+			strictEqual(RESPONSE.isProcessed(), false);
+		});
+
+		it("should return true if the response is processed", (): void => {
+			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
+
+			ReflectUtility.Set(RESPONSE, "processed", true);
+			strictEqual(RESPONSE.isProcessed(), true);
 		});
 	});
 
@@ -464,7 +518,7 @@ describe("RichServerResponse", (): void => {
 			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
 
 			RESPONSE.setContent("Hello, World!");
-			strictEqual(ReflectUtility.Get(RESPONSE, "content"), "Hello, World!");
+			strictEqual(RESPONSE["content"], "Hello, World!");
 		});
 	});
 
@@ -494,7 +548,7 @@ describe("RichServerResponse", (): void => {
 			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
 
 			RESPONSE.setStatusCode(HTTPStatusCodeEnum.PAYLOAD_TOO_LARGE);
-			strictEqual(ReflectUtility.Get(RESPONSE, "statusCode"), HTTPStatusCodeEnum.PAYLOAD_TOO_LARGE);
+			strictEqual(RESPONSE.statusCode, HTTPStatusCodeEnum.PAYLOAD_TOO_LARGE);
 		});
 	});
 
@@ -632,7 +686,74 @@ describe("RichServerResponse", (): void => {
 			const RESPONSE: RichServerResponse = new RichServerResponse(mockRequest().instance);
 
 			RESPONSE.setCookie({ name: "lorem", value: "ipsum" });
-			deepStrictEqual(ReflectUtility.Get(RESPONSE, "cookies"), new Map([["lorem", { name: "lorem", value: "ipsum" }]]));
+			deepStrictEqual(RESPONSE["cookies"], new Map([["lorem", { name: "lorem", value: "ipsum" }]]));
+		});
+	});
+
+	describe("findAcceptedEncoding", (): void => {
+		it("should return undefined if there is no header 'Accept-Encoding'", (): void => {
+			const MOCKED_REQUEST: MockRequestInterface = mockRequest();
+			const RESPONSE: RichServerResponse = new RichServerResponse(MOCKED_REQUEST.instance);
+
+			MOCKED_REQUEST.stubs.getHeader.returns(undefined);
+
+			const RESULT: unknown = RESPONSE["findAcceptedEncoding"]();
+
+			strictEqual(MOCKED_REQUEST.stubs.getHeader.callCount, 1, "Request method 'getHeader' should have been called once");
+			deepStrictEqual(MOCKED_REQUEST.stubs.getHeader.firstCall.args, ["Accept-Encoding"]);
+			strictEqual(RESULT, undefined);
+		});
+
+		it("should return undefined if no encoding from the header 'Accept-Encoding' is proposed", (): void => {
+			const MOCKED_REQUEST: MockRequestInterface = mockRequest();
+			const RESPONSE: RichServerResponse = new RichServerResponse(MOCKED_REQUEST.instance);
+
+			MOCKED_REQUEST.stubs.getHeader.returns("zstd");
+
+			const RESULT: unknown = RESPONSE["findAcceptedEncoding"]();
+
+			strictEqual(MOCKED_REQUEST.stubs.getHeader.callCount, 1, "Request method 'getHeader' should have been called once");
+			deepStrictEqual(MOCKED_REQUEST.stubs.getHeader.firstCall.args, ["Accept-Encoding"]);
+			strictEqual(RESULT, undefined);
+		});
+
+		it("should return the top accepted encoding (brotli)", (): void => {
+			const MOCKED_REQUEST: MockRequestInterface = mockRequest();
+			const RESPONSE: RichServerResponse = new RichServerResponse(MOCKED_REQUEST.instance);
+
+			MOCKED_REQUEST.stubs.getHeader.returns("br, gzip;q=0.8, deflate;q=0.5");
+
+			const RESULT: unknown = RESPONSE["findAcceptedEncoding"]();
+
+			strictEqual(MOCKED_REQUEST.stubs.getHeader.callCount, 1, "Request method 'getHeader' should have been called once");
+			deepStrictEqual(MOCKED_REQUEST.stubs.getHeader.firstCall.args, ["Accept-Encoding"]);
+			strictEqual(RESULT, ContentEncodingEnum.BROTLI);
+		});
+
+		it("should return the top accepted encoding (gzip)", (): void => {
+			const MOCKED_REQUEST: MockRequestInterface = mockRequest();
+			const RESPONSE: RichServerResponse = new RichServerResponse(MOCKED_REQUEST.instance);
+
+			MOCKED_REQUEST.stubs.getHeader.returns("br;q=0.8, gzip, deflate;q=0.5");
+
+			const RESULT: unknown = RESPONSE["findAcceptedEncoding"]();
+
+			strictEqual(MOCKED_REQUEST.stubs.getHeader.callCount, 1, "Request method 'getHeader' should have been called once");
+			deepStrictEqual(MOCKED_REQUEST.stubs.getHeader.firstCall.args, ["Accept-Encoding"]);
+			strictEqual(RESULT, ContentEncodingEnum.GZIP);
+		});
+
+		it("should return the top accepted encoding (deflate)", (): void => {
+			const MOCKED_REQUEST: MockRequestInterface = mockRequest();
+			const RESPONSE: RichServerResponse = new RichServerResponse(MOCKED_REQUEST.instance);
+
+			MOCKED_REQUEST.stubs.getHeader.returns("br;q=0.8, gzip;q=0.5, deflate");
+
+			const RESULT: unknown = RESPONSE["findAcceptedEncoding"]();
+
+			strictEqual(MOCKED_REQUEST.stubs.getHeader.callCount, 1, "Request method 'getHeader' should have been called once");
+			deepStrictEqual(MOCKED_REQUEST.stubs.getHeader.firstCall.args, ["Accept-Encoding"]);
+			strictEqual(RESULT, ContentEncodingEnum.DEFLATE);
 		});
 	});
 });

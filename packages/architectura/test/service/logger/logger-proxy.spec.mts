@@ -3,7 +3,7 @@ import { deepStrictEqual, doesNotReject, strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
 import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
 import { ExecutionContextRegistry, LogLevelEnum, LoggerProxy, type LoggerService, Server } from "../../../src/_index.mjs";
-import { mockContext } from "../../../mock/_index.mjs";
+import { mockContext } from "../../../mock/core/_index.mjs";
 
 describe("LoggerProxy", (): void => {
 	const LOGGER_SERVICE: LoggerService = Reflect.get(LoggerProxy, "Logger");
@@ -45,13 +45,13 @@ describe("LoggerProxy", (): void => {
 			// @ts-expect-error: Dummy value for testing purposes
 			const NEW_LOGGER_SERVICE: LoggerService = Symbol("logger-service");
 
-			strictEqual(ReflectUtility.Get(LoggerProxy, "Initialised"), false);
-			strictEqual(ReflectUtility.Get(LoggerProxy, "Logger"), LOGGER_SERVICE);
+			strictEqual(LoggerProxy["Initialised"], false);
+			strictEqual(LoggerProxy["Logger"], LOGGER_SERVICE);
 
 			LoggerProxy.Initialise(NEW_LOGGER_SERVICE);
 
-			strictEqual(ReflectUtility.Get(LoggerProxy, "Initialised"), true);
-			strictEqual(ReflectUtility.Get(LoggerProxy, "Logger"), NEW_LOGGER_SERVICE);
+			strictEqual(LoggerProxy["Initialised"], true);
+			strictEqual(LoggerProxy["Logger"], NEW_LOGGER_SERVICE);
 		});
 
 		it("should initialize the logger proxy with a custom logger, but only once", (): void => {
@@ -60,18 +60,18 @@ describe("LoggerProxy", (): void => {
 			// @ts-expect-error: Dummy value for testing purposes
 			const OTHER_LOGGER_SERVICE: LoggerService = Symbol("logger-service");
 
-			strictEqual(ReflectUtility.Get(LoggerProxy, "Initialised"), false);
-			strictEqual(ReflectUtility.Get(LoggerProxy, "Logger"), LOGGER_SERVICE);
+			strictEqual(LoggerProxy["Initialised"], false);
+			strictEqual(LoggerProxy["Logger"], LOGGER_SERVICE);
 
 			LoggerProxy.Initialise(NEW_LOGGER_SERVICE);
 
-			strictEqual(ReflectUtility.Get(LoggerProxy, "Initialised"), true);
-			strictEqual(ReflectUtility.Get(LoggerProxy, "Logger"), NEW_LOGGER_SERVICE);
+			strictEqual(LoggerProxy["Initialised"], true);
+			strictEqual(LoggerProxy["Logger"], NEW_LOGGER_SERVICE);
 
 			LoggerProxy.Initialise(OTHER_LOGGER_SERVICE);
 
-			strictEqual(ReflectUtility.Get(LoggerProxy, "Initialised"), true);
-			strictEqual(ReflectUtility.Get(LoggerProxy, "Logger"), NEW_LOGGER_SERVICE);
+			strictEqual(LoggerProxy["Initialised"], true);
+			strictEqual(LoggerProxy["Logger"], NEW_LOGGER_SERVICE);
 		});
 	});
 
@@ -343,7 +343,7 @@ describe("LoggerProxy", (): void => {
 				},
 			];
 
-			const PROMISE: unknown = ReflectUtility.Apply(LoggerProxy, "Process", ["Hello, World!", LogLevelEnum.DEBUG, undefined]);
+			const PROMISE: unknown = LoggerProxy["Process"]("Hello, World!", LogLevelEnum.DEBUG, undefined);
 
 			instanceOf(PROMISE, Promise);
 			await PROMISE;
@@ -366,7 +366,7 @@ describe("LoggerProxy", (): void => {
 				},
 			];
 
-			const PROMISE: unknown = ReflectUtility.Apply(LoggerProxy, "Process", [ERROR, LogLevelEnum.ERROR, "Lorem ipsum"]);
+			const PROMISE: unknown = LoggerProxy["Process"](ERROR, LogLevelEnum.ERROR, "Lorem ipsum");
 
 			instanceOf(PROMISE, Promise);
 			await PROMISE;
@@ -381,7 +381,7 @@ describe("LoggerProxy", (): void => {
 			HANDLE_MESSAGE_STUB.rejects(ERROR);
 			SERVER_HANDLE_ERROR_STUB.resolves();
 
-			const PROMISE: unknown = ReflectUtility.Apply(LoggerProxy, "Process", ["Hello, World!", LogLevelEnum.DEBUG, undefined]);
+			const PROMISE: unknown = LoggerProxy["Process"]("Hello, World!", LogLevelEnum.DEBUG, undefined);
 
 			instanceOf(PROMISE, Promise);
 			await doesNotReject(PROMISE);

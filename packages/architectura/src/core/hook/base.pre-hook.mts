@@ -23,7 +23,7 @@ abstract class BasePreHook
 	 *
 	 * @sealed
 	 */
-	public getContext(): ExecutionContext
+	protected getContext(): ExecutionContext
 	{
 		if (this.context === undefined)
 		{

@@ -4,23 +4,23 @@ import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
 import { type JSONObjectType, ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
 import { ContentTypeEnum, HTTPMethodEnum, RichClientRequest } from "../../../src/_index.mjs";
-import { type MockRequestInterface, mockRequest, mockSocket } from "../../../mock/_index.mjs";
+import { type MockRequestInterface, mockRequest, mockSocket } from "../../../mock/core/_index.mjs";
 
 describe("RichClientRequest", (): void => {
 	describe("constructor", (): void => {
 		it("should create a new request", async (): Promise<void> => {
 			const REQUEST: RichClientRequest = new RichClientRequest(mockSocket().instance);
 
-			strictEqual(ReflectUtility.Get(REQUEST, "pathMatchGroups"), undefined);
-			strictEqual(ReflectUtility.Get(REQUEST, "initialized"), false);
-			deepStrictEqual(ReflectUtility.Get(REQUEST, "cookies"), new Map());
-			strictEqual(ReflectUtility.Get(REQUEST, "path"), undefined);
-			deepStrictEqual(ReflectUtility.Get(REQUEST, "pathFragments"), []);
-			deepStrictEqual(ReflectUtility.Get(REQUEST, "query"), parseQuery(""));
-			strictEqual(ReflectUtility.Get(REQUEST, "contentType"), undefined);
-			strictEqual(ReflectUtility.Get(REQUEST, "boundary"), undefined);
+			strictEqual(REQUEST["pathMatchGroups"], undefined);
+			strictEqual(REQUEST["initialized"], false);
+			deepStrictEqual(REQUEST["cookies"], new Map());
+			strictEqual(REQUEST["path"], undefined);
+			deepStrictEqual(REQUEST["pathFragments"], []);
+			deepStrictEqual(REQUEST["query"], parseQuery(""));
+			strictEqual(REQUEST["contentType"], undefined);
+			strictEqual(REQUEST["boundary"], undefined);
 
-			const BODY: unknown = ReflectUtility.Get(REQUEST, "rawBody");
+			const BODY: unknown = REQUEST["rawBody"];
 
 			instanceOf(BODY, Promise);
 			await doesNotReject(BODY);
@@ -33,7 +33,7 @@ describe("RichClientRequest", (): void => {
 			const REQUEST_MOCK: MockRequestInterface = mockRequest();
 			const REQUEST: RichClientRequest = REQUEST_MOCK.instance;
 
-			const RESULT: unknown = ReflectUtility.Call(REQUEST, "listenForContent");
+			const RESULT: unknown = REQUEST["listenForContent"]();
 
 			ReflectUtility.Set(REQUEST, "complete", true);
 			REQUEST.emit("data", Buffer.from("Hello, "));
@@ -49,7 +49,7 @@ describe("RichClientRequest", (): void => {
 			const REQUEST_MOCK: MockRequestInterface = mockRequest();
 			const REQUEST: RichClientRequest = REQUEST_MOCK.instance;
 
-			const RESULT: unknown = ReflectUtility.Call(REQUEST, "listenForContent");
+			const RESULT: unknown = REQUEST["listenForContent"]();
 
 			REQUEST.emit("error", new Error("Payload issue"));
 
@@ -61,7 +61,7 @@ describe("RichClientRequest", (): void => {
 			const REQUEST_MOCK: MockRequestInterface = mockRequest();
 			const REQUEST: RichClientRequest = REQUEST_MOCK.instance;
 
-			const RESULT: unknown = ReflectUtility.Call(REQUEST, "listenForContent");
+			const RESULT: unknown = REQUEST["listenForContent"]();
 
 			ReflectUtility.Set(REQUEST, "complete", false);
 			REQUEST.emit("data", Buffer.from("Hello, "));
@@ -73,6 +73,44 @@ describe("RichClientRequest", (): void => {
 	});
 
 	describe("initialize", (): void => {
+		it("should throw if initialized more than once", (): void => {
+			const REQUEST: RichClientRequest = mockRequest().instance;
+
+			ReflectUtility.Set(REQUEST, "initialized", true);
+
+			const WRAPPER = (): void => {
+				REQUEST.initialize();
+			};
+
+			throws(WRAPPER, createErrorTest());
+		});
+
+		it("should remove a trailing slash (without query)", (): void => {
+			const REQUEST_MOCK: MockRequestInterface = mockRequest();
+			const REQUEST: RichClientRequest = REQUEST_MOCK.instance;
+
+			REQUEST_MOCK.stubs.listenForContent.resolves(Buffer.from("Hello, World!"));
+
+			REQUEST.url = "/api/v1/resource/";
+
+			REQUEST.initialize();
+
+			strictEqual(REQUEST["path"], "/api/v1/resource");
+		});
+
+		it("should remove a trailing slash (with query)", (): void => {
+			const REQUEST_MOCK: MockRequestInterface = mockRequest();
+			const REQUEST: RichClientRequest = REQUEST_MOCK.instance;
+
+			REQUEST_MOCK.stubs.listenForContent.resolves(Buffer.from("Hello, World!"));
+
+			REQUEST.url = "/api/v1/resource/?lorem=ipsum";
+
+			REQUEST.initialize();
+
+			strictEqual(REQUEST["path"], "/api/v1/resource");
+		});
+
 		it("should initialize the request (with cookies and URL parameters)", async (): Promise<void> => {
 			const REQUEST_MOCK: MockRequestInterface = mockRequest();
 			const REQUEST: RichClientRequest = REQUEST_MOCK.instance;
@@ -86,17 +124,17 @@ describe("RichClientRequest", (): void => {
 
 			REQUEST.initialize();
 
-			strictEqual(ReflectUtility.Get(REQUEST, "pathMatchGroups"), undefined);
-			strictEqual(ReflectUtility.Get(REQUEST, "initialized"), true);
-			strictEqual(ReflectUtility.Get(REQUEST, "contentType"), undefined);
-			strictEqual(ReflectUtility.Get(REQUEST, "boundary"), undefined);
-			deepStrictEqual(ReflectUtility.Get(REQUEST, "cookies"), new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]));
-			strictEqual(ReflectUtility.Get(REQUEST, "path"), "/api/v1/resource");
-			deepStrictEqual(ReflectUtility.Get(REQUEST, "pathFragments"), ["api", "v1", "resource"]);
-			deepStrictEqual(ReflectUtility.Get(REQUEST, "query"), parseQuery(PARAMETERS));
+			strictEqual(REQUEST["pathMatchGroups"], undefined);
+			strictEqual(REQUEST["initialized"], true);
+			strictEqual(REQUEST["contentType"], undefined);
+			strictEqual(REQUEST["boundary"], undefined);
+			deepStrictEqual(REQUEST["cookies"], new Map([["alpha", "1"], ["beta", "2"], ["delta", "3"]]));
+			strictEqual(REQUEST["path"], "/api/v1/resource");
+			deepStrictEqual(REQUEST["pathFragments"], ["api", "v1", "resource"]);
+			deepStrictEqual(REQUEST["query"], parseQuery(PARAMETERS));
 			strictEqual(REQUEST_MOCK.stubs.listenForContent.callCount, 1, "'listenForContent' should be called exactly once");
 
-			const BODY: unknown = ReflectUtility.Get(REQUEST, "rawBody");
+			const BODY: unknown = REQUEST["rawBody"];
 
 			instanceOf(BODY, Promise);
 			await doesNotReject(BODY);
@@ -117,17 +155,17 @@ describe("RichClientRequest", (): void => {
 
 			REQUEST.initialize();
 
-			strictEqual(ReflectUtility.Get(REQUEST, "pathMatchGroups"), undefined);
-			strictEqual(ReflectUtility.Get(REQUEST, "initialized"), true);
-			strictEqual(ReflectUtility.Get(REQUEST, "contentType"), "application/json");
-			strictEqual(ReflectUtility.Get(REQUEST, "boundary"), undefined);
-			deepStrictEqual(ReflectUtility.Get(REQUEST, "cookies"), new Map());
-			strictEqual(ReflectUtility.Get(REQUEST, "path"), "/api/v2/resource");
-			deepStrictEqual(ReflectUtility.Get(REQUEST, "pathFragments"), ["api", "v2", "resource"]);
-			deepStrictEqual(ReflectUtility.Get(REQUEST, "query"), parseQuery(""));
+			strictEqual(REQUEST["pathMatchGroups"], undefined);
+			strictEqual(REQUEST["initialized"], true);
+			strictEqual(REQUEST["contentType"], "application/json");
+			strictEqual(REQUEST["boundary"], undefined);
+			deepStrictEqual(REQUEST["cookies"], new Map());
+			strictEqual(REQUEST["path"], "/api/v2/resource");
+			deepStrictEqual(REQUEST["pathFragments"], ["api", "v2", "resource"]);
+			deepStrictEqual(REQUEST["query"], parseQuery(""));
 			strictEqual(REQUEST_MOCK.stubs.listenForContent.callCount, 1, "'listenForContent' should be called exactly once");
 
-			const BODY: unknown = ReflectUtility.Get(REQUEST, "rawBody");
+			const BODY: unknown = REQUEST["rawBody"];
 
 			instanceOf(BODY, Promise);
 			await doesNotReject(BODY);
@@ -146,27 +184,28 @@ describe("RichClientRequest", (): void => {
 
 			REQUEST.initialize();
 
-			strictEqual(ReflectUtility.Get(REQUEST, "pathMatchGroups"), undefined);
-			strictEqual(ReflectUtility.Get(REQUEST, "initialized"), true);
-			strictEqual(ReflectUtility.Get(REQUEST, "contentType"), "multipart/form-data");
-			strictEqual(ReflectUtility.Get(REQUEST, "boundary"), "-------123456789");
-			deepStrictEqual(ReflectUtility.Get(REQUEST, "cookies"), new Map());
-			strictEqual(ReflectUtility.Get(REQUEST, "path"), "/api/v3/resource");
-			deepStrictEqual(ReflectUtility.Get(REQUEST, "pathFragments"), ["api", "v3", "resource"]);
-			deepStrictEqual(ReflectUtility.Get(REQUEST, "query"), parseQuery(""));
+			strictEqual(REQUEST["pathMatchGroups"], undefined);
+			strictEqual(REQUEST["initialized"], true);
+			strictEqual(REQUEST["contentType"], "multipart/form-data");
+			strictEqual(REQUEST["boundary"], "-------123456789");
+			deepStrictEqual(REQUEST["cookies"], new Map());
+			strictEqual(REQUEST["path"], "/api/v3/resource");
+			deepStrictEqual(REQUEST["pathFragments"], ["api", "v3", "resource"]);
+			deepStrictEqual(REQUEST["query"], parseQuery(""));
 			strictEqual(REQUEST_MOCK.stubs.listenForContent.callCount, 1, "'listenForContent' should be called exactly once");
 
-			const BODY: unknown = ReflectUtility.Get(REQUEST, "rawBody");
+			const BODY: unknown = REQUEST["rawBody"];
 
 			instanceOf(BODY, Promise);
 			await doesNotReject(BODY);
 			deepStrictEqual(await BODY, Buffer.from("Hello, World"));
 		});
 
-		it("should throw if initialized more than once", (): void => {
+		it("should throw if receiving an invalid 'multipart/form-data' header", (): void => {
 			const REQUEST: RichClientRequest = mockRequest().instance;
 
-			ReflectUtility.Set(REQUEST, "initialized", true);
+			REQUEST.headers["content-type"] = "multipart/form-data; boundary=";
+			REQUEST.headersDistinct["content-type"] = ["multipart/form-data; boundary="];
 
 			const WRAPPER = (): void => {
 				REQUEST.initialize();
