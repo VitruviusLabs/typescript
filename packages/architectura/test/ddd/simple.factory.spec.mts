@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import { strictEqual } from "node:assert";
 import { instanceOf } from "@vitruvius-labs/toolbox";
 import { DummyModel } from "../../mock/_index.mjs";
-import { SimpleFactory } from "../../src/ddd/simple.factory.mjs";
+import { SimpleFactory } from "../../src/_index.mjs";
 
 describe("SimpleFactory", (): void => {
 	describe("constructor", (): void => {
