@@ -1,4 +1,5 @@
 export * from "./definition/_index.mjs";
+export * from "./dummy-advanced.factory.mjs";
 export * from "./dummy-delegated.repository.mjs";
 export * from "./dummy-transform.factory.mjs";
 export * from "./dummy.delegate.mjs";

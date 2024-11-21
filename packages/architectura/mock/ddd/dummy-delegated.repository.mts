@@ -1,11 +1,11 @@
 import type { DummyModel } from "./dummy.model.mjs";
-import type { DummyTransformInstantiationInterface } from "./definition/_index.mjs";
+import type { DummyDelegateDataInterface } from "./definition/_index.mjs";
 import { DelegatedRepository, type ModelMetadataInterface } from "../../src/_index.mjs";
 import type { DummyDelegate } from "./dummy.delegate.mjs";
 
-class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyModel, typeof DummyModel, DummyTransformInstantiationInterface>
+class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyModel, typeof DummyModel, DummyDelegateDataInterface>
 {
-	protected async fetchByUUID(uuid: string): Promise<(DummyTransformInstantiationInterface & ModelMetadataInterface) | undefined>
+	protected async fetchByUUID(uuid: string): Promise<(DummyDelegateDataInterface & ModelMetadataInterface) | undefined>
 	{
 		return await this.delegate.query({
 			id: 0n,
@@ -17,7 +17,7 @@ class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyM
 		});
 	}
 
-	protected async fetchById(id: bigint): Promise<(DummyTransformInstantiationInterface & ModelMetadataInterface) | undefined>
+	protected async fetchById(id: bigint): Promise<(DummyDelegateDataInterface & ModelMetadataInterface) | undefined>
 	{
 		return await this.delegate.query({
 			id: id,

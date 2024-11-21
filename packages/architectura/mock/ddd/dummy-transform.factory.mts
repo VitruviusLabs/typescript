@@ -1,17 +1,17 @@
-import type { DummyTransformInstantiationInterface } from "./definition/_index.mjs";
-import { BaseFactory } from "../../src/_index.mjs";
-import { DummyModel } from "./dummy.model.mjs";
+import type { DummyDelegateDataInterface, DummyInstantiationInterface } from "./definition/_index.mjs";
+import type { DummyModel } from "./dummy.model.mjs";
+import { AdvancedFactory } from "../../src/_index.mjs";
 
-class DummyTransformFactory extends BaseFactory<DummyModel, typeof DummyModel, DummyTransformInstantiationInterface>
+class DummyTransformFactory extends AdvancedFactory<DummyModel, typeof DummyModel, DummyDelegateDataInterface>
 {
-	public override async create(parameters: DummyTransformInstantiationInterface): Promise<DummyModel>
+	public override async convertRepositoryData(parameters: DummyDelegateDataInterface): Promise<DummyInstantiationInterface>
 	{
 		await Promise.resolve();
 
-		return new DummyModel({
+		return {
 			uuid: parameters.uuid,
 			value: parseInt(parameters.value, 10),
-		});
+		};
 	}
 }
 
