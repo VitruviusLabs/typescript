@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import { strictEqual } from "node:assert";
 import { ContentTypeEnum, type ExecutionContext, HTTPMethodEnum, HTTPStatusCodeEnum, HelloWorldEndpoint } from "../../src/_index.mjs";
-import { mockContext } from "../../mock/core/_index.mjs";
+import { mockContext } from "../../mock/_index.mjs";
 
 describe("HelloWorldEndpoint", (): void => {
 	describe("method", (): void => {

@@ -3,7 +3,7 @@ import { deepStrictEqual, doesNotReject, strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
 import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
 import { ExecutionContextRegistry, LogLevelEnum, LoggerProxy, type LoggerService, Server } from "../../../src/_index.mjs";
-import { mockContext } from "../../../mock/core/_index.mjs";
+import { mockContext } from "../../../mock/_index.mjs";
 
 describe("LoggerProxy", (): void => {
 	const LOGGER_SERVICE: LoggerService = Reflect.get(LoggerProxy, "Logger");

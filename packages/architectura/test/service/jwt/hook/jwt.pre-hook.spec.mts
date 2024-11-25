@@ -2,7 +2,7 @@ import { beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
 import { JWT, JWTFactory, JWTPreHook } from "../../../../src/_index.mjs";
-import { type MockContextInterface, mockContext } from "../../../../mock/core/_index.mjs";
+import { type MockContextInterface, mockContext } from "../../../../mock/_index.mjs";
 
 describe("JWTPreHook", (): void => {
 	const JWT_FACTORY_PARSE_STUB: SinonStub = stub(JWTFactory, "Parse");

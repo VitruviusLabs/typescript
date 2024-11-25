@@ -4,7 +4,7 @@ import { type ParsedUrlQuery, parse as parseQuery } from "node:querystring";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
 import { type JSONObjectType, ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
 import { ContentTypeEnum, HTTPMethodEnum, RichClientRequest } from "../../../src/_index.mjs";
-import { type MockRequestInterface, mockRequest, mockSocket } from "../../../mock/core/_index.mjs";
+import { type MockRequestInterface, mockRequest, mockSocket } from "../../../mock/core/server/_index.mjs";
 
 describe("RichClientRequest", (): void => {
 	describe("constructor", (): void => {
