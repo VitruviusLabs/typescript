@@ -3,7 +3,7 @@ import { deepStrictEqual, doesNotThrow, rejects, strictEqual } from "node:assert
 import { type SinonFakeTimers, type SinonSpy, type SinonStub, spy, stub, useFakeTimers } from "sinon";
 import { MillisecondEnum, ReflectUtility } from "@vitruvius-labs/toolbox";
 import { Server, Session, SessionCleanupService, SessionConstantEnum, SessionRegistry } from "../../../../src/_index.mjs";
-import { type MockSessionDelegateInterface, mockSessionDelegate } from "../../../../mock/core/_index.mjs";
+import { type MockSessionDelegateInterface, mockSessionDelegate } from "../../../../mock/_index.mjs";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
 
 describe("SessionCleanupService", (): void => {

@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import { doesNotThrow, strictEqual, throws } from "node:assert";
 import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { BasePostHook } from "../../../src/_index.mjs";
-import { type MockContextInterface, mockContext } from "../../../mock/core/_index.mjs";
+import { type MockContextInterface, mockContext } from "../../../mock/_index.mjs";
 
 describe("BasePostHook", (): void => {
 	describe("getContext", (): void => {

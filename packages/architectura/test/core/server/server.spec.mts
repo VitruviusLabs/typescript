@@ -5,8 +5,7 @@ import { Server as SecureServer } from "node:https";
 import { type SinonStub, stub } from "sinon";
 import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
 import { AssetRegistry, BaseEndpoint, type EndpointMatchInterface, EndpointRegistry, ExecutionContext, ExecutionContextRegistry, FileSystemService, HTTPMethodEnum, HTTPStatusCodeEnum, HookService, LoggerProxy, type SecureServerInstantiationInterface, Server, type UnsafeServerInstantiationInterface } from "../../../src/_index.mjs";
-import { mockContext } from "../../../mock/core/mock-context.mjs";
-import type { MockContextInterface } from "../../../mock/core/_index.mjs";
+import { type MockContextInterface, mockContext } from "../../../mock/_index.mjs";
 
 describe("Server", (): void => {
 	// @ts-expect-error: Stubbing a private method

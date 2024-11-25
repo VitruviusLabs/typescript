@@ -1,6 +1,6 @@
 import type { MockSocketInterface } from "./definition/interface/mock-socket.interface.mjs";
 import { Socket, type SocketConstructorOpts } from "node:net";
-import { baseMock } from "../mock-utility/base-mock.mjs";
+import { baseMock } from "../../mock-utility/base-mock.mjs";
 import { isMockSocket } from "./predicate/is-mock-socket.mjs";
 
 /**

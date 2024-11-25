@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import { BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, HTTPMethodEnum } from "../../../src/_index.mjs";
-import { type MockContextInterface, mockContext } from "../../../mock/core/_index.mjs";
+import { type MockContextInterface, mockContext } from "../../../mock/_index.mjs";
 
 describe("BaseEndpoint", (): void => {
 	describe("getPreHooks", (): void => {

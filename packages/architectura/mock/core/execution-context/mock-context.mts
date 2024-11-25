@@ -1,13 +1,10 @@
 import type { Socket, SocketConstructorOpts } from "node:net";
 import type { MockContextInterface } from "./definition/interface/mock-context.interface.mjs";
-import type { MockResponseInterface } from "./definition/interface/mock-response.interface.mjs";
-import type { MockRequestInterface } from "./definition/interface/mock-request.interface.mjs";
-import type { MockSocketInterface } from "./definition/interface/mock-socket.interface.mjs";
 import { stub } from "sinon";
-import { baseMock } from "../mock-utility/base-mock.mjs";
-import { mockResponse } from "./mock-response.mjs";
+import { baseMock } from "../../mock-utility/base-mock.mjs";
+import { type MockRequestInterface, type MockResponseInterface, type MockSocketInterface, mockResponse } from "../server/_index.mjs";
 import { isMockContext } from "./predicate/is-mock-context.mjs";
-import { ExecutionContext, type RichClientRequest, type RichServerResponse } from "../../src/_index.mjs";
+import { ExecutionContext, type RichClientRequest, type RichServerResponse } from "../../../src/_index.mjs";
 
 /**
  * Create a mock context.
