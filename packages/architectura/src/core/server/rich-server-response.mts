@@ -516,9 +516,13 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 		}
 
 		this.setHeader("Content-Encoding", ENCODING);
+
 		const ENCODER: Transform = RichServerResponse.GetEncoder(ENCODING);
 
 		const PROMISE: Promise<void> = pipeline(ENCODER, this);
+
+		ENCODER.write(this.content);
+		ENCODER.end();
 
 		try
 		{
