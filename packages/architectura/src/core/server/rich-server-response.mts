@@ -212,12 +212,17 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 	 */
 	public getContent(): string
 	{
-		if (this.content instanceof Buffer)
+		if (this.content === undefined)
 		{
-			return this.content.toString();
+			return "";
 		}
 
-		return this.content ?? "";
+		if (isString(this.content))
+		{
+			return this.content;
+		}
+
+		return this.content.toString();
 	}
 
 	/**
