@@ -5,4 +5,5 @@ export * from "./base.model.mjs";
 export * from "./base.repository.mjs";
 export * from "./delegated.repository.mjs";
 export * from "./domain.service.mjs";
+export * from "./generic.factory.mjs";
 export * from "./simple.factory.mjs";
