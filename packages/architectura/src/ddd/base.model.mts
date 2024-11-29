@@ -6,7 +6,7 @@ import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Base model for all entities
- */
+**/
 abstract class BaseModel
 {
 	protected readonly id: bigint | undefined;
@@ -18,7 +18,7 @@ abstract class BaseModel
 
 	/**
 	 * Create a new model
-	 */
+	**/
 	public constructor(parameters: BaseModelInstantiationInterface)
 	{
 		this.uuid = parameters.uuid ?? randomUUID();
@@ -33,7 +33,7 @@ abstract class BaseModel
 
 	/**
 	 * Get the repository status
-	 */
+	**/
 	public getRepositoryStatus(): ModelRepositoryStatusEnum
 	{
 		return this.repositoryStatus;
@@ -41,7 +41,7 @@ abstract class BaseModel
 
 	/**
 	 * Check if the entity has an id, meaning it is saved or soft-deleted
-	 */
+	**/
 	public hasId(): boolean
 	{
 		return this.id !== undefined;
@@ -51,7 +51,7 @@ abstract class BaseModel
 	 * Get the id
 	 *
 	 * @throws if the entity is new or destroyed
-	 */
+	**/
 	public getId(): bigint
 	{
 		if (this.id === undefined)
@@ -64,7 +64,7 @@ abstract class BaseModel
 
 	/**
 	 * Get the UUID
-	 */
+	**/
 	public getUUID(): string
 	{
 		return this.uuid;
@@ -74,7 +74,7 @@ abstract class BaseModel
 	 * Get the creation date
 	 *
 	 * @throws if the entity is new or destroyed
-	 */
+	**/
 	public getCreatedAt(): Date
 	{
 		if (this.createdAt === undefined)
@@ -89,7 +89,7 @@ abstract class BaseModel
 	 * Get the update date
 	 *
 	 * @throws if the entity is new or destroyed
-	 */
+	**/
 	public getUpdatedAt(): Date
 	{
 		if (this.updatedAt === undefined)
@@ -107,7 +107,7 @@ abstract class BaseModel
 	 * Set by soft deletion.
 	 *
 	 * @throws if the entity is new or destroyed
-	 */
+	**/
 	public getDeletedAt(): Date | undefined
 	{
 		if (this.id === undefined)
@@ -121,35 +121,41 @@ abstract class BaseModel
 	/**
 	 * Save the entity
 	 *
-	 * @throws if the entity is deleted
-	 */
+	 * @throws if the entity is deleted or destroyed
+	**/
 	public async save(): Promise<void>
 	{
-		await this.getSelfRepository().save(this);
+		await this.getSelfRepository().saveModel(this);
 	}
 
 	/**
 	 * Restore the soft-deleted entity
-	 */
+	 *
+	 * @throws if the entity is not soft-deleted
+	**/
 	public async restore(): Promise<void>
 	{
-		await this.getSelfRepository().restore(this);
+		await this.getSelfRepository().restoreModel(this);
 	}
 
 	/**
 	 * Soft delete the entity
-	 */
+	 *
+	 * @throws if the entity is new or destroyed
+	**/
 	public async delete(): Promise<void>
 	{
-		await this.getSelfRepository().delete(this);
+		await this.getSelfRepository().deleteModel(this);
 	}
 
 	/**
 	 * Hard delete the entity
-	 */
+	 *
+	 * @throws if the entity is new or destroyed
+	**/
 	public async destroy(): Promise<void>
 	{
-		await this.getSelfRepository().destroy(this);
+		await this.getSelfRepository().destroyModel(this);
 	}
 }
 

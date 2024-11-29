@@ -1,4 +1,4 @@
-/* cspell: disable */
+/* cspell:disable */
 const MIME_TYPES_MAPPING: Record<string, Array<string>> = {
 	"application/andrew-inset": ["ez"],
 	"application/appinstaller": ["appinstaller"],
@@ -326,7 +326,7 @@ const MIME_TYPES_MAPPING: Record<string, Array<string>> = {
 	"video/quicktime": ["qt", "mov"],
 	"video/webm": ["webm"],
 };
-/* cspell: enable */
+/* cspell:enable */
 
 const EXTENSION_TO_MIME_TYPE_MAPPING: Map<string, string> = new Map();
 

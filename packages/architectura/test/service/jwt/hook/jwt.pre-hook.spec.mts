@@ -34,9 +34,9 @@ describe("JWTPreHook", (): void => {
 		});
 
 		it("should do nothing with an 'Authorization' header that's not 'Bearer'", (): void => {
-			/* cspell: disable */
+			/* cspell:disable */
 			const HEADER: string = "Basic YWxhZGRpbjpvcGVuc2VzYW1l";
-			/* cspell: enable */
+			/* cspell:enable */
 
 			const CONTEXT: MockContextInterface = mockContext();
 

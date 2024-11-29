@@ -51,7 +51,7 @@ class DummyBaseRepository extends BaseRepository<DummyModel, typeof DummyModel, 
 		});
 	}
 
-	protected async enable(model: DummyModel): Promise<ModelMetadataInterface>
+	protected async restore(model: DummyModel): Promise<ModelMetadataInterface>
 	{
 		return await Promise.resolve({
 			id: model.getId(),
@@ -62,7 +62,7 @@ class DummyBaseRepository extends BaseRepository<DummyModel, typeof DummyModel, 
 		});
 	}
 
-	protected async disable(model: DummyModel): Promise<NonNullableKeys<ModelMetadataInterface, "deletedAt">>
+	protected async delete(model: DummyModel): Promise<NonNullableKeys<ModelMetadataInterface, "deletedAt">>
 	{
 		return await Promise.resolve({
 			id: model.getId(),
@@ -73,7 +73,7 @@ class DummyBaseRepository extends BaseRepository<DummyModel, typeof DummyModel, 
 		});
 	}
 
-	protected async expunge(model: DummyModel): Promise<void>
+	protected async destroy(model: DummyModel): Promise<void>
 	{
 		await Promise.resolve(model.getId());
 	}

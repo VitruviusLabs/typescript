@@ -52,7 +52,7 @@ class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyM
 		});
 	}
 
-	protected async enable(model: DummyModel): Promise<ModelMetadataInterface>
+	protected async restore(model: DummyModel): Promise<ModelMetadataInterface>
 	{
 		return await this.delegate.query({
 			id: model.getId(),
@@ -63,7 +63,7 @@ class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyM
 		});
 	}
 
-	protected async disable(model: DummyModel): Promise<NonNullableKeys<ModelMetadataInterface, "deletedAt">>
+	protected async delete(model: DummyModel): Promise<NonNullableKeys<ModelMetadataInterface, "deletedAt">>
 	{
 		return await this.delegate.query({
 			id: model.getId(),
@@ -74,7 +74,7 @@ class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyM
 		});
 	}
 
-	protected async expunge(model: DummyModel): Promise<void>
+	protected async destroy(model: DummyModel): Promise<void>
 	{
 		await this.delegate.query(model.getId());
 	}

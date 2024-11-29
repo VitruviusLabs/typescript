@@ -10,24 +10,24 @@ describe("BaseModel", (): void => {
 	// @ts-expect-error: Stubbing a protected method for testing purposes
 	const GET_REPOSITORY_STUB: SinonStub = stub(DummyModel.prototype, "getSelfRepository");
 
-	const STUBBED_REPOSITORY: SinonStubbedInstance<Pick<DummyDelegatedRepository, "save" | "restore" | "delete" | "destroy" >> = {
-		save: stub(),
-		restore: stub(),
-		delete: stub(),
-		destroy: stub(),
+	const STUBBED_REPOSITORY: SinonStubbedInstance<Pick<DummyDelegatedRepository, "saveModel" | "restoreModel" | "deleteModel" | "destroyModel" >> = {
+		saveModel: stub(),
+		restoreModel: stub(),
+		deleteModel: stub(),
+		destroyModel: stub(),
 	};
 
 	beforeEach((): void => {
 		GET_REPOSITORY_STUB.reset();
 		GET_REPOSITORY_STUB.returns(STUBBED_REPOSITORY);
-		STUBBED_REPOSITORY.save.reset();
-		STUBBED_REPOSITORY.save.resolves();
-		STUBBED_REPOSITORY.restore.reset();
-		STUBBED_REPOSITORY.restore.resolves();
-		STUBBED_REPOSITORY.delete.reset();
-		STUBBED_REPOSITORY.delete.resolves();
-		STUBBED_REPOSITORY.destroy.reset();
-		STUBBED_REPOSITORY.destroy.resolves();
+		STUBBED_REPOSITORY.saveModel.reset();
+		STUBBED_REPOSITORY.saveModel.resolves();
+		STUBBED_REPOSITORY.restoreModel.reset();
+		STUBBED_REPOSITORY.restoreModel.resolves();
+		STUBBED_REPOSITORY.deleteModel.reset();
+		STUBBED_REPOSITORY.deleteModel.resolves();
+		STUBBED_REPOSITORY.destroyModel.reset();
+		STUBBED_REPOSITORY.destroyModel.resolves();
 	});
 
 	after((): void => {
@@ -245,8 +245,8 @@ describe("BaseModel", (): void => {
 			await ENTITY.save();
 
 			strictEqual(GET_REPOSITORY_STUB.callCount, 1, "The method 'getSelfRepository' must be called once");
-			strictEqual(STUBBED_REPOSITORY.save.callCount, 1, "The repository method 'save' must be called once");
-			deepStrictEqual(STUBBED_REPOSITORY.save.firstCall.args, [ENTITY]);
+			strictEqual(STUBBED_REPOSITORY.saveModel.callCount, 1, "The repository method 'save' must be called once");
+			deepStrictEqual(STUBBED_REPOSITORY.saveModel.firstCall.args, [ENTITY]);
 		});
 	});
 
@@ -257,8 +257,8 @@ describe("BaseModel", (): void => {
 			await ENTITY.restore();
 
 			strictEqual(GET_REPOSITORY_STUB.callCount, 1, "The method 'getSelfRepository' must be called once");
-			strictEqual(STUBBED_REPOSITORY.restore.callCount, 1, "The repository method 'restore' must be called once");
-			deepStrictEqual(STUBBED_REPOSITORY.restore.firstCall.args, [ENTITY]);
+			strictEqual(STUBBED_REPOSITORY.restoreModel.callCount, 1, "The repository method 'restore' must be called once");
+			deepStrictEqual(STUBBED_REPOSITORY.restoreModel.firstCall.args, [ENTITY]);
 		});
 	});
 
@@ -269,8 +269,8 @@ describe("BaseModel", (): void => {
 			await ENTITY.delete();
 
 			strictEqual(GET_REPOSITORY_STUB.callCount, 1, "The method 'getSelfRepository' must be called once");
-			strictEqual(STUBBED_REPOSITORY.delete.callCount, 1, "The repository method 'delete' must be called once");
-			deepStrictEqual(STUBBED_REPOSITORY.delete.firstCall.args, [ENTITY]);
+			strictEqual(STUBBED_REPOSITORY.deleteModel.callCount, 1, "The repository method 'delete' must be called once");
+			deepStrictEqual(STUBBED_REPOSITORY.deleteModel.firstCall.args, [ENTITY]);
 		});
 	});
 
@@ -281,8 +281,8 @@ describe("BaseModel", (): void => {
 			await ENTITY.destroy();
 
 			strictEqual(GET_REPOSITORY_STUB.callCount, 1, "The method 'getSelfRepository' must be called once");
-			strictEqual(STUBBED_REPOSITORY.destroy.callCount, 1, "The repository method 'destroy' must be called once");
-			deepStrictEqual(STUBBED_REPOSITORY.destroy.firstCall.args, [ENTITY]);
+			strictEqual(STUBBED_REPOSITORY.destroyModel.callCount, 1, "The repository method 'destroy' must be called once");
+			deepStrictEqual(STUBBED_REPOSITORY.destroyModel.firstCall.args, [ENTITY]);
 		});
 	});
 });

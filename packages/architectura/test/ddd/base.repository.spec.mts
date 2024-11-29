@@ -17,11 +17,11 @@ describe("BaseRepository", (): void => {
 	// @ts-expect-error: Stub protected method
 	const UPDATE_STUB: SinonStub = stub(DummyBaseRepository.prototype, "update");
 	// @ts-expect-error: Stub protected method
-	const ENABLE_STUB: SinonStub = stub(DummyBaseRepository.prototype, "enable");
+	const RESTORE_STUB: SinonStub = stub(DummyBaseRepository.prototype, "restore");
 	// @ts-expect-error: Stub protected method
-	const DISABLE_STUB: SinonStub = stub(DummyBaseRepository.prototype, "disable");
+	const DELETE_STUB: SinonStub = stub(DummyBaseRepository.prototype, "delete");
 	// @ts-expect-error: Stub protected method
-	const EXPUNGE_STUB: SinonStub = stub(DummyBaseRepository.prototype, "expunge");
+	const DESTROY_STUB: SinonStub = stub(DummyBaseRepository.prototype, "destroy");
 
 	beforeEach((): void => {
 		FETCH_UUID_STUB.reset();
@@ -32,12 +32,12 @@ describe("BaseRepository", (): void => {
 		REGISTER_STUB.rejects();
 		UPDATE_STUB.reset();
 		UPDATE_STUB.rejects();
-		ENABLE_STUB.reset();
-		ENABLE_STUB.rejects();
-		DISABLE_STUB.reset();
-		DISABLE_STUB.rejects();
-		EXPUNGE_STUB.reset();
-		EXPUNGE_STUB.rejects();
+		RESTORE_STUB.reset();
+		RESTORE_STUB.rejects();
+		DELETE_STUB.reset();
+		DELETE_STUB.rejects();
+		DESTROY_STUB.reset();
+		DESTROY_STUB.rejects();
 	});
 
 	after((): void => {
@@ -45,9 +45,9 @@ describe("BaseRepository", (): void => {
 		FETCH_ID_STUB.restore();
 		REGISTER_STUB.restore();
 		UPDATE_STUB.restore();
-		ENABLE_STUB.restore();
-		DISABLE_STUB.restore();
-		EXPUNGE_STUB.restore();
+		RESTORE_STUB.restore();
+		DELETE_STUB.restore();
+		DESTROY_STUB.restore();
 	});
 
 	describe("constructor", (): void => {
@@ -307,7 +307,7 @@ describe("BaseRepository", (): void => {
 		});
 	});
 
-	describe("save", (): void => {
+	describe("saveModel", (): void => {
 		it("should register a new entity, then update its metadata", async (): Promise<void> => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
@@ -318,7 +318,7 @@ describe("BaseRepository", (): void => {
 
 			REGISTER_STUB.resolves(DATA);
 
-			const RESULT: unknown = REPOSITORY.save(ENTITY);
+			const RESULT: unknown = REPOSITORY.saveModel(ENTITY);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -337,7 +337,7 @@ describe("BaseRepository", (): void => {
 
 			UPDATE_STUB.resolves(DATA);
 
-			const RESULT: unknown = REPOSITORY.save(ENTITY);
+			const RESULT: unknown = REPOSITORY.saveModel(ENTITY);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -352,7 +352,7 @@ describe("BaseRepository", (): void => {
 
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
 
-			await rejects(REPOSITORY.save(ENTITY), createErrorTest());
+			await rejects(REPOSITORY.saveModel(ENTITY), createErrorTest());
 		});
 
 		it("should throw when trying to save a destroyed entity", async (): Promise<void> => {
@@ -361,18 +361,18 @@ describe("BaseRepository", (): void => {
 
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
 
-			await rejects(REPOSITORY.save(ENTITY), createErrorTest());
+			await rejects(REPOSITORY.saveModel(ENTITY), createErrorTest());
 		});
 	});
 
-	describe("delete", (): void => {
+	describe("deleteModel", (): void => {
 		it("should throw when trying to soft delete a new entity", async (): Promise<void> => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW });
 
-			await rejects(REPOSITORY.delete(ENTITY), createErrorTest());
+			await rejects(REPOSITORY.deleteModel(ENTITY), createErrorTest());
 		});
 
 		it("should soft delete a saved entity, then clear its metadata", async (): Promise<void> => {
@@ -383,14 +383,14 @@ describe("BaseRepository", (): void => {
 			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
 
-			DISABLE_STUB.resolves(DATA);
+			DELETE_STUB.resolves(DATA);
 
-			const RESULT: unknown = REPOSITORY.delete(ENTITY);
+			const RESULT: unknown = REPOSITORY.deleteModel(ENTITY);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
-			strictEqual(DISABLE_STUB.callCount, 1, "The 'disable' method should be called exactly once");
-			deepStrictEqual(DISABLE_STUB.firstCall.args, [ENTITY]);
+			strictEqual(DELETE_STUB.callCount, 1, "The 'delete' method should be called exactly once");
+			deepStrictEqual(DELETE_STUB.firstCall.args, [ENTITY]);
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -400,7 +400,7 @@ describe("BaseRepository", (): void => {
 
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
 
-			await rejects(REPOSITORY.delete(ENTITY), createErrorTest());
+			await rejects(REPOSITORY.deleteModel(ENTITY), createErrorTest());
 		});
 
 		it("should throw when trying to soft delete a destroyed entity", async (): Promise<void> => {
@@ -409,18 +409,18 @@ describe("BaseRepository", (): void => {
 
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
 
-			await rejects(REPOSITORY.delete(ENTITY), createErrorTest());
+			await rejects(REPOSITORY.deleteModel(ENTITY), createErrorTest());
 		});
 	});
 
-	describe("restore", (): void => {
+	describe("restoreModel", (): void => {
 		it("should throw when trying to restore a new entity", async (): Promise<void> => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW });
 
-			await rejects(REPOSITORY.restore(ENTITY), createErrorTest());
+			await rejects(REPOSITORY.restoreModel(ENTITY), createErrorTest());
 		});
 
 		it("should throw when trying to restore a saved entity", async (): Promise<void> => {
@@ -429,7 +429,7 @@ describe("BaseRepository", (): void => {
 
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
 
-			await rejects(REPOSITORY.restore(ENTITY), createErrorTest());
+			await rejects(REPOSITORY.restoreModel(ENTITY), createErrorTest());
 		});
 
 		it("should restore a soft deleted entity", async (): Promise<void> => {
@@ -440,14 +440,14 @@ describe("BaseRepository", (): void => {
 			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
 
-			ENABLE_STUB.resolves(DATA);
+			RESTORE_STUB.resolves(DATA);
 
-			const RESULT: unknown = REPOSITORY.restore(ENTITY);
+			const RESULT: unknown = REPOSITORY.restoreModel(ENTITY);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
-			strictEqual(ENABLE_STUB.callCount, 1, "The 'enable' method should be called exactly once");
-			deepStrictEqual(ENABLE_STUB.firstCall.args, [ENTITY]);
+			strictEqual(RESTORE_STUB.callCount, 1, "The 'restore' method should be called exactly once");
+			deepStrictEqual(RESTORE_STUB.firstCall.args, [ENTITY]);
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -457,18 +457,18 @@ describe("BaseRepository", (): void => {
 
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
 
-			await rejects(REPOSITORY.restore(ENTITY), createErrorTest());
+			await rejects(REPOSITORY.restoreModel(ENTITY), createErrorTest());
 		});
 	});
 
-	describe("destroy", (): void => {
+	describe("destroyModel", (): void => {
 		it("should throw when trying to destroy a new entity", async (): Promise<void> => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW });
 
-			await rejects(REPOSITORY.destroy(ENTITY), createErrorTest());
+			await rejects(REPOSITORY.destroyModel(ENTITY), createErrorTest());
 		});
 
 		it("should hard destroy a saved entity, then clear its metadata", async (): Promise<void> => {
@@ -479,14 +479,14 @@ describe("BaseRepository", (): void => {
 			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
 
-			EXPUNGE_STUB.resolves(DATA);
+			DESTROY_STUB.resolves(DATA);
 
-			const RESULT: unknown = REPOSITORY.destroy(ENTITY);
+			const RESULT: unknown = REPOSITORY.destroyModel(ENTITY);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
-			strictEqual(EXPUNGE_STUB.callCount, 1, "The 'expunge' method should be called exactly once");
-			deepStrictEqual(EXPUNGE_STUB.firstCall.args, [ENTITY]);
+			strictEqual(DESTROY_STUB.callCount, 1, "The 'destroy' method should be called exactly once");
+			deepStrictEqual(DESTROY_STUB.firstCall.args, [ENTITY]);
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -498,14 +498,14 @@ describe("BaseRepository", (): void => {
 			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
 
-			EXPUNGE_STUB.resolves(DATA);
+			DESTROY_STUB.resolves(DATA);
 
-			const RESULT: unknown = REPOSITORY.destroy(ENTITY);
+			const RESULT: unknown = REPOSITORY.destroyModel(ENTITY);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
-			strictEqual(EXPUNGE_STUB.callCount, 1, "The 'expunge' method should be called exactly once");
-			deepStrictEqual(EXPUNGE_STUB.firstCall.args, [ENTITY]);
+			strictEqual(DESTROY_STUB.callCount, 1, "The 'destroy' method should be called exactly once");
+			deepStrictEqual(DESTROY_STUB.firstCall.args, [ENTITY]);
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -515,7 +515,7 @@ describe("BaseRepository", (): void => {
 
 			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
 
-			await rejects(REPOSITORY.destroy(ENTITY), createErrorTest());
+			await rejects(REPOSITORY.destroyModel(ENTITY), createErrorTest());
 		});
 	});
 });

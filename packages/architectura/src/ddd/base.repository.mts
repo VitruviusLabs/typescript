@@ -102,7 +102,7 @@ abstract class BaseRepository<
 	 * @remarks
 	 * Used by the restore method.
 	 */
-	protected abstract enable(model: M): Promise<{ updatedAt: Date | string | number }>;
+	protected abstract restore(model: M): Promise<{ updatedAt: Date | string | number }>;
 
 	/**
 	 * Soft delete an existing entity.
@@ -110,7 +110,7 @@ abstract class BaseRepository<
 	 * @remarks
 	 * Used by the delete method.
 	 */
-	protected abstract disable(model: M): Promise<{ deletedAt: Date | string | number }>;
+	protected abstract delete(model: M): Promise<{ deletedAt: Date | string | number }>;
 
 	/**
 	 * Hard delete an existing entity.
@@ -118,7 +118,7 @@ abstract class BaseRepository<
 	 * @remarks
 	 * Used by the destroy method.
 	 */
-	protected abstract expunge(model: M): Promise<void>;
+	protected abstract destroy(model: M): Promise<void>;
 
 	/**
 	 * Retrieve an entity by its UUID if it exists.
@@ -220,7 +220,7 @@ abstract class BaseRepository<
 	 *
 	 * @sealed
 	 */
-	public async save(model: M): Promise<void>
+	public async saveModel(model: M): Promise<void>
 	{
 		switch (model.getRepositoryStatus())
 		{
@@ -257,14 +257,14 @@ abstract class BaseRepository<
 	 *
 	 * @sealed
 	 */
-	public async restore(model: M): Promise<void>
+	public async restoreModel(model: M): Promise<void>
 	{
 		if (model.getRepositoryStatus() !== ModelRepositoryStatusEnum.DELETED)
 		{
 			throw new Error(`You can't restore a ${model.getRepositoryStatus()} entity.`);
 		}
 
-		const metadata: { updatedAt: Date | string | number } = await this.enable(model);
+		const metadata: { updatedAt: Date | string | number } = await this.restore(model);
 
 		ReflectUtility.Set(model, "repositoryStatus", ModelRepositoryStatusEnum.SAVED);
 		ReflectUtility.Set(model, "updatedAt", new Date(metadata.updatedAt));
@@ -278,14 +278,14 @@ abstract class BaseRepository<
 	 *
 	 * @sealed
 	 */
-	public async delete(model: M): Promise<void>
+	public async deleteModel(model: M): Promise<void>
 	{
 		if (model.getRepositoryStatus() !== ModelRepositoryStatusEnum.SAVED)
 		{
 			throw new Error(`You can't soft delete a ${model.getRepositoryStatus()} entity.`);
 		}
 
-		const metadata: { deletedAt: Date | string | number } = await this.disable(model);
+		const metadata: { deletedAt: Date | string | number } = await this.delete(model);
 
 		ReflectUtility.Set(model, "repositoryStatus", ModelRepositoryStatusEnum.DELETED);
 		ReflectUtility.Set(model, "updatedAt", new Date(metadata.deletedAt));
@@ -299,7 +299,7 @@ abstract class BaseRepository<
 	 *
 	 * @sealed
 	 */
-	public async destroy(model: M): Promise<void>
+	public async destroyModel(model: M): Promise<void>
 	{
 		if (
 			model.getRepositoryStatus() === ModelRepositoryStatusEnum.NEW
@@ -309,7 +309,7 @@ abstract class BaseRepository<
 			throw new Error(`You can't destroy a ${model.getRepositoryStatus()} entity.`);
 		}
 
-		await this.expunge(model);
+		await this.destroy(model);
 
 		ReflectUtility.Set(model, "repositoryStatus", ModelRepositoryStatusEnum.DESTROYED);
 		ReflectUtility.Set(model, "id", undefined);

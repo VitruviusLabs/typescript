@@ -154,11 +154,11 @@ describe("JWT", (): void => {
 			};
 
 			const EXPECTED: string = [
-				/* cspell: disable */
+				/* cspell:disable */
 				"eyJ0eXAiOiJKV1QiLCJhbGciOiJSU0EtU0hBMjU2In0",
 				"eyJpYXQiOi0xLCJuYmYiOjAsImV4cCI6MX0",
 				"DgVOw4htw6JsfVF4w7tCfQ7CjhHCscO1fcO9TcKEwoXDtUExNVLCncKyQMO3",
-				/* cspell: enable */
+				/* cspell:enable */
 			].join(".");
 
 			const TOKEN: JWT = new JWT(ALGORITHM, SECRET, CLAIMS);
