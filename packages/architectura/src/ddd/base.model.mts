@@ -1,5 +1,8 @@
 import type { BaseModelInstantiationInterface } from "./definition/interface/base-model-instantiation.interface.mjs";
 import { randomUUID } from "node:crypto";
+import { ModelRepositoryStatusEnum } from "./definition/enum/model-repository-status.enum.mjs";
+import type { BaseRepository } from "./base.repository.mjs";
+import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Base model for all entities
@@ -11,6 +14,7 @@ abstract class BaseModel
 	protected readonly createdAt: Date | undefined;
 	protected readonly updatedAt: Date | undefined;
 	protected readonly deletedAt: Date | undefined;
+	protected readonly repositoryStatus: ModelRepositoryStatusEnum;
 
 	/**
 	 * Create a new model
@@ -18,26 +22,25 @@ abstract class BaseModel
 	public constructor(parameters: BaseModelInstantiationInterface)
 	{
 		this.uuid = parameters.uuid ?? randomUUID();
+		this.id = undefined;
+		this.createdAt = undefined;
+		this.updatedAt = undefined;
+		this.deletedAt = undefined;
+		this.repositoryStatus = ModelRepositoryStatusEnum.NEW;
+	}
+
+	protected abstract getSelfRepository(): BaseRepository<BaseModel, ConstructorOf<BaseModel>>;
+
+	/**
+	 * Get the repository status
+	 */
+	public getRepositoryStatus(): ModelRepositoryStatusEnum
+	{
+		return this.repositoryStatus;
 	}
 
 	/**
-	 * Save the entity
-	 *
-	 * @remarks
-	 * Usually retrieve the corresponding repository from the domain then save the entity.
-	 */
-	public abstract save(): Promise<void>;
-
-	/**
-	 * Delete the entity
-	 *
-	 * @remarks
-	 * Usually retrieve the corresponding repository from the domain then delete the entity.
-	 */
-	public abstract delete(): Promise<void>;
-
-	/**
-	 * Check if the entity has an id, meaning it has been saved
+	 * Check if the entity has an id, meaning it is saved or soft-deleted
 	 */
 	public hasId(): boolean
 	{
@@ -47,7 +50,7 @@ abstract class BaseModel
 	/**
 	 * Get the id
 	 *
-	 * @throws if the entity has not been saved
+	 * @throws if the entity is new or destroyed
 	 */
 	public getId(): bigint
 	{
@@ -70,7 +73,7 @@ abstract class BaseModel
 	/**
 	 * Get the creation date
 	 *
-	 * @throws if the entity has not been saved
+	 * @throws if the entity is new or destroyed
 	 */
 	public getCreatedAt(): Date
 	{
@@ -85,7 +88,7 @@ abstract class BaseModel
 	/**
 	 * Get the update date
 	 *
-	 * @throws if the entity has not been saved
+	 * @throws if the entity is new or destroyed
 	 */
 	public getUpdatedAt(): Date
 	{
@@ -101,9 +104,9 @@ abstract class BaseModel
 	 * Get the deletion date
 	 *
 	 * @remarks
-	 * This is only available if you use soft deletion.
+	 * Set by soft deletion.
 	 *
-	 * @throws if the entity has not been saved
+	 * @throws if the entity is new or destroyed
 	 */
 	public getDeletedAt(): Date | undefined
 	{
@@ -113,6 +116,40 @@ abstract class BaseModel
 		}
 
 		return this.deletedAt;
+	}
+
+	/**
+	 * Save the entity
+	 *
+	 * @throws if the entity is deleted
+	 */
+	public async save(): Promise<void>
+	{
+		await this.getSelfRepository().save(this);
+	}
+
+	/**
+	 * Restore the soft-deleted entity
+	 */
+	public async restore(): Promise<void>
+	{
+		await this.getSelfRepository().restore(this);
+	}
+
+	/**
+	 * Soft delete the entity
+	 */
+	public async delete(): Promise<void>
+	{
+		await this.getSelfRepository().delete(this);
+	}
+
+	/**
+	 * Hard delete the entity
+	 */
+	public async destroy(): Promise<void>
+	{
+		await this.getSelfRepository().destroy(this);
 	}
 }
 

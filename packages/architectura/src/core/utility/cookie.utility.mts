@@ -27,6 +27,7 @@ class CookieUtility
 			const NAME: string | undefined = MATCHES.groups["name"];
 			const VALUE: string | undefined = MATCHES.groups["value"];
 
+			// Will never happen, but TypeScript doesn't know that
 			if (NAME === undefined || VALUE === undefined)
 			{
 				continue;

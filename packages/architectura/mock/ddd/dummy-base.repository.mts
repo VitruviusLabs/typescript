@@ -1,14 +1,13 @@
-import type { NonNullableKeys } from "@vitruvius-labs/ts-predicate/helper";
 import type { DummyModel } from "./dummy.model.mjs";
+import type { NonNullableKeys } from "@vitruvius-labs/ts-predicate/helper";
 import type { DummyDelegateDataInterface } from "./definition/_index.mjs";
-import type { DummyDelegate } from "./dummy.delegate.mjs";
-import { DelegatedRepository, type ModelMetadataInterface, type RepositoryQueryNormalizedOptionsInterface } from "../../src/_index.mjs";
+import { BaseRepository, type ModelMetadataInterface, type RepositoryQueryNormalizedOptionsInterface } from "../../src/_index.mjs";
 
-class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyModel, typeof DummyModel, DummyDelegateDataInterface>
+class DummyBaseRepository extends BaseRepository<DummyModel, typeof DummyModel, DummyDelegateDataInterface>
 {
 	protected async fetchByUUID(uuid: string, options: RepositoryQueryNormalizedOptionsInterface): Promise<(DummyDelegateDataInterface & ModelMetadataInterface) | undefined>
 	{
-		return await this.delegate.query({
+		return await Promise.resolve({
 			id: 1n,
 			createdAt: new Date(0),
 			updatedAt: new Date(1),
@@ -20,7 +19,7 @@ class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyM
 
 	protected async fetchById(id: bigint, options: RepositoryQueryNormalizedOptionsInterface): Promise<(DummyDelegateDataInterface & ModelMetadataInterface) | undefined>
 	{
-		return await this.delegate.query({
+		return await Promise.resolve({
 			id: id,
 			createdAt: new Date(0),
 			updatedAt: new Date(1),
@@ -32,7 +31,7 @@ class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyM
 
 	protected async register(model: DummyModel): Promise<ModelMetadataInterface>
 	{
-		return await this.delegate.query({
+		return await Promise.resolve({
 			id: 1n,
 			createdAt: new Date(0),
 			updatedAt: new Date(1),
@@ -43,7 +42,7 @@ class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyM
 
 	protected async update(model: DummyModel): Promise<ModelMetadataInterface>
 	{
-		return await this.delegate.query({
+		return await Promise.resolve({
 			id: model.getId(),
 			createdAt: new Date(0),
 			updatedAt: new Date(1),
@@ -54,7 +53,7 @@ class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyM
 
 	protected async enable(model: DummyModel): Promise<ModelMetadataInterface>
 	{
-		return await this.delegate.query({
+		return await Promise.resolve({
 			id: model.getId(),
 			createdAt: new Date(0),
 			updatedAt: new Date(1),
@@ -65,7 +64,7 @@ class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyM
 
 	protected async disable(model: DummyModel): Promise<NonNullableKeys<ModelMetadataInterface, "deletedAt">>
 	{
-		return await this.delegate.query({
+		return await Promise.resolve({
 			id: model.getId(),
 			createdAt: new Date(0),
 			updatedAt: new Date(1),
@@ -76,8 +75,8 @@ class DummyDelegatedRepository extends DelegatedRepository<DummyDelegate, DummyM
 
 	protected async expunge(model: DummyModel): Promise<void>
 	{
-		await this.delegate.query(model.getId());
+		await Promise.resolve(model.getId());
 	}
 }
 
-export { DummyDelegatedRepository };
+export { DummyBaseRepository };

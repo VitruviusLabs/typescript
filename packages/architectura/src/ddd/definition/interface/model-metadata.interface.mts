@@ -10,11 +10,11 @@ interface ModelMetadataInterface
 	/* Used when fetching existing entities or registering new entities */
 	id: bigint | number | string;
 	/* Used when fetching existing entities or registering new entities */
-	createdAt: Date;
+	createdAt: Date | string | number;
 	/* Used when fetching existing entities or updating entities */
-	updatedAt: Date;
+	updatedAt: Date | string | number;
 	/* Used when fetching existing entities or soft deleting entities */
-	deletedAt: Date | null | undefined;
+	deletedAt: Date | string | number | null | undefined;
 	/* Used when fetching existing entities */
 	uuid: string;
 }

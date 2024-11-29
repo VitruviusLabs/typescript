@@ -1,4 +1,4 @@
-export * from "./definition/type/constructor-of.mjs";
+export * from "./definition/_index.mjs";
 export * from "./utils/unknown-error.mjs";
 export * from "./get-constructor-of.mjs";
 export * from "./is-similar.mjs";
