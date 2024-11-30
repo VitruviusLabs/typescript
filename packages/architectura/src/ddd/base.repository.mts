@@ -45,13 +45,13 @@ abstract class BaseRepository<
 
 		if (isDefined(metadata.deletedAt))
 		{
-			ReflectUtility.Set(model, "repositoryStatus", ModelRepositoryStatusEnum.DELETED);
+			ReflectUtility.Set(model, "persistenceInRepositoryStatus", ModelRepositoryStatusEnum.DELETED);
 			ReflectUtility.Set(model, "deletedAt", new Date(metadata.deletedAt));
 
 			return;
 		}
 
-		ReflectUtility.Set(model, "repositoryStatus", ModelRepositoryStatusEnum.SAVED);
+		ReflectUtility.Set(model, "persistenceInRepositoryStatus", ModelRepositoryStatusEnum.SAVED);
 		ReflectUtility.Set(model, "deletedAt", undefined);
 	}
 
@@ -222,7 +222,7 @@ abstract class BaseRepository<
 	 */
 	public async saveModel(model: M): Promise<void>
 	{
-		switch (model.getRepositoryStatus())
+		switch (model.getPersistenceInRepositoryStatus())
 		{
 			case ModelRepositoryStatusEnum.NEW:
 				{
@@ -259,14 +259,14 @@ abstract class BaseRepository<
 	 */
 	public async restoreModel(model: M): Promise<void>
 	{
-		if (model.getRepositoryStatus() !== ModelRepositoryStatusEnum.DELETED)
+		if (model.getPersistenceInRepositoryStatus() !== ModelRepositoryStatusEnum.DELETED)
 		{
-			throw new Error(`You can't restore a ${model.getRepositoryStatus()} entity.`);
+			throw new Error(`You can't restore a ${model.getPersistenceInRepositoryStatus()} entity.`);
 		}
 
 		const metadata: { updatedAt: Date | string | number } = await this.restore(model);
 
-		ReflectUtility.Set(model, "repositoryStatus", ModelRepositoryStatusEnum.SAVED);
+		ReflectUtility.Set(model, "persistenceInRepositoryStatus", ModelRepositoryStatusEnum.SAVED);
 		ReflectUtility.Set(model, "updatedAt", new Date(metadata.updatedAt));
 		ReflectUtility.Set(model, "deletedAt", undefined);
 	}
@@ -280,14 +280,14 @@ abstract class BaseRepository<
 	 */
 	public async deleteModel(model: M): Promise<void>
 	{
-		if (model.getRepositoryStatus() !== ModelRepositoryStatusEnum.SAVED)
+		if (model.getPersistenceInRepositoryStatus() !== ModelRepositoryStatusEnum.SAVED)
 		{
-			throw new Error(`You can't soft delete a ${model.getRepositoryStatus()} entity.`);
+			throw new Error(`You can't soft delete a ${model.getPersistenceInRepositoryStatus()} entity.`);
 		}
 
 		const metadata: { deletedAt: Date | string | number } = await this.delete(model);
 
-		ReflectUtility.Set(model, "repositoryStatus", ModelRepositoryStatusEnum.DELETED);
+		ReflectUtility.Set(model, "persistenceInRepositoryStatus", ModelRepositoryStatusEnum.DELETED);
 		ReflectUtility.Set(model, "updatedAt", new Date(metadata.deletedAt));
 		ReflectUtility.Set(model, "deletedAt", new Date(metadata.deletedAt));
 	}
@@ -302,16 +302,16 @@ abstract class BaseRepository<
 	public async destroyModel(model: M): Promise<void>
 	{
 		if (
-			model.getRepositoryStatus() === ModelRepositoryStatusEnum.NEW
-			|| model.getRepositoryStatus() === ModelRepositoryStatusEnum.DESTROYED
+			model.getPersistenceInRepositoryStatus() === ModelRepositoryStatusEnum.NEW
+			|| model.getPersistenceInRepositoryStatus() === ModelRepositoryStatusEnum.DESTROYED
 		)
 		{
-			throw new Error(`You can't destroy a ${model.getRepositoryStatus()} entity.`);
+			throw new Error(`You can't destroy a ${model.getPersistenceInRepositoryStatus()} entity.`);
 		}
 
 		await this.destroy(model);
 
-		ReflectUtility.Set(model, "repositoryStatus", ModelRepositoryStatusEnum.DESTROYED);
+		ReflectUtility.Set(model, "persistenceInRepositoryStatus", ModelRepositoryStatusEnum.DESTROYED);
 		ReflectUtility.Set(model, "id", undefined);
 		ReflectUtility.Set(model, "createdAt", undefined);
 		ReflectUtility.Set(model, "updatedAt", undefined);

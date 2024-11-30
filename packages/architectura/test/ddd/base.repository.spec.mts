@@ -65,7 +65,7 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.SAVED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
 
 			const RESULT: unknown = REPOSITORY["create"](DATA);
 
@@ -94,7 +94,7 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.SAVED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
 
 			FETCH_UUID_STUB.resolves(DATA);
 
@@ -125,7 +125,7 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.DELETED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED });
 
 			FETCH_UUID_STUB.resolves(DATA);
 
@@ -152,7 +152,7 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.SAVED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
 
 			FETCH_UUID_STUB.resolves(DATA);
 
@@ -179,7 +179,7 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.DELETED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED });
 
 			FETCH_UUID_STUB.resolves(DATA);
 
@@ -210,7 +210,7 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.SAVED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
 
 			FETCH_ID_STUB.resolves(DATA);
 
@@ -241,7 +241,7 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.DELETED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED });
 
 			FETCH_ID_STUB.resolves(DATA);
 
@@ -268,7 +268,7 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.SAVED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
 
 			FETCH_ID_STUB.resolves(DATA);
 
@@ -295,7 +295,7 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.DELETED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED });
 
 			FETCH_ID_STUB.resolves(DATA);
 
@@ -313,8 +313,8 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.SAVED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.NEW });
 
 			REGISTER_STUB.resolves(DATA);
 
@@ -332,8 +332,8 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.SAVED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
 
 			UPDATE_STUB.resolves(DATA);
 
@@ -350,7 +350,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED });
 
 			await rejects(REPOSITORY.saveModel(ENTITY), createErrorTest());
 		});
@@ -359,7 +359,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
 
 			await rejects(REPOSITORY.saveModel(ENTITY), createErrorTest());
 		});
@@ -370,7 +370,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.NEW });
 
 			await rejects(REPOSITORY.deleteModel(ENTITY), createErrorTest());
 		});
@@ -380,8 +380,8 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.DELETED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
 
 			DELETE_STUB.resolves(DATA);
 
@@ -398,7 +398,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED });
 
 			await rejects(REPOSITORY.deleteModel(ENTITY), createErrorTest());
 		});
@@ -407,7 +407,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
 
 			await rejects(REPOSITORY.deleteModel(ENTITY), createErrorTest());
 		});
@@ -418,7 +418,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.NEW });
 
 			await rejects(REPOSITORY.restoreModel(ENTITY), createErrorTest());
 		});
@@ -427,7 +427,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
 
 			await rejects(REPOSITORY.restoreModel(ENTITY), createErrorTest());
 		});
@@ -437,8 +437,8 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.DELETED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED });
 
 			RESTORE_STUB.resolves(DATA);
 
@@ -455,7 +455,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
 
 			await rejects(REPOSITORY.restoreModel(ENTITY), createErrorTest());
 		});
@@ -466,7 +466,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.NEW });
 
 			await rejects(REPOSITORY.destroyModel(ENTITY), createErrorTest());
 		});
@@ -476,8 +476,8 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.DELETED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
 
 			DESTROY_STUB.resolves(DATA);
 
@@ -495,8 +495,8 @@ describe("BaseRepository", (): void => {
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.DELETED);
-			const EXPECTED: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED });
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED });
 
 			DESTROY_STUB.resolves(DATA);
 
@@ -513,7 +513,7 @@ describe("BaseRepository", (): void => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
 
 			await rejects(REPOSITORY.destroyModel(ENTITY), createErrorTest());
 		});

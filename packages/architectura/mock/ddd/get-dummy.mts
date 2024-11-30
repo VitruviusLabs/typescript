@@ -5,7 +5,7 @@ import { getDefaultDummyProperties } from "./get-default-dummy-properties.mjs";
 function getDummy(parameters?: Partial<MockDummyType>): DummyModel
 {
 	const properties: Required<MockDummyType> = {
-		...getDefaultDummyProperties(parameters?.repositoryStatus),
+		...getDefaultDummyProperties(parameters?.persistenceInRepositoryStatus),
 		...parameters,
 	};
 
@@ -15,7 +15,7 @@ function getDummy(parameters?: Partial<MockDummyType>): DummyModel
 	});
 
 	// @ts-expect-error: Simulating instance processed in repository
-	instance.repositoryStatus = properties.repositoryStatus;
+	instance.persistenceInRepositoryStatus = properties.persistenceInRepositoryStatus;
 	// @ts-expect-error: Simulating instance processed in repository
 	instance.id = properties.id ?? undefined;
 	// @ts-expect-error: Simulating instance processed in repository

@@ -14,7 +14,7 @@ abstract class BaseModel
 	protected readonly createdAt: Date | undefined;
 	protected readonly updatedAt: Date | undefined;
 	protected readonly deletedAt: Date | undefined;
-	protected readonly repositoryStatus: ModelRepositoryStatusEnum;
+	protected readonly persistenceInRepositoryStatus: ModelRepositoryStatusEnum;
 
 	/**
 	 * Create a new model
@@ -26,7 +26,7 @@ abstract class BaseModel
 		this.createdAt = undefined;
 		this.updatedAt = undefined;
 		this.deletedAt = undefined;
-		this.repositoryStatus = ModelRepositoryStatusEnum.NEW;
+		this.persistenceInRepositoryStatus = ModelRepositoryStatusEnum.NEW;
 	}
 
 	protected abstract getSelfRepository(): BaseRepository<BaseModel, ConstructorOf<BaseModel>>;
@@ -34,9 +34,9 @@ abstract class BaseModel
 	/**
 	 * Get the repository status
 	**/
-	public getRepositoryStatus(): ModelRepositoryStatusEnum
+	public getPersistenceInRepositoryStatus(): ModelRepositoryStatusEnum
 	{
-		return this.repositoryStatus;
+		return this.persistenceInRepositoryStatus;
 	}
 
 	/**

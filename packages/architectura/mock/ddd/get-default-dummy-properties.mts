@@ -7,7 +7,7 @@ function getDefaultDummyProperties(status: ModelRepositoryStatusEnum = ModelRepo
 	{
 		case ModelRepositoryStatusEnum.NEW:
 			return {
-				repositoryStatus: ModelRepositoryStatusEnum.NEW,
+				persistenceInRepositoryStatus: ModelRepositoryStatusEnum.NEW,
 				uuid: "00000000-0000-0000-0000-000000000000",
 				id: undefined,
 				createdAt: undefined,
@@ -18,7 +18,7 @@ function getDefaultDummyProperties(status: ModelRepositoryStatusEnum = ModelRepo
 
 		case ModelRepositoryStatusEnum.SAVED:
 			return {
-				repositoryStatus: ModelRepositoryStatusEnum.SAVED,
+				persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED,
 				uuid: "00000000-0000-0000-0000-000000000000",
 				id: 1n,
 				createdAt: new Date(0),
@@ -29,7 +29,7 @@ function getDefaultDummyProperties(status: ModelRepositoryStatusEnum = ModelRepo
 
 		case ModelRepositoryStatusEnum.DELETED:
 			return {
-				repositoryStatus: ModelRepositoryStatusEnum.SAVED,
+				persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED,
 				uuid: "00000000-0000-0000-0000-000000000000",
 				id: 1n,
 				createdAt: new Date(0),
@@ -40,7 +40,7 @@ function getDefaultDummyProperties(status: ModelRepositoryStatusEnum = ModelRepo
 
 		case ModelRepositoryStatusEnum.DESTROYED:
 			return {
-				repositoryStatus: ModelRepositoryStatusEnum.DESTROYED,
+				persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DESTROYED,
 				uuid: "00000000-0000-0000-0000-000000000000",
 				id: undefined,
 				createdAt: undefined,

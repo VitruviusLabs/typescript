@@ -42,7 +42,7 @@ describe("BaseModel", (): void => {
 			});
 
 			strictEqual(ENTITY["uuid"], "00000000-0000-0000-0000-000000000000");
-			strictEqual(ENTITY["repositoryStatus"], ModelRepositoryStatusEnum.NEW);
+			strictEqual(ENTITY["persistenceInRepositoryStatus"], ModelRepositoryStatusEnum.NEW);
 			strictEqual(ENTITY["id"], undefined);
 			strictEqual(ENTITY["createdAt"], undefined);
 			strictEqual(ENTITY["updatedAt"], undefined);
@@ -68,25 +68,25 @@ describe("BaseModel", (): void => {
 
 	describe("hasId", (): void => {
 		it("should return false if the model is new", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW, id: undefined });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.NEW, id: undefined });
 
 			strictEqual(ENTITY.hasId(), false);
 		});
 
 		it("should return true if the model was saved", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED, id: 1n });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED, id: 1n });
 
 			strictEqual(ENTITY.hasId(), true);
 		});
 
 		it("should return true if the model was soft deleted", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED, id: 1n });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED, id: 1n });
 
 			strictEqual(ENTITY.hasId(), true);
 		});
 
 		it("should return false if the model was destroyed", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED, id: undefined });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DESTROYED, id: undefined });
 
 			strictEqual(ENTITY.hasId(), false);
 		});
@@ -94,7 +94,7 @@ describe("BaseModel", (): void => {
 
 	describe("getId", (): void => {
 		it("should throw an error if the model is new", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW, id: undefined });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.NEW, id: undefined });
 
 			const WRAPPER = (): void => {
 				ENTITY.getId();
@@ -104,19 +104,19 @@ describe("BaseModel", (): void => {
 		});
 
 		it("should return the id if the model was saved", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED, id: 1n });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED, id: 1n });
 
 			strictEqual(ENTITY.getId(), 1n);
 		});
 
 		it("should return the id if the model was soft deleted", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED, id: 1n });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED, id: 1n });
 
 			strictEqual(ENTITY.getId(), 1n);
 		});
 
 		it("should throw an error if the model was destroyed", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED, id: undefined });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DESTROYED, id: undefined });
 
 			const WRAPPER = (): void => {
 				ENTITY.getId();
@@ -128,7 +128,7 @@ describe("BaseModel", (): void => {
 
 	describe("getCreatedAt", (): void => {
 		it("should throw an error if the model is new", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW, createdAt: undefined });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.NEW, createdAt: undefined });
 
 			const WRAPPER = (): void => {
 				ENTITY.getCreatedAt();
@@ -140,7 +140,7 @@ describe("BaseModel", (): void => {
 		it("should return the creation date if the model was saved", (): void => {
 			const DATE: Date = new Date();
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED, createdAt: DATE });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED, createdAt: DATE });
 
 			strictEqual(ENTITY.getCreatedAt(), DATE);
 		});
@@ -148,13 +148,13 @@ describe("BaseModel", (): void => {
 		it("should return the creation date if the model was soft deleted", (): void => {
 			const DATE: Date = new Date();
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED, createdAt: DATE });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED, createdAt: DATE });
 
 			strictEqual(ENTITY.getCreatedAt(), DATE);
 		});
 
 		it("should throw an error if the model was destroyed", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW, createdAt: undefined });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.NEW, createdAt: undefined });
 
 			const WRAPPER = (): void => {
 				ENTITY.getCreatedAt();
@@ -166,7 +166,7 @@ describe("BaseModel", (): void => {
 
 	describe("getUpdatedAt", (): void => {
 		it("should throw an error if the model is new", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW, updatedAt: undefined });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.NEW, updatedAt: undefined });
 
 			const WRAPPER = (): void => {
 				ENTITY.getUpdatedAt();
@@ -178,7 +178,7 @@ describe("BaseModel", (): void => {
 		it("should return the update date if the model was saved", (): void => {
 			const DATE: Date = new Date();
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED, updatedAt: DATE });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED, updatedAt: DATE });
 
 			strictEqual(ENTITY.getUpdatedAt(), DATE);
 		});
@@ -186,13 +186,13 @@ describe("BaseModel", (): void => {
 		it("should return the update date if the model was soft deleted", (): void => {
 			const DATE: Date = new Date();
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED, updatedAt: DATE });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED, updatedAt: DATE });
 
 			strictEqual(ENTITY.getUpdatedAt(), DATE);
 		});
 
 		it("should throw an error if the model was destroyed", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED, updatedAt: undefined });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DESTROYED, updatedAt: undefined });
 
 			const WRAPPER = (): void => {
 				ENTITY.getUpdatedAt();
@@ -204,7 +204,7 @@ describe("BaseModel", (): void => {
 
 	describe("getDeletedAt", (): void => {
 		it("should throw an error if the model is new", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.NEW, deletedAt: undefined });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.NEW, deletedAt: undefined });
 
 			const WRAPPER = (): void => {
 				ENTITY.getDeletedAt();
@@ -214,7 +214,7 @@ describe("BaseModel", (): void => {
 		});
 
 		it("should return undefined if the model was saved", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.SAVED, deletedAt: undefined });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED, deletedAt: undefined });
 
 			strictEqual(ENTITY.getDeletedAt(), undefined);
 		});
@@ -222,13 +222,13 @@ describe("BaseModel", (): void => {
 		it("should return the deletion date if the model was soft deleted", (): void => {
 			const DATE: Date = new Date();
 
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DELETED, deletedAt: DATE });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DELETED, deletedAt: DATE });
 
 			strictEqual(ENTITY.getDeletedAt(), DATE);
 		});
 
 		it("should throw an error if the model was destroyed", (): void => {
-			const ENTITY: DummyModel = getDummy({ repositoryStatus: ModelRepositoryStatusEnum.DESTROYED, deletedAt: undefined });
+			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DESTROYED, deletedAt: undefined });
 
 			const WRAPPER = (): void => {
 				ENTITY.getDeletedAt();
