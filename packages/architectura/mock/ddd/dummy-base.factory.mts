@@ -1,9 +1,14 @@
 import type { DummyDelegateDataInterface, DummyInstantiationInterface } from "./definition/_index.mjs";
-import type { DummyModel } from "./dummy.model.mjs";
-import { AdvancedFactory } from "../../src/_index.mjs";
+import { DummyModel } from "./dummy.model.mjs";
+import { BaseFactory } from "../../src/_index.mjs";
 
-class DummyTransformFactory extends AdvancedFactory<DummyModel, typeof DummyModel, DummyDelegateDataInterface>
+class DummyBaseFactory extends BaseFactory<DummyModel, typeof DummyModel, DummyDelegateDataInterface>
 {
+	public create(parameters: DummyInstantiationInterface): DummyModel
+	{
+		return new DummyModel(parameters);
+	}
+
 	public override async convertRepositoryData(parameters: DummyDelegateDataInterface): Promise<DummyInstantiationInterface>
 	{
 		await Promise.resolve();
@@ -15,4 +20,4 @@ class DummyTransformFactory extends AdvancedFactory<DummyModel, typeof DummyMode
 	}
 }
 
-export { DummyTransformFactory };
+export { DummyBaseFactory };

@@ -1,27 +1,29 @@
+import type { MockDummyType } from "./definition/type/mock-dummy-type.mjs";
 import { DummyModel } from "./dummy.model.mjs";
+import { getDefaultDummyProperties } from "./get-default-dummy-properties.mjs";
 
-function getDummy(creation_date?: Date, deletion_date?: Date): DummyModel
+function getDummy(parameters?: Partial<MockDummyType>): DummyModel
 {
+	const properties: Required<MockDummyType> = {
+		...getDefaultDummyProperties(parameters?.persistenceInRepositoryStatus),
+		...parameters,
+	};
+
 	const instance: DummyModel = new DummyModel({
-		uuid: "00000000-0000-0000-0000-000000000000",
-		value: 0,
+		uuid: properties.uuid,
+		value: properties.value,
 	});
 
-	if (creation_date !== undefined)
-	{
-		// @ts-expect-error: Simulating saved instance
-		instance.id = 0n;
-		// @ts-expect-error: Simulating saved instance
-		instance.createdAt = creation_date;
-		// @ts-expect-error: Simulating saved instance
-		instance.updatedAt = creation_date;
-	}
-
-	if (deletion_date !== undefined)
-	{
-		// @ts-expect-error: Simulating saved instance
-		instance.deletedAt = deletion_date;
-	}
+	// @ts-expect-error: Simulating instance processed in repository
+	instance.persistenceInRepositoryStatus = properties.persistenceInRepositoryStatus;
+	// @ts-expect-error: Simulating instance processed in repository
+	instance.id = properties.id ?? undefined;
+	// @ts-expect-error: Simulating instance processed in repository
+	instance.createdAt = properties.createdAt ?? undefined;
+	// @ts-expect-error: Simulating instance processed in repository
+	instance.updatedAt = properties.updatedAt ?? undefined;
+	// @ts-expect-error: Simulating instance processed in repository
+	instance.deletedAt = properties.deletedAt ?? undefined;
 
 	return instance;
 }

@@ -1,9 +1,12 @@
 import type { BaseModelInstantiationInterface } from "./definition/interface/base-model-instantiation.interface.mjs";
 import { randomUUID } from "node:crypto";
+import { ModelRepositoryStatusEnum } from "./definition/enum/model-repository-status.enum.mjs";
+import type { BaseRepository } from "./base.repository.mjs";
+import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Base model for all entities
- */
+**/
 abstract class BaseModel
 {
 	protected readonly id: bigint | undefined;
@@ -11,34 +14,34 @@ abstract class BaseModel
 	protected readonly createdAt: Date | undefined;
 	protected readonly updatedAt: Date | undefined;
 	protected readonly deletedAt: Date | undefined;
+	protected readonly persistenceInRepositoryStatus: ModelRepositoryStatusEnum;
 
 	/**
 	 * Create a new model
-	 */
+	**/
 	public constructor(parameters: BaseModelInstantiationInterface)
 	{
 		this.uuid = parameters.uuid ?? randomUUID();
+		this.id = undefined;
+		this.createdAt = undefined;
+		this.updatedAt = undefined;
+		this.deletedAt = undefined;
+		this.persistenceInRepositoryStatus = ModelRepositoryStatusEnum.NEW;
+	}
+
+	protected abstract getSelfRepository(): BaseRepository<BaseModel, ConstructorOf<BaseModel>>;
+
+	/**
+	 * Get the repository status
+	**/
+	public getPersistenceInRepositoryStatus(): ModelRepositoryStatusEnum
+	{
+		return this.persistenceInRepositoryStatus;
 	}
 
 	/**
-	 * Save the entity
-	 *
-	 * @remarks
-	 * Usually retrieve the corresponding repository from the domain then save the entity.
-	 */
-	public abstract save(): Promise<void>;
-
-	/**
-	 * Delete the entity
-	 *
-	 * @remarks
-	 * Usually retrieve the corresponding repository from the domain then delete the entity.
-	 */
-	public abstract delete(): Promise<void>;
-
-	/**
-	 * Check if the entity has an id, meaning it has been saved
-	 */
+	 * Check if the entity has an id, meaning it is saved or soft-deleted
+	**/
 	public hasId(): boolean
 	{
 		return this.id !== undefined;
@@ -47,8 +50,8 @@ abstract class BaseModel
 	/**
 	 * Get the id
 	 *
-	 * @throws if the entity has not been saved
-	 */
+	 * @throws if the entity is new or destroyed
+	**/
 	public getId(): bigint
 	{
 		if (this.id === undefined)
@@ -61,7 +64,7 @@ abstract class BaseModel
 
 	/**
 	 * Get the UUID
-	 */
+	**/
 	public getUUID(): string
 	{
 		return this.uuid;
@@ -70,8 +73,8 @@ abstract class BaseModel
 	/**
 	 * Get the creation date
 	 *
-	 * @throws if the entity has not been saved
-	 */
+	 * @throws if the entity is new or destroyed
+	**/
 	public getCreatedAt(): Date
 	{
 		if (this.createdAt === undefined)
@@ -85,8 +88,8 @@ abstract class BaseModel
 	/**
 	 * Get the update date
 	 *
-	 * @throws if the entity has not been saved
-	 */
+	 * @throws if the entity is new or destroyed
+	**/
 	public getUpdatedAt(): Date
 	{
 		if (this.updatedAt === undefined)
@@ -101,10 +104,10 @@ abstract class BaseModel
 	 * Get the deletion date
 	 *
 	 * @remarks
-	 * This is only available if you use soft deletion.
+	 * Set by soft deletion.
 	 *
-	 * @throws if the entity has not been saved
-	 */
+	 * @throws if the entity is new or destroyed
+	**/
 	public getDeletedAt(): Date | undefined
 	{
 		if (this.id === undefined)
@@ -113,6 +116,46 @@ abstract class BaseModel
 		}
 
 		return this.deletedAt;
+	}
+
+	/**
+	 * Save the entity
+	 *
+	 * @throws if the entity is deleted or destroyed
+	**/
+	public async save(): Promise<void>
+	{
+		await this.getSelfRepository().saveModel(this);
+	}
+
+	/**
+	 * Restore the soft-deleted entity
+	 *
+	 * @throws if the entity is not soft-deleted
+	**/
+	public async restore(): Promise<void>
+	{
+		await this.getSelfRepository().restoreModel(this);
+	}
+
+	/**
+	 * Soft delete the entity
+	 *
+	 * @throws if the entity is new or destroyed
+	**/
+	public async delete(): Promise<void>
+	{
+		await this.getSelfRepository().deleteModel(this);
+	}
+
+	/**
+	 * Hard delete the entity
+	 *
+	 * @throws if the entity is new or destroyed
+	**/
+	public async destroy(): Promise<void>
+	{
+		await this.getSelfRepository().destroyModel(this);
 	}
 }
 
