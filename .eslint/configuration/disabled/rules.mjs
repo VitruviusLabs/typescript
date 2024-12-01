@@ -92,7 +92,7 @@ const RULES = {
 	// Enum comparison is necessary for comparing values with magic numbers or string constants
 	"@ts/no-unsafe-enum-comparison": "off",
 	// Type assertions are forbidden
-	"@ts/no-unsafe-type-assertion": "error",
+	"@ts/no-unsafe-type-assertion": "off",
 	// Traditional type assertion is more explicit
 	"@ts/non-nullable-type-assertion-style": "off",
 	// Destructuring is not always the best choice
