@@ -1,8 +1,8 @@
 {
 	"src": "./src",
 	"exclude": [
-		"**/test/**",
-		"**/mocks/**"
+		"mock",
+		"test"
 	],
 	"extension": [
 		".mts"

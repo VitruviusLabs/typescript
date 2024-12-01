@@ -9,6 +9,7 @@ const CONFIGURATION = {
 		"**/*.d.mts",
 		"build",
 		"reports",
+		"coverage",
 		"tmp",
 		".stryker-tmp",
 		"**/test.mts"
