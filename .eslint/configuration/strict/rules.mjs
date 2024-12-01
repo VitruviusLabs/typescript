@@ -379,6 +379,7 @@ const RULES = {
 			"checkMethodDeclarations": true
 		}
 	],
+	"@ts/related-getter-setter-pairs": "error",
 	"@ts/require-array-sort-compare": [
 		"error",
 		{

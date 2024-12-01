@@ -16,6 +16,7 @@ function expandTypes(types: ReadonlyArray<GroupType>): Array<BaseType>
 
 	for (const TYPE of types)
 	{
+		// eslint-disable-next-line @ts/switch-exhaustiveness-check -- The default cover all the remaining cases
 		switch (TYPE)
 		{
 			case GroupType.PRIMITIVE:
