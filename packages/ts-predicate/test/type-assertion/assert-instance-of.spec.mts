@@ -21,4 +21,14 @@ describe("TypeAssertion.assertInstanceOf", (): void => {
 			throws(WRAPPER, createErrorTest());
 		}
 	});
+
+	it("should support abstract classes", (): void => {
+		abstract class Parent {}
+
+		class Child extends Parent {}
+
+		const CHILD: Child = new Child();
+
+		TypeAssertion.assertInstanceOf(CHILD, Parent);
+	});
 });

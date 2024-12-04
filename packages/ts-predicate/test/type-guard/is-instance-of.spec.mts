@@ -16,4 +16,14 @@ describe("TypeGuard.isInstanceOf", (): void => {
 			strictEqual(TypeGuard.isInstanceOf(ITEM, Date), false);
 		}
 	});
+
+	it("should support abstract classes", (): void => {
+		abstract class Parent {}
+
+		class Child extends Parent {}
+
+		const CHILD: Child = new Child();
+
+		strictEqual(TypeGuard.isInstanceOf(CHILD, Parent), true);
+	});
 });
