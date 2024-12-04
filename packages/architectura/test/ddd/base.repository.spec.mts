@@ -76,11 +76,24 @@ describe("BaseRepository", (): void => {
 	});
 
 	describe("findByUUID", (): void => {
-		it("should return undefined if no entity with this UUID exists", async (): Promise<void> => {
+		it("should return undefined if no entity with this UUID exists (undefined return)", async (): Promise<void> => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			FETCH_UUID_STUB.resolves(undefined);
+
+			const RESULT: unknown = REPOSITORY.findByUUID("00000000-0000-0000-0000-000000000000");
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(await RESULT, undefined);
+		});
+
+		it("should return undefined if no entity with this UUID exists (null returned)", async (): Promise<void> => {
+			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
+			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
+
+			FETCH_UUID_STUB.resolves(null);
 
 			const RESULT: unknown = REPOSITORY.findByUUID("00000000-0000-0000-0000-000000000000");
 
@@ -138,11 +151,20 @@ describe("BaseRepository", (): void => {
 	});
 
 	describe("getByUUID", (): void => {
-		it("should throw if no entity with this UUID exists", async (): Promise<void> => {
+		it("should throw if no entity with this UUID exists (undefined returned)", async (): Promise<void> => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			FETCH_UUID_STUB.resolves(undefined);
+
+			await rejects(REPOSITORY.getByUUID("00000000-0000-0000-0000-000000000000"), createErrorTest());
+		});
+
+		it("should throw if no entity with this UUID exists (null returned)", async (): Promise<void> => {
+			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
+			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
+
+			FETCH_UUID_STUB.resolves(null);
 
 			await rejects(REPOSITORY.getByUUID("00000000-0000-0000-0000-000000000000"), createErrorTest());
 		});
@@ -192,11 +214,24 @@ describe("BaseRepository", (): void => {
 	});
 
 	describe("findById", (): void => {
-		it("should return undefined if no entity with this id exists", async (): Promise<void> => {
+		it("should return undefined if no entity with this id exists (undefined return)", async (): Promise<void> => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			FETCH_ID_STUB.resolves(undefined);
+
+			const RESULT: unknown = REPOSITORY.findById(1n);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(await RESULT, undefined);
+		});
+
+		it("should return undefined if no entity with this id exists (null return)", async (): Promise<void> => {
+			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
+			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
+
+			FETCH_ID_STUB.resolves(null);
 
 			const RESULT: unknown = REPOSITORY.findById(1n);
 
@@ -254,11 +289,20 @@ describe("BaseRepository", (): void => {
 	});
 
 	describe("getById", (): void => {
-		it("should throw if no entity with this id exists", async (): Promise<void> => {
+		it("should throw if no entity with this id exists (undefined return)", async (): Promise<void> => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
 			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
 
 			FETCH_ID_STUB.resolves(undefined);
+
+			await rejects(REPOSITORY.getById(1n), createErrorTest());
+		});
+
+		it("should throw if no entity with this id exists (null return)", async (): Promise<void> => {
+			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
+			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
+
+			FETCH_ID_STUB.resolves(null);
 
 			await rejects(REPOSITORY.getById(1n), createErrorTest());
 		});

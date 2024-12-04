@@ -70,7 +70,7 @@ abstract class BaseRepository<
 	 * @remarks
 	 * Used by both the findByUUID and getByUUID methods.
 	 */
-	protected abstract fetchByUUID(uuid: string, options: RepositoryQueryNormalizedOptionsInterface): Promise<(I & ModelMetadataInterface) | undefined>;
+	protected abstract fetchByUUID(uuid: string, options: RepositoryQueryNormalizedOptionsInterface): Promise<(I & ModelMetadataInterface) | null | undefined>;
 
 	/**
 	 * Fetch an entity by its id.
@@ -78,7 +78,7 @@ abstract class BaseRepository<
 	 * @remarks
 	 * Used by both the findById and getById methods.
 	 */
-	protected abstract fetchById(id: bigint, options: RepositoryQueryNormalizedOptionsInterface): Promise<(I & ModelMetadataInterface) | undefined>;
+	protected abstract fetchById(id: bigint, options: RepositoryQueryNormalizedOptionsInterface): Promise<(I & ModelMetadataInterface) | null | undefined>;
 
 	/**
 	 * Register a new entity.
@@ -129,9 +129,9 @@ abstract class BaseRepository<
 	{
 		const normalized_options: RepositoryQueryNormalizedOptionsInterface = BaseRepository.NormalizeOptions(options);
 
-		const data: (I & ModelMetadataInterface) | undefined = await this.fetchByUUID(uuid, normalized_options);
+		const data: (I & ModelMetadataInterface) | null | undefined = await this.fetchByUUID(uuid, normalized_options);
 
-		if (data === undefined)
+		if (!isDefined(data))
 		{
 			return undefined;
 		}
@@ -175,9 +175,9 @@ abstract class BaseRepository<
 	{
 		const normalized_options: RepositoryQueryNormalizedOptionsInterface = BaseRepository.NormalizeOptions(options);
 
-		const data: (I & ModelMetadataInterface) | undefined = await this.fetchById(id, normalized_options);
+		const data: (I & ModelMetadataInterface) | null | undefined = await this.fetchById(id, normalized_options);
 
-		if (data === undefined)
+		if (!isDefined(data))
 		{
 			return undefined;
 		}
