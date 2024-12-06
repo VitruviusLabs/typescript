@@ -1,4 +1,4 @@
-import { throws } from "node:assert";
+import { strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { TypeAssertion } from "../../src/_index.mjs";
 import { createErrorTest, getAllValues } from "@vitruvius-labs/testing-ground";
@@ -30,5 +30,13 @@ describe("TypeAssertion.assertInstanceOf", (): void => {
 		const CHILD: Child = new Child();
 
 		TypeAssertion.assertInstanceOf(CHILD, Parent);
+	});
+
+	it("should narrow type in typescript too", (): void => {
+		const DUMMY: unknown = new Date(0);
+
+		TypeAssertion.assertInstanceOf(DUMMY, Date);
+
+		strictEqual(DUMMY.getTime(), 0);
 	});
 });
