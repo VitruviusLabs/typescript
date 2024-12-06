@@ -1,4 +1,4 @@
-import { strictEqual } from "node:assert";
+import { fail, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { TypeGuard } from "../../src/_index.mjs";
 import { getAllValues } from "@vitruvius-labs/testing-ground";
@@ -25,5 +25,18 @@ describe("TypeGuard.isInstanceOf", (): void => {
 		const CHILD: Child = new Child();
 
 		strictEqual(TypeGuard.isInstanceOf(CHILD, Parent), true);
+	});
+
+	it("should narrow type in typescript too", (): void => {
+		const DUMMY: unknown = new Date(0);
+
+		if (TypeGuard.isInstanceOf(DUMMY, Date))
+		{
+			strictEqual(DUMMY.getTime(), 0);
+		}
+		else
+		{
+			fail("TypeGuard.isInstanceOf() failed to narrow the type.");
+		}
 	});
 });
