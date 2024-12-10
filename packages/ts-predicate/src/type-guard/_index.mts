@@ -11,6 +11,7 @@ export * from "./is-finite-number.mjs";
 export * from "./is-function.mjs";
 export * from "./is-instance-of.mjs";
 export * from "./is-integer.mjs";
+export * from "./is-nullish.mjs";
 export * from "./is-number.mjs";
 export * from "./is-object.mjs";
 export * from "./is-populated-array.mjs";

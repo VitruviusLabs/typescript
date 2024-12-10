@@ -11,6 +11,14 @@ type Test<T> =
 
 # TypeAssertion
 
+## AssertNullish
+
+```ts
+assertNullish(value: unknown): void
+```
+
+Asserts that the value is nullish.
+
 ## AssertDefined
 
 ```ts

@@ -19,6 +19,14 @@ isPrimitive(value: unknown): boolean
 
 Narrow down the value to being nullish, a boolean, a number, or a string.
 
+## IsNullish
+
+```ts
+isNullish(value: unknown): boolean
+```
+
+Narrow down the value to being nullish.
+
 ## IsDefined
 
 ```ts
