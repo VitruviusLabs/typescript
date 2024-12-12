@@ -29,7 +29,7 @@ function assertUnion(value: unknown, tests: Array<Test<unknown>>): asserts value
 
 	if (errors.length === tests.length)
 	{
-		throw new ValidationError("The value does not match any of the types.", errors);
+		throw new ValidationError("The value does not pass any of the assertion.", errors);
 	}
 }
 

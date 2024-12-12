@@ -11,6 +11,7 @@ export * from "./assert-function.mjs";
 export * from "./assert-instance-of.mjs";
 export * from "./assert-integer.mjs";
 export * from "./assert-nullable-property.mjs";
+export * from "./assert-nullish.mjs";
 export * from "./assert-number.mjs";
 export * from "./assert-object.mjs";
 export * from "./assert-populated-array.mjs";
