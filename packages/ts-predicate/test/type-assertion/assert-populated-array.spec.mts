@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
+import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues } from "@vitruvius-labs/testing-ground";
 import { TypeAssertion, ValidationError } from "../../src/_index.mjs";
-import { GroupType, createErrorTest, getInvertedValues } from "@vitruvius-labs/testing-ground";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -149,5 +149,65 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 				),
 			]
 		)));
+	});
+
+	it("should narrow the type to a populated array (default)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			TypeAssertion.assertPopulatedArray(VALUE);
+			consumeValue<[unknown, ...Array<unknown>]>(VALUE);
+		};
+
+		throws(WRAPPER);
+	});
+
+	it("should narrow the type to a populated array (explicit narrowing, direct test)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			TypeAssertion.assertPopulatedArray(VALUE, isNumberTest);
+			consumeValue<[number, ...Array<number>]>(VALUE);
+		};
+
+		throws(WRAPPER);
+	});
+
+	it("should narrow the type to a populated array (explicit narrowing, item test)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			TypeAssertion.assertPopulatedArray(VALUE, { itemTest: isNumberTest });
+			consumeValue<[number, ...Array<number>]>(VALUE);
+		};
+
+		throws(WRAPPER);
+	});
+
+	it("should narrow the type to a populated array (implicit narrowing)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: [number, ...Array<number>] | undefined = createValue();
+
+			TypeAssertion.assertPopulatedArray(VALUE);
+			consumeValue<[number, ...Array<number>]>(VALUE);
+		};
+
+		throws(WRAPPER);
+	});
+
+	it("should narrow the type to a populated array (array narrowing)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: Array<number> | undefined = createValue();
+
+			TypeAssertion.assertPopulatedArray(VALUE);
+			consumeValue<[number, ...Array<number>]>(VALUE);
+		};
+
+		throws(WRAPPER);
 	});
 });

@@ -1,8 +1,8 @@
+import type { Callable } from "../helper/definition/type/callable.mjs";
 import { isCallable } from "../type-guard/is-callable.mjs";
 import { ValidationError } from "./utils/validation-error.mjs";
 
-// eslint-disable-next-line @ts/no-unsafe-function-type -- Allow proper function inference
-function assertCallable(value: unknown): asserts value is Function
+function assertCallable<Type extends Callable = Callable>(value: unknown): asserts value is Type
 {
 	if (!isCallable(value))
 	{

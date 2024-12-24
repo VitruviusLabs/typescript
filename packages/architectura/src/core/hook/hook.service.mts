@@ -5,7 +5,7 @@ import type { BasePreHook } from "./base.pre-hook.mjs";
 import type { BasePostHook } from "./base.post-hook.mjs";
 import type { BaseErrorHook } from "./base.error-hook.mjs";
 import type { HooksInterface } from "./definition/interface/hooks.interface.mjs";
-import { isFunction } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isConstructor } from "@vitruvius-labs/ts-predicate/type-guard";
 import { HookRegistry } from "./hook.registry.mjs";
 import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 
@@ -105,7 +105,7 @@ class HookService
 
 	private static InstantiateHook<T extends BaseErrorHook | BasePostHook | BasePreHook>(hook: ConstructorOf<T> | T, context: ExecutionContext): T
 	{
-		if (isFunction(hook))
+		if (isConstructor(hook))
 		{
 			const HOOK: T = new hook();
 

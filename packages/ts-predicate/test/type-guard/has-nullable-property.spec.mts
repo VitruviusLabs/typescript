@@ -1,6 +1,7 @@
-import { strictEqual } from "node:assert";
+import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { TypeGuard } from "../../src/_index.mjs";
+import { consumeValue, createValue } from "@vitruvius-labs/testing-ground";
 
 describe("TypeGuard.hasNullableProperty", (): void => {
 	it("should return false when given an object without the property", (): void => {
@@ -21,5 +22,33 @@ describe("TypeGuard.hasNullableProperty", (): void => {
 
 		strictEqual(RESULT_STRING, true);
 		strictEqual(RESULT_SYMBOL, true);
+	});
+
+	it("should narrow the type to an object with the corresponding property (regular)", (): void => {
+		const WRAPPER = (): void => {
+			const VALUE: object = createValue({});
+
+			if (TypeGuard.hasNullableProperty(VALUE, "key"))
+			{
+				consumeValue<{ key: unknown }>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
+	});
+
+	it("should narrow the type to an object with the corresponding property (symbol)", (): void => {
+		const WRAPPER = (): void => {
+			const SYMBOL: unique symbol = Symbol("key");
+
+			const VALUE: object = createValue({});
+
+			if (TypeGuard.hasNullableProperty(VALUE, SYMBOL))
+			{
+				consumeValue<{ [SYMBOL]: unknown }>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
 	});
 });

@@ -1,6 +1,6 @@
 import type { Dirent } from "node:fs";
 import type { ConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
-import { isFunction, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isConstructor, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { BasePreHook } from "./base.pre-hook.mjs";
 import { BasePostHook } from "./base.post-hook.mjs";
@@ -38,7 +38,7 @@ class HookRegistry
 	 */
 	public static AddPreHook(hook: BasePreHook | ConstructorOf<BasePreHook>): void
 	{
-		if (isFunction(hook) && HookRegistry.PRE_HOOKS.includes(hook))
+		if (isConstructor(hook) && HookRegistry.PRE_HOOKS.includes(hook))
 		{
 			throw new Error(`Pre hook ${hook.name} already added.`);
 		}
@@ -67,7 +67,7 @@ class HookRegistry
 	 */
 	public static AddPostHook(hook: BasePostHook | ConstructorOf<BasePostHook>): void
 	{
-		if (isFunction(hook) && HookRegistry.POST_HOOKS.includes(hook))
+		if (isConstructor(hook) && HookRegistry.POST_HOOKS.includes(hook))
 		{
 			throw new Error(`Post hook ${hook.name} already added.`);
 		}
@@ -96,7 +96,7 @@ class HookRegistry
 	 */
 	public static AddErrorHook(hook: BaseErrorHook | ConstructorOf<BaseErrorHook>): void
 	{
-		if (isFunction(hook) && HookRegistry.ERROR_HOOKS.includes(hook))
+		if (isConstructor(hook) && HookRegistry.ERROR_HOOKS.includes(hook))
 		{
 			throw new Error(`Error hook ${hook.name} already added.`);
 		}
@@ -175,17 +175,17 @@ class HookRegistry
 
 	private static IsPreHook(value: unknown): value is BasePreHook | ConstructorOf<BasePreHook>
 	{
-		return value instanceof BasePreHook || isFunction(value) && value.prototype instanceof BasePreHook;
+		return value instanceof BasePreHook || isConstructor(value) && value.prototype instanceof BasePreHook;
 	}
 
 	private static IsPostHook(value: unknown): value is BasePostHook | ConstructorOf<BasePostHook>
 	{
-		return value instanceof BasePostHook || isFunction(value) && value.prototype instanceof BasePostHook;
+		return value instanceof BasePostHook || isConstructor(value) && value.prototype instanceof BasePostHook;
 	}
 
 	private static IsErrorHook(value: unknown): value is BaseErrorHook | ConstructorOf<BaseErrorHook>
 	{
-		return value instanceof BaseErrorHook || isFunction(value) && value.prototype instanceof BaseErrorHook;
+		return value instanceof BaseErrorHook || isConstructor(value) && value.prototype instanceof BaseErrorHook;
 	}
 }
 

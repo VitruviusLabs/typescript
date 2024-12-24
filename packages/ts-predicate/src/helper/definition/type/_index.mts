@@ -1,4 +1,5 @@
 export * from "./abstract-constructor-of.mjs";
+export * from "./callable.mjs";
 export * from "./constructor-of.mjs";
 export * from "./non-nullable-keys.mjs";
 export * from "./non-nullable-object.mjs";

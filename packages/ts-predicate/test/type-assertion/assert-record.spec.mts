@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
+import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 import { TypeAssertion, ValidationError } from "../../src/_index.mjs";
-import { GroupType, createErrorTest, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -110,5 +110,53 @@ describe("TypeAssertion.assertRecord", (): void => {
 				),
 			]
 		)));
+	});
+
+	it("should narrow the type to a record (default)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			TypeAssertion.assertRecord(VALUE);
+			consumeValue<Record<string, unknown>>(VALUE);
+		};
+
+		throws(WRAPPER);
+	});
+
+	it("should narrow the type to a record (explicit narrowing, direct test)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			TypeAssertion.assertRecord(VALUE, isNumberTest);
+			consumeValue<Record<string, number>>(VALUE);
+		};
+
+		throws(WRAPPER);
+	});
+
+	it("should narrow the type to a record (explicit narrowing, item test)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			TypeAssertion.assertRecord(VALUE, { itemTest: isNumberTest });
+			consumeValue<Record<string, number>>(VALUE);
+		};
+
+		throws(WRAPPER);
+	});
+
+	it("should narrow the type to a record (implicit narrowing)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: Record<string, number> | undefined = createValue();
+
+			TypeAssertion.assertRecord(VALUE);
+			consumeValue<Record<string, number>>(VALUE);
+		};
+
+		throws(WRAPPER);
 	});
 });

@@ -18,7 +18,7 @@ const enum GroupType
 	ARRAY_OBJECT = "array-object",
 	CALLABLE = "callable",
 	CONSTRUCTIBLE = "constructible",
-	FUNCTION_CLASS = "function-class",
+	FUNCTION = "function",
 }
 
 export { GroupType };

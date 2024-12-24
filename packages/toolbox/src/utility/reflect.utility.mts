@@ -1,5 +1,5 @@
 import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
-import { assertFunction, assertNullableProperty } from "@vitruvius-labs/ts-predicate/type-assertion";
+import { assertCallable, assertNullableProperty } from "@vitruvius-labs/ts-predicate/type-assertion";
 
 class ReflectUtility
 {
@@ -48,7 +48,7 @@ class ReflectUtility
 	{
 		const CALLABLE: unknown = ReflectUtility.Get(target, key);
 
-		assertFunction(CALLABLE);
+		assertCallable(CALLABLE);
 
 		return CALLABLE.apply(target, args);
 	}
@@ -104,7 +104,7 @@ class ReflectUtility
 
 		const CALLABLE: unknown = ReflectUtility.Get(CONSTRUCTOR, key);
 
-		assertFunction(CALLABLE);
+		assertCallable(CALLABLE);
 
 		return CALLABLE.apply(CONSTRUCTOR, args);
 	}

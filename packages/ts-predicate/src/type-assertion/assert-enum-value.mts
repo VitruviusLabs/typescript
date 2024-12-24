@@ -1,6 +1,6 @@
 import { ValidationError } from "./_index.mjs";
 
-function assertEnumValue<Type>(value: unknown, enum_values: Array<Type>, enum_name?: string): asserts value is Array<Type>
+function assertEnumValue<Type>(value: unknown, enum_values: Array<Type>, enum_name?: string): asserts value is Type
 {
 	// @ts-expect-error: [].includes() should not care about the type of the parameter.
 	if (!enum_values.includes(value))

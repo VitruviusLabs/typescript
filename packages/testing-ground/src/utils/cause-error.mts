@@ -1,4 +1,4 @@
-class UnknownError extends Error
+class CauseError extends Error
 {
 	public readonly reason: unknown;
 
@@ -9,4 +9,4 @@ class UnknownError extends Error
 	}
 }
 
-export { UnknownError };
+export { CauseError };

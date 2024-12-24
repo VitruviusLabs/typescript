@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
+import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 import { TypeAssertion } from "../../src/_index.mjs";
-import { GroupType, createErrorTest, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 
 describe("TypeAssertion.assertInteger", (): void => {
 	it("should return when given a safe integer", (): void => {
@@ -44,5 +44,17 @@ describe("TypeAssertion.assertInteger", (): void => {
 
 			throws(WRAPPER, createErrorTest());
 		}
+	});
+
+	it("should narrow the type to a number", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			TypeAssertion.assertInteger(VALUE);
+			consumeValue<number>(VALUE);
+		};
+
+		throws(WRAPPER);
 	});
 });

@@ -1,7 +1,7 @@
-import { strictEqual } from "node:assert";
+import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
+import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 import { TypeGuard } from "../../src/_index.mjs";
-import { GroupType, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -79,5 +79,61 @@ describe("TypeGuard.isArray", (): void => {
 		const RESULT: unknown = TypeGuard.isArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
 
 		strictEqual(RESULT, false);
+	});
+
+	it("should narrow the type to an array (default)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			if (TypeGuard.isArray(VALUE))
+			{
+				consumeValue<Array<unknown>>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
+	});
+
+	it("should narrow the type to an array (explicit narrowing, direct test)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			if (TypeGuard.isArray(VALUE, isNumberTest))
+			{
+				consumeValue<Array<number>>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
+	});
+
+	it("should narrow the type to an array (explicit narrowing, item test)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			if (TypeGuard.isArray(VALUE, { itemTest: isNumberTest }))
+			{
+				consumeValue<Array<number>>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
+	});
+
+	it("should narrow the type to an array (implicit narrowing)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: Array<number> | undefined = createValue();
+
+			if (TypeGuard.isArray(VALUE))
+			{
+				consumeValue<Array<number>>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
 	});
 });

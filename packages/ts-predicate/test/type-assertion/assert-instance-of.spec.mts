@@ -1,11 +1,16 @@
-import { strictEqual, throws } from "node:assert";
+import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
+import { consumeValue, createErrorTest, createValue, getAllValues } from "@vitruvius-labs/testing-ground";
 import { TypeAssertion } from "../../src/_index.mjs";
-import { createErrorTest, getAllValues } from "@vitruvius-labs/testing-ground";
 
 describe("TypeAssertion.assertInstanceOf", (): void => {
 	it("should return when given an instance of the given class", (): void => {
-		TypeAssertion.assertInstanceOf(new Date(), Date);
+		const WRAPPER = (): void =>
+		{
+			TypeAssertion.assertInstanceOf(new Date(), Date);
+		};
+
+		doesNotThrow(WRAPPER);
 	});
 
 	it("should throw when given anything else", (): void => {
@@ -32,11 +37,27 @@ describe("TypeAssertion.assertInstanceOf", (): void => {
 		TypeAssertion.assertInstanceOf(CHILD, Parent);
 	});
 
-	it("should narrow type in typescript too", (): void => {
-		const DUMMY: unknown = new Date(0);
+	it("should narrow the type to an instance of constructor (default)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
 
-		TypeAssertion.assertInstanceOf(DUMMY, Date);
+			TypeAssertion.assertInstanceOf(VALUE, Date);
+			consumeValue<Date>(VALUE);
+		};
 
-		strictEqual(DUMMY.getTime(), 0);
+		throws(WRAPPER);
+	});
+
+	it("should narrow the type to an instance of constructor (implicit narrowing)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: Date | undefined = createValue();
+
+			TypeAssertion.assertInstanceOf(VALUE, Object);
+			consumeValue<Date>(VALUE);
+		};
+
+		throws(WRAPPER);
 	});
 });

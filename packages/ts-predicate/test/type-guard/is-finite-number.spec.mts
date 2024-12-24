@@ -1,7 +1,7 @@
-import { strictEqual } from "node:assert";
+import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
+import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 import { TypeGuard } from "../../src/_index.mjs";
-import { GroupType, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 
 describe("TypeGuard.isFiniteNumber", (): void => {
 	it("should return true when given a real number", (): void => {
@@ -35,5 +35,19 @@ describe("TypeGuard.isFiniteNumber", (): void => {
 
 			strictEqual(RESULT, false);
 		}
+	});
+
+	it("should narrow the type to a number", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			if (TypeGuard.isFiniteNumber(VALUE))
+			{
+				consumeValue<number>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
 	});
 });

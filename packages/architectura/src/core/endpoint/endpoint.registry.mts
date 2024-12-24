@@ -3,7 +3,7 @@ import type { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 import type { EndpointEntryInterface } from "./definition/interface/endpoint-entry.interface.mjs";
 import type { EndpointDetailsInterface } from "./definition/interface/endpoint-details.interface.mjs";
 import type { EndpointMatchInterface } from "./definition/interface/endpoint-match.interface.mjs";
-import { isFunction, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isConstructor, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
 import { type ConstructorOf, getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
 import { HelloWorldEndpoint } from "../../endpoint/hello-world.endpoint.mjs";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
@@ -201,7 +201,7 @@ class EndpointRegistry
 
 	private static IsEndpoint(value: unknown): value is BaseEndpoint | ConstructorOf<BaseEndpoint>
 	{
-		return value instanceof BaseEndpoint || isFunction(value) && value.prototype instanceof BaseEndpoint;
+		return value instanceof BaseEndpoint || isConstructor(value) && value.prototype instanceof BaseEndpoint;
 	}
 
 	private static IsAbstractEndpoint(endpoint: BaseEndpoint): boolean

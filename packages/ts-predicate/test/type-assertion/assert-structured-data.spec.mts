@@ -1,6 +1,6 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
-import { GroupType, createErrorTest, getInvertedValues } from "@vitruvius-labs/testing-ground";
+import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues } from "@vitruvius-labs/testing-ground";
 import { type StructuredDataDescriptor, TypeAssertion, ValidationError } from "../../src/_index.mjs";
 
 interface TestData
@@ -146,5 +146,29 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 			"The value is an object, but some properties are incorrect.",
 			[new ValidationError('The property "beta" must not have a nullish value (undefined, null, or NaN).')]
 		)));
+	});
+
+	it("should narrow the type to a structured data (default)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			TypeAssertion.assertStructuredData(VALUE, DESCRIPTOR);
+			consumeValue<TestData>(VALUE);
+		};
+
+		throws(WRAPPER);
+	});
+
+	it("should narrow the type to a structured data (implicit narrowing)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: TestData | Date = createValue();
+
+			TypeAssertion.assertStructuredData(VALUE, { alpha: isNumberTest });
+			consumeValue<TestData>(VALUE);
+		};
+
+		throws(WRAPPER);
 	});
 });

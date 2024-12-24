@@ -19,13 +19,13 @@ describe("Helper.isSimilar", (): void => {
 		const VALUES_LEFT: Array<unknown> = getInvertedValues(
 			GroupType.SYMBOL,
 			GroupType.INSTANTIATED,
-			GroupType.FUNCTION_CLASS
+			GroupType.FUNCTION
 		);
 
 		const VALUES_RIGHT: Array<unknown> = getInvertedValues(
 			GroupType.SYMBOL,
 			GroupType.INSTANTIATED,
-			GroupType.FUNCTION_CLASS
+			GroupType.FUNCTION
 		);
 
 		for (let i: number = 0; i < VALUES_LEFT.length; ++i)
@@ -45,7 +45,7 @@ describe("Helper.isSimilar", (): void => {
 		const VALUES: Array<unknown> = getInvertedValues(
 			GroupType.SYMBOL,
 			GroupType.OBJECT,
-			GroupType.FUNCTION_CLASS
+			GroupType.FUNCTION
 		);
 
 		for (let i: number = 1; i < VALUES.length; ++i)

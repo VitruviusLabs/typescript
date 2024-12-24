@@ -92,6 +92,8 @@ function getValuesForType(type: BaseType): Array<unknown>
 			const namedCallable = (): void => {};
 
 			return [
+				function (): void {},
+				function namedConstructible() {},
 				async (): Promise<void> => {},
 				async function (): Promise<void> {},
 				(): void => {},
@@ -102,17 +104,22 @@ function getValuesForType(type: BaseType): Array<unknown>
 				(class { static async AsyncMethod(): Promise<void> {} }).AsyncMethod,
 				new (class { method(): void {} })().method,
 				(class { static Method(): void {} }).Method,
+				function*(): Generator<number> { yield 1; },
+				function* namedGenerator(): Generator<number> { yield 1; },
+				async function*(): AsyncGenerator<number> { yield 1; },
+				async function* namedAsyncGenerator(): AsyncGenerator<number> { yield 1; },
+				new (class { async* asyncGeneratorMethod(): AsyncGenerator {} })().asyncGeneratorMethod,
+				(class { static async* AsyncGeneratorMethod(): AsyncGenerator {} }).AsyncGeneratorMethod,
+				new (class { *generatorMethod(): Generator {} })().generatorMethod,
+				(class { static *GeneratorMethod(): Generator {} }).GeneratorMethod,
 			];
 		}
 
 		case BaseType.CONSTRUCTIBLE:
 			return [
-				function*(): Generator<number> { yield 1; },
-				function* namedGenerator(): Generator<number> { yield 1; },
-				class {},
-				function (): void {},
-				class NamedClass {},
 				function NamedConstructible() {},
+				class {},
+				class NamedClass {},
 			];
 	}
 }
