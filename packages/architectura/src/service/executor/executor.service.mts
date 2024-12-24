@@ -1,6 +1,6 @@
 import type { ExecutorInstantiationInterface } from "./definition/interface/executor-instantiation.interface.mjs";
 import { setTimeout as timeout } from "node:timers/promises";
-import { isFunction } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isCallable } from "@vitruvius-labs/ts-predicate/type-guard";
 
 /**
  * Service for executing a callable with retries
@@ -22,7 +22,7 @@ class ExecutorService
 
 		this.callable = value.callable;
 
-		if (isFunction(value.customDelayComputor))
+		if (isCallable(value.customDelayComputor))
 		{
 			this.customComputeDelay = value.customDelayComputor;
 		}

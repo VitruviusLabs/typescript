@@ -1,7 +1,7 @@
-import { strictEqual } from "node:assert";
+import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
+import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 import { TypeGuard } from "../../src/_index.mjs";
-import { GroupType, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 
 describe("TypeGuard.isObject", (): void => {
 	it("should return true when given an object", (): void => {
@@ -24,5 +24,33 @@ describe("TypeGuard.isObject", (): void => {
 
 			strictEqual(RESULT, false);
 		}
+	});
+
+	it("should narrow the type to an object (default)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			if (TypeGuard.isObject(VALUE))
+			{
+				consumeValue<object>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
+	});
+
+	it("should narrow the type to an object (implicit narrowing)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: Date | undefined = createValue();
+
+			if (TypeGuard.isObject(VALUE))
+			{
+				consumeValue<Date>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
 	});
 });

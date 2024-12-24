@@ -1,5 +1,5 @@
 import type { Dirent } from "node:fs";
-import { isFunction, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isConstructor, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
 import { FileSystemService } from "../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../service/logger/logger.proxy.mjs";
 import { BaseDomain } from "./base.domain.mjs";
@@ -88,7 +88,7 @@ class DomainService
 
 	private static IsDomainConstructor(value: unknown): value is typeof BaseDomain
 	{
-		return isFunction(value) && value.prototype instanceof BaseDomain;
+		return isConstructor(value) && value.prototype instanceof BaseDomain;
 	}
 }
 

@@ -1,7 +1,7 @@
-import { strictEqual } from "node:assert";
+import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
+import { GroupType, consumeValue, createValue, getInvertedValues } from "@vitruvius-labs/testing-ground";
 import { type StructuredDataDescriptor, TypeGuard } from "../../src/_index.mjs";
-import { GroupType, getInvertedValues } from "@vitruvius-labs/testing-ground";
 
 interface TestData
 {
@@ -96,5 +96,33 @@ describe("TypeGuard.isStructuredData", (): void => {
 		const RESULT: unknown = TypeGuard.isStructuredData({ alpha: 1, beta: "2" }, DESCRIPTOR);
 
 		strictEqual(RESULT, false);
+	});
+
+	it("should narrow the type to a structured data (default)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			if (TypeGuard.isStructuredData(VALUE, DESCRIPTOR))
+			{
+				consumeValue<TestData>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
+	});
+
+	it("should narrow the type to a structured data (implicit narrowing)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: TestData | Date = createValue();
+
+			if (TypeGuard.isStructuredData(VALUE, { alpha: isNumberTest }))
+			{
+				consumeValue<TestData>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
 	});
 });

@@ -152,22 +152,25 @@ assertInstanceOf(value: unknown, constructor_class: ConstructorFunction): void
 
 Asserts that the value is an instance of that class.
 
-## AssertFunction
-
-```ts
-assertFunction(value: unknown): void
-```
-
-Asserts that the value is a function, generator function, method, or class.
-
 ## AssertCallable
 
 ```ts
 assertCallable(value: unknown): void
 ```
 
-Asserts that the value is a function, but not a constructible one
-(it cannot create an object by using `new`).
+Asserts that the value is a callable.
+
+## AssertConstructor
+
+```ts
+assertConstructor(value: unknown): void
+```
+
+Asserts that the value is a constructor.
+
+> [!IMPORTANT]
+> Because, callables and constructors are all functions,
+> `assertCallable` and `assertConstructor` can lead to false positives.
 
 ## AssertAllowedKeys
 

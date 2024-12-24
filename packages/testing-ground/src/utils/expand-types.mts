@@ -48,7 +48,7 @@ function expandTypes(types: ReadonlyArray<GroupType>): Array<BaseType>
 				addTypes(BaseType.ARRAY, BaseType.RECORD, BaseType.INSTANTIATED);
 				break;
 
-			case GroupType.FUNCTION_CLASS:
+			case GroupType.FUNCTION:
 				addTypes(BaseType.CALLABLE, BaseType.CONSTRUCTIBLE);
 				break;
 

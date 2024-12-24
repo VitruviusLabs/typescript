@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
+import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 import { TypeAssertion, ValidationError } from "../../src/_index.mjs";
-import { GroupType, createErrorTest, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 
 function isNumberTest(value: unknown): value is number
 {
@@ -156,5 +156,53 @@ describe("TypeAssertion.assertArray", (): void => {
 				),
 			]
 		)));
+	});
+
+	it("should narrow the type to an array (default)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			TypeAssertion.assertArray(VALUE);
+			consumeValue<Array<unknown>>(VALUE);
+		};
+
+		throws(WRAPPER);
+	});
+
+	it("should narrow the type to an array (explicit narrowing, direct test)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			TypeAssertion.assertArray(VALUE, isNumberTest);
+			consumeValue<Array<number>>(VALUE);
+		};
+
+		throws(WRAPPER);
+	});
+
+	it("should narrow the type to an array (explicit narrowing, item test)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			TypeAssertion.assertArray(VALUE, { itemTest: isNumberTest });
+			consumeValue<Array<number>>(VALUE);
+		};
+
+		throws(WRAPPER);
+	});
+
+	it("should narrow the type to an array (implicit narrowing)", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: Array<number> | undefined = createValue();
+
+			TypeAssertion.assertArray(VALUE);
+			consumeValue<Array<number>>(VALUE);
+		};
+
+		throws(WRAPPER);
 	});
 });

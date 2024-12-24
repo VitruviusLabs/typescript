@@ -9,10 +9,10 @@ describe("unary", (): void => {
 			return value === check;
 		}
 
-		const wrapped_assert: ((value: unknown) => value is string) = TypeAssertion.unary(dummy, "lorem");
-		const wrapped_guard: ((value: unknown) => value is string) = TypeGuard.unary(dummy, "lorem");
+		const WRAPPED_ASSERT: ((value: unknown) => value is string) = TypeAssertion.unary(dummy, "lorem");
+		const WRAPPED_GUARD: ((value: unknown) => value is string) = TypeGuard.unary(dummy, "lorem");
 
-		deepStrictEqual(wrapped_assert("lorem"), true);
-		deepStrictEqual(wrapped_guard("ipsum"), false);
+		deepStrictEqual(WRAPPED_ASSERT("lorem"), true);
+		deepStrictEqual(WRAPPED_GUARD("ipsum"), false);
 	});
 });

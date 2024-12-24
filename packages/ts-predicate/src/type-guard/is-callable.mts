@@ -1,7 +1,8 @@
-// eslint-disable-next-line @ts/no-unsafe-function-type -- Allow proper function inference
-function isCallable(value: unknown): value is Function
+import type { Callable } from "../helper/definition/type/callable.mjs";
+
+function isCallable<Type extends Callable = Callable>(value: unknown): value is Type
 {
-	return typeof value === "function" && value.prototype === undefined;
+	return typeof value === "function";
 }
 
 export { isCallable };

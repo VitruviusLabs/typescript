@@ -158,22 +158,25 @@ isInstanceOf(value: unknown, constructor_class: ConstructorFunction): boolean
 
 Narrow down the value to being an instance of that class.
 
-## IsFunction
-
-```ts
-isFunction(value: unknown): boolean
-```
-
-Narrow down the value to being a function, generator function, method, or class.
-
 ## IsCallable
 
 ```ts
 isCallable(value: unknown): boolean
 ```
 
-Narrow down the value to being a function, but not a constructible one
-(it cannot create an object by using `new`).
+Narrow down the value to being a callable.
+
+## IsConstructor
+
+```ts
+isConstructor(value: unknown): boolean
+```
+
+Narrow down the value to being a constructor.
+
+> [!IMPORTANT]
+> Because, callables and constructors are all functions,
+> `isCallable` and `isConstructor` can lead to false positives.
 
 ## HasAllowedKeys
 

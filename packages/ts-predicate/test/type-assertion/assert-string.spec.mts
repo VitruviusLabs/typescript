@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
+import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 import { TypeAssertion } from "../../src/_index.mjs";
-import { GroupType, createErrorTest, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
 
 describe("TypeAssertion.assertString", (): void => {
 	it("should return when given a string", (): void => {
@@ -30,5 +30,17 @@ describe("TypeAssertion.assertString", (): void => {
 
 			throws(WRAPPER, createErrorTest());
 		}
+	});
+
+	it("should narrow the type to a string", (): void => {
+		const WRAPPER = (): void =>
+		{
+			const VALUE: unknown = createValue();
+
+			TypeAssertion.assertString(VALUE);
+			consumeValue<string>(VALUE);
+		};
+
+		throws(WRAPPER);
 	});
 });
