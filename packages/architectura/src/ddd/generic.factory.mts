@@ -2,7 +2,7 @@ import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 
 class GenericFactory<M extends object, C extends ConstructorOf<M>>
 {
-	private readonly classConstructor: C;
+	protected readonly classConstructor: C;
 
 	/**
 	 * Create a new factory

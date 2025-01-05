@@ -4,7 +4,7 @@ import { BaseFactory } from "./base.factory.mjs";
 
 abstract class SimpleFactory<M extends BaseModel, C extends ConstructorOf<M>, I = ConstructorParameters<C>[0]> extends BaseFactory<M, C, I>
 {
-	private readonly modelConstructor: C;
+	protected readonly modelConstructor: C;
 
 	/**
 	 * Create a new factory
