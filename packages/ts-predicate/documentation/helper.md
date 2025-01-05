@@ -24,6 +24,18 @@ Return the constructor class for the given object.
 
 Throws if the object has no prototype or no constructor in its prototype.
 
+Allows instantiating the returned value if it's not abstract.
+
+## Keys
+
+```ts
+keys(value: T): Array<keyof T>
+```
+
+Return the keys of the given object typed as the keys.
+
+It presumes that no extraneous keys were added from a child class or derived type.
+
 ## NormalizeErrorTree
 
 ```ts
