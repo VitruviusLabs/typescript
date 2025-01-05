@@ -1,6 +1,7 @@
 import type { AbstractConstructorOf } from "./definition/type/abstract-constructor-of.mjs";
+import type { ConstructorOf } from "./definition/type/constructor-of.mjs";
 
-function getConstructorOf<T extends object, C extends AbstractConstructorOf<T>>(value: T): C
+function getConstructorOf<T extends object, C extends AbstractConstructorOf<T> = ConstructorOf<T>>(value: T): C
 {
 	// eslint-disable-next-line @ts/no-unsafe-assignment -- Object.getPrototypeOf is badly typed
 	const PROTOTYPE: object | null = Object.getPrototypeOf(value);
