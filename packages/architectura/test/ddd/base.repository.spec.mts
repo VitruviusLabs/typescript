@@ -22,6 +22,16 @@ describe("BaseRepository", (): void => {
 	const DELETE_STUB: SinonStub = stub(DummyBaseRepository.prototype, "delete");
 	// @ts-expect-error: Stub protected method
 	const DESTROY_STUB: SinonStub = stub(DummyBaseRepository.prototype, "destroy");
+	// @ts-expect-error: Stub protected method
+	const REGISTER_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "registerHook");
+	// @ts-expect-error: Stub protected method
+	const UPDATE_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "updateHook");
+	// @ts-expect-error: Stub protected method
+	const RESTORE_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "restoreHook");
+	// @ts-expect-error: Stub protected method
+	const DELETE_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "deleteHook");
+	// @ts-expect-error: Stub protected method
+	const DESTROY_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "destroyHook");
 
 	beforeEach((): void => {
 		FETCH_UUID_STUB.reset();
@@ -38,6 +48,16 @@ describe("BaseRepository", (): void => {
 		DELETE_STUB.rejects();
 		DESTROY_STUB.reset();
 		DESTROY_STUB.rejects();
+		REGISTER_HOOK_STUB.reset();
+		REGISTER_HOOK_STUB.resolves();
+		UPDATE_HOOK_STUB.reset();
+		UPDATE_HOOK_STUB.resolves();
+		RESTORE_HOOK_STUB.reset();
+		RESTORE_HOOK_STUB.resolves();
+		DELETE_HOOK_STUB.reset();
+		DELETE_HOOK_STUB.resolves();
+		DESTROY_HOOK_STUB.reset();
+		DESTROY_HOOK_STUB.resolves();
 	});
 
 	after((): void => {
@@ -48,6 +68,11 @@ describe("BaseRepository", (): void => {
 		RESTORE_STUB.restore();
 		DELETE_STUB.restore();
 		DESTROY_STUB.restore();
+		REGISTER_HOOK_STUB.restore();
+		UPDATE_HOOK_STUB.restore();
+		RESTORE_HOOK_STUB.restore();
+		DELETE_HOOK_STUB.restore();
+		DESTROY_HOOK_STUB.restore();
 	});
 
 	describe("constructor", (): void => {
@@ -366,8 +391,11 @@ describe("BaseRepository", (): void => {
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
+			strictEqual(REGISTER_HOOK_STUB.callCount, 1, "The 'registerHook' method should be called exactly once");
+			deepStrictEqual(REGISTER_HOOK_STUB.firstCall.args, [ENTITY]);
 			strictEqual(REGISTER_STUB.callCount, 1, "The 'register' method should be called exactly once");
 			deepStrictEqual(REGISTER_STUB.firstCall.args, [ENTITY]);
+			strictEqual(REGISTER_HOOK_STUB.firstCall.calledBefore(REGISTER_STUB.firstCall), true, "The 'registerHook' method should be called before the 'register' method");
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -385,8 +413,11 @@ describe("BaseRepository", (): void => {
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
+			strictEqual(UPDATE_HOOK_STUB.callCount, 1, "The 'updateHook' method should be called exactly once");
+			deepStrictEqual(UPDATE_HOOK_STUB.firstCall.args, [ENTITY]);
 			strictEqual(UPDATE_STUB.callCount, 1, "The 'update' method should be called exactly once");
 			deepStrictEqual(UPDATE_STUB.firstCall.args, [ENTITY]);
+			strictEqual(UPDATE_HOOK_STUB.firstCall.calledBefore(UPDATE_STUB.firstCall), true, "The 'updateHook' method should be called before the 'update' method");
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -433,8 +464,11 @@ describe("BaseRepository", (): void => {
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
+			strictEqual(DELETE_HOOK_STUB.callCount, 1, "The 'deleteHook' method should be called exactly once");
+			deepStrictEqual(DELETE_HOOK_STUB.firstCall.args, [ENTITY]);
 			strictEqual(DELETE_STUB.callCount, 1, "The 'delete' method should be called exactly once");
 			deepStrictEqual(DELETE_STUB.firstCall.args, [ENTITY]);
+			strictEqual(DELETE_HOOK_STUB.firstCall.calledBefore(DELETE_STUB.firstCall), true, "The 'deleteHook' method should be called before the 'delete' method");
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -490,8 +524,11 @@ describe("BaseRepository", (): void => {
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
+			strictEqual(RESTORE_HOOK_STUB.callCount, 1, "The 'restoreHook' method should be called exactly once");
+			deepStrictEqual(RESTORE_HOOK_STUB.firstCall.args, [ENTITY]);
 			strictEqual(RESTORE_STUB.callCount, 1, "The 'restore' method should be called exactly once");
 			deepStrictEqual(RESTORE_STUB.firstCall.args, [ENTITY]);
+			strictEqual(RESTORE_HOOK_STUB.firstCall.calledBefore(RESTORE_STUB.firstCall), true, "The 'restoreHook' method should be called before the 'restore' method");
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -529,8 +566,11 @@ describe("BaseRepository", (): void => {
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
+			strictEqual(DESTROY_HOOK_STUB.callCount, 1, "The 'destroyHook' method should be called exactly once");
+			deepStrictEqual(DESTROY_HOOK_STUB.firstCall.args, [ENTITY]);
 			strictEqual(DESTROY_STUB.callCount, 1, "The 'destroy' method should be called exactly once");
 			deepStrictEqual(DESTROY_STUB.firstCall.args, [ENTITY]);
+			strictEqual(DESTROY_HOOK_STUB.firstCall.calledBefore(DESTROY_STUB.firstCall), true, "The 'destroyHook' method should be called before the 'destroy' method");
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -560,6 +600,38 @@ describe("BaseRepository", (): void => {
 			const ENTITY: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.DESTROYED });
 
 			await rejects(REPOSITORY.destroyModel(ENTITY), createErrorTest());
+		});
+	});
+
+	describe("create", (): void => {
+		it("should return an instance of the model", async (): Promise<void> => {
+			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
+			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
+
+			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.SAVED);
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
+
+			const RESULT: unknown = REPOSITORY["create"](DATA);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, EXPECTED);
+		});
+	});
+
+	describe("createMany", (): void => {
+		it("should return an array of instances of the model", async (): Promise<void> => {
+			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
+			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
+
+			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.SAVED);
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
+
+			const RESULT: unknown = REPOSITORY["createMany"]([DATA, DATA, DATA]);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, [EXPECTED, EXPECTED, EXPECTED]);
 		});
 	});
 });

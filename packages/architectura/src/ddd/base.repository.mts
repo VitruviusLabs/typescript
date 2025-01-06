@@ -23,7 +23,12 @@ abstract class BaseRepository<
 	I = ConstructorParameters<C>[0]
 >
 {
-	private readonly factory: BaseFactory<M, C, I>;
+	/**
+	 * @remarks
+	 * Do not use it to instantiate objects, use `create` or `createMany` instead.
+	 * Using the factory directly would erroneously create duplicate as metadata would not be set.
+	**/
+	protected readonly factory: BaseFactory<M, C, I>;
 
 	/**
 	 * Create a new repository
@@ -220,24 +225,26 @@ abstract class BaseRepository<
 	 *
 	 * @sealed
 	 */
-	public async saveModel(model: M): Promise<void>
+	public async saveModel(instance: M): Promise<void>
 	{
-		switch (model.getPersistenceInRepositoryStatus())
+		switch (instance.getPersistenceInRepositoryStatus())
 		{
 			case ModelRepositoryStatusEnum.NEW:
 				{
-					const metadata: Omit<ModelMetadataInterface, "deletedAt"> = await this.register(model);
+					await this.registerHook(instance);
+					const metadata: Omit<ModelMetadataInterface, "deletedAt"> = await this.register(instance);
 
-					BaseRepository.SetMetadata(model, { ...metadata, deletedAt: undefined });
+					BaseRepository.SetMetadata(instance, { ...metadata, deletedAt: undefined });
 				}
 
 				break;
 
 			case ModelRepositoryStatusEnum.SAVED:
 				{
-					const metadata: { updatedAt: Date | string | number } = await this.update(model);
+					await this.updateHook(instance);
+					const metadata: { updatedAt: Date | string | number } = await this.update(instance);
 
-					ReflectUtility.Set(model, "updatedAt", new Date(metadata.updatedAt));
+					ReflectUtility.Set(instance, "updatedAt", new Date(metadata.updatedAt));
 				}
 
 				break;
@@ -257,18 +264,19 @@ abstract class BaseRepository<
 	 *
 	 * @sealed
 	 */
-	public async restoreModel(model: M): Promise<void>
+	public async restoreModel(instance: M): Promise<void>
 	{
-		if (model.getPersistenceInRepositoryStatus() !== ModelRepositoryStatusEnum.DELETED)
+		if (instance.getPersistenceInRepositoryStatus() !== ModelRepositoryStatusEnum.DELETED)
 		{
-			throw new Error(`You can't restore a ${model.getPersistenceInRepositoryStatus()} entity.`);
+			throw new Error(`You can't restore a ${instance.getPersistenceInRepositoryStatus()} entity.`);
 		}
 
-		const metadata: { updatedAt: Date | string | number } = await this.restore(model);
+		await this.restoreHook(instance);
+		const metadata: { updatedAt: Date | string | number } = await this.restore(instance);
 
-		ReflectUtility.Set(model, "persistenceInRepositoryStatus", ModelRepositoryStatusEnum.SAVED);
-		ReflectUtility.Set(model, "updatedAt", new Date(metadata.updatedAt));
-		ReflectUtility.Set(model, "deletedAt", undefined);
+		ReflectUtility.Set(instance, "persistenceInRepositoryStatus", ModelRepositoryStatusEnum.SAVED);
+		ReflectUtility.Set(instance, "updatedAt", new Date(metadata.updatedAt));
+		ReflectUtility.Set(instance, "deletedAt", undefined);
 	}
 
 	/**
@@ -278,18 +286,19 @@ abstract class BaseRepository<
 	 *
 	 * @sealed
 	 */
-	public async deleteModel(model: M): Promise<void>
+	public async deleteModel(instance: M): Promise<void>
 	{
-		if (model.getPersistenceInRepositoryStatus() !== ModelRepositoryStatusEnum.SAVED)
+		if (instance.getPersistenceInRepositoryStatus() !== ModelRepositoryStatusEnum.SAVED)
 		{
-			throw new Error(`You can't soft delete a ${model.getPersistenceInRepositoryStatus()} entity.`);
+			throw new Error(`You can't soft delete a ${instance.getPersistenceInRepositoryStatus()} entity.`);
 		}
 
-		const metadata: { deletedAt: Date | string | number } = await this.delete(model);
+		await this.deleteHook(instance);
+		const metadata: { deletedAt: Date | string | number } = await this.delete(instance);
 
-		ReflectUtility.Set(model, "persistenceInRepositoryStatus", ModelRepositoryStatusEnum.DELETED);
-		ReflectUtility.Set(model, "updatedAt", new Date(metadata.deletedAt));
-		ReflectUtility.Set(model, "deletedAt", new Date(metadata.deletedAt));
+		ReflectUtility.Set(instance, "persistenceInRepositoryStatus", ModelRepositoryStatusEnum.DELETED);
+		ReflectUtility.Set(instance, "updatedAt", new Date(metadata.deletedAt));
+		ReflectUtility.Set(instance, "deletedAt", new Date(metadata.deletedAt));
 	}
 
 	/**
@@ -299,30 +308,66 @@ abstract class BaseRepository<
 	 *
 	 * @sealed
 	 */
-	public async destroyModel(model: M): Promise<void>
+	public async destroyModel(instance: M): Promise<void>
 	{
 		if (
-			model.getPersistenceInRepositoryStatus() === ModelRepositoryStatusEnum.NEW
-			|| model.getPersistenceInRepositoryStatus() === ModelRepositoryStatusEnum.DESTROYED
+			instance.getPersistenceInRepositoryStatus() === ModelRepositoryStatusEnum.NEW
+			|| instance.getPersistenceInRepositoryStatus() === ModelRepositoryStatusEnum.DESTROYED
 		)
 		{
-			throw new Error(`You can't destroy a ${model.getPersistenceInRepositoryStatus()} entity.`);
+			throw new Error(`You can't destroy a ${instance.getPersistenceInRepositoryStatus()} entity.`);
 		}
 
-		await this.destroy(model);
+		await this.destroyHook(instance);
+		await this.destroy(instance);
 
-		ReflectUtility.Set(model, "persistenceInRepositoryStatus", ModelRepositoryStatusEnum.DESTROYED);
-		ReflectUtility.Set(model, "id", undefined);
-		ReflectUtility.Set(model, "createdAt", undefined);
-		ReflectUtility.Set(model, "updatedAt", undefined);
-		ReflectUtility.Set(model, "deletedAt", undefined);
+		ReflectUtility.Set(instance, "persistenceInRepositoryStatus", ModelRepositoryStatusEnum.DESTROYED);
+		ReflectUtility.Set(instance, "id", undefined);
+		ReflectUtility.Set(instance, "createdAt", undefined);
+		ReflectUtility.Set(instance, "updatedAt", undefined);
+		ReflectUtility.Set(instance, "deletedAt", undefined);
+	}
+
+	// @ts-expect-error: Unused parameter
+	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
+	protected registerHook(instance: M): Promise<void> | void
+	{
+		// Does nothing by default
+	}
+
+	// @ts-expect-error: Unused parameter
+	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
+	protected updateHook(instance: M): Promise<void> | void
+	{
+		// Does nothing by default
+	}
+
+	// @ts-expect-error: Unused parameter
+	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
+	protected async restoreHook(instance: M): Promise<void> | void
+	{
+		// Does nothing by default
+	}
+
+	// @ts-expect-error: Unused parameter
+	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
+	protected async deleteHook(instance: M): Promise<void> | void
+	{
+		// Does nothing by default
+	}
+
+	// @ts-expect-error: Unused parameter
+	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
+	protected async destroyHook(instance: M): Promise<void> | void
+	{
+		// Does nothing by default
 	}
 
 	/**
 	 * Create an existing entity.
 	 *
 	 * @remarks
-	 * Use this method to create entities in custom getters.
+	 * Use this method to create an entity in custom getters.
 	 * Using the factory directly would erroneously create duplicate as metadata would not be set.
 	 *
 	 * @sealed
@@ -334,6 +379,29 @@ abstract class BaseRepository<
 		BaseRepository.SetMetadata(model, parameters);
 
 		return model;
+	}
+
+	/**
+	 * Create existing entities.
+	 *
+	 * @remarks
+	 * Use this method to create entities in custom getters.
+	 * Using the factory directly would erroneously create duplicate as metadata would not be set.
+	 *
+	 * @sealed
+	 */
+	protected async createMany(parameters: Array<I & ModelMetadataInterface>): Promise<Array<M>>
+	{
+		const instances: Array<M> = [];
+
+		for (const item of parameters)
+		{
+			const instance: M = await this.create(item);
+
+			instances.push(instance);
+		}
+
+		return instances;
 	}
 }
 
