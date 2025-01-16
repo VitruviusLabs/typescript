@@ -93,11 +93,24 @@ importers:
         specifier: workspace:^
         version: link:../ts-predicate
 
+  packages/architectura-test:
+    dependencies:
+      '@vitruvius-labs/architectura':
+        specifier: workspace:^
+        version: link:../architectura
+      '@vitruvius-labs/ts-predicate':
+        specifier: workspace:^
+        version: link:../ts-predicate
+
   packages/aws-s3:
     dependencies:
       '@vitruvius-labs/aws-signature-v4':
         specifier: workspace:^
         version: link:../aws-signature-v4
+    devDependencies:
+      '@vitruvius-labs/mockingbird':
+        specifier: workspace:^
+        version: link:../mockingbird
 
   packages/aws-signature-v4: {}
 

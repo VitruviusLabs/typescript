@@ -13,6 +13,7 @@ function mockS3ServiceInstantiationInterface(): S3ServiceInstantiationInterface
 		region: mocked_region,
 		host: mocked_host,
 		https: true,
+		localStack: false,
 	};
 }
 

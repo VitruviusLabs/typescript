@@ -56,5 +56,8 @@
 	"keywords": [],
 	"dependencies": {
 		"@vitruvius-labs/aws-signature-v4": "workspace:^"
+	},
+	"devDependencies": {
+		"@vitruvius-labs/mockingbird": "workspace:^"
 	}
 }
