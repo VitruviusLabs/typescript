@@ -3,12 +3,24 @@
  */
 abstract class BaseDomain
 {
+	protected static Initialized: boolean = false;
+
 	/**
 	 * Domains are meant to be static classes
 	 *
 	 * @sealed
 	 */
 	protected constructor() {}
+
+	public static async InitializeOnce(): Promise<void>
+	{
+		if (!this.Initialized)
+		{
+			this.Initialized = true;
+
+			await this.Initialize();
+		}
+	}
 
 	/**
 	 * Domain initialization
