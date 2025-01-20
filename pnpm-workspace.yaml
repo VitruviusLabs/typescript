@@ -1,6 +1,7 @@
 # pnpm-workspace.yaml
 packages:
   # all packages in direct subdirectories of packages/
-  - 'packages/*'
+  - "packages/*"
   # all packages in subdirectories of components/
-  - 'shared/**'
+  - "shared/**"
+  - "!packages/architectura-test"
