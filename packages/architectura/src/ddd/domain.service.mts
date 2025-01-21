@@ -74,7 +74,7 @@ class DomainService
 						{
 							LoggerProxy.Debug(`Initializing domain in file ${ENTITY.name}.`);
 
-							await EXPORT.Initialize();
+							await EXPORT.InitializeOnce();
 
 							return true;
 						}
