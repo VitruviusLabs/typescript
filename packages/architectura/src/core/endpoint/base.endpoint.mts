@@ -5,11 +5,13 @@ import type { BasePostHook } from "../hook/base.post-hook.mjs";
 import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import type { ExecutionContext } from "../execution-context/execution-context.mjs";
 import { RouteUtility } from "./route.utility.mjs";
+import { assertString } from "@vitruvius-labs/ts-predicate/type-assertion";
+import type { ExtractType } from "../../definition/type/extract.type.mjs";
 
 /**
  * Abstract endpoint class.
  */
-abstract class BaseEndpoint
+abstract class BaseEndpoint<T extends object = object>
 {
 	/**
 	 * Which HTTP method match this endpoint.
@@ -24,12 +26,19 @@ abstract class BaseEndpoint
 	 * You can use capture groups to extract parameters from the path.
 	 */
 	protected abstract readonly route: RegExp | string;
+
 	protected readonly preHooks: Array<BasePreHook | ConstructorOf<BasePreHook>> = [];
 	protected readonly excludedGlobalPreHooks: Array<ConstructorOf<BasePreHook>> = [];
 	protected readonly postHooks: Array<BasePostHook | ConstructorOf<BasePostHook>> = [];
 	protected readonly excludedGlobalPostHooks: Array<ConstructorOf<BasePostHook>> = [];
 	protected readonly errorHooks: Array<BaseErrorHook | ConstructorOf<BaseErrorHook>> = [];
 	protected readonly excludedGlobalErrorHooks: Array<ConstructorOf<BaseErrorHook>> = [];
+
+	protected pathFragments: ExtractType<T, "pathFragments"> | undefined = undefined;
+	protected query: ExtractType<T, "query"> | undefined = undefined;
+	protected payload: ExtractType<T, "payload"> | undefined = undefined;
+	protected response: ExtractType<T, "response"> | undefined = undefined;
+
 	private readonly context: ExecutionContext | undefined = undefined;
 
 	/**
@@ -151,6 +160,159 @@ abstract class BaseEndpoint
 		}
 
 		return this.context;
+	}
+
+	/**
+	 * Get a specific fragment of the request path as a string.
+	 *
+	 * @remarks
+	 * This method will check that the requested fragment is strictly a string.
+	 *
+	 * @throws when the requested fragment is not a string.
+	 *
+	 * @sealed
+	 */
+	protected getPathFragment(key: string): string
+	{
+		const fragment: string | undefined = this.getContext().getRequest().getPathMatchGroups()[key];
+
+		assertString(fragment);
+
+		return fragment;
+	}
+
+	/**
+	 * Asserts the path fragments of the request
+	 *
+	 * @remarks
+	 * This method is meant to be overridden to assert the path fragments of the request.
+	 * It always throws an error by default.
+	 */
+	protected assertPathFragments(value: unknown): asserts value is ExtractType<T, "pathFragments">
+	{
+		throw new Error(`Method "assertPathFragments" need an override in endpoint ${this.constructor.name}.`);
+	}
+
+	/**
+	 * Get the path fragments of the request.
+	 *
+	 * @remarks
+	 * This method will run the assertPathFragments method before returning the path fragments.
+	 *
+	 * @sealed
+	 */
+	protected getPathFragments(): ExtractType<T, "pathFragments">
+	{
+		if (this.pathFragments === undefined)
+		{
+			const fragments: Record<string, string> = this.getContext().getRequest().getPathMatchGroups();
+
+			this.assertPathFragments(fragments);
+
+			this.pathFragments = fragments;
+		}
+
+		return this.pathFragments;
+	}
+
+	/**
+	 * Asserts the query of the request
+	 *
+	 * @remarks
+	 * This method is meant to be overridden to assert the query of the request.
+	 * It always throws an error by default.
+	 */
+	protected assertQuery(value: unknown): asserts value is ExtractType<T, "query">
+	{
+		throw new Error(`Method "assertQuery" need an override in endpoint ${this.constructor.name}.`);
+	}
+
+	/**
+	 * Get the query of the request.
+	 *
+	 * @remarks
+	 * This method will run the assertQuery method before returning the query.
+	 *
+	 * @sealed
+	 */
+	protected getQuery(): ExtractType<T, "query">
+	{
+		if (this.query === undefined)
+		{
+			const query: unknown = this.getContext().getRequest().getQuery();
+
+			this.assertQuery(query);
+
+			this.query = query;
+		}
+
+		return this.query;
+	}
+
+	/**
+	 * Asserts the payload of the request.
+	 *
+	 * @remarks
+	 * This method is meant to be overridden to assert the payload of the request.
+	 * It always throws an error by default.
+	 */
+	protected assertPayload(value: unknown): asserts value is ExtractType<T, "payload">
+	{
+		throw new Error(`Method "assertPayload" need an override in endpoint ${this.constructor.name}.`);
+	}
+
+	/**
+	 * Get the payload (body) of the request.
+	 *
+	 * @remarks
+	 * This method will run the assertPayload method before returning the payload.
+	 *
+	 * @sealed
+	 */
+	protected async getPayload(): Promise<ExtractType<T, "payload">>
+	{
+		if (this.payload === undefined)
+		{
+			const payload: unknown = await this.getContext().getRequest().getBodyAsJSON();
+
+			this.assertPayload(payload);
+
+			this.payload = payload;
+		}
+
+		return this.payload;
+	}
+
+	/**
+	 * Builds the response of the request.
+	 *
+	 * @remarks
+	 * This method is meant to be overridden to build the response of the request.
+	 * It always throws an error by default.
+	 */
+	protected buildResponse(): ExtractType<T, "response"> | Promise<ExtractType<T, "response">>
+	{
+		throw new Error(`Method "buildResponse" need an override in endpoint ${this.constructor.name}.`);
+	}
+
+	/**
+	 * Get the response of the request.
+	 *
+	 * @remarks
+	 * This method will run the buildResponse method before returning the response.
+	 *
+	 * @throws when the response is not defined after running the buildResponse method.
+	 *
+	 * @sealed
+	 */
+	protected async getResponse(): Promise<ExtractType<T, "response">>
+	{
+		if (this.response === undefined)
+		{
+			this.response = await this.buildResponse();
+		}
+
+		return this.response;
 	}
 }
 
