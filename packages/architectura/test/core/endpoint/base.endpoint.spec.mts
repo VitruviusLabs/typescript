@@ -15,7 +15,7 @@ describe("BaseEndpoint", (): void => {
 
 			const HOOK: DummyPreHook = new DummyPreHook();
 
-			class DummyEndpoint extends BaseEndpoint
+			class DummyEndpoint extends BaseEndpoint<{ query: unknown; path: unknown; payload: unknown; response: unknown }>
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
 				protected readonly route: string = "/test-dummy";
@@ -186,6 +186,55 @@ describe("BaseEndpoint", (): void => {
 
 			doesNotThrow(WRAPPER);
 			strictEqual(result, MOCK_CONTEXT.instance);
+		});
+	});
+
+	describe("getPathFragment", (): void => {
+		it("should throw if the fragment is not a string", (): void => {
+			const MOCK_CONTEXT: MockContextInterface = mockContext();
+
+			class DummyEndpoint extends BaseEndpoint
+			{
+				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected readonly route: string = "/test-dummy";
+
+				public execute(): void { }
+			}
+
+			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
+
+			ReflectUtility.Set(ENDPOINT, "context", MOCK_CONTEXT.instance);
+
+			const WRAPPER = (): void => {
+				ENDPOINT["getPathFragment"]("query");
+			};
+
+			throws(WRAPPER, new Error("The requested fragment is not a string."));
+		});
+
+		it("should return the fragment", (): void => {
+			const MOCK_CONTEXT: MockContextInterface = mockContext();
+
+			class DummyEndpoint extends BaseEndpoint
+			{
+				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected readonly route: string = "/test-dummy";
+
+				public execute(): void { }
+			}
+
+			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
+
+			ReflectUtility.Set(ENDPOINT, "context", MOCK_CONTEXT.instance);
+
+			let result: unknown = undefined;
+
+			const WRAPPER = (): void => {
+				result = ENDPOINT["getPathFragment"]("query");
+			};
+
+			doesNotThrow(WRAPPER);
+			strictEqual(result, "query");
 		});
 	});
 });
