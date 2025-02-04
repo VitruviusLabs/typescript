@@ -6,14 +6,12 @@ import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import type { ExecutionContext } from "../execution-context/execution-context.mjs";
 import { RouteUtility } from "./route.utility.mjs";
 import { assertString } from "@vitruvius-labs/ts-predicate/type-assertion";
-import type { EndpointTypeInterface } from "./definition/interface/endpoint-type.interface.mjs";
-import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import type { ExtractType } from "../../definition/type/extract.type.mjs";
 
 /**
  * Abstract endpoint class.
  */
-abstract class BaseEndpoint<T extends EndpointTypeInterface = object>
+abstract class BaseEndpoint<T extends object = object>
 {
 	/**
 	 * Which HTTP method match this endpoint.
@@ -36,7 +34,7 @@ abstract class BaseEndpoint<T extends EndpointTypeInterface = object>
 	protected readonly errorHooks: Array<BaseErrorHook | ConstructorOf<BaseErrorHook>> = [];
 	protected readonly excludedGlobalErrorHooks: Array<ConstructorOf<BaseErrorHook>> = [];
 
-	protected path: ExtractType<T, "path"> | undefined = undefined;
+	protected pathFragments: ExtractType<T, "pathFragments"> | undefined = undefined;
 	protected query: ExtractType<T, "query"> | undefined = undefined;
 	protected payload: ExtractType<T, "payload"> | undefined = undefined;
 	protected response: ExtractType<T, "response"> | undefined = undefined;
@@ -176,45 +174,45 @@ abstract class BaseEndpoint<T extends EndpointTypeInterface = object>
 	 */
 	protected getPathFragment(key: string): string
 	{
-		const part: unknown = this.getContext().getRequest().getPathMatchGroups()[key];
+		const fragment: string | undefined = this.getContext().getRequest().getPathMatchGroups()[key];
 
-		assertString(part);
+		assertString(fragment);
 
-		return part;
+		return fragment;
 	}
 
 	/**
-	 * Asserts the path of the request
+	 * Asserts the path fragments of the request
 	 *
 	 * @remarks
-	 * This method is meant to be overridden to assert the path of the request.
+	 * This method is meant to be overridden to assert the path fragments of the request.
 	 * It always throws an error by default.
 	 */
-	protected assertPath(value: unknown): asserts value is ExtractType<T, "path">
+	protected assertPathFragments(value: unknown): asserts value is ExtractType<T, "pathFragments">
 	{
-		throw new Error(`Method not implemented for endpoint ${this.constructor.name} with value ${JSON.stringify(value)}.`);
+		throw new Error(`Method "assertPathFragments" need an override in endpoint ${this.constructor.name}.`);
 	}
 
 	/**
-	 * Get the path of the request.
+	 * Get the path fragments of the request.
 	 *
 	 * @remarks
-	 * This method will run the assertPath method before returning the path.
+	 * This method will run the assertPathFragments method before returning the path fragments.
 	 *
 	 * @sealed
 	 */
-	protected getPath(): ExtractType<T, "path">
+	protected getPathFragments(): ExtractType<T, "pathFragments">
 	{
-		if (this.path === undefined)
+		if (this.pathFragments === undefined)
 		{
-			const path: unknown = this.getContext().getRequest().getPathMatchGroups();
+			const fragments: Record<string, string> = this.getContext().getRequest().getPathMatchGroups();
 
-			this.assertPath(path);
+			this.assertPathFragments(fragments);
 
-			this.path = path;
+			this.pathFragments = fragments;
 		}
 
-		return this.path;
+		return this.pathFragments;
 	}
 
 	/**
@@ -226,9 +224,7 @@ abstract class BaseEndpoint<T extends EndpointTypeInterface = object>
 	 */
 	protected assertQuery(value: unknown): asserts value is ExtractType<T, "query">
 	{
-		LoggerProxy.Error(`Attempted to on value ${JSON.stringify(value)} without defining it.`);
-
-		throw new Error(`Method not implemented for endpoint ${this.constructor.name}.`);
+		throw new Error(`Method "assertQuery" need an override in endpoint ${this.constructor.name}.`);
 	}
 
 	/**
@@ -262,9 +258,7 @@ abstract class BaseEndpoint<T extends EndpointTypeInterface = object>
 	 */
 	protected assertPayload(value: unknown): asserts value is ExtractType<T, "payload">
 	{
-		LoggerProxy.Error(`Attempted to on value ${JSON.stringify(value)} without defining it.`);
-
-		throw new Error(`Method not implemented for endpoint ${this.constructor.name}.`);
+		throw new Error(`Method "assertPayload" need an override in endpoint ${this.constructor.name}.`);
 	}
 
 	/**
@@ -296,12 +290,9 @@ abstract class BaseEndpoint<T extends EndpointTypeInterface = object>
 	 * This method is meant to be overridden to build the response of the request.
 	 * It always throws an error by default.
 	 */
-	// @ts-expect-error - This method is meant to be overridden.
-	protected async buildResponse(): Promise<ExtractType<T, "response">>
+	protected buildResponse(): ExtractType<T, "response"> | Promise<ExtractType<T, "response">>
 	{
-		LoggerProxy.Error(`Attempted to build response without defining it for endpoint ${this.constructor.name}.`);
-
-		await Promise.reject(new Error("Method not implemented."));
+		throw new Error(`Method "buildResponse" need an override in endpoint ${this.constructor.name}.`);
 	}
 
 	/**
@@ -319,11 +310,6 @@ abstract class BaseEndpoint<T extends EndpointTypeInterface = object>
 		if (this.response === undefined)
 		{
 			this.response = await this.buildResponse();
-		}
-
-		if (this.response === undefined)
-		{
-			throw new Error("The response is not defined.");
 		}
 
 		return this.response;
