@@ -1,4 +1,6 @@
 export * from "./utils/validation-error.mjs";
+export * from "./utils/validation-result.mjs";
+export * from "./utils/validator.mjs";
 export * from "./assert-allowed-keys.mjs";
 export * from "./assert-array.mjs";
 export * from "./assert-big-int.mjs";
