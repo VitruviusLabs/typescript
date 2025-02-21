@@ -20,6 +20,7 @@ import { RichClientRequest } from "./rich-client-request.mjs";
 import { RichServerResponse } from "./rich-server-response.mjs";
 import { getContentType } from "../../utility/content-type/get-content-type.mjs";
 import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
+import { AccessControlDefinition } from "../endpoint/access-control-definition.mjs";
 
 /* @TODO: Add support for HTTP/2 */
 
@@ -211,6 +212,92 @@ class Server
 		return true;
 	}
 
+	private static async HandleAutomaticPreflight(context: ExecutionContext): Promise<void>
+	{
+		const REQUEST: RichClientRequest = context.getRequest();
+
+		if (REQUEST.getMethod() !== HTTPMethodEnum.OPTIONS)
+		{
+			return;
+		}
+
+		const methods: Array<Exclude<HTTPMethodEnum, HTTPMethodEnum.OPTIONS>> = [
+			HTTPMethodEnum.GET,
+			HTTPMethodEnum.HEAD,
+			HTTPMethodEnum.POST,
+			HTTPMethodEnum.PUT,
+			HTTPMethodEnum.DELETE,
+			HTTPMethodEnum.CONNECT,
+			HTTPMethodEnum.TRACE,
+			HTTPMethodEnum.PATCH,
+		];
+
+		const allowedMethods: Array<HTTPMethodEnum> = [];
+		let accessControlDefinition: AccessControlDefinition | undefined = undefined;
+
+		for (const method of methods)
+		{
+			const MATCHING_ENDPOINT: EndpointMatchInterface | undefined = EndpointRegistry.FindEndpoint(method, REQUEST.getPath());
+
+			if (MATCHING_ENDPOINT === undefined)
+			{
+				continue;
+			}
+
+			allowedMethods.push(method);
+
+			const endpointAccessControlDefinition: AccessControlDefinition | undefined = MATCHING_ENDPOINT.endpoint.getAccessControlDefinition();
+
+			if (accessControlDefinition === undefined)
+			{
+				if (endpointAccessControlDefinition !== undefined)
+				{
+					if (allowedMethods.length > 0)
+					{
+						throw new Error(`Multiple endpoints for path "${REQUEST.getPath()}" have different access control definitions.`);
+					}
+
+					accessControlDefinition = endpointAccessControlDefinition;
+
+					continue;
+				}
+
+				continue;
+			}
+
+			if (endpointAccessControlDefinition === undefined)
+			{
+				throw new Error(`Multiple endpoints for path "${REQUEST.getPath()}" have different access control definitions.`);
+			}
+
+			if (accessControlDefinition.getMark() !== endpointAccessControlDefinition.getMark())
+			{
+				throw new Error(`Multiple endpoints for path "${REQUEST.getPath()}" have different access control definitions.`);
+			}
+		}
+
+		const RESPONSE: RichServerResponse = context.getResponse();
+
+		if (accessControlDefinition === undefined)
+		{
+			accessControlDefinition = new AccessControlDefinition({
+				allowedHeaders: [],
+				allowedOrigins: [],
+				maxAge: 0,
+			});
+		}
+
+		const headers: Headers = accessControlDefinition.generatePreflightHeaders();
+
+		headers.append("Allow", allowedMethods.join(", "));
+		headers.append("Access-Control-Allow-Methods", allowedMethods.join(", "));
+
+		await RESPONSE.replyWith({
+			status: HTTPStatusCodeEnum.NO_CONTENT,
+			headers: headers,
+		});
+	}
+
 	private static async HandleEndpoints(context: ExecutionContext): Promise<boolean>
 	{
 		const REQUEST: RichClientRequest = context.getRequest();
@@ -218,6 +305,13 @@ class Server
 
 		if (MATCHING_ENDPOINT === undefined)
 		{
+			if (REQUEST.getMethod() === HTTPMethodEnum.OPTIONS)
+			{
+				await Server.HandleAutomaticPreflight(context);
+
+				return true;
+			}
+
 			return false;
 		}
 
