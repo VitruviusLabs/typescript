@@ -2,14 +2,14 @@ import { after, afterEach, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, doesNotReject, strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
 import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
-import { ExecutionContextRegistry, LogLevelEnum, LoggerProxy, type LoggerService, Server } from "../../../src/_index.mjs";
+import { ExecutionContextRegistry, LogLevelEnum, LoggerProxy, type LoggerService } from "../../../src/_index.mjs";
 import { mockContext } from "../../../mock/_index.mjs";
 
 describe("LoggerProxy", (): void => {
 	const LOGGER_SERVICE: LoggerService = Reflect.get(LoggerProxy, "Logger");
 	// @ts-expect-error: Stub private method
 	const LOGGER_PROXY_PROCESS_STUB: SinonStub = stub(LoggerProxy, "Process");
-	const SERVER_HANDLE_ERROR_STUB: SinonStub = stub(Server, "HandleError");
+	const CONSOLE_ERROR_STUB: SinonStub = stub(console, "error");
 	const HANDLE_MESSAGE_STUB: SinonStub = stub(LOGGER_SERVICE, "handleMessage");
 	const HANDLE_ERROR_STUB: SinonStub = stub(LOGGER_SERVICE, "handleError");
 	const GET_CONTEXT_STUB: SinonStub = stub(ExecutionContextRegistry, "GetUnsafeExecutionContext");
@@ -17,8 +17,8 @@ describe("LoggerProxy", (): void => {
 	beforeEach((): void => {
 		LOGGER_PROXY_PROCESS_STUB.reset();
 		LOGGER_PROXY_PROCESS_STUB.returns(undefined);
-		SERVER_HANDLE_ERROR_STUB.reset();
-		SERVER_HANDLE_ERROR_STUB.returns(undefined);
+		CONSOLE_ERROR_STUB.reset();
+		CONSOLE_ERROR_STUB.returns(undefined);
 		HANDLE_MESSAGE_STUB.reset();
 		HANDLE_MESSAGE_STUB.returns(undefined);
 		HANDLE_ERROR_STUB.reset();
@@ -29,7 +29,7 @@ describe("LoggerProxy", (): void => {
 
 	after((): void => {
 		LOGGER_PROXY_PROCESS_STUB.restore();
-		SERVER_HANDLE_ERROR_STUB.restore();
+		CONSOLE_ERROR_STUB.restore();
 		HANDLE_MESSAGE_STUB.restore();
 		HANDLE_ERROR_STUB.restore();
 		GET_CONTEXT_STUB.restore();
@@ -379,14 +379,14 @@ describe("LoggerProxy", (): void => {
 			const ERROR: Error = new Error("Dummy logging error");
 
 			HANDLE_MESSAGE_STUB.rejects(ERROR);
-			SERVER_HANDLE_ERROR_STUB.resolves();
+			CONSOLE_ERROR_STUB.returns(undefined);
 
 			const PROMISE: unknown = LoggerProxy["Process"]("Hello, World!", LogLevelEnum.DEBUG, undefined);
 
 			instanceOf(PROMISE, Promise);
 			await doesNotReject(PROMISE);
-			strictEqual(SERVER_HANDLE_ERROR_STUB.callCount, 1, "'Server.HandleError' should be called exactly once");
-			deepStrictEqual(SERVER_HANDLE_ERROR_STUB.firstCall.args, [ERROR]);
+			strictEqual(CONSOLE_ERROR_STUB.callCount, 1, "'console.error' should be called exactly once");
+			deepStrictEqual(CONSOLE_ERROR_STUB.firstCall.args, [ERROR]);
 		});
 	});
 });

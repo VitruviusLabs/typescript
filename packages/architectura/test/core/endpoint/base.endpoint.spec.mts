@@ -262,7 +262,7 @@ describe("BaseEndpoint", (): void => {
 				ENDPOINT["assertPathFragments"]({});
 			};
 
-			throws(WRAPPER, new Error(`Method "assertPathFragments" need an override in endpoint ${ENDPOINT.constructor.name}.`));
+			throws(WRAPPER, new Error(`Method "assertPathFragments" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
 		});
 	});
 
@@ -394,7 +394,7 @@ describe("BaseEndpoint", (): void => {
 				ENDPOINT["assertQuery"]({});
 			};
 
-			throws(WRAPPER, new Error(`Method "assertQuery" need an override in endpoint ${ENDPOINT.constructor.name}.`));
+			throws(WRAPPER, new Error(`Method "assertQuery" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
 		});
 	});
 
@@ -526,7 +526,7 @@ describe("BaseEndpoint", (): void => {
 				ENDPOINT["assertPayload"]({});
 			};
 
-			throws(WRAPPER, new Error(`Method "assertPayload" need an override in endpoint ${ENDPOINT.constructor.name}.`));
+			throws(WRAPPER, new Error(`Method "assertPayload" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
 		});
 	});
 
@@ -551,7 +551,7 @@ describe("BaseEndpoint", (): void => {
 				ENDPOINT["assertPayload"]({});
 			};
 
-			throws(WRAPPER, new Error(`Method "assertPayload" need an override in endpoint ${ENDPOINT.constructor.name}.`));
+			throws(WRAPPER, new Error(`Method "assertPayload" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
 		});
 	});
 

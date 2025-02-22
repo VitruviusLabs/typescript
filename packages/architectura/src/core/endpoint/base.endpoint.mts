@@ -244,7 +244,7 @@ abstract class BaseEndpoint<T extends object = object>
 	 */
 	protected assertQuery(value: unknown): asserts value is ExtractType<T, "query">
 	{
-		throw new Error(`Method "assertQuery" need an override in endpoint ${this.constructor.name}.`);
+		throw new Error(`Method "assertQuery" needs an override in endpoint ${this.constructor.name}.`);
 	}
 
 	/**

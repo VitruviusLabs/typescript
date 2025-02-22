@@ -38,8 +38,6 @@ class AccessControlDefinition
 	 */
 	protected readonly maxAge: number = 0;
 
-	private readonly mark: symbol = Symbol("AccessControlDefinition");
-
 	public constructor(parameters: AccessControlDefinitionInstantiationInterface)
 	{
 		this.allowedHeaders = parameters.allowedHeaders;
@@ -75,16 +73,6 @@ class AccessControlDefinition
 	public getMaxAge(): number
 	{
 		return this.maxAge;
-	}
-
-	/**
-	 * Get the mark.
-	 *
-	 * @sealed
-	 */
-	public getMark(): symbol
-	{
-		return this.mark;
 	}
 
 	/**

@@ -3,7 +3,7 @@
  */
 abstract class BaseDomain
 {
-	protected static Initialized: boolean = false;
+	protected static InitializedPromise: Promise<void> | undefined = undefined;
 
 	/**
 	 * Domains are meant to be static classes
@@ -14,12 +14,12 @@ abstract class BaseDomain
 
 	public static async InitializeOnce(): Promise<void>
 	{
-		if (!this.Initialized)
+		if (this.InitializedPromise === undefined)
 		{
-			this.Initialized = true;
-
-			await this.Initialize();
+			this.InitializedPromise = this.Initialize();
 		}
+
+		await this.InitializedPromise;
 	}
 
 	/**

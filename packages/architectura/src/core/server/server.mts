@@ -31,8 +31,9 @@ import { AccessControlDefinition } from "../endpoint/access-control-definition.m
  */
 class Server
 {
-	private readonly port: number = PortsEnum.DEFAULT_HTTPS;
-	private readonly https: boolean = false;
+	private readonly port: number;
+	private readonly https: boolean;
+	private readonly defaultAccessControlDefinition: AccessControlDefinition | undefined;
 	private readonly nativeServer: (
 		| SecureServer<typeof RichClientRequest, typeof RichServerResponse>
 		| UnsafeServer<typeof RichClientRequest, typeof RichServerResponse>
@@ -40,10 +41,9 @@ class Server
 
 	private constructor(options: ServerInstantiationType)
 	{
-		Server.ValidatePort(options.port);
-
 		this.https = options.https;
 		this.port = options.port;
+		this.defaultAccessControlDefinition = options.defaultAccessControlDefinition;
 
 		if (!options.https)
 		{
@@ -83,16 +83,61 @@ class Server
 			{
 				try
 				{
-					await Server.RequestListener(request, response);
+					await SERVER.requestListener(request, response);
 				}
 				catch (error: unknown)
 				{
-					await Server.HandleError(error);
+					await SERVER.handleError(error);
 				}
 			}
 		);
 
 		return SERVER;
+	}
+
+	private static async ComputeServerOptions(options: ServerConfigurationType): Promise<ServerInstantiationType>
+	{
+		Server.ValidatePort(options.port);
+
+		if (!options.https)
+		{
+			return options;
+		}
+
+		const SECURE_OPTIONS: ServerInstantiationType = {
+			...options,
+			certificate: await FileSystemService.ReadTextFile(options.certificate),
+			key: await FileSystemService.ReadTextFile(options.key),
+		};
+
+		return SECURE_OPTIONS;
+	}
+
+	private static ValidatePort(port: number): void
+	{
+		assertInteger(port);
+
+		if (port < PortsEnum.LOWEST_AVAILABLE || PortsEnum.HIGHEST_AVAILABLE < port)
+		{
+			throw new Error(`"port" parameter isn't within range of valid ports. It must be an integer between ${PortsEnum.LOWEST_AVAILABLE.toString()} and ${PortsEnum.HIGHEST_AVAILABLE.toString()}`);
+		}
+	}
+
+	/**
+	 * Start the server.
+	 */
+	public start(): void
+	{
+		this.nativeServer.listen(this.port);
+		LoggerProxy.Informational("Server started.");
+	}
+
+	/**
+	 * Return whether the server is secure or not
+	 */
+	public isHTTPS(): boolean
+	{
+		return this.https;
 	}
 
 	/**
@@ -104,7 +149,7 @@ class Server
 	 * - It will attempt to finalize the response and log the error.
 	 * - It'll run all global error hooks before finalizing the response.
 	 */
-	public static async HandleError(error: unknown): Promise<void>
+	public async handleError(error: unknown): Promise<void>
 	{
 		try
 		{
@@ -126,7 +171,7 @@ class Server
 				LoggerProxy.Error(scoped_error);
 			}
 
-			await Server.FinalizeResponse(CONTEXT, true);
+			await this.finalizeResponse(CONTEXT, true);
 		}
 		catch (scoped_error: unknown)
 		{
@@ -135,23 +180,8 @@ class Server
 		}
 	}
 
-	private static async ComputeServerOptions(options: ServerConfigurationType): Promise<ServerInstantiationType>
-	{
-		if (!options.https)
-		{
-			return options;
-		}
-
-		const SECURE_OPTIONS: ServerInstantiationType = {
-			...options,
-			certificate: await FileSystemService.ReadTextFile(options.certificate),
-			key: await FileSystemService.ReadTextFile(options.key),
-		};
-
-		return SECURE_OPTIONS;
-	}
-
-	private static async RequestListener(request: RichClientRequest, response: RichServerResponse): Promise<void>
+	/** @internal */
+	public async requestListener(request: RichClientRequest, response: RichServerResponse): Promise<void>
 	{
 		LoggerProxy.Debug(`Incoming request "${request.url ?? ""}".`);
 
@@ -164,14 +194,14 @@ class Server
 
 		ExecutionContextRegistry.SetExecutionContext(CONTEXT);
 
-		const IS_PUBLIC_ASSET: boolean = await Server.HandlePublicAssets(CONTEXT);
+		const IS_PUBLIC_ASSET: boolean = await this.handlePublicAssets(CONTEXT);
 
 		if (IS_PUBLIC_ASSET)
 		{
 			return;
 		}
 
-		const IS_ENDPOINT: boolean = await Server.HandleEndpoints(CONTEXT);
+		const IS_ENDPOINT: boolean = await this.handleEndpoints(CONTEXT);
 
 		if (IS_ENDPOINT)
 		{
@@ -184,7 +214,8 @@ class Server
 		});
 	}
 
-	private static async HandlePublicAssets(context: ExecutionContext): Promise<boolean>
+	// eslint-disable-next-line @ts/class-methods-use-this -- this is not needed
+	private async handlePublicAssets(context: ExecutionContext): Promise<boolean>
 	{
 		if (context.getRequest().getMethod() !== HTTPMethodEnum.GET)
 		{
@@ -212,7 +243,7 @@ class Server
 		return true;
 	}
 
-	private static async HandleAutomaticPreflight(context: ExecutionContext): Promise<void>
+	private async handleAutomaticPreflight(context: ExecutionContext): Promise<void>
 	{
 		const REQUEST: RichClientRequest = context.getRequest();
 
@@ -232,8 +263,9 @@ class Server
 			HTTPMethodEnum.PATCH,
 		];
 
-		const allowedMethods: Array<HTTPMethodEnum> = [];
-		let accessControlDefinition: AccessControlDefinition | undefined = undefined;
+		const ALLOWED_METHODS: Array<HTTPMethodEnum> = [];
+
+		let access_control_definition: AccessControlDefinition | undefined = undefined;
 
 		for (const method of methods)
 		{
@@ -244,53 +276,43 @@ class Server
 				continue;
 			}
 
-			allowedMethods.push(method);
+			ALLOWED_METHODS.push(method);
 
-			const endpointAccessControlDefinition: AccessControlDefinition | undefined = MATCHING_ENDPOINT.endpoint.getAccessControlDefinition();
+			const ENDPOINT_ACCESS_CONTROL_DEFINITION: AccessControlDefinition | undefined = MATCHING_ENDPOINT.endpoint.getAccessControlDefinition();
 
-			if (accessControlDefinition === undefined)
+			if (ALLOWED_METHODS.length === 1)
 			{
-				if (endpointAccessControlDefinition !== undefined)
-				{
-					if (allowedMethods.length > 0)
-					{
-						throw new Error(`Multiple endpoints for path "${REQUEST.getPath()}" have different access control definitions.`);
-					}
-
-					accessControlDefinition = endpointAccessControlDefinition;
-
-					continue;
-				}
+				access_control_definition = ENDPOINT_ACCESS_CONTROL_DEFINITION;
 
 				continue;
 			}
 
-			if (endpointAccessControlDefinition === undefined)
-			{
-				throw new Error(`Multiple endpoints for path "${REQUEST.getPath()}" have different access control definitions.`);
-			}
-
-			if (accessControlDefinition.getMark() !== endpointAccessControlDefinition.getMark())
+			if (access_control_definition !== ENDPOINT_ACCESS_CONTROL_DEFINITION)
 			{
 				throw new Error(`Multiple endpoints for path "${REQUEST.getPath()}" have different access control definitions.`);
 			}
 		}
 
-		const RESPONSE: RichServerResponse = context.getResponse();
-
-		if (accessControlDefinition === undefined)
+		if (access_control_definition === undefined)
 		{
-			accessControlDefinition = new AccessControlDefinition({
+			access_control_definition = this.defaultAccessControlDefinition;
+		}
+
+		if (access_control_definition === undefined)
+		{
+			access_control_definition = new AccessControlDefinition({
 				allowedHeaders: [],
 				allowedOrigins: [],
 				maxAge: 0,
 			});
 		}
 
-		const headers: Headers = accessControlDefinition.generatePreflightHeaders();
+		const RESPONSE: RichServerResponse = context.getResponse();
 
-		headers.append("Allow", allowedMethods.join(", "));
-		headers.append("Access-Control-Allow-Methods", allowedMethods.join(", "));
+		const headers: Headers = access_control_definition.generatePreflightHeaders();
+
+		headers.append("Allow", ALLOWED_METHODS.join(", "));
+		headers.append("Access-Control-Allow-Methods", ALLOWED_METHODS.join(", "));
 
 		await RESPONSE.replyWith({
 			status: HTTPStatusCodeEnum.NO_CONTENT,
@@ -298,7 +320,7 @@ class Server
 		});
 	}
 
-	private static async HandleEndpoints(context: ExecutionContext): Promise<boolean>
+	private async handleEndpoints(context: ExecutionContext): Promise<boolean>
 	{
 		const REQUEST: RichClientRequest = context.getRequest();
 		const MATCHING_ENDPOINT: EndpointMatchInterface | undefined = EndpointRegistry.FindEndpoint(REQUEST.getMethod(), REQUEST.getPath());
@@ -307,7 +329,7 @@ class Server
 		{
 			if (REQUEST.getMethod() === HTTPMethodEnum.OPTIONS)
 			{
-				await Server.HandleAutomaticPreflight(context);
+				await this.handleAutomaticPreflight(context);
 
 				return true;
 			}
@@ -344,13 +366,14 @@ class Server
 		}
 		finally
 		{
-			await Server.FinalizeResponse(context, has_error_occurred);
+			await this.finalizeResponse(context, has_error_occurred);
 		}
 
 		return true;
 	}
 
-	private static async FinalizeResponse(context: ExecutionContext, has_error_occurred: boolean): Promise<void>
+	// eslint-disable-next-line @ts/class-methods-use-this -- this is not needed
+	private async finalizeResponse(context: ExecutionContext, has_error_occurred: boolean): Promise<void>
 	{
 		const RESPONSE: RichServerResponse = context.getResponse();
 
@@ -389,27 +412,6 @@ class Server
 		{
 			LoggerProxy.Warning("Unfinished server response.");
 		}
-	}
-
-	private static ValidatePort(port: number): void
-	{
-		assertInteger(port);
-
-		if (port < PortsEnum.LOWEST_AVAILABLE || PortsEnum.HIGHEST_AVAILABLE < port)
-		{
-			throw new Error(`"port" parameter isn't within range of valid ports. It must be an integer between ${PortsEnum.LOWEST_AVAILABLE.toString()} and ${PortsEnum.HIGHEST_AVAILABLE.toString()}`);
-		}
-	}
-
-	public start(): void
-	{
-		this.nativeServer.listen(this.port);
-		LoggerProxy.Informational("Server started.");
-	}
-
-	public isHTTPS(): boolean
-	{
-		return this.https;
 	}
 }
 
