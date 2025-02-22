@@ -263,16 +263,3 @@ unary(test_function: ((value: unknown, options: Options) => void), ...parameters
 ```
 
 Helper function for creating closures of test functions with their configuration options.
-
-# ValidationError
-
-To distinguish between unexpected errors and validation errors, you can check that the caught error is an instance of `ValidationError`.
-
-Any custom assertion must throw a `ValidationError` unless an unexpected error occurred.
-
-
-# UnknownError
-
-When a provided callable throws anything but an instance of `Error`, an instance of `UnknownError` will be created.
-
-You can get the original thrown value from the `reason` property.

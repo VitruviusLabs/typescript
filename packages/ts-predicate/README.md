@@ -46,4 +46,5 @@ npm install @vitruvius-labs/ts-predicate
 - [TypeAssertion](documentation/type-assertion.md)
 - [TypeGuard](documentation/type-guard.md)
 - [TypeHint](documentation/type-hint.md)
+- [Classes](documentation/classes.md)
 - [Helper](documentation/helper.md)
