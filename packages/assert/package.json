@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-labs/assert",
-	"version": "0.11.0",
+	"version": "0.1.0",
 	"description": "A fluent assertion library.",
 	"author": {
 		"name": "VitruviusLabs"
