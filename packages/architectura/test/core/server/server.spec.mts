@@ -1,5 +1,5 @@
 import { after, beforeEach, describe, it } from "node:test";
-import { deepStrictEqual, doesNotReject, ok, strictEqual } from "node:assert";
+import { deepStrictEqual, doesNotReject, ok, rejects, strictEqual } from "node:assert";
 import { Server as UnsafeServer } from "node:http";
 import { Server as SecureServer } from "node:https";
 import { type SinonStub, stub } from "sinon";
@@ -8,6 +8,8 @@ import { AssetRegistry, BaseEndpoint, type EndpointMatchInterface, EndpointRegis
 import { type MockContextInterface, type MockServerInterface, mockContext } from "../../../mock/_index.mjs";
 import { mockServer } from "../../../mock/core/server/mock-server.mjs";
 import { AccessControlDefinition } from "../../../src/core/endpoint/access-control-definition.mjs";
+import type { MockRequestInterface } from "../../../mock/core/server/definition/interface/mock-request.interface.mjs";
+import { mockRequest } from "../../../mock/core/server/mock-request.mjs";
 
 describe("Server", (): void => {
 	const LOGGER_DEBUG_STUB: SinonStub = stub(LoggerProxy, "Debug");
@@ -402,6 +404,174 @@ describe("Server", (): void => {
 			deepStrictEqual(READ_FILE_STUB.firstCall.args, ["~/alpha-omega/lorem-ipsum.png"]);
 			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 1, "The response method 'replyWith' should have been called exactly once");
 			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{ contentType: "image/png", payload: Buffer.from("Hello, World!") }]);
+		});
+	});
+
+	describe("handleAutomaticPreflight", (): void => {
+		it("should return false if the request method is anything but 'OPTIONS'", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
+
+			SERVER_MOCK.stubs.handleAutomaticPreflight.callThrough();
+
+			const METHODS: Array<HTTPMethodEnum> = [
+				HTTPMethodEnum.GET,
+				HTTPMethodEnum.HEAD,
+				HTTPMethodEnum.PUT,
+				HTTPMethodEnum.POST,
+				HTTPMethodEnum.PATCH,
+				HTTPMethodEnum.DELETE,
+			];
+
+			for (const METHOD of METHODS)
+			{
+				CONTEXT_MOCK.request.stubs.getMethod.reset();
+				CONTEXT_MOCK.request.stubs.getMethod.returns(METHOD);
+
+				// @ts-expect-error: Accessing private method for testing purposes
+				const RESULT: unknown = SERVER_MOCK.instance.handleAutomaticPreflight(CONTEXT_MOCK.instance);
+
+				instanceOf(RESULT, Promise);
+				await doesNotReject(RESULT);
+				strictEqual(CONTEXT_MOCK.request.stubs.getMethod.callCount, 1, "Request 'getMethod' should have been called exactly once");
+			}
+		});
+
+		it("should throw when two endpoints with the same route have difference access control definitions", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
+			const MOCK_REQUEST: MockRequestInterface = mockRequest();
+
+			MOCK_REQUEST.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
+			MOCK_REQUEST.stubs.getMethod.returns(HTTPMethodEnum.OPTIONS);
+			CONTEXT_MOCK.stubs.getRequest.returns(MOCK_REQUEST.instance);
+
+			class GetEndpoint extends BaseEndpoint
+			{
+				protected method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected route: string = "/alpha-omega/lorem-ipsum";
+				protected override accessControlDefinition?: AccessControlDefinition = new AccessControlDefinition({
+					allowedHeaders: ["Content-Type"],
+					allowedOrigins: ["*"],
+					maxAge: 3600,
+				});
+
+				public async execute(): Promise<void> {}
+			}
+
+			class PostEndpoint extends BaseEndpoint
+			{
+				protected method: HTTPMethodEnum = HTTPMethodEnum.POST;
+				protected route: string = "/alpha-omega/lorem-ipsum";
+				protected override accessControlDefinition?: AccessControlDefinition = new AccessControlDefinition({
+					allowedHeaders: ["Content-Type"],
+					allowedOrigins: ["*"],
+					maxAge: 3600,
+				});
+
+				public async execute(): Promise<void> {}
+			}
+
+			SERVER_MOCK.stubs.handleAutomaticPreflight.callThrough();
+			CONTEXT_MOCK.request.stubs.getMethod.returns(HTTPMethodEnum.OPTIONS);
+			CONTEXT_MOCK.request.stubs.getHeader.returns(undefined);
+
+			FIND_ENDPOINT_STUB.onFirstCall().returns({
+				endpoint: new GetEndpoint(),
+			});
+
+			FIND_ENDPOINT_STUB.onThirdCall().returns({
+				endpoint: new PostEndpoint(),
+			});
+
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleAutomaticPreflight(CONTEXT_MOCK.instance);
+
+			instanceOf(RESULT, Promise);
+			await rejects(RESULT);
+		});
+
+		it("should reply with the access control headers when the request method is 'OPTIONS'", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
+			const MOCK_REQUEST: MockRequestInterface = mockRequest();
+
+			MOCK_REQUEST.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
+			MOCK_REQUEST.stubs.getMethod.returns(HTTPMethodEnum.OPTIONS);
+			CONTEXT_MOCK.stubs.getRequest.returns(MOCK_REQUEST.instance);
+
+			class DummyEndpoint extends BaseEndpoint
+			{
+				protected method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected route: string = "/alpha-omega/lorem-ipsum";
+				protected override accessControlDefinition?: AccessControlDefinition = new AccessControlDefinition({
+					allowedHeaders: ["Content-Type"],
+					allowedOrigins: "*",
+					maxAge: 3600,
+				});
+
+				public async execute(): Promise<void> {}
+			}
+
+			SERVER_MOCK.stubs.handleAutomaticPreflight.callThrough();
+			CONTEXT_MOCK.request.stubs.getHeader.returns(undefined);
+
+			FIND_ENDPOINT_STUB.returns({
+				endpoint: new DummyEndpoint(),
+			});
+
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleAutomaticPreflight(CONTEXT_MOCK.instance);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 1, "The response method 'replyWith' should have been called exactly once");
+
+			const expectedHeaders: Headers = new Headers();
+
+			expectedHeaders.set("Access-Control-Allow-Headers", "Content-Type");
+			expectedHeaders.set("Access-Control-Allow-Methods", "GET");
+			expectedHeaders.set("Access-Control-Allow-Origin", "*");
+			expectedHeaders.set("Access-Control-Max-Age", "3600");
+
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{
+				headers: expectedHeaders,
+				status: HTTPStatusCodeEnum.NO_CONTENT,
+			}]);
+		});
+
+		it('should reply with default access control headers when the request method is "OPTIONS" and no endpoint is found', async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
+			const MOCK_REQUEST: MockRequestInterface = mockRequest();
+
+			MOCK_REQUEST.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
+			MOCK_REQUEST.stubs.getMethod.returns(HTTPMethodEnum.OPTIONS);
+			CONTEXT_MOCK.stubs.getRequest.returns(MOCK_REQUEST.instance);
+
+			SERVER_MOCK.stubs.handleAutomaticPreflight.callThrough();
+			CONTEXT_MOCK.request.stubs.getHeader.returns(undefined);
+
+			FIND_ENDPOINT_STUB.returns(undefined);
+
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleAutomaticPreflight(CONTEXT_MOCK.instance);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 1, "The response method 'replyWith' should have been called exactly once");
+
+			const expectedHeaders: Headers = new Headers();
+
+			expectedHeaders.set("Access-Control-Allow-Headers", "Content-Type");
+			expectedHeaders.set("Access-Control-Allow-Methods", "GET");
+			expectedHeaders.set("Access-Control-Allow-Origin", "*");
+			expectedHeaders.set("Access-Control-Max-Age", "3600");
+
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{
+				headers: expectedHeaders,
+				status: HTTPStatusCodeEnum.NO_CONTENT,
+			}]);
 		});
 	});
 
