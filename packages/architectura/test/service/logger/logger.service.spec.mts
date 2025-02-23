@@ -6,12 +6,15 @@ import { ValidationError } from "@vitruvius-labs/ts-predicate";
 import { LogLevelEnum, LoggerService, Singleton } from "../../../src/_index.mjs";
 
 describe("LoggerService", (): void => {
+	const CONSOLE_LOG_STUB: SinonStub = stub(console, "log");
 	const CLOCK: SinonFakeTimers = useFakeTimers({ toFake: ["Date"] });
 
 	// @ts-expect-error: Stubbing a private method
 	const WRITE_STUB: SinonStub = stub(LoggerService, "Write");
 
 	beforeEach((): void => {
+		CONSOLE_LOG_STUB.reset();
+		CONSOLE_LOG_STUB.returns(undefined);
 		CLOCK.reset();
 		WRITE_STUB.reset();
 		WRITE_STUB.returns(undefined);
@@ -19,6 +22,7 @@ describe("LoggerService", (): void => {
 	});
 
 	after((): void => {
+		CONSOLE_LOG_STUB.restore();
 		CLOCK.restore();
 		WRITE_STUB.restore();
 	});

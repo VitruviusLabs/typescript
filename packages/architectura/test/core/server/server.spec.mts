@@ -1,17 +1,19 @@
 import { after, beforeEach, describe, it } from "node:test";
-import { deepStrictEqual, doesNotReject, ok, rejects, strictEqual } from "node:assert";
+import { deepStrictEqual, doesNotReject, doesNotThrow, ok, rejects, strictEqual, throws } from "node:assert";
 import { Server as UnsafeServer } from "node:http";
 import { Server as SecureServer } from "node:https";
 import { type SinonStub, stub } from "sinon";
 import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
-import { AssetRegistry, BaseEndpoint, type EndpointMatchInterface, EndpointRegistry, ExecutionContext, ExecutionContextRegistry, FileSystemService, HTTPMethodEnum, HTTPStatusCodeEnum, HookService, LoggerProxy, type SecureServerInstantiationInterface, Server, type UnsafeServerInstantiationInterface } from "../../../src/_index.mjs";
+import { AssetRegistry, BaseEndpoint, type EndpointMatchInterface, EndpointRegistry, ExecutionContext, ExecutionContextRegistry, FileSystemService, HTTPMethodEnum, HTTPStatusCodeEnum, HookService, LoggerProxy, PortsEnum, type RichClientRequest, type RichServerResponse, type SecureServerConfigurationInterface, type SecureServerInstantiationInterface, Server, type UnsafeServerConfigurationInterface, type UnsafeServerInstantiationInterface } from "../../../src/_index.mjs";
 import { type MockContextInterface, type MockServerInterface, mockContext } from "../../../mock/_index.mjs";
 import { mockServer } from "../../../mock/core/server/mock-server.mjs";
 import { AccessControlDefinition } from "../../../src/core/endpoint/access-control-definition.mjs";
 import type { MockRequestInterface } from "../../../mock/core/server/definition/interface/mock-request.interface.mjs";
 import { mockRequest } from "../../../mock/core/server/mock-request.mjs";
+import { createErrorTest } from "@vitruvius-labs/testing-ground";
 
 describe("Server", (): void => {
+	const CONSOLE_ERROR_STUB: SinonStub = stub(console, "error");
 	const LOGGER_DEBUG_STUB: SinonStub = stub(LoggerProxy, "Debug");
 	const LOGGER_INFORMATIONAL_STUB: SinonStub = stub(LoggerProxy, "Informational");
 	const LOGGER_INFO_STUB: SinonStub = stub(LoggerProxy, "Info");
@@ -34,9 +36,12 @@ describe("Server", (): void => {
 	const RUN_FALLBACK_ERROR_HOOKS_STUB: SinonStub = stub(HookService, "RunFallbackErrorHooks");
 	const FIND_ENDPOINT_STUB: SinonStub = stub(EndpointRegistry, "FindEndpoint");
 	const FIND_PUBLIC_ASSET_STUB: SinonStub = stub(AssetRegistry, "FindPublicAsset");
-	const READ_FILE_STUB: SinonStub = stub(FileSystemService, "ReadBinaryFile");
+	const READ_BINARY_FILE_STUB: SinonStub = stub(FileSystemService, "ReadBinaryFile");
+	const READ_TEXT_FILE_STUB: SinonStub = stub(FileSystemService, "ReadTextFile");
 
 	beforeEach((): void => {
+		CONSOLE_ERROR_STUB.reset();
+		CONSOLE_ERROR_STUB.returns(undefined);
 		LOGGER_DEBUG_STUB.reset();
 		LOGGER_DEBUG_STUB.returns(undefined);
 		LOGGER_INFORMATIONAL_STUB.reset();
@@ -81,11 +86,14 @@ describe("Server", (): void => {
 		FIND_ENDPOINT_STUB.callThrough();
 		FIND_PUBLIC_ASSET_STUB.reset();
 		FIND_PUBLIC_ASSET_STUB.callThrough();
-		READ_FILE_STUB.reset();
-		READ_FILE_STUB.callThrough();
+		READ_BINARY_FILE_STUB.reset();
+		READ_BINARY_FILE_STUB.callThrough();
+		READ_TEXT_FILE_STUB.reset();
+		READ_TEXT_FILE_STUB.callThrough();
 	});
 
 	after((): void => {
+		CONSOLE_ERROR_STUB.restore();
 		LOGGER_DEBUG_STUB.restore();
 		LOGGER_INFORMATIONAL_STUB.restore();
 		LOGGER_INFO_STUB.restore();
@@ -108,7 +116,8 @@ describe("Server", (): void => {
 		RUN_FALLBACK_ERROR_HOOKS_STUB.restore();
 		FIND_ENDPOINT_STUB.restore();
 		FIND_PUBLIC_ASSET_STUB.restore();
-		READ_FILE_STUB.restore();
+		READ_BINARY_FILE_STUB.restore();
+		READ_TEXT_FILE_STUB.restore();
 	});
 
 	describe("constructor", (): void => {
@@ -165,8 +174,6 @@ describe("Server", (): void => {
 			const EXPECTED: Server = new Server(CONFIG);
 
 			deepStrictEqual(SERVER, EXPECTED);
-			strictEqual(UNSAFE_LISTENER_STUB.callCount, 1, "The 'addListener' method of the native server should be called");
-			strictEqual(UNSAFE_LISTENER_STUB.firstCall.firstArg, "request");
 		});
 
 		it.skip("should create a new server instance (secure)", async (): Promise<void> => {
@@ -188,8 +195,126 @@ describe("Server", (): void => {
 			const EXPECTED: Server = new Server(CONFIG);
 
 			deepStrictEqual(SERVER, EXPECTED);
-			strictEqual(SECURE_LISTENER_STUB.callCount, 1, "The 'addListener' method of the native server should be called");
-			strictEqual(SECURE_LISTENER_STUB.firstCall.firstArg, "request");
+		});
+
+		it("should attach the proper listener", async (): Promise<void> => {
+			const MOCK_CONTEXT: MockContextInterface = mockContext();
+			const ERROR: Error = new Error("Test Error");
+
+			const SERVER: Server = await Server.Create({
+				https: false,
+				port: 80,
+			});
+
+			const REQUEST_LISTENER_STUB: SinonStub = stub(SERVER, "requestListener");
+			const HANDLE_ERROR_STUB: SinonStub = stub(SERVER, "handleError");
+
+			REQUEST_LISTENER_STUB.rejects(ERROR);
+			HANDLE_ERROR_STUB.resolves();
+
+			strictEqual(UNSAFE_LISTENER_STUB.callCount, 1, "The 'addListener' method of the native server should be called");
+			strictEqual(UNSAFE_LISTENER_STUB.firstCall.firstArg, "request");
+
+			const LISTENER: ((request: RichClientRequest, response: RichServerResponse) => Promise<void>) = UNSAFE_LISTENER_STUB.firstCall.args[1];
+
+			const WRAPPER = async (): Promise<void> => {
+				await LISTENER(MOCK_CONTEXT.request.instance, MOCK_CONTEXT.response.instance);
+			};
+
+			await doesNotReject(WRAPPER);
+
+			strictEqual(REQUEST_LISTENER_STUB.callCount, 1, "The 'requestListener' method should be called by the listener");
+			deepStrictEqual(REQUEST_LISTENER_STUB.firstCall.args, [MOCK_CONTEXT.request.instance, MOCK_CONTEXT.response.instance]);
+			strictEqual(HANDLE_ERROR_STUB.callCount, 1, "The 'handleError' method should be called by the listener");
+			deepStrictEqual(HANDLE_ERROR_STUB.firstCall.args, [ERROR]);
+		});
+	});
+
+	describe("ComputeServerOptions", (): void => {
+		it("should return the server options", async (): Promise<void> => {
+			const CONFIG: UnsafeServerConfigurationInterface = {
+				https: false,
+				port: 80,
+			};
+
+			const EXPECTED: UnsafeServerInstantiationInterface = {
+				https: false,
+				port: 80,
+			};
+
+			// @ts-expect-error: Testing private method
+			const RESULT: unknown = Server.ComputeServerOptions(CONFIG);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, EXPECTED);
+		});
+
+		it("should retrieve the key and certificate for HTTPS", async (): Promise<void> => {
+			const CONFIG: SecureServerConfigurationInterface = {
+				https: true,
+				port: 80,
+				key: "private.key",
+				certificate: "public.cert",
+			};
+
+			const EXPECTED: SecureServerInstantiationInterface = {
+				https: true,
+				port: 80,
+				key: "Private Key",
+				certificate: "Public Certificate",
+			};
+
+			READ_TEXT_FILE_STUB.resolves();
+			READ_TEXT_FILE_STUB.withArgs("private.key").resolves("Private Key");
+			READ_TEXT_FILE_STUB.withArgs("public.cert").resolves("Public Certificate");
+
+			// @ts-expect-error: Testing private method
+			const RESULT: unknown = Server.ComputeServerOptions(CONFIG);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, EXPECTED);
+		});
+	});
+
+	describe("ValidatePort", (): void => {
+		it("should return true if the port is valid", (): void => {
+			const VALID_PORTS: Array<number> = [
+				PortsEnum.LOWEST_AVAILABLE,
+				PortsEnum.LOWEST_AVAILABLE + 1,
+				PortsEnum.HIGHEST_AVAILABLE - 1,
+				PortsEnum.HIGHEST_AVAILABLE,
+			];
+
+			for (const port of VALID_PORTS)
+			{
+				const WRAPPER = (): void => {
+					// @ts-expect-error: Testing private method
+					Server.ValidatePort(port);
+				};
+
+				doesNotThrow(WRAPPER);
+			}
+		});
+
+		it("should return false if the port is invalid", (): void => {
+			const INVALID_PORTS: Array<number> = [
+				PortsEnum.LOWEST_AVAILABLE - 2,
+				PortsEnum.LOWEST_AVAILABLE - 1,
+				PortsEnum.HIGHEST_AVAILABLE + 1,
+				PortsEnum.HIGHEST_AVAILABLE + 2,
+			];
+
+			for (const port of INVALID_PORTS)
+			{
+				const WRAPPER = (): void => {
+					// @ts-expect-error: Testing private method
+					Server.ValidatePort(port);
+				};
+
+				throws(WRAPPER, createErrorTest());
+			}
 		});
 	});
 
@@ -391,7 +516,7 @@ describe("Server", (): void => {
 			SERVER_MOCK.stubs.handlePublicAssets.callThrough();
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum.png");
 			FIND_PUBLIC_ASSET_STUB.resolves("~/alpha-omega/lorem-ipsum.png");
-			READ_FILE_STUB.resolves(Buffer.from("Hello, World!"));
+			READ_BINARY_FILE_STUB.resolves(Buffer.from("Hello, World!"));
 			CONTEXT_MOCK.response.stubs.replyWith.resolves();
 
 			// @ts-expect-error: Accessing private method for testing purposes
@@ -400,8 +525,8 @@ describe("Server", (): void => {
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
 			strictEqual(await RESULT, true);
-			strictEqual(READ_FILE_STUB.callCount, 1, "'FileSystemService.ReadBinaryFile' should have been called exactly once");
-			deepStrictEqual(READ_FILE_STUB.firstCall.args, ["~/alpha-omega/lorem-ipsum.png"]);
+			strictEqual(READ_BINARY_FILE_STUB.callCount, 1, "'FileSystemService.ReadBinaryFile' should have been called exactly once");
+			deepStrictEqual(READ_BINARY_FILE_STUB.firstCall.args, ["~/alpha-omega/lorem-ipsum.png"]);
 			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 1, "The response method 'replyWith' should have been called exactly once");
 			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{ contentType: "image/png", payload: Buffer.from("Hello, World!") }]);
 		});
@@ -575,7 +700,7 @@ describe("Server", (): void => {
 		});
 	});
 
-	describe("HandleEndpoints", (): void => {
+	describe("handleEndpoints", (): void => {
 		it("should return false if no matching endpoint is found in the registry", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
 			const SERVER_MOCK: MockServerInterface = mockServer();
@@ -592,6 +717,28 @@ describe("Server", (): void => {
 			strictEqual(await RESULT, false);
 			strictEqual(FIND_ENDPOINT_STUB.callCount, 1, "'EndpointRegistry.FindEndpoint' should have been called exactly once");
 			deepStrictEqual(FIND_ENDPOINT_STUB.firstCall.args, ["GET", "/alpha-omega/lorem-ipsum"]);
+		});
+
+		it("should handle automatic preflight if no matching endpoint is found in the registry for the OPTIONS verb", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
+
+			SERVER_MOCK.stubs.handleEndpoints.callThrough();
+			SERVER_MOCK.stubs.handleAutomaticPreflight.resolves();
+			CONTEXT_MOCK.request.stubs.getMethod.returns(HTTPMethodEnum.OPTIONS);
+			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
+			FIND_ENDPOINT_STUB.returns(undefined);
+
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleEndpoints(CONTEXT_MOCK.instance);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(await RESULT, true);
+			strictEqual(FIND_ENDPOINT_STUB.callCount, 1, "'EndpointRegistry.FindEndpoint' should have been called exactly once");
+			deepStrictEqual(FIND_ENDPOINT_STUB.firstCall.args, ["OPTIONS", "/alpha-omega/lorem-ipsum"]);
+			strictEqual(SERVER_MOCK.stubs.handleAutomaticPreflight.callCount, 1, "Method 'handleAutomaticPreflight' should have been called exactly once");
+			deepStrictEqual(SERVER_MOCK.stubs.handleAutomaticPreflight.firstCall.args, [CONTEXT_MOCK.instance]);
 		});
 
 		it("should initialize the request's pathMatchGroups", async (): Promise<void> => {

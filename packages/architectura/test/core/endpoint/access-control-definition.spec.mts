@@ -3,6 +3,24 @@ import { describe, it } from "node:test";
 import { AccessControlDefinition } from "../../../src/core/endpoint/access-control-definition.mjs";
 
 describe("AccessControlDefinition", (): void => {
+	describe("constructor", (): void => {
+		it("should set the properties", (): void => {
+			const allowedHeaders: Array<string> = ["Content-Type", "Authorization"];
+			const allowedOrigins: Array<string> = ["http://localhost:3000", "https://example.com"];
+			const maxAge: number = 3600;
+
+			const accessControlDefinition: AccessControlDefinition = new AccessControlDefinition({
+				allowedHeaders: allowedHeaders,
+				allowedOrigins: allowedOrigins,
+				maxAge: maxAge,
+			});
+
+			deepStrictEqual(accessControlDefinition["allowedHeaders"], allowedHeaders);
+			deepStrictEqual(accessControlDefinition["allowedOrigins"], allowedOrigins);
+			deepStrictEqual(accessControlDefinition["maxAge"], maxAge);
+		});
+	});
+
 	describe("getAllowedHeaders", (): void => {
 		it("should return the allowedHeaders property", (): void => {
 			const allowedHeaders: Array<string> = ["Content-Type", "Authorization"];
