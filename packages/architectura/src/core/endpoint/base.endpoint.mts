@@ -210,6 +210,9 @@ abstract class BaseEndpoint<T extends object = object>
 	 */
 	protected assertPathFragments(value: unknown): asserts value is ExtractType<T, "pathFragments">
 	{
+		// eslint-disable-next-line @ts/no-unused-expressions -- Pretend to use the value
+		value;
+
 		throw new Error(`Method "assertPathFragments" needs an override in endpoint ${this.constructor.name}.`);
 	}
 
@@ -244,6 +247,9 @@ abstract class BaseEndpoint<T extends object = object>
 	 */
 	protected assertQuery(value: unknown): asserts value is ExtractType<T, "query">
 	{
+		// eslint-disable-next-line @ts/no-unused-expressions -- Pretend to use the value
+		value;
+
 		throw new Error(`Method "assertQuery" needs an override in endpoint ${this.constructor.name}.`);
 	}
 
@@ -278,6 +284,9 @@ abstract class BaseEndpoint<T extends object = object>
 	 */
 	protected assertPayload(value: unknown): asserts value is ExtractType<T, "payload">
 	{
+		// eslint-disable-next-line @ts/no-unused-expressions -- Pretend to use the value
+		value;
+
 		throw new Error(`Method "assertPayload" needs an override in endpoint ${this.constructor.name}.`);
 	}
 
