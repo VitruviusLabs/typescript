@@ -5,8 +5,32 @@ import { ReflectUtility } from "@vitruvius-labs/toolbox";
 import { type ConstructorOf, ValidationError } from "@vitruvius-labs/ts-predicate";
 import { BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, HTTPMethodEnum } from "../../../src/_index.mjs";
 import { type MockContextInterface, mockContext } from "../../../mock/_index.mjs";
+import { AccessControlDefinition } from "../../../src/core/endpoint/access-control-definition.mjs";
 
 describe("BaseEndpoint", (): void => {
+	describe("getAccessControlDefinition", (): void => {
+		it("should return the access control definition", (): void => {
+			const ACCESS_CONTROL_DEFINITION: AccessControlDefinition = new AccessControlDefinition({
+				allowedHeaders: [],
+				allowedOrigins: [],
+				maxAge: 0,
+			});
+
+			class DummyEndpoint extends BaseEndpoint
+			{
+				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected readonly route: string = "/test-dummy";
+				protected override readonly accessControlDefinition: AccessControlDefinition = ACCESS_CONTROL_DEFINITION;
+
+				public execute(): void { }
+			}
+
+			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
+
+			strictEqual(ENDPOINT.getAccessControlDefinition(), ACCESS_CONTROL_DEFINITION);
+		});
+	});
+
 	describe("getPreHooks", (): void => {
 		it("should return the pre hooks", (): void => {
 			class DummyPreHook extends BasePreHook
@@ -262,7 +286,7 @@ describe("BaseEndpoint", (): void => {
 				ENDPOINT["assertPathFragments"]({});
 			};
 
-			throws(WRAPPER, new Error(`Method "assertPathFragments" need an override in endpoint ${ENDPOINT.constructor.name}.`));
+			throws(WRAPPER, new Error(`Method "assertPathFragments" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
 		});
 	});
 
@@ -394,7 +418,7 @@ describe("BaseEndpoint", (): void => {
 				ENDPOINT["assertQuery"]({});
 			};
 
-			throws(WRAPPER, new Error(`Method "assertQuery" need an override in endpoint ${ENDPOINT.constructor.name}.`));
+			throws(WRAPPER, new Error(`Method "assertQuery" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
 		});
 	});
 
@@ -526,7 +550,7 @@ describe("BaseEndpoint", (): void => {
 				ENDPOINT["assertPayload"]({});
 			};
 
-			throws(WRAPPER, new Error(`Method "assertPayload" need an override in endpoint ${ENDPOINT.constructor.name}.`));
+			throws(WRAPPER, new Error(`Method "assertPayload" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
 		});
 	});
 
@@ -551,7 +575,7 @@ describe("BaseEndpoint", (): void => {
 				ENDPOINT["assertPayload"]({});
 			};
 
-			throws(WRAPPER, new Error(`Method "assertPayload" need an override in endpoint ${ENDPOINT.constructor.name}.`));
+			throws(WRAPPER, new Error(`Method "assertPayload" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
 		});
 	});
 

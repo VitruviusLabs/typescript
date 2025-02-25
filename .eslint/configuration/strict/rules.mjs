@@ -172,6 +172,7 @@ const RULES = {
 			"allowAsThisParameter": true,
 			"allowInGenericTypeArguments": [
 				"Promise",
+				"PromiseWithResolvers",
 				"Generator"
 			]
 		}

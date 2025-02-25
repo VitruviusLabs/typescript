@@ -1,19 +1,19 @@
 import { after, beforeEach, describe, it } from "node:test";
-import { deepStrictEqual, doesNotReject, ok, strictEqual } from "node:assert";
+import { deepStrictEqual, doesNotReject, doesNotThrow, ok, rejects, strictEqual, throws } from "node:assert";
 import { Server as UnsafeServer } from "node:http";
 import { Server as SecureServer } from "node:https";
 import { type SinonStub, stub } from "sinon";
 import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
-import { AssetRegistry, BaseEndpoint, type EndpointMatchInterface, EndpointRegistry, ExecutionContext, ExecutionContextRegistry, FileSystemService, HTTPMethodEnum, HTTPStatusCodeEnum, HookService, LoggerProxy, type SecureServerInstantiationInterface, Server, type UnsafeServerInstantiationInterface } from "../../../src/_index.mjs";
-import { type MockContextInterface, mockContext } from "../../../mock/_index.mjs";
+import { AssetRegistry, BaseEndpoint, type EndpointMatchInterface, EndpointRegistry, ExecutionContext, ExecutionContextRegistry, FileSystemService, HTTPMethodEnum, HTTPStatusCodeEnum, HookService, LoggerProxy, PortsEnum, type RichClientRequest, type RichServerResponse, type SecureServerConfigurationInterface, type SecureServerInstantiationInterface, Server, type UnsafeServerConfigurationInterface, type UnsafeServerInstantiationInterface } from "../../../src/_index.mjs";
+import { type MockContextInterface, type MockServerInterface, mockContext } from "../../../mock/_index.mjs";
+import { mockServer } from "../../../mock/core/server/mock-server.mjs";
+import { AccessControlDefinition } from "../../../src/core/endpoint/access-control-definition.mjs";
+import type { MockRequestInterface } from "../../../mock/core/server/definition/interface/mock-request.interface.mjs";
+import { mockRequest } from "../../../mock/core/server/mock-request.mjs";
+import { createErrorTest } from "@vitruvius-labs/testing-ground";
 
 describe("Server", (): void => {
-	// @ts-expect-error: Stubbing a private method
-	const HANDLE_PUBLIC_ASSETS_STUB: SinonStub = stub(Server, "HandlePublicAssets");
-	// @ts-expect-error: Stubbing a private method
-	const HANDLE_ENDPOINTS_STUB: SinonStub = stub(Server, "HandleEndpoints");
-	// @ts-expect-error: Stubbing a private method
-	const FINALIZE_RESPONSE_STUB: SinonStub = stub(Server, "FinalizeResponse");
+	const CONSOLE_ERROR_STUB: SinonStub = stub(console, "error");
 	const LOGGER_DEBUG_STUB: SinonStub = stub(LoggerProxy, "Debug");
 	const LOGGER_INFORMATIONAL_STUB: SinonStub = stub(LoggerProxy, "Informational");
 	const LOGGER_INFO_STUB: SinonStub = stub(LoggerProxy, "Info");
@@ -36,15 +36,12 @@ describe("Server", (): void => {
 	const RUN_FALLBACK_ERROR_HOOKS_STUB: SinonStub = stub(HookService, "RunFallbackErrorHooks");
 	const FIND_ENDPOINT_STUB: SinonStub = stub(EndpointRegistry, "FindEndpoint");
 	const FIND_PUBLIC_ASSET_STUB: SinonStub = stub(AssetRegistry, "FindPublicAsset");
-	const READ_FILE_STUB: SinonStub = stub(FileSystemService, "ReadBinaryFile");
+	const READ_BINARY_FILE_STUB: SinonStub = stub(FileSystemService, "ReadBinaryFile");
+	const READ_TEXT_FILE_STUB: SinonStub = stub(FileSystemService, "ReadTextFile");
 
 	beforeEach((): void => {
-		HANDLE_PUBLIC_ASSETS_STUB.reset();
-		HANDLE_PUBLIC_ASSETS_STUB.callThrough();
-		HANDLE_ENDPOINTS_STUB.reset();
-		HANDLE_ENDPOINTS_STUB.callThrough();
-		FINALIZE_RESPONSE_STUB.reset();
-		FINALIZE_RESPONSE_STUB.callThrough();
+		CONSOLE_ERROR_STUB.reset();
+		CONSOLE_ERROR_STUB.returns(undefined);
 		LOGGER_DEBUG_STUB.reset();
 		LOGGER_DEBUG_STUB.returns(undefined);
 		LOGGER_INFORMATIONAL_STUB.reset();
@@ -89,14 +86,14 @@ describe("Server", (): void => {
 		FIND_ENDPOINT_STUB.callThrough();
 		FIND_PUBLIC_ASSET_STUB.reset();
 		FIND_PUBLIC_ASSET_STUB.callThrough();
-		READ_FILE_STUB.reset();
-		READ_FILE_STUB.callThrough();
+		READ_BINARY_FILE_STUB.reset();
+		READ_BINARY_FILE_STUB.callThrough();
+		READ_TEXT_FILE_STUB.reset();
+		READ_TEXT_FILE_STUB.callThrough();
 	});
 
 	after((): void => {
-		HANDLE_PUBLIC_ASSETS_STUB.restore();
-		HANDLE_ENDPOINTS_STUB.restore();
-		FINALIZE_RESPONSE_STUB.restore();
+		CONSOLE_ERROR_STUB.restore();
 		LOGGER_DEBUG_STUB.restore();
 		LOGGER_INFORMATIONAL_STUB.restore();
 		LOGGER_INFO_STUB.restore();
@@ -119,14 +116,22 @@ describe("Server", (): void => {
 		RUN_FALLBACK_ERROR_HOOKS_STUB.restore();
 		FIND_ENDPOINT_STUB.restore();
 		FIND_PUBLIC_ASSET_STUB.restore();
-		READ_FILE_STUB.restore();
+		READ_BINARY_FILE_STUB.restore();
+		READ_TEXT_FILE_STUB.restore();
 	});
 
 	describe("constructor", (): void => {
 		it("should create a new server instance (unsafe)", (): void => {
+			const ACCESS_CONTROL_DEFINITION: AccessControlDefinition = new AccessControlDefinition({
+				allowedHeaders: ["Content-Type"],
+				allowedOrigins: ["*"],
+				maxAge: 3600,
+			});
+
 			const CONFIG: UnsafeServerInstantiationInterface = {
 				https: false,
 				port: 80,
+				defaultAccessControlDefinition: ACCESS_CONTROL_DEFINITION,
 			};
 
 			// @ts-expect-error: For testing purposes
@@ -134,6 +139,7 @@ describe("Server", (): void => {
 
 			strictEqual(SERVER["https"], false);
 			strictEqual(SERVER["port"], 80);
+			strictEqual(SERVER["defaultAccessControlDefinition"], ACCESS_CONTROL_DEFINITION);
 		});
 
 		it.skip("should create a new server instance (secure)", (): void => {
@@ -168,8 +174,6 @@ describe("Server", (): void => {
 			const EXPECTED: Server = new Server(CONFIG);
 
 			deepStrictEqual(SERVER, EXPECTED);
-			strictEqual(UNSAFE_LISTENER_STUB.callCount, 1, "The 'addListener' method of the native server should be called");
-			strictEqual(UNSAFE_LISTENER_STUB.firstCall.firstArg, "request");
 		});
 
 		it.skip("should create a new server instance (secure)", async (): Promise<void> => {
@@ -191,16 +195,136 @@ describe("Server", (): void => {
 			const EXPECTED: Server = new Server(CONFIG);
 
 			deepStrictEqual(SERVER, EXPECTED);
-			strictEqual(SECURE_LISTENER_STUB.callCount, 1, "The 'addListener' method of the native server should be called");
-			strictEqual(SECURE_LISTENER_STUB.firstCall.firstArg, "request");
+		});
+
+		it("should attach the proper listener", async (): Promise<void> => {
+			const MOCK_CONTEXT: MockContextInterface = mockContext();
+			const ERROR: Error = new Error("Test Error");
+
+			const SERVER: Server = await Server.Create({
+				https: false,
+				port: 80,
+			});
+
+			const REQUEST_LISTENER_STUB: SinonStub = stub(SERVER, "requestListener");
+			const HANDLE_ERROR_STUB: SinonStub = stub(SERVER, "handleError");
+
+			REQUEST_LISTENER_STUB.rejects(ERROR);
+			HANDLE_ERROR_STUB.resolves();
+
+			strictEqual(UNSAFE_LISTENER_STUB.callCount, 1, "The 'addListener' method of the native server should be called");
+			strictEqual(UNSAFE_LISTENER_STUB.firstCall.firstArg, "request");
+
+			const LISTENER: ((request: RichClientRequest, response: RichServerResponse) => Promise<void>) = UNSAFE_LISTENER_STUB.firstCall.args[1];
+
+			const WRAPPER = async (): Promise<void> => {
+				await LISTENER(MOCK_CONTEXT.request.instance, MOCK_CONTEXT.response.instance);
+			};
+
+			await doesNotReject(WRAPPER);
+
+			strictEqual(REQUEST_LISTENER_STUB.callCount, 1, "The 'requestListener' method should be called by the listener");
+			deepStrictEqual(REQUEST_LISTENER_STUB.firstCall.args, [MOCK_CONTEXT.request.instance, MOCK_CONTEXT.response.instance]);
+			strictEqual(HANDLE_ERROR_STUB.callCount, 1, "The 'handleError' method should be called by the listener");
+			deepStrictEqual(HANDLE_ERROR_STUB.firstCall.args, [ERROR]);
 		});
 	});
 
-	describe("HandleError", (): void => {
+	describe("ComputeServerOptions", (): void => {
+		it("should return the server options", async (): Promise<void> => {
+			const CONFIG: UnsafeServerConfigurationInterface = {
+				https: false,
+				port: 80,
+			};
+
+			const EXPECTED: UnsafeServerInstantiationInterface = {
+				https: false,
+				port: 80,
+			};
+
+			// @ts-expect-error: Testing private method
+			const RESULT: unknown = Server.ComputeServerOptions(CONFIG);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, EXPECTED);
+		});
+
+		it("should retrieve the key and certificate for HTTPS", async (): Promise<void> => {
+			const CONFIG: SecureServerConfigurationInterface = {
+				https: true,
+				port: 80,
+				key: "private.key",
+				certificate: "public.cert",
+			};
+
+			const EXPECTED: SecureServerInstantiationInterface = {
+				https: true,
+				port: 80,
+				key: "Private Key",
+				certificate: "Public Certificate",
+			};
+
+			READ_TEXT_FILE_STUB.resolves();
+			READ_TEXT_FILE_STUB.withArgs("private.key").resolves("Private Key");
+			READ_TEXT_FILE_STUB.withArgs("public.cert").resolves("Public Certificate");
+
+			// @ts-expect-error: Testing private method
+			const RESULT: unknown = Server.ComputeServerOptions(CONFIG);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, EXPECTED);
+		});
+	});
+
+	describe("ValidatePort", (): void => {
+		it("should return true if the port is valid", (): void => {
+			const VALID_PORTS: Array<number> = [
+				PortsEnum.LOWEST_AVAILABLE,
+				PortsEnum.LOWEST_AVAILABLE + 1,
+				PortsEnum.HIGHEST_AVAILABLE - 1,
+				PortsEnum.HIGHEST_AVAILABLE,
+			];
+
+			for (const port of VALID_PORTS)
+			{
+				const WRAPPER = (): void => {
+					// @ts-expect-error: Testing private method
+					Server.ValidatePort(port);
+				};
+
+				doesNotThrow(WRAPPER);
+			}
+		});
+
+		it("should return false if the port is invalid", (): void => {
+			const INVALID_PORTS: Array<number> = [
+				PortsEnum.LOWEST_AVAILABLE - 2,
+				PortsEnum.LOWEST_AVAILABLE - 1,
+				PortsEnum.HIGHEST_AVAILABLE + 1,
+				PortsEnum.HIGHEST_AVAILABLE + 2,
+			];
+
+			for (const port of INVALID_PORTS)
+			{
+				const WRAPPER = (): void => {
+					// @ts-expect-error: Testing private method
+					Server.ValidatePort(port);
+				};
+
+				throws(WRAPPER, createErrorTest());
+			}
+		});
+	});
+
+	describe("handleError", (): void => {
 		it("should log an error when without context", async (): Promise<void> => {
 			const ERROR: Error = new Error("Test Error");
 
-			await Server.HandleError(ERROR);
+			const SERVER_MOCK: MockServerInterface = mockServer();
+
+			await SERVER_MOCK.instance.handleError(ERROR);
 
 			strictEqual(LOGGER_ERROR_STUB.callCount, 1, "'LoggerProxy.Error' should have been called");
 			deepStrictEqual(LOGGER_ERROR_STUB.firstCall.args, [ERROR]);
@@ -208,49 +332,53 @@ describe("Server", (): void => {
 
 		it("should process an error in the error hooks when there is a context", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
 			GET_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
-			FINALIZE_RESPONSE_STUB.resolves();
+			SERVER_MOCK.stubs.finalizeResponse.resolves();
 
 			const ERROR: Error = new Error("Test Error");
 
-			await Server.HandleError(ERROR);
+			await SERVER_MOCK.instance.handleError(ERROR);
 
 			strictEqual(RUN_FALLBACK_ERROR_HOOKS_STUB.callCount, 1, "'HookService.RunFallbackErrorHooks' should have been called");
 			deepStrictEqual(RUN_FALLBACK_ERROR_HOOKS_STUB.firstCall.args, [CONTEXT_MOCK.instance, ERROR]);
-			strictEqual(FINALIZE_RESPONSE_STUB.callCount, 1, "'Server.FinalizeResponse' should have been called");
-			deepStrictEqual(FINALIZE_RESPONSE_STUB.firstCall.args, [CONTEXT_MOCK.instance, true]);
+			strictEqual(SERVER_MOCK.stubs.finalizeResponse.callCount, 1, "'SERVER_MOCK.instance.finalizeResponse' should have been called");
+			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, true]);
 		});
 
 		it("should be safe (without context)", async (): Promise<void> => {
 			LOGGER_ERROR_STUB.throws();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			await doesNotReject(Server.HandleError(new Error("Test Error")));
+			await doesNotReject(SERVER_MOCK.instance.handleError(new Error("Test Error")));
 			strictEqual(LOGGER_ERROR_STUB.callCount, 1, "'LoggerProxy.Error' method should have been called");
 		});
 
 		it("should be safe (with context)", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
 			GET_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
 
 			RUN_FALLBACK_ERROR_HOOKS_STUB.rejects();
-			FINALIZE_RESPONSE_STUB.rejects();
+			SERVER_MOCK.stubs.finalizeResponse.rejects();
 
-			await doesNotReject(Server.HandleError(new Error("Test Error")));
-			strictEqual(FINALIZE_RESPONSE_STUB.callCount, 1, "'Server.FinalizeResponse' method should have been called");
+			await doesNotReject(SERVER_MOCK.instance.handleError(new Error("Test Error")));
+			strictEqual(SERVER_MOCK.stubs.finalizeResponse.callCount, 1, "'SERVER_MOCK.instance.finalizeResponse' method should have been called");
 			strictEqual(LOGGER_ERROR_STUB.callCount, 1, "'LoggerProxy.Error' method should have been called");
 		});
 	});
 
-	describe("RequestListener", (): void => {
+	describe("requestListener", (): void => {
 		it("should initialize the request", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_PUBLIC_ASSETS_STUB.resolves(true);
-			HANDLE_ENDPOINTS_STUB.resolves(true);
+			SERVER_MOCK.stubs.handlePublicAssets.resolves(true);
+			SERVER_MOCK.stubs.handleEndpoints.resolves(true);
 
-			const RESULT: unknown = Server["RequestListener"](CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
+			const RESULT: unknown = SERVER_MOCK.instance.requestListener(CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -259,13 +387,14 @@ describe("Server", (): void => {
 
 		it("should create the context", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
 
-			HANDLE_PUBLIC_ASSETS_STUB.resolves(true);
-			HANDLE_ENDPOINTS_STUB.resolves(true);
+			SERVER_MOCK.stubs.handlePublicAssets.resolves(true);
+			SERVER_MOCK.stubs.handleEndpoints.resolves(true);
 
-			const RESULT: unknown = Server["RequestListener"](CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
+			const RESULT: unknown = SERVER_MOCK.instance.requestListener(CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -277,45 +406,48 @@ describe("Server", (): void => {
 
 		it("should test for public assets", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
 
-			HANDLE_PUBLIC_ASSETS_STUB.resolves(true);
-			HANDLE_ENDPOINTS_STUB.resolves(true);
+			SERVER_MOCK.stubs.handlePublicAssets.resolves(true);
+			SERVER_MOCK.stubs.handleEndpoints.resolves(true);
 
-			const RESULT: unknown = Server["RequestListener"](CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
+			const RESULT: unknown = SERVER_MOCK.instance.requestListener(CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
-			strictEqual(HANDLE_PUBLIC_ASSETS_STUB.callCount, 1, "'Server.HandlePublicAssets' should have been called exactly once");
-			deepStrictEqual(HANDLE_PUBLIC_ASSETS_STUB.firstCall.args, [CONTEXT_MOCK.instance]);
+			strictEqual(SERVER_MOCK.stubs.handlePublicAssets.callCount, 1, "'SERVER_MOCK.instance.handlePublicAssets' should have been called exactly once");
+			deepStrictEqual(SERVER_MOCK.stubs.handlePublicAssets.firstCall.args, [CONTEXT_MOCK.instance]);
 		});
 
 		it("should test for endpoints if no public asset match", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
 
-			HANDLE_PUBLIC_ASSETS_STUB.resolves(false);
-			HANDLE_ENDPOINTS_STUB.resolves(true);
+			SERVER_MOCK.stubs.handlePublicAssets.resolves(false);
+			SERVER_MOCK.stubs.handleEndpoints.resolves(true);
 
-			const RESULT: unknown = Server["RequestListener"](CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
+			const RESULT: unknown = SERVER_MOCK.instance.requestListener(CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
-			strictEqual(HANDLE_ENDPOINTS_STUB.callCount, 1, "'Server.HandleEndpoints' should have been called exactly once");
-			deepStrictEqual(HANDLE_ENDPOINTS_STUB.firstCall.args, [CONTEXT_MOCK.instance]);
+			strictEqual(SERVER_MOCK.stubs.handleEndpoints.callCount, 1, "'SERVER_MOCK.instance.handleEndpoints' should have been called exactly once");
+			deepStrictEqual(SERVER_MOCK.stubs.handleEndpoints.firstCall.args, [CONTEXT_MOCK.instance]);
 		});
 
 		it("should respond if nothing match", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_PUBLIC_ASSETS_STUB.resolves(false);
-			HANDLE_ENDPOINTS_STUB.resolves(false);
+			SERVER_MOCK.stubs.handlePublicAssets.resolves(false);
+			SERVER_MOCK.stubs.handleEndpoints.resolves(false);
 
 			CREATE_CONTEXT_STUB.returns(CONTEXT_MOCK.instance);
 
-			const RESULT: unknown = Server["RequestListener"](CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
+			const RESULT: unknown = SERVER_MOCK.instance.requestListener(CONTEXT_MOCK.request.instance, CONTEXT_MOCK.response.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -328,11 +460,12 @@ describe("Server", (): void => {
 		});
 	});
 
-	describe("HandlePublicAssets", (): void => {
+	describe("handlePublicAssets", (): void => {
 		it("should return false if the request method is anything but 'GET'", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_PUBLIC_ASSETS_STUB.callThrough();
+			SERVER_MOCK.stubs.handlePublicAssets.callThrough();
 
 			const METHODS: Array<HTTPMethodEnum> = [
 				HTTPMethodEnum.OPTIONS,
@@ -348,7 +481,8 @@ describe("Server", (): void => {
 				CONTEXT_MOCK.request.stubs.getMethod.reset();
 				CONTEXT_MOCK.request.stubs.getMethod.returns(METHOD);
 
-				const RESULT: unknown = Server["HandlePublicAssets"](CONTEXT_MOCK.instance);
+				// @ts-expect-error: Accessing private method for testing purposes
+				const RESULT: unknown = SERVER_MOCK.instance.handlePublicAssets(CONTEXT_MOCK.instance);
 
 				instanceOf(RESULT, Promise);
 				await doesNotReject(RESULT);
@@ -359,12 +493,14 @@ describe("Server", (): void => {
 
 		it("should return false if no matching asset is found in the registry", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_PUBLIC_ASSETS_STUB.callThrough();
+			SERVER_MOCK.stubs.handlePublicAssets.callThrough();
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum.png");
 			FIND_PUBLIC_ASSET_STUB.resolves(undefined);
 
-			const RESULT: unknown = Server["HandlePublicAssets"](CONTEXT_MOCK.instance);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handlePublicAssets(CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -375,34 +511,206 @@ describe("Server", (): void => {
 
 		it("should read the content of the file and pass it to the response, then return true", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_PUBLIC_ASSETS_STUB.callThrough();
+			SERVER_MOCK.stubs.handlePublicAssets.callThrough();
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum.png");
 			FIND_PUBLIC_ASSET_STUB.resolves("~/alpha-omega/lorem-ipsum.png");
-			READ_FILE_STUB.resolves(Buffer.from("Hello, World!"));
+			READ_BINARY_FILE_STUB.resolves(Buffer.from("Hello, World!"));
 			CONTEXT_MOCK.response.stubs.replyWith.resolves();
 
-			const RESULT: unknown = Server["HandlePublicAssets"](CONTEXT_MOCK.instance);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handlePublicAssets(CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
 			strictEqual(await RESULT, true);
-			strictEqual(READ_FILE_STUB.callCount, 1, "'FileSystemService.ReadBinaryFile' should have been called exactly once");
-			deepStrictEqual(READ_FILE_STUB.firstCall.args, ["~/alpha-omega/lorem-ipsum.png"]);
+			strictEqual(READ_BINARY_FILE_STUB.callCount, 1, "'FileSystemService.ReadBinaryFile' should have been called exactly once");
+			deepStrictEqual(READ_BINARY_FILE_STUB.firstCall.args, ["~/alpha-omega/lorem-ipsum.png"]);
 			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 1, "The response method 'replyWith' should have been called exactly once");
 			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{ contentType: "image/png", payload: Buffer.from("Hello, World!") }]);
 		});
 	});
 
-	describe("HandleEndpoints", (): void => {
+	describe("handleAutomaticPreflight", (): void => {
+		it("should return false if the request method is anything but 'OPTIONS'", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
+
+			SERVER_MOCK.stubs.handleAutomaticPreflight.callThrough();
+
+			const METHODS: Array<HTTPMethodEnum> = [
+				HTTPMethodEnum.GET,
+				HTTPMethodEnum.HEAD,
+				HTTPMethodEnum.PUT,
+				HTTPMethodEnum.POST,
+				HTTPMethodEnum.PATCH,
+				HTTPMethodEnum.DELETE,
+			];
+
+			for (const METHOD of METHODS)
+			{
+				CONTEXT_MOCK.request.stubs.getMethod.reset();
+				CONTEXT_MOCK.request.stubs.getMethod.returns(METHOD);
+
+				// @ts-expect-error: Accessing private method for testing purposes
+				const RESULT: unknown = SERVER_MOCK.instance.handleAutomaticPreflight(CONTEXT_MOCK.instance);
+
+				instanceOf(RESULT, Promise);
+				await doesNotReject(RESULT);
+				strictEqual(CONTEXT_MOCK.request.stubs.getMethod.callCount, 1, "Request 'getMethod' should have been called exactly once");
+			}
+		});
+
+		it("should throw when two endpoints with the same route have difference access control definitions", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
+			const MOCK_REQUEST: MockRequestInterface = mockRequest();
+
+			MOCK_REQUEST.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
+			MOCK_REQUEST.stubs.getMethod.returns(HTTPMethodEnum.OPTIONS);
+			CONTEXT_MOCK.stubs.getRequest.returns(MOCK_REQUEST.instance);
+
+			class GetEndpoint extends BaseEndpoint
+			{
+				protected method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected route: string = "/alpha-omega/lorem-ipsum";
+				protected override accessControlDefinition?: AccessControlDefinition = new AccessControlDefinition({
+					allowedHeaders: ["Content-Type"],
+					allowedOrigins: ["*"],
+					maxAge: 3600,
+				});
+
+				public async execute(): Promise<void> {}
+			}
+
+			class PostEndpoint extends BaseEndpoint
+			{
+				protected method: HTTPMethodEnum = HTTPMethodEnum.POST;
+				protected route: string = "/alpha-omega/lorem-ipsum";
+				protected override accessControlDefinition?: AccessControlDefinition = new AccessControlDefinition({
+					allowedHeaders: ["Content-Type"],
+					allowedOrigins: ["*"],
+					maxAge: 3600,
+				});
+
+				public async execute(): Promise<void> {}
+			}
+
+			SERVER_MOCK.stubs.handleAutomaticPreflight.callThrough();
+			CONTEXT_MOCK.request.stubs.getMethod.returns(HTTPMethodEnum.OPTIONS);
+			CONTEXT_MOCK.request.stubs.getHeader.returns(undefined);
+
+			FIND_ENDPOINT_STUB.onFirstCall().returns({
+				endpoint: new GetEndpoint(),
+			});
+
+			FIND_ENDPOINT_STUB.onThirdCall().returns({
+				endpoint: new PostEndpoint(),
+			});
+
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleAutomaticPreflight(CONTEXT_MOCK.instance);
+
+			instanceOf(RESULT, Promise);
+			await rejects(RESULT);
+		});
+
+		it("should reply with the access control headers when the request method is 'OPTIONS'", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
+			const MOCK_REQUEST: MockRequestInterface = mockRequest();
+
+			MOCK_REQUEST.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
+			MOCK_REQUEST.stubs.getMethod.returns(HTTPMethodEnum.OPTIONS);
+			CONTEXT_MOCK.stubs.getRequest.returns(MOCK_REQUEST.instance);
+
+			class DummyEndpoint extends BaseEndpoint
+			{
+				protected method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected route: string = "/alpha-omega/lorem-ipsum";
+				protected override accessControlDefinition?: AccessControlDefinition = new AccessControlDefinition({
+					allowedHeaders: ["Content-Type"],
+					allowedOrigins: "*",
+					maxAge: 3600,
+				});
+
+				public async execute(): Promise<void> {}
+			}
+
+			SERVER_MOCK.stubs.handleAutomaticPreflight.callThrough();
+			CONTEXT_MOCK.request.stubs.getHeader.returns(undefined);
+
+			FIND_ENDPOINT_STUB.returns({
+				endpoint: new DummyEndpoint(),
+			});
+
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleAutomaticPreflight(CONTEXT_MOCK.instance);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 1, "The response method 'replyWith' should have been called exactly once");
+
+			const expectedHeaders: Headers = new Headers();
+
+			expectedHeaders.set("Access-Control-Allow-Headers", "Content-Type");
+			expectedHeaders.set("Access-Control-Allow-Methods", "GET");
+			expectedHeaders.set("Access-Control-Allow-Origin", "*");
+			expectedHeaders.set("Access-Control-Max-Age", "3600");
+
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{
+				headers: expectedHeaders,
+				status: HTTPStatusCodeEnum.NO_CONTENT,
+			}]);
+		});
+
+		it('should reply with default access control headers when the request method is "OPTIONS" and no endpoint is found', async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
+			const MOCK_REQUEST: MockRequestInterface = mockRequest();
+
+			MOCK_REQUEST.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
+			MOCK_REQUEST.stubs.getMethod.returns(HTTPMethodEnum.OPTIONS);
+			CONTEXT_MOCK.stubs.getRequest.returns(MOCK_REQUEST.instance);
+
+			SERVER_MOCK.stubs.handleAutomaticPreflight.callThrough();
+			CONTEXT_MOCK.request.stubs.getHeader.returns(undefined);
+
+			FIND_ENDPOINT_STUB.returns(undefined);
+
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleAutomaticPreflight(CONTEXT_MOCK.instance);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 1, "The response method 'replyWith' should have been called exactly once");
+
+			const expectedHeaders: Headers = new Headers();
+
+			expectedHeaders.set("Access-Control-Allow-Headers", "Content-Type");
+			expectedHeaders.set("Access-Control-Allow-Methods", "GET");
+			expectedHeaders.set("Access-Control-Allow-Origin", "*");
+			expectedHeaders.set("Access-Control-Max-Age", "3600");
+
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{
+				headers: expectedHeaders,
+				status: HTTPStatusCodeEnum.NO_CONTENT,
+			}]);
+		});
+	});
+
+	describe("handleEndpoints", (): void => {
 		it("should return false if no matching endpoint is found in the registry", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_ENDPOINTS_STUB.callThrough();
+			SERVER_MOCK.stubs.handleEndpoints.callThrough();
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
 			FIND_ENDPOINT_STUB.returns(undefined);
 
-			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleEndpoints(CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -411,10 +719,33 @@ describe("Server", (): void => {
 			deepStrictEqual(FIND_ENDPOINT_STUB.firstCall.args, ["GET", "/alpha-omega/lorem-ipsum"]);
 		});
 
+		it("should handle automatic preflight if no matching endpoint is found in the registry for the OPTIONS verb", async (): Promise<void> => {
+			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
+
+			SERVER_MOCK.stubs.handleEndpoints.callThrough();
+			SERVER_MOCK.stubs.handleAutomaticPreflight.resolves();
+			CONTEXT_MOCK.request.stubs.getMethod.returns(HTTPMethodEnum.OPTIONS);
+			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
+			FIND_ENDPOINT_STUB.returns(undefined);
+
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleEndpoints(CONTEXT_MOCK.instance);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			strictEqual(await RESULT, true);
+			strictEqual(FIND_ENDPOINT_STUB.callCount, 1, "'EndpointRegistry.FindEndpoint' should have been called exactly once");
+			deepStrictEqual(FIND_ENDPOINT_STUB.firstCall.args, ["OPTIONS", "/alpha-omega/lorem-ipsum"]);
+			strictEqual(SERVER_MOCK.stubs.handleAutomaticPreflight.callCount, 1, "Method 'handleAutomaticPreflight' should have been called exactly once");
+			deepStrictEqual(SERVER_MOCK.stubs.handleAutomaticPreflight.firstCall.args, [CONTEXT_MOCK.instance]);
+		});
+
 		it("should initialize the request's pathMatchGroups", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_ENDPOINTS_STUB.callThrough();
+			SERVER_MOCK.stubs.handleEndpoints.callThrough();
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
 
 			class DummyEndpoint extends BaseEndpoint
@@ -437,7 +768,8 @@ describe("Server", (): void => {
 
 			FIND_ENDPOINT_STUB.returns(MATCH);
 
-			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleEndpoints(CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -447,8 +779,9 @@ describe("Server", (): void => {
 
 		it("should initialize the endpoint's context if it's contextual", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_ENDPOINTS_STUB.callThrough();
+			SERVER_MOCK.stubs.handleEndpoints.callThrough();
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
 
 			class DummyEndpoint extends BaseEndpoint
@@ -469,7 +802,8 @@ describe("Server", (): void => {
 
 			FIND_ENDPOINT_STUB.returns(MATCH);
 
-			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleEndpoints(CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -479,8 +813,9 @@ describe("Server", (): void => {
 
 		it("should not initialize the endpoint's context if it's not contextual", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_ENDPOINTS_STUB.callThrough();
+			SERVER_MOCK.stubs.handleEndpoints.callThrough();
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
 
 			class DummyEndpoint extends BaseEndpoint
@@ -501,7 +836,8 @@ describe("Server", (): void => {
 
 			FIND_ENDPOINT_STUB.returns(MATCH);
 
-			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleEndpoints(CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -511,8 +847,9 @@ describe("Server", (): void => {
 
 		it("should execute endpoint and hooks, then finalize the response", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_ENDPOINTS_STUB.callThrough();
+			SERVER_MOCK.stubs.handleEndpoints.callThrough();
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
 
 			class DummyEndpoint extends BaseEndpoint
@@ -535,7 +872,8 @@ describe("Server", (): void => {
 
 			FIND_ENDPOINT_STUB.returns(MATCH);
 
-			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleEndpoints(CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -546,17 +884,18 @@ describe("Server", (): void => {
 			deepStrictEqual(ENDPOINT_EXECUTE_STUB.firstCall.args, [CONTEXT_MOCK.instance]);
 			strictEqual(RUN_POST_HOOKS_STUB.callCount, 1, "The Server method 'RunPostHooks' should have been called exactly once");
 			deepStrictEqual(RUN_POST_HOOKS_STUB.firstCall.args, [ENDPOINT, CONTEXT_MOCK.instance]);
-			strictEqual(FINALIZE_RESPONSE_STUB.callCount, 1, "The Server method 'FinalizeResponse' should have been called exactly once");
-			deepStrictEqual(FINALIZE_RESPONSE_STUB.firstCall.args, [CONTEXT_MOCK.instance, false]);
+			strictEqual(SERVER_MOCK.stubs.finalizeResponse.callCount, 1, "The Server method 'FinalizeResponse' should have been called exactly once");
+			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, false]);
 			ok(RUN_PRE_HOOKS_STUB.firstCall.calledBefore(ENDPOINT_EXECUTE_STUB.firstCall), "The pre-hooks should be run before executing the endpoint");
 			ok(ENDPOINT_EXECUTE_STUB.firstCall.calledBefore(RUN_POST_HOOKS_STUB.firstCall), "The pre-hooks should be run after executing the endpoint");
-			ok(RUN_POST_HOOKS_STUB.firstCall.calledBefore(FINALIZE_RESPONSE_STUB.firstCall), "The post-hooks should be run before finalizing the response");
+			ok(RUN_POST_HOOKS_STUB.firstCall.calledBefore(SERVER_MOCK.stubs.finalizeResponse.firstCall), "The post-hooks should be run before finalizing the response");
 		});
 
 		it("should safely handle pre-hooks rejecting unexpectedly", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_ENDPOINTS_STUB.callThrough();
+			SERVER_MOCK.stubs.handleEndpoints.callThrough();
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
 
 			class DummyEndpoint extends BaseEndpoint
@@ -580,7 +919,8 @@ describe("Server", (): void => {
 			FIND_ENDPOINT_STUB.returns(MATCH);
 			RUN_PRE_HOOKS_STUB.rejects(ERROR);
 
-			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleEndpoints(CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -589,16 +929,17 @@ describe("Server", (): void => {
 			deepStrictEqual(RUN_PRE_HOOKS_STUB.firstCall.args, [ENDPOINT, CONTEXT_MOCK.instance]);
 			strictEqual(RUN_ERROR_HOOKS_STUB.callCount, 1, "The Server method 'RunErrorHooks' should have been called exactly once");
 			deepStrictEqual(RUN_ERROR_HOOKS_STUB.firstCall.args, [ENDPOINT, CONTEXT_MOCK.instance, ERROR]);
-			strictEqual(FINALIZE_RESPONSE_STUB.callCount, 1, "The Server method 'FinalizeResponse' should have been called exactly once");
-			deepStrictEqual(FINALIZE_RESPONSE_STUB.firstCall.args, [CONTEXT_MOCK.instance, true]);
+			strictEqual(SERVER_MOCK.stubs.finalizeResponse.callCount, 1, "The Server method 'FinalizeResponse' should have been called exactly once");
+			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, true]);
 			ok(RUN_PRE_HOOKS_STUB.firstCall.calledBefore(RUN_ERROR_HOOKS_STUB.firstCall), "The pre-hooks should have been run before the error hooks");
-			ok(RUN_ERROR_HOOKS_STUB.firstCall.calledBefore(FINALIZE_RESPONSE_STUB.firstCall), "The error-hooks should have been run before finalizing the response");
+			ok(RUN_ERROR_HOOKS_STUB.firstCall.calledBefore(SERVER_MOCK.stubs.finalizeResponse.firstCall), "The error-hooks should have been run before finalizing the response");
 		});
 
 		it("should safely handle endpoint rejecting unexpectedly", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_ENDPOINTS_STUB.callThrough();
+			SERVER_MOCK.stubs.handleEndpoints.callThrough();
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
 
 			class DummyEndpoint extends BaseEndpoint
@@ -624,7 +965,8 @@ describe("Server", (): void => {
 			FIND_ENDPOINT_STUB.returns(MATCH);
 			ENDPOINT_EXECUTE_STUB.rejects(ERROR);
 
-			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleEndpoints(CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -633,16 +975,17 @@ describe("Server", (): void => {
 			deepStrictEqual(ENDPOINT_EXECUTE_STUB.firstCall.args, [CONTEXT_MOCK.instance]);
 			strictEqual(RUN_ERROR_HOOKS_STUB.callCount, 1, "The Server method 'RunErrorHooks' should have been called exactly once");
 			deepStrictEqual(RUN_ERROR_HOOKS_STUB.firstCall.args, [ENDPOINT, CONTEXT_MOCK.instance, ERROR]);
-			strictEqual(FINALIZE_RESPONSE_STUB.callCount, 1, "The Server method 'FinalizeResponse' should have been called exactly once");
-			deepStrictEqual(FINALIZE_RESPONSE_STUB.firstCall.args, [CONTEXT_MOCK.instance, true]);
+			strictEqual(SERVER_MOCK.stubs.finalizeResponse.callCount, 1, "The Server method 'FinalizeResponse' should have been called exactly once");
+			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, true]);
 			ok(ENDPOINT_EXECUTE_STUB.firstCall.calledBefore(RUN_ERROR_HOOKS_STUB.firstCall), "The endpoint should have been executed before the error hooks");
-			ok(RUN_ERROR_HOOKS_STUB.firstCall.calledBefore(FINALIZE_RESPONSE_STUB.firstCall), "The error-hooks should have been run before finalizing the response");
+			ok(RUN_ERROR_HOOKS_STUB.firstCall.calledBefore(SERVER_MOCK.stubs.finalizeResponse.firstCall), "The error-hooks should have been run before finalizing the response");
 		});
 
 		it("should safely handle post-hooks rejecting unexpectedly", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			HANDLE_ENDPOINTS_STUB.callThrough();
+			SERVER_MOCK.stubs.handleEndpoints.callThrough();
 			CONTEXT_MOCK.request.stubs.getPath.returns("/alpha-omega/lorem-ipsum");
 
 			class DummyEndpoint extends BaseEndpoint
@@ -666,7 +1009,8 @@ describe("Server", (): void => {
 			FIND_ENDPOINT_STUB.returns(MATCH);
 			RUN_POST_HOOKS_STUB.rejects(ERROR);
 
-			const RESULT: unknown = Server["HandleEndpoints"](CONTEXT_MOCK.instance);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.handleEndpoints(CONTEXT_MOCK.instance);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -675,22 +1019,24 @@ describe("Server", (): void => {
 			deepStrictEqual(RUN_POST_HOOKS_STUB.firstCall.args, [ENDPOINT, CONTEXT_MOCK.instance]);
 			strictEqual(RUN_ERROR_HOOKS_STUB.callCount, 1, "The Server method 'RunErrorHooks' should have been called exactly once");
 			deepStrictEqual(RUN_ERROR_HOOKS_STUB.firstCall.args, [ENDPOINT, CONTEXT_MOCK.instance, ERROR]);
-			strictEqual(FINALIZE_RESPONSE_STUB.callCount, 1, "The Server method 'FinalizeResponse' should have been called exactly once");
-			deepStrictEqual(FINALIZE_RESPONSE_STUB.firstCall.args, [CONTEXT_MOCK.instance, true]);
+			strictEqual(SERVER_MOCK.stubs.finalizeResponse.callCount, 1, "The Server method 'FinalizeResponse' should have been called exactly once");
+			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, true]);
 			ok(RUN_POST_HOOKS_STUB.firstCall.calledBefore(RUN_ERROR_HOOKS_STUB.firstCall), "The post-hooks should have been run before the error hooks");
-			ok(RUN_ERROR_HOOKS_STUB.firstCall.calledBefore(FINALIZE_RESPONSE_STUB.firstCall), "The error-hooks should have been run before finalizing the response");
+			ok(RUN_ERROR_HOOKS_STUB.firstCall.calledBefore(SERVER_MOCK.stubs.finalizeResponse.firstCall), "The error-hooks should have been run before finalizing the response");
 		});
 	});
 
-	describe("FinalizeResponse", (): void => {
+	describe("finalizeResponse", (): void => {
 		it("should do nothing if the response is locked or processed", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			FINALIZE_RESPONSE_STUB.callThrough();
+			SERVER_MOCK.stubs.finalizeResponse.callThrough();
 			CONTEXT_MOCK.response.stubs.isLocked.returns(true);
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(true);
 
-			const RESULT: unknown = Server["FinalizeResponse"](CONTEXT_MOCK.instance, false);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, false);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -699,12 +1045,14 @@ describe("Server", (): void => {
 
 		it("should log a warning if the response is locked but not processed", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			FINALIZE_RESPONSE_STUB.callThrough();
+			SERVER_MOCK.stubs.finalizeResponse.callThrough();
 			CONTEXT_MOCK.response.stubs.isLocked.returns(true);
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
 
-			const RESULT: unknown = Server["FinalizeResponse"](CONTEXT_MOCK.instance, false);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, false);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -715,12 +1063,14 @@ describe("Server", (): void => {
 
 		it("should respond with a 404 if no error occurred", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			FINALIZE_RESPONSE_STUB.callThrough();
+			SERVER_MOCK.stubs.finalizeResponse.callThrough();
 			CONTEXT_MOCK.response.stubs.isLocked.returns(false);
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
 
-			const RESULT: unknown = Server["FinalizeResponse"](CONTEXT_MOCK.instance, false);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, false);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -730,12 +1080,14 @@ describe("Server", (): void => {
 
 		it("should respond with a 500 if an error occurred", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			FINALIZE_RESPONSE_STUB.callThrough();
+			SERVER_MOCK.stubs.finalizeResponse.callThrough();
 			CONTEXT_MOCK.response.stubs.isLocked.returns(false);
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
 
-			const RESULT: unknown = Server["FinalizeResponse"](CONTEXT_MOCK.instance, true);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, true);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -745,13 +1097,15 @@ describe("Server", (): void => {
 
 		it("should remove existing headers if the response is not locked", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			FINALIZE_RESPONSE_STUB.callThrough();
+			SERVER_MOCK.stubs.finalizeResponse.callThrough();
 			CONTEXT_MOCK.response.stubs.isLocked.returns(false);
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
 			CONTEXT_MOCK.response.stubs.getHeaderNames.returns(["Alpha", "Omega"]);
 
-			const RESULT: unknown = Server["FinalizeResponse"](CONTEXT_MOCK.instance, false);
+			// @ts-expect-error: Accessing private method for testing purposes
+			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, false);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -764,15 +1118,9 @@ describe("Server", (): void => {
 
 	describe("start", (): void => {
 		it("should start the server", (): void => {
-			const CONFIG: UnsafeServerInstantiationInterface = {
-				https: false,
-				port: 80,
-			};
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			// @ts-expect-error: For testing purposes
-			const SERVER: Server = new Server(CONFIG);
-
-			SERVER.start();
+			SERVER_MOCK.instance.start();
 
 			strictEqual(UNSAFE_LISTEN_STUB.callCount, 1, "The 'listen' method of the native server should be called");
 			strictEqual(UNSAFE_LISTEN_STUB.firstCall.firstArg, 80);
@@ -781,19 +1129,19 @@ describe("Server", (): void => {
 
 	describe("isHTTPS", (): void => {
 		it("should return false if the server is not secure", (): void => {
-			// @ts-expect-error: For testing purposes
-			const SERVER: Server = new Server({ https: false, port: 80 });
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			strictEqual(SERVER.isHTTPS(), false);
+			ReflectUtility.Set(SERVER_MOCK.instance, "https", false);
+
+			strictEqual(SERVER_MOCK.instance.isHTTPS(), false);
 		});
 
 		it("should return true if the server is secure", (): void => {
-			// @ts-expect-error: For testing purposes
-			const SERVER: Server = new Server({ https: false, port: 80 });
+			const SERVER_MOCK: MockServerInterface = mockServer();
 
-			ReflectUtility.Set(SERVER, "https", true);
+			ReflectUtility.Set(SERVER_MOCK.instance, "https", true);
 
-			strictEqual(SERVER.isHTTPS(), true);
+			strictEqual(SERVER_MOCK.instance.isHTTPS(), true);
 		});
 	});
 });

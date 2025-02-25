@@ -7,6 +7,7 @@ import type { ExecutionContext } from "../execution-context/execution-context.mj
 import { RouteUtility } from "./route.utility.mjs";
 import { assertString } from "@vitruvius-labs/ts-predicate/type-assertion";
 import type { ExtractType } from "../../definition/type/extract.type.mjs";
+import type { AccessControlDefinition } from "./access-control-definition.mjs";
 
 /**
  * Abstract endpoint class.
@@ -26,6 +27,15 @@ abstract class BaseEndpoint<T extends object = object>
 	 * You can use capture groups to extract parameters from the path.
 	 */
 	protected abstract readonly route: RegExp | string;
+
+	/**
+	 * Access control definition for this endpoint.
+	 *
+	 * @remarks
+	 * This property is optional.
+	 * If you want to enable CORS for this endpoint, set this property to an instance of AccessControlDefinition.
+	 */
+	protected readonly accessControlDefinition?: AccessControlDefinition;
 
 	protected readonly preHooks: Array<BasePreHook | ConstructorOf<BasePreHook>> = [];
 	protected readonly excludedGlobalPreHooks: Array<ConstructorOf<BasePreHook>> = [];
@@ -67,6 +77,16 @@ abstract class BaseEndpoint<T extends object = object>
 	public getRoute(): RegExp
 	{
 		return RouteUtility.NormalizeRoute(this.route);
+	}
+
+	/**
+	 * Get the access control definition for this endpoint.
+	 *
+	 * @sealed
+	 */
+	public getAccessControlDefinition(): AccessControlDefinition | undefined
+	{
+		return this.accessControlDefinition;
 	}
 
 	/**
@@ -190,7 +210,10 @@ abstract class BaseEndpoint<T extends object = object>
 	 */
 	protected assertPathFragments(value: unknown): asserts value is ExtractType<T, "pathFragments">
 	{
-		throw new Error(`Method "assertPathFragments" need an override in endpoint ${this.constructor.name}.`);
+		// eslint-disable-next-line @ts/no-unused-expressions -- Pretend to use the value
+		value;
+
+		throw new Error(`Method "assertPathFragments" needs an override in endpoint ${this.constructor.name}.`);
 	}
 
 	/**
@@ -224,7 +247,10 @@ abstract class BaseEndpoint<T extends object = object>
 	 */
 	protected assertQuery(value: unknown): asserts value is ExtractType<T, "query">
 	{
-		throw new Error(`Method "assertQuery" need an override in endpoint ${this.constructor.name}.`);
+		// eslint-disable-next-line @ts/no-unused-expressions -- Pretend to use the value
+		value;
+
+		throw new Error(`Method "assertQuery" needs an override in endpoint ${this.constructor.name}.`);
 	}
 
 	/**
@@ -258,7 +284,10 @@ abstract class BaseEndpoint<T extends object = object>
 	 */
 	protected assertPayload(value: unknown): asserts value is ExtractType<T, "payload">
 	{
-		throw new Error(`Method "assertPayload" need an override in endpoint ${this.constructor.name}.`);
+		// eslint-disable-next-line @ts/no-unused-expressions -- Pretend to use the value
+		value;
+
+		throw new Error(`Method "assertPayload" needs an override in endpoint ${this.constructor.name}.`);
 	}
 
 	/**

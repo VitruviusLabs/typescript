@@ -1,6 +1,6 @@
 import { toError } from "@vitruvius-labs/ts-predicate/helper";
 import { MillisecondEnum } from "@vitruvius-labs/toolbox";
-import { Server } from "../../../core/server/server.mjs";
+import { LoggerProxy } from "../../logger/logger.proxy.mjs";
 import { SessionRegistry } from "../entity/session.registry.mjs";
 import { SessionConstantEnum } from "../definition/enum/session-constant.enum.mjs";
 
@@ -74,7 +74,7 @@ class SessionCleanupService
 				}
 				catch (error: unknown)
 				{
-					await Server.HandleError(error);
+					LoggerProxy.Error(error);
 				}
 			},
 			SessionConstantEnum.MINUTES_BETWEEN_CLEANUP * MillisecondEnum.MINUTE

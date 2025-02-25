@@ -5,7 +5,6 @@ import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
 import { LoggerService } from "./logger.service.mjs";
 import { ExecutionContextRegistry } from "../../core/execution-context/execution-context.registry.mjs";
 import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";
-import { Server } from "../../core/server/server.mjs";
 
 /**
  * Proxy for the logger service
@@ -132,7 +131,8 @@ class LoggerProxy
 		}
 		catch (error: unknown)
 		{
-			await Server.HandleError(error);
+			// eslint-disable-next-line no-console -- No alternative
+			console.error(error);
 		}
 	}
 }

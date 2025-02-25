@@ -2,7 +2,7 @@ import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, doesNotThrow, rejects, strictEqual } from "node:assert";
 import { type SinonFakeTimers, type SinonSpy, type SinonStub, spy, stub, useFakeTimers } from "sinon";
 import { MillisecondEnum, ReflectUtility } from "@vitruvius-labs/toolbox";
-import { Server, Session, SessionCleanupService, SessionConstantEnum, SessionRegistry } from "../../../../src/_index.mjs";
+import { LoggerProxy, Session, SessionCleanupService, SessionConstantEnum, SessionRegistry } from "../../../../src/_index.mjs";
 import { type MockSessionDelegateInterface, mockSessionDelegate } from "../../../../mock/_index.mjs";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
 
@@ -10,7 +10,7 @@ describe("SessionCleanupService", (): void => {
 	const CLOCK: SinonFakeTimers = useFakeTimers({ toFake: ["Date", "setInterval", "clearInterval"] });
 	const SET_INTERVAL_SPY: SinonSpy = spy(CLOCK, "setInterval");
 	const CLEAR_INTERVAL_SPY: SinonSpy = spy(CLOCK, "clearInterval");
-	const SERVER_HANDLE_ERROR_STUB: SinonStub = stub(Server, "HandleError");
+	const LOGGER_PROXY_ERROR_STUB: SinonStub = stub(LoggerProxy, "Error");
 	const CLEANUP_STUB: SinonStub = stub(SessionCleanupService, "Cleanup");
 	const CLEAR_DATA_STUB: SinonStub = stub(Session.prototype, "clearData");
 	const IS_EXPIRED_STUB: SinonStub = stub(Session.prototype, "isExpired");
@@ -25,8 +25,8 @@ describe("SessionCleanupService", (): void => {
 		CLOCK.reset();
 		SET_INTERVAL_SPY.resetHistory();
 		CLEAR_INTERVAL_SPY.resetHistory();
-		SERVER_HANDLE_ERROR_STUB.reset();
-		SERVER_HANDLE_ERROR_STUB.callThrough();
+		LOGGER_PROXY_ERROR_STUB.reset();
+		LOGGER_PROXY_ERROR_STUB.callThrough();
 		CLEANUP_STUB.reset();
 		CLEANUP_STUB.callThrough();
 		CLEAR_DATA_STUB.reset();
@@ -47,7 +47,7 @@ describe("SessionCleanupService", (): void => {
 		SET_INTERVAL_SPY.restore();
 		CLEAR_INTERVAL_SPY.restore();
 		CLOCK.restore();
-		SERVER_HANDLE_ERROR_STUB.restore();
+		LOGGER_PROXY_ERROR_STUB.restore();
 		CLEANUP_STUB.restore();
 		CLEAR_DATA_STUB.restore();
 		IS_EXPIRED_STUB.restore();
@@ -145,7 +145,7 @@ describe("SessionCleanupService", (): void => {
 			const ERROR: Error = new Error("Test error");
 
 			CLEANUP_STUB.rejects(ERROR);
-			SERVER_HANDLE_ERROR_STUB.resolves();
+			LOGGER_PROXY_ERROR_STUB.returns(undefined);
 
 			SessionCleanupService.StartWatching();
 
@@ -157,8 +157,8 @@ describe("SessionCleanupService", (): void => {
 
 			await Promise.allSettled([CLEANUP_STUB.firstCall.returnValue]);
 
-			strictEqual(SERVER_HANDLE_ERROR_STUB.called, true, "'Server.HandleError' should be called to handle the error");
-			deepStrictEqual(SERVER_HANDLE_ERROR_STUB.firstCall.args, [ERROR]);
+			strictEqual(LOGGER_PROXY_ERROR_STUB.called, true, "'LoggerProxy.Error' should be called to handle the error");
+			deepStrictEqual(LOGGER_PROXY_ERROR_STUB.firstCall.args, [ERROR]);
 		});
 	});
 
