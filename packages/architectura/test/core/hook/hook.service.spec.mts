@@ -2,7 +2,7 @@ import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, doesNotReject, strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
 import { instanceOf } from "@vitruvius-labs/toolbox";
-import { BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, type ExecutionContext, HTTPMethodEnum, HookRegistry, HookService, type HooksInterface } from "../../../src/_index.mjs";
+import { BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, type ExecutionContext, HTTPError, HTTPMethodEnum, HTTPStatusCodeEnum, HookRegistry, HookService, type HooksInterface, LoggerProxy } from "../../../src/_index.mjs";
 import { mockContext } from "../../../mock/_index.mjs";
 
 describe("HookService", (): void => {
@@ -10,29 +10,38 @@ describe("HookService", (): void => {
 	const INSTANTIATE_HOOK_STUB: SinonStub = stub(HookService, "InstantiateHook");
 	// @ts-expect-error: Stubbing a private method
 	const COMPILE_HOOKS_STUB: SinonStub = stub(HookService, "CompileHooks");
+	// @ts-expect-error: Stubbing a private method
+	const SPECIAL_ERROR_HANDLING_STUB: SinonStub = stub(HookService, "SpecialErrorHandling");
 	const GET_PRE_HOOKS_STUB: SinonStub = stub(HookRegistry, "GetPreHooks");
 	const GET_POST_HOOKS_STUB: SinonStub = stub(HookRegistry, "GetPostHooks");
 	const GET_ERROR_HOOKS_STUB: SinonStub = stub(HookRegistry, "GetErrorHooks");
+	const LOGGER_PROXY_ERROR_STUB: SinonStub = stub(LoggerProxy, "Error");
 
 	beforeEach((): void => {
 		INSTANTIATE_HOOK_STUB.reset();
 		INSTANTIATE_HOOK_STUB.callThrough();
 		COMPILE_HOOKS_STUB.reset();
 		COMPILE_HOOKS_STUB.callThrough();
+		SPECIAL_ERROR_HANDLING_STUB.reset();
+		SPECIAL_ERROR_HANDLING_STUB.callThrough();
 		GET_PRE_HOOKS_STUB.reset();
 		GET_PRE_HOOKS_STUB.callThrough();
 		GET_POST_HOOKS_STUB.reset();
 		GET_POST_HOOKS_STUB.callThrough();
 		GET_ERROR_HOOKS_STUB.reset();
 		GET_ERROR_HOOKS_STUB.callThrough();
+		LOGGER_PROXY_ERROR_STUB.reset();
+		LOGGER_PROXY_ERROR_STUB.callThrough();
 	});
 
 	after((): void => {
 		INSTANTIATE_HOOK_STUB.restore();
 		COMPILE_HOOKS_STUB.restore();
+		SPECIAL_ERROR_HANDLING_STUB.restore();
 		GET_PRE_HOOKS_STUB.restore();
 		GET_POST_HOOKS_STUB.restore();
 		GET_ERROR_HOOKS_STUB.restore();
+		LOGGER_PROXY_ERROR_STUB.restore();
 	});
 
 	describe("InstantiateHook", (): void => {
@@ -362,6 +371,7 @@ describe("HookService", (): void => {
 			GET_LOCAL_HOOKS_STUB.returns([DUMMY_HOOK]);
 			GET_EXCLUDED_GLOBAL_HOOKS_STUB.returns([ExcludedHook]);
 			COMPILE_HOOKS_STUB.returns(HOOKS_TO_RUN);
+			SPECIAL_ERROR_HANDLING_STUB.returns(undefined);
 
 			const EXPECTED_HOOKS: HooksInterface<BaseErrorHook> = {
 				context: CONTEXT,
@@ -379,8 +389,9 @@ describe("HookService", (): void => {
 			strictEqual(GET_LOCAL_HOOKS_STUB.callCount, 1, "Endpoint method 'getErrorHooks' should have been called exactly once");
 			strictEqual(GET_EXCLUDED_GLOBAL_HOOKS_STUB.callCount, 1, "Endpoint method 'getExcludedGlobalErrorHooks' should have been called exactly once");
 			strictEqual(COMPILE_HOOKS_STUB.callCount, 1, "The 'CompileHooks' method should have been called exactly once");
-
 			deepStrictEqual(COMPILE_HOOKS_STUB.firstCall.args, [EXPECTED_HOOKS]);
+			strictEqual(SPECIAL_ERROR_HANDLING_STUB.callCount, 1, "The 'SpecialErrorHandling' method should have been called exactly once");
+			deepStrictEqual(SPECIAL_ERROR_HANDLING_STUB.firstCall.args, [ERROR, HOOKS_TO_RUN]);
 
 			strictEqual(HOOK_EXECUTE_STUB.callCount, 3);
 			deepStrictEqual(HOOK_EXECUTE_STUB.firstCall.thisValue, HOOKS_TO_RUN[0]);
@@ -409,6 +420,7 @@ describe("HookService", (): void => {
 
 			GET_ERROR_HOOKS_STUB.returns([DummyHook]);
 			COMPILE_HOOKS_STUB.returns(HOOKS_TO_RUN);
+			SPECIAL_ERROR_HANDLING_STUB.returns(undefined);
 
 			const EXPECTED_HOOKS: HooksInterface<BaseErrorHook> = {
 				context: CONTEXT,
@@ -424,8 +436,9 @@ describe("HookService", (): void => {
 
 			strictEqual(GET_ERROR_HOOKS_STUB.callCount, 1, "'HookRegistry.GetErrorHooks' should have been called exactly once");
 			strictEqual(COMPILE_HOOKS_STUB.callCount, 1, "The 'CompileHooks' method should have been called exactly once");
-
 			deepStrictEqual(COMPILE_HOOKS_STUB.firstCall.args, [EXPECTED_HOOKS]);
+			strictEqual(SPECIAL_ERROR_HANDLING_STUB.callCount, 1, "The 'SpecialErrorHandling' method should have been called exactly once");
+			deepStrictEqual(SPECIAL_ERROR_HANDLING_STUB.firstCall.args, [ERROR, HOOKS_TO_RUN]);
 
 			strictEqual(HOOK_EXECUTE_STUB.callCount, 3);
 			deepStrictEqual(HOOK_EXECUTE_STUB.firstCall.thisValue, HOOKS_TO_RUN[0]);
@@ -434,6 +447,47 @@ describe("HookService", (): void => {
 			deepStrictEqual(HOOK_EXECUTE_STUB.secondCall.args, [CONTEXT, ERROR]);
 			deepStrictEqual(HOOK_EXECUTE_STUB.thirdCall.thisValue, HOOKS_TO_RUN[2]);
 			deepStrictEqual(HOOK_EXECUTE_STUB.thirdCall.args, [CONTEXT, ERROR]);
+		});
+	});
+
+	describe("SpecialErrorHandling", (): void => {
+		it("should call 'LoggerProxy.Error' and pass it the error", (): void => {
+			const ERROR: Error = new Error("Test");
+
+			const HOOKS_TO_RUN: Array<BaseErrorHook> = [];
+
+			HookService["SpecialErrorHandling"](ERROR, HOOKS_TO_RUN);
+
+			strictEqual(LOGGER_PROXY_ERROR_STUB.callCount, 1, "'LoggerProxy.Error' should have been called exactly once");
+			deepStrictEqual(LOGGER_PROXY_ERROR_STUB.firstCall.args, [ERROR]);
+		});
+
+		it("should do nothing if there is at least 1 hook", (): void => {
+			const ERROR: Error = new Error("Test");
+
+			class DummyHook extends BaseErrorHook
+			{
+				public override execute(): void {}
+			}
+
+			const HOOKS_TO_RUN: Array<BaseErrorHook> = [new DummyHook()];
+
+			HookService["SpecialErrorHandling"](ERROR, HOOKS_TO_RUN);
+
+			strictEqual(LOGGER_PROXY_ERROR_STUB.callCount, 0, "'LoggerProxy.Error' should not have been called");
+		});
+
+		it("should do nothing if the error is an instance of HTTPError", (): void => {
+			const ERROR: Error = new HTTPError({
+				message: "Test",
+				statusCode: HTTPStatusCodeEnum.SERVICE_UNAVAILABLE,
+			});
+
+			const HOOKS_TO_RUN: Array<BaseErrorHook> = [];
+
+			HookService["SpecialErrorHandling"](ERROR, HOOKS_TO_RUN);
+
+			strictEqual(LOGGER_PROXY_ERROR_STUB.callCount, 0, "'LoggerProxy.Error' should not have been called");
 		});
 	});
 });

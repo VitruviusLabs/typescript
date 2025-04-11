@@ -21,8 +21,7 @@ import { RichServerResponse } from "./rich-server-response.mjs";
 import { getContentType } from "../../utility/content-type/get-content-type.mjs";
 import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 import { AccessControlDefinition } from "../endpoint/access-control-definition.mjs";
-
-/* @TODO: Add support for HTTP/2 */
+import { HTTPError } from "./http-error.mjs";
 
 /**
  * Server class.
@@ -31,6 +30,8 @@ import { AccessControlDefinition } from "../endpoint/access-control-definition.m
  */
 class Server
 {
+	private static readonly NoError: unique symbol = Symbol("Server.NoError");
+
 	private readonly port: number;
 	private readonly https: boolean;
 	private readonly defaultAccessControlDefinition: AccessControlDefinition | undefined;
@@ -171,7 +172,7 @@ class Server
 				LoggerProxy.Error(scoped_error);
 			}
 
-			await this.finalizeResponse(CONTEXT, true);
+			await this.finalizeResponse(CONTEXT, error);
 		}
 		catch (scoped_error: unknown)
 		{
@@ -348,70 +349,77 @@ class Server
 			ReflectUtility.Set(ENDPOINT, "context", context);
 		}
 
-		let has_error_occurred: boolean = true;
-
 		try
 		{
 			await HookService.RunPreHooks(ENDPOINT, context);
 			await ENDPOINT.execute(context);
 			await HookService.RunPostHooks(ENDPOINT, context);
 
-			has_error_occurred = false;
+			await this.finalizeResponse(context, Server.NoError);
 		}
 		catch (error: unknown)
 		{
-			LoggerProxy.Error(error);
+			try
+			{
+				await HookService.RunErrorHooks(ENDPOINT, context, error);
+			}
+			catch (scoped_error: unknown)
+			{
+				LoggerProxy.Error(scoped_error);
+			}
 
-			await HookService.RunErrorHooks(ENDPOINT, context, error);
-		}
-		finally
-		{
-			await this.finalizeResponse(context, has_error_occurred);
+			await this.finalizeResponse(context, error);
 		}
 
 		return true;
 	}
 
 	// eslint-disable-next-line @ts/class-methods-use-this -- this is not needed
-	private async finalizeResponse(context: ExecutionContext, has_error_occurred: boolean): Promise<void>
+	private async finalizeResponse(context: ExecutionContext, error: unknown): Promise<void>
 	{
 		const RESPONSE: RichServerResponse = context.getResponse();
 
-		if (!RESPONSE.isLocked())
+		if (RESPONSE.isLocked())
 		{
-			RESPONSE.getHeaderNames().forEach(
-				(header: string): void =>
-				{
-					RESPONSE.removeHeader(header);
-				}
-			);
-
-			if (has_error_occurred)
+			if (!RESPONSE.isProcessed())
 			{
-				LoggerProxy.Error("Unhandled server error.");
-
-				await RESPONSE.replyWith({
-					status: HTTPStatusCodeEnum.INTERNAL_SERVER_ERROR,
-					payload: "500 - Internal Server Error.",
-				});
-
-				return;
+				LoggerProxy.Warning("Unfinished server response.");
 			}
 
-			LoggerProxy.Error("Unhandled response.");
+			return;
+		}
 
-			await RESPONSE.replyWith({
-				status: HTTPStatusCodeEnum.NOT_FOUND,
-				payload: "404 - Not found.",
+		if (error instanceof HTTPError)
+		{
+			await context.getResponse().replyWith({
+				status: error.getStatusCode(),
+				payload: {
+					message: error.message,
+					data: error.getData(),
+				},
 			});
 
 			return;
 		}
 
-		if (!RESPONSE.isProcessed())
+		if (error !== Server.NoError)
 		{
-			LoggerProxy.Warning("Unfinished server response.");
+			LoggerProxy.Error("Unhandled server error.");
+
+			await RESPONSE.replyWith({
+				status: HTTPStatusCodeEnum.INTERNAL_SERVER_ERROR,
+				payload: "500 - Internal Server Error.",
+			});
+
+			return;
 		}
+
+		LoggerProxy.Error("Unhandled response.");
+
+		await RESPONSE.replyWith({
+			status: HTTPStatusCodeEnum.NOT_FOUND,
+			payload: "404 - Not found.",
+		});
 	}
 }
 

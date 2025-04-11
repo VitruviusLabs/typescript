@@ -4,7 +4,7 @@ import { Server as UnsafeServer } from "node:http";
 import { Server as SecureServer } from "node:https";
 import { type SinonStub, stub } from "sinon";
 import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
-import { AssetRegistry, BaseEndpoint, type EndpointMatchInterface, EndpointRegistry, ExecutionContext, ExecutionContextRegistry, FileSystemService, HTTPMethodEnum, HTTPStatusCodeEnum, HookService, LoggerProxy, PortsEnum, type RichClientRequest, type RichServerResponse, type SecureServerConfigurationInterface, type SecureServerInstantiationInterface, Server, type UnsafeServerConfigurationInterface, type UnsafeServerInstantiationInterface } from "../../../src/_index.mjs";
+import { AssetRegistry, BaseEndpoint, type EndpointMatchInterface, EndpointRegistry, ExecutionContext, ExecutionContextRegistry, FileSystemService, HTTPError, HTTPMethodEnum, HTTPStatusCodeEnum, HookService, LoggerProxy, PortsEnum, type RichClientRequest, type RichServerResponse, type SecureServerConfigurationInterface, type SecureServerInstantiationInterface, Server, type UnsafeServerConfigurationInterface, type UnsafeServerInstantiationInterface } from "../../../src/_index.mjs";
 import { type MockContextInterface, type MockServerInterface, mockContext } from "../../../mock/_index.mjs";
 import { mockServer } from "../../../mock/core/server/mock-server.mjs";
 import { AccessControlDefinition } from "../../../src/core/endpoint/access-control-definition.mjs";
@@ -344,7 +344,7 @@ describe("Server", (): void => {
 			strictEqual(RUN_FALLBACK_ERROR_HOOKS_STUB.callCount, 1, "'HookService.RunFallbackErrorHooks' should have been called");
 			deepStrictEqual(RUN_FALLBACK_ERROR_HOOKS_STUB.firstCall.args, [CONTEXT_MOCK.instance, ERROR]);
 			strictEqual(SERVER_MOCK.stubs.finalizeResponse.callCount, 1, "'SERVER_MOCK.instance.finalizeResponse' should have been called");
-			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, true]);
+			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, ERROR]);
 		});
 
 		it("should be safe (without context)", async (): Promise<void> => {
@@ -885,7 +885,7 @@ describe("Server", (): void => {
 			strictEqual(RUN_POST_HOOKS_STUB.callCount, 1, "The Server method 'RunPostHooks' should have been called exactly once");
 			deepStrictEqual(RUN_POST_HOOKS_STUB.firstCall.args, [ENDPOINT, CONTEXT_MOCK.instance]);
 			strictEqual(SERVER_MOCK.stubs.finalizeResponse.callCount, 1, "The Server method 'FinalizeResponse' should have been called exactly once");
-			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, false]);
+			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, Server["NoError"]]);
 			ok(RUN_PRE_HOOKS_STUB.firstCall.calledBefore(ENDPOINT_EXECUTE_STUB.firstCall), "The pre-hooks should be run before executing the endpoint");
 			ok(ENDPOINT_EXECUTE_STUB.firstCall.calledBefore(RUN_POST_HOOKS_STUB.firstCall), "The pre-hooks should be run after executing the endpoint");
 			ok(RUN_POST_HOOKS_STUB.firstCall.calledBefore(SERVER_MOCK.stubs.finalizeResponse.firstCall), "The post-hooks should be run before finalizing the response");
@@ -930,7 +930,7 @@ describe("Server", (): void => {
 			strictEqual(RUN_ERROR_HOOKS_STUB.callCount, 1, "The Server method 'RunErrorHooks' should have been called exactly once");
 			deepStrictEqual(RUN_ERROR_HOOKS_STUB.firstCall.args, [ENDPOINT, CONTEXT_MOCK.instance, ERROR]);
 			strictEqual(SERVER_MOCK.stubs.finalizeResponse.callCount, 1, "The Server method 'FinalizeResponse' should have been called exactly once");
-			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, true]);
+			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, ERROR]);
 			ok(RUN_PRE_HOOKS_STUB.firstCall.calledBefore(RUN_ERROR_HOOKS_STUB.firstCall), "The pre-hooks should have been run before the error hooks");
 			ok(RUN_ERROR_HOOKS_STUB.firstCall.calledBefore(SERVER_MOCK.stubs.finalizeResponse.firstCall), "The error-hooks should have been run before finalizing the response");
 		});
@@ -976,7 +976,7 @@ describe("Server", (): void => {
 			strictEqual(RUN_ERROR_HOOKS_STUB.callCount, 1, "The Server method 'RunErrorHooks' should have been called exactly once");
 			deepStrictEqual(RUN_ERROR_HOOKS_STUB.firstCall.args, [ENDPOINT, CONTEXT_MOCK.instance, ERROR]);
 			strictEqual(SERVER_MOCK.stubs.finalizeResponse.callCount, 1, "The Server method 'FinalizeResponse' should have been called exactly once");
-			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, true]);
+			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, ERROR]);
 			ok(ENDPOINT_EXECUTE_STUB.firstCall.calledBefore(RUN_ERROR_HOOKS_STUB.firstCall), "The endpoint should have been executed before the error hooks");
 			ok(RUN_ERROR_HOOKS_STUB.firstCall.calledBefore(SERVER_MOCK.stubs.finalizeResponse.firstCall), "The error-hooks should have been run before finalizing the response");
 		});
@@ -1020,7 +1020,7 @@ describe("Server", (): void => {
 			strictEqual(RUN_ERROR_HOOKS_STUB.callCount, 1, "The Server method 'RunErrorHooks' should have been called exactly once");
 			deepStrictEqual(RUN_ERROR_HOOKS_STUB.firstCall.args, [ENDPOINT, CONTEXT_MOCK.instance, ERROR]);
 			strictEqual(SERVER_MOCK.stubs.finalizeResponse.callCount, 1, "The Server method 'FinalizeResponse' should have been called exactly once");
-			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, true]);
+			deepStrictEqual(SERVER_MOCK.stubs.finalizeResponse.firstCall.args, [CONTEXT_MOCK.instance, ERROR]);
 			ok(RUN_POST_HOOKS_STUB.firstCall.calledBefore(RUN_ERROR_HOOKS_STUB.firstCall), "The post-hooks should have been run before the error hooks");
 			ok(RUN_ERROR_HOOKS_STUB.firstCall.calledBefore(SERVER_MOCK.stubs.finalizeResponse.firstCall), "The error-hooks should have been run before finalizing the response");
 		});
@@ -1036,7 +1036,7 @@ describe("Server", (): void => {
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(true);
 
 			// @ts-expect-error: Accessing private method for testing purposes
-			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, false);
+			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, Server["NoError"]);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -1052,7 +1052,7 @@ describe("Server", (): void => {
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
 
 			// @ts-expect-error: Accessing private method for testing purposes
-			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, false);
+			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, Server["NoError"]);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -1070,7 +1070,7 @@ describe("Server", (): void => {
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
 
 			// @ts-expect-error: Accessing private method for testing purposes
-			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, false);
+			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, Server["NoError"]);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -1087,7 +1087,7 @@ describe("Server", (): void => {
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
 
 			// @ts-expect-error: Accessing private method for testing purposes
-			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, true);
+			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, new Error("Test Error"));
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
@@ -1095,24 +1095,29 @@ describe("Server", (): void => {
 			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{ status: HTTPStatusCodeEnum.INTERNAL_SERVER_ERROR, payload: "500 - Internal Server Error." }]);
 		});
 
-		it("should remove existing headers if the response is not locked", async (): Promise<void> => {
+		it("should retrieve informations from a HTTPError to respond", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
 			const SERVER_MOCK: MockServerInterface = mockServer();
 
 			SERVER_MOCK.stubs.finalizeResponse.callThrough();
 			CONTEXT_MOCK.response.stubs.isLocked.returns(false);
 			CONTEXT_MOCK.response.stubs.isProcessed.returns(false);
-			CONTEXT_MOCK.response.stubs.getHeaderNames.returns(["Alpha", "Omega"]);
+
+			const ERROR: HTTPError = new HTTPError({
+				message: "Test Error",
+				statusCode: HTTPStatusCodeEnum.SERVICE_UNAVAILABLE,
+				data: {
+					test: 0,
+				},
+			});
 
 			// @ts-expect-error: Accessing private method for testing purposes
-			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, false);
+			const RESULT: unknown = SERVER_MOCK.instance.finalizeResponse(CONTEXT_MOCK.instance, ERROR);
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
-			strictEqual(CONTEXT_MOCK.response.stubs.getHeaderNames.callCount, 1, "The response method 'getHeaderNames' should have been called exactly once");
-			strictEqual(CONTEXT_MOCK.response.stubs.removeHeader.callCount, 2, "The response method 'getHeaderNames' should have been called for each header");
-			deepStrictEqual(CONTEXT_MOCK.response.stubs.removeHeader.firstCall.args, ["Alpha"]);
-			deepStrictEqual(CONTEXT_MOCK.response.stubs.removeHeader.secondCall.args, ["Omega"]);
+			strictEqual(CONTEXT_MOCK.response.stubs.replyWith.callCount, 1, "The response method 'replyWith' should have been called exactly once");
+			deepStrictEqual(CONTEXT_MOCK.response.stubs.replyWith.firstCall.args, [{ status: ERROR.getStatusCode(), payload: { message: ERROR.message, data: ERROR.getData() } }]);
 		});
 	});
 

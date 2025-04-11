@@ -4,10 +4,13 @@ import type { BasePreHook } from "../hook/base.pre-hook.mjs";
 import type { BasePostHook } from "../hook/base.post-hook.mjs";
 import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import type { ExecutionContext } from "../execution-context/execution-context.mjs";
-import { RouteUtility } from "./route.utility.mjs";
-import { assertString } from "@vitruvius-labs/ts-predicate/type-assertion";
 import type { ExtractType } from "../../definition/type/extract.type.mjs";
 import type { AccessControlDefinition } from "./access-control-definition.mjs";
+import { ValidationError, assertString } from "@vitruvius-labs/ts-predicate/type-assertion";
+import { normalizeErrorTree, toError } from "@vitruvius-labs/ts-predicate/helper";
+import { RouteUtility } from "./route.utility.mjs";
+import { HTTPError } from "../server/http-error.mjs";
+import { HTTPStatusCodeEnum } from "../server/definition/enum/http-status-code.enum.mjs";
 
 /**
  * Abstract endpoint class.
@@ -230,7 +233,14 @@ abstract class BaseEndpoint<T extends object = object>
 		{
 			const fragments: Record<string, string> = this.getContext().getRequest().getPathMatchGroups();
 
-			this.assertPathFragments(fragments);
+			try
+			{
+				this.assertPathFragments(fragments);
+			}
+			catch (error: unknown)
+			{
+				this.handleValidationError("Invalid path", error);
+			}
 
 			this.pathFragments = fragments;
 		}
@@ -267,7 +277,14 @@ abstract class BaseEndpoint<T extends object = object>
 		{
 			const query: unknown = this.getContext().getRequest().getQuery();
 
-			this.assertQuery(query);
+			try
+			{
+				this.assertQuery(query);
+			}
+			catch (error: unknown)
+			{
+				this.handleValidationError("Invalid query parameters", error);
+			}
 
 			this.query = query;
 		}
@@ -304,7 +321,14 @@ abstract class BaseEndpoint<T extends object = object>
 		{
 			const payload: unknown = await this.getContext().getRequest().getBodyAsJSON();
 
-			this.assertPayload(payload);
+			try
+			{
+				this.assertPayload(payload);
+			}
+			catch (error: unknown)
+			{
+				this.handleValidationError("Invalid payload", error);
+			}
 
 			this.payload = payload;
 		}
@@ -342,6 +366,21 @@ abstract class BaseEndpoint<T extends object = object>
 		}
 
 		return this.response;
+	}
+
+	// eslint-disable-next-line @ts/class-methods-use-this -- Not needed
+	protected handleValidationError(message: string, error: unknown): never
+	{
+		if (error instanceof ValidationError)
+		{
+			throw new HTTPError({
+				message: message,
+				statusCode: HTTPStatusCodeEnum.BAD_REQUEST,
+				data: normalizeErrorTree(error),
+			});
+		}
+
+		throw toError(error);
 	}
 }
 
