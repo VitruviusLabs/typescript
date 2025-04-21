@@ -330,15 +330,16 @@ const RULES = {
 		"error",
 		{
 			"ignoreTernaryTests": false,
+			"ignoreIfStatements": true,
 			"ignoreConditionalTests": false,
 			"ignoreMixedLogicalExpressions": false,
+			"ignoreBooleanCoercion": false,
 			"ignorePrimitives": {
 				"bigint": false,
 				"boolean": false,
 				"number": false,
 				"string": false
-			},
-			"allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing": false
+			}
 		}
 	],
 	"@ts/prefer-optional-chain": [

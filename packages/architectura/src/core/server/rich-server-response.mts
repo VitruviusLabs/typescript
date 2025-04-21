@@ -204,6 +204,11 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 			return Buffer.alloc(0);
 		}
 
+		if (typeof this.content === "string")
+		{
+			return Buffer.from(this.content);
+		}
+
 		return Buffer.from(this.content);
 	}
 
