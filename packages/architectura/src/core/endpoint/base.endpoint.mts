@@ -375,7 +375,7 @@ abstract class BaseEndpoint<T extends object = object>
 		{
 			throw new HTTPError({
 				message: message,
-				statusCode: HTTPStatusCodeEnum.BAD_REQUEST,
+				statusCode: HTTPStatusCodeEnum.UNPROCESSABLE_ENTITY,
 				data: normalizeErrorTree(error),
 			});
 		}

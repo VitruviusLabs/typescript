@@ -912,7 +912,7 @@ describe("BaseEndpoint", (): void => {
 
 			const EXPECTED_ERROR: HTTPError = new HTTPError({
 				message: "Invalid payload",
-				statusCode: HTTPStatusCodeEnum.BAD_REQUEST,
+				statusCode: HTTPStatusCodeEnum.UNPROCESSABLE_ENTITY,
 				data: normalizeErrorTree(ERROR),
 			});
 
