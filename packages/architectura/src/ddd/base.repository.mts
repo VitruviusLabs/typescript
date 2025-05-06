@@ -231,26 +231,26 @@ abstract class BaseRepository<
 		{
 			case ModelRepositoryStatusEnum.NEW:
 				{
-					await this.registerPreHook(instance);
+					await this.onPreRegister(instance);
 
 					const metadata: Omit<ModelMetadataInterface, "deletedAt"> = await this.register(instance);
 
 					BaseRepository.SetMetadata(instance, { ...metadata, deletedAt: undefined });
 
-					await this.registerPostHook(instance);
+					await this.onPostRegister(instance);
 				}
 
 				break;
 
 			case ModelRepositoryStatusEnum.SAVED:
 				{
-					await this.updatePreHook(instance);
+					await this.onPreUpdate(instance);
 
 					const metadata: Pick<ModelMetadataInterface, "updatedAt"> = await this.update(instance);
 
 					ReflectUtility.Set(instance, "updatedAt", new Date(metadata.updatedAt));
 
-					await this.updatePostHook(instance);
+					await this.onPostUpdate(instance);
 				}
 
 				break;
@@ -277,7 +277,7 @@ abstract class BaseRepository<
 			throw new Error(`You can't restore a ${instance.getPersistenceInRepositoryStatus()} entity.`);
 		}
 
-		await this.restorePreHook(instance);
+		await this.onPreRestore(instance);
 
 		const metadata: Pick<ModelMetadataInterface, "updatedAt"> = await this.restore(instance);
 
@@ -285,7 +285,7 @@ abstract class BaseRepository<
 		ReflectUtility.Set(instance, "updatedAt", new Date(metadata.updatedAt));
 		ReflectUtility.Set(instance, "deletedAt", undefined);
 
-		await this.restorePostHook(instance);
+		await this.onPostRestore(instance);
 	}
 
 	/**
@@ -302,7 +302,7 @@ abstract class BaseRepository<
 			throw new Error(`You can't soft delete a ${instance.getPersistenceInRepositoryStatus()} entity.`);
 		}
 
-		await this.deletePreHook(instance);
+		await this.onPreDelete(instance);
 
 		const metadata: NonNullableObject<Pick<ModelMetadataInterface, "deletedAt">> = await this.delete(instance);
 
@@ -310,7 +310,7 @@ abstract class BaseRepository<
 		ReflectUtility.Set(instance, "updatedAt", new Date(metadata.deletedAt));
 		ReflectUtility.Set(instance, "deletedAt", new Date(metadata.deletedAt));
 
-		await this.deletePostHook(instance);
+		await this.onPostDelete(instance);
 	}
 
 	/**
@@ -330,7 +330,7 @@ abstract class BaseRepository<
 			throw new Error(`You can't destroy a ${instance.getPersistenceInRepositoryStatus()} entity.`);
 		}
 
-		await this.destroyPreHook(instance);
+		await this.onPreDestroy(instance);
 
 		await this.destroy(instance);
 
@@ -340,7 +340,7 @@ abstract class BaseRepository<
 		ReflectUtility.Set(instance, "updatedAt", undefined);
 		ReflectUtility.Set(instance, "deletedAt", undefined);
 
-		await this.destroyPostHook(instance);
+		await this.onPostDestroy(instance);
 	}
 
 	/**
@@ -388,70 +388,70 @@ abstract class BaseRepository<
 
 	// @ts-expect-error: Unused parameter
 	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
-	protected registerPreHook(instance: M): Promise<void> | void
+	protected onPreRegister(instance: M): Promise<void> | void
 	{
 		// Does nothing by default
 	}
 
 	// @ts-expect-error: Unused parameter
 	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
-	protected registerPostHook(instance: M): Promise<void> | void
+	protected onPostRegister(instance: M): Promise<void> | void
 	{
 		// Does nothing by default
 	}
 
 	// @ts-expect-error: Unused parameter
 	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
-	protected updatePreHook(instance: M): Promise<void> | void
+	protected onPreUpdate(instance: M): Promise<void> | void
 	{
 		// Does nothing by default
 	}
 
 	// @ts-expect-error: Unused parameter
 	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
-	protected updatePostHook(instance: M): Promise<void> | void
+	protected onPostUpdate(instance: M): Promise<void> | void
 	{
 		// Does nothing by default
 	}
 
 	// @ts-expect-error: Unused parameter
 	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
-	protected restorePreHook(instance: M): Promise<void> | void
+	protected onPreRestore(instance: M): Promise<void> | void
 	{
 		// Does nothing by default
 	}
 
 	// @ts-expect-error: Unused parameter
 	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
-	protected restorePostHook(instance: M): Promise<void> | void
+	protected onPostRestore(instance: M): Promise<void> | void
 	{
 		// Does nothing by default
 	}
 
 	// @ts-expect-error: Unused parameter
 	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
-	protected deletePreHook(instance: M): Promise<void> | void
+	protected onPreDelete(instance: M): Promise<void> | void
 	{
 		// Does nothing by default
 	}
 
 	// @ts-expect-error: Unused parameter
 	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
-	protected deletePostHook(instance: M): Promise<void> | void
+	protected onPostDelete(instance: M): Promise<void> | void
 	{
 		// Does nothing by default
 	}
 
 	// @ts-expect-error: Unused parameter
 	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
-	protected destroyPreHook(instance: M): Promise<void> | void
+	protected onPreDestroy(instance: M): Promise<void> | void
 	{
 		// Does nothing by default
 	}
 
 	// @ts-expect-error: Unused parameter
 	// eslint-disable-next-line @ts/class-methods-use-this, @ts/no-unused-vars
-	protected destroyPostHook(instance: M): Promise<void> | void
+	protected onPostDestroy(instance: M): Promise<void> | void
 	{
 		// Does nothing by default
 	}
