@@ -6,8 +6,10 @@ import type { BasePostHook } from "./base.post-hook.mjs";
 import type { BaseErrorHook } from "./base.error-hook.mjs";
 import type { HooksInterface } from "./definition/interface/hooks.interface.mjs";
 import { isConstructor } from "@vitruvius-labs/ts-predicate/type-guard";
-import { HookRegistry } from "./hook.registry.mjs";
 import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
+import { HookRegistry } from "./hook.registry.mjs";
+import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
+import { HTTPError } from "../server/http-error.mjs";
 
 /**
  * Handle running hooks
@@ -55,6 +57,8 @@ class HookService
 			local: endpoint.getErrorHooks(),
 		});
 
+		this.SpecialErrorHandling(error, HOOKS);
+
 		for (const HOOK of HOOKS)
 		{
 			await HOOK.execute(context, error);
@@ -69,6 +73,8 @@ class HookService
 			excluded: [],
 			local: [],
 		});
+
+		this.SpecialErrorHandling(error, HOOKS);
 
 		for (const HOOK of HOOKS)
 		{
@@ -115,6 +121,16 @@ class HookService
 		}
 
 		return hook;
+	}
+
+	private static SpecialErrorHandling(error: unknown, hooks: Array<BaseErrorHook>): void
+	{
+		if (hooks.length > 0 || error instanceof HTTPError)
+		{
+			return;
+		}
+
+		LoggerProxy.Error(error);
 	}
 }
 
