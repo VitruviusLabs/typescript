@@ -23,15 +23,25 @@ describe("BaseRepository", (): void => {
 	// @ts-expect-error: Stub protected method
 	const DESTROY_STUB: SinonStub = stub(DummyBaseRepository.prototype, "destroy");
 	// @ts-expect-error: Stub protected method
-	const REGISTER_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "registerHook");
+	const REGISTER_PRE_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "registerPreHook");
 	// @ts-expect-error: Stub protected method
-	const UPDATE_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "updateHook");
+	const REGISTER_POST_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "registerPostHook");
 	// @ts-expect-error: Stub protected method
-	const RESTORE_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "restoreHook");
+	const UPDATE_PRE_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "updatePreHook");
 	// @ts-expect-error: Stub protected method
-	const DELETE_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "deleteHook");
+	const UPDATE_POST_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "updatePostHook");
 	// @ts-expect-error: Stub protected method
-	const DESTROY_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "destroyHook");
+	const RESTORE_PRE_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "restorePreHook");
+	// @ts-expect-error: Stub protected method
+	const RESTORE_POST_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "restorePostHook");
+	// @ts-expect-error: Stub protected method
+	const DELETE_PRE_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "deletePreHook");
+	// @ts-expect-error: Stub protected method
+	const DELETE_POST_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "deletePostHook");
+	// @ts-expect-error: Stub protected method
+	const DESTROY_PRE_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "destroyPreHook");
+	// @ts-expect-error: Stub protected method
+	const DESTROY_POST_HOOK_STUB: SinonStub = stub(DummyBaseRepository.prototype, "destroyPostHook");
 
 	beforeEach((): void => {
 		FETCH_UUID_STUB.reset();
@@ -48,16 +58,26 @@ describe("BaseRepository", (): void => {
 		DELETE_STUB.rejects();
 		DESTROY_STUB.reset();
 		DESTROY_STUB.rejects();
-		REGISTER_HOOK_STUB.reset();
-		REGISTER_HOOK_STUB.resolves();
-		UPDATE_HOOK_STUB.reset();
-		UPDATE_HOOK_STUB.resolves();
-		RESTORE_HOOK_STUB.reset();
-		RESTORE_HOOK_STUB.resolves();
-		DELETE_HOOK_STUB.reset();
-		DELETE_HOOK_STUB.resolves();
-		DESTROY_HOOK_STUB.reset();
-		DESTROY_HOOK_STUB.resolves();
+		REGISTER_PRE_HOOK_STUB.reset();
+		REGISTER_PRE_HOOK_STUB.resolves();
+		REGISTER_POST_HOOK_STUB.reset();
+		REGISTER_POST_HOOK_STUB.resolves();
+		UPDATE_PRE_HOOK_STUB.reset();
+		UPDATE_PRE_HOOK_STUB.resolves();
+		UPDATE_POST_HOOK_STUB.reset();
+		UPDATE_POST_HOOK_STUB.resolves();
+		RESTORE_PRE_HOOK_STUB.reset();
+		RESTORE_PRE_HOOK_STUB.resolves();
+		RESTORE_POST_HOOK_STUB.reset();
+		RESTORE_POST_HOOK_STUB.resolves();
+		DELETE_PRE_HOOK_STUB.reset();
+		DELETE_PRE_HOOK_STUB.resolves();
+		DELETE_POST_HOOK_STUB.reset();
+		DELETE_POST_HOOK_STUB.resolves();
+		DESTROY_PRE_HOOK_STUB.reset();
+		DESTROY_PRE_HOOK_STUB.resolves();
+		DESTROY_POST_HOOK_STUB.reset();
+		DESTROY_POST_HOOK_STUB.resolves();
 	});
 
 	after((): void => {
@@ -68,11 +88,16 @@ describe("BaseRepository", (): void => {
 		RESTORE_STUB.restore();
 		DELETE_STUB.restore();
 		DESTROY_STUB.restore();
-		REGISTER_HOOK_STUB.restore();
-		UPDATE_HOOK_STUB.restore();
-		RESTORE_HOOK_STUB.restore();
-		DELETE_HOOK_STUB.restore();
-		DESTROY_HOOK_STUB.restore();
+		REGISTER_PRE_HOOK_STUB.restore();
+		REGISTER_POST_HOOK_STUB.restore();
+		UPDATE_PRE_HOOK_STUB.restore();
+		UPDATE_POST_HOOK_STUB.restore();
+		RESTORE_PRE_HOOK_STUB.restore();
+		RESTORE_POST_HOOK_STUB.restore();
+		DELETE_PRE_HOOK_STUB.restore();
+		DELETE_POST_HOOK_STUB.restore();
+		DESTROY_PRE_HOOK_STUB.restore();
+		DESTROY_POST_HOOK_STUB.restore();
 	});
 
 	describe("constructor", (): void => {
@@ -391,11 +416,14 @@ describe("BaseRepository", (): void => {
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
-			strictEqual(REGISTER_HOOK_STUB.callCount, 1, "The 'registerHook' method should be called exactly once");
-			deepStrictEqual(REGISTER_HOOK_STUB.firstCall.args, [ENTITY]);
+			strictEqual(REGISTER_PRE_HOOK_STUB.callCount, 1, "The 'registerPreHook' method should be called exactly once");
+			deepStrictEqual(REGISTER_PRE_HOOK_STUB.firstCall.args, [ENTITY]);
+			strictEqual(REGISTER_POST_HOOK_STUB.callCount, 1, "The 'registerPostHook' method should be called exactly once");
+			deepStrictEqual(REGISTER_POST_HOOK_STUB.firstCall.args, [ENTITY]);
 			strictEqual(REGISTER_STUB.callCount, 1, "The 'register' method should be called exactly once");
 			deepStrictEqual(REGISTER_STUB.firstCall.args, [ENTITY]);
-			strictEqual(REGISTER_HOOK_STUB.firstCall.calledBefore(REGISTER_STUB.firstCall), true, "The 'registerHook' method should be called before the 'register' method");
+			strictEqual(REGISTER_PRE_HOOK_STUB.firstCall.calledBefore(REGISTER_STUB.firstCall), true, "The 'registerPreHook' method should be called before the 'register' method");
+			strictEqual(REGISTER_POST_HOOK_STUB.firstCall.calledAfter(REGISTER_STUB.firstCall), true, "The 'registerPostHook' method should be called after the 'register' method");
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -413,11 +441,14 @@ describe("BaseRepository", (): void => {
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
-			strictEqual(UPDATE_HOOK_STUB.callCount, 1, "The 'updateHook' method should be called exactly once");
-			deepStrictEqual(UPDATE_HOOK_STUB.firstCall.args, [ENTITY]);
+			strictEqual(UPDATE_PRE_HOOK_STUB.callCount, 1, "The 'updatePreHook' method should be called exactly once");
+			deepStrictEqual(UPDATE_PRE_HOOK_STUB.firstCall.args, [ENTITY]);
+			strictEqual(UPDATE_POST_HOOK_STUB.callCount, 1, "The 'updatePostHook' method should be called exactly once");
+			deepStrictEqual(UPDATE_POST_HOOK_STUB.firstCall.args, [ENTITY]);
 			strictEqual(UPDATE_STUB.callCount, 1, "The 'update' method should be called exactly once");
 			deepStrictEqual(UPDATE_STUB.firstCall.args, [ENTITY]);
-			strictEqual(UPDATE_HOOK_STUB.firstCall.calledBefore(UPDATE_STUB.firstCall), true, "The 'updateHook' method should be called before the 'update' method");
+			strictEqual(UPDATE_PRE_HOOK_STUB.firstCall.calledBefore(UPDATE_STUB.firstCall), true, "The 'updatePreHook' method should be called before the 'update' method");
+			strictEqual(UPDATE_POST_HOOK_STUB.firstCall.calledAfter(UPDATE_STUB.firstCall), true, "The 'updatePostHook' method should be called after the 'update' method");
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -464,11 +495,14 @@ describe("BaseRepository", (): void => {
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
-			strictEqual(DELETE_HOOK_STUB.callCount, 1, "The 'deleteHook' method should be called exactly once");
-			deepStrictEqual(DELETE_HOOK_STUB.firstCall.args, [ENTITY]);
+			strictEqual(DELETE_PRE_HOOK_STUB.callCount, 1, "The 'deletePreHook' method should be called exactly once");
+			deepStrictEqual(DELETE_PRE_HOOK_STUB.firstCall.args, [ENTITY]);
+			strictEqual(DELETE_POST_HOOK_STUB.callCount, 1, "The 'deletePostHook' method should be called exactly once");
+			deepStrictEqual(DELETE_POST_HOOK_STUB.firstCall.args, [ENTITY]);
 			strictEqual(DELETE_STUB.callCount, 1, "The 'delete' method should be called exactly once");
 			deepStrictEqual(DELETE_STUB.firstCall.args, [ENTITY]);
-			strictEqual(DELETE_HOOK_STUB.firstCall.calledBefore(DELETE_STUB.firstCall), true, "The 'deleteHook' method should be called before the 'delete' method");
+			strictEqual(DELETE_PRE_HOOK_STUB.firstCall.calledBefore(DELETE_STUB.firstCall), true, "The 'deletePreHook' method should be called before the 'delete' method");
+			strictEqual(DELETE_POST_HOOK_STUB.firstCall.calledAfter(DELETE_STUB.firstCall), true, "The 'deletePostHook' method should be called after the 'delete' method");
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -524,11 +558,14 @@ describe("BaseRepository", (): void => {
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
-			strictEqual(RESTORE_HOOK_STUB.callCount, 1, "The 'restoreHook' method should be called exactly once");
-			deepStrictEqual(RESTORE_HOOK_STUB.firstCall.args, [ENTITY]);
+			strictEqual(RESTORE_PRE_HOOK_STUB.callCount, 1, "The 'restorePreHook' method should be called exactly once");
+			deepStrictEqual(RESTORE_PRE_HOOK_STUB.firstCall.args, [ENTITY]);
+			strictEqual(RESTORE_POST_HOOK_STUB.callCount, 1, "The 'restorePostHook' method should be called exactly once");
+			deepStrictEqual(RESTORE_POST_HOOK_STUB.firstCall.args, [ENTITY]);
 			strictEqual(RESTORE_STUB.callCount, 1, "The 'restore' method should be called exactly once");
 			deepStrictEqual(RESTORE_STUB.firstCall.args, [ENTITY]);
-			strictEqual(RESTORE_HOOK_STUB.firstCall.calledBefore(RESTORE_STUB.firstCall), true, "The 'restoreHook' method should be called before the 'restore' method");
+			strictEqual(RESTORE_PRE_HOOK_STUB.firstCall.calledBefore(RESTORE_STUB.firstCall), true, "The 'restorePreHook' method should be called before the 'restore' method");
+			strictEqual(RESTORE_POST_HOOK_STUB.firstCall.calledAfter(RESTORE_STUB.firstCall), true, "The 'restorePostHook' method should be called after the 'restore' method");
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
@@ -566,11 +603,14 @@ describe("BaseRepository", (): void => {
 
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
-			strictEqual(DESTROY_HOOK_STUB.callCount, 1, "The 'destroyHook' method should be called exactly once");
-			deepStrictEqual(DESTROY_HOOK_STUB.firstCall.args, [ENTITY]);
+			strictEqual(DESTROY_PRE_HOOK_STUB.callCount, 1, "The 'destroyPreHook' method should be called exactly once");
+			deepStrictEqual(DESTROY_PRE_HOOK_STUB.firstCall.args, [ENTITY]);
+			strictEqual(DESTROY_POST_HOOK_STUB.callCount, 1, "The 'destroyPostHook' method should be called exactly once");
+			deepStrictEqual(DESTROY_POST_HOOK_STUB.firstCall.args, [ENTITY]);
 			strictEqual(DESTROY_STUB.callCount, 1, "The 'destroy' method should be called exactly once");
 			deepStrictEqual(DESTROY_STUB.firstCall.args, [ENTITY]);
-			strictEqual(DESTROY_HOOK_STUB.firstCall.calledBefore(DESTROY_STUB.firstCall), true, "The 'destroyHook' method should be called before the 'destroy' method");
+			strictEqual(DESTROY_PRE_HOOK_STUB.firstCall.calledBefore(DESTROY_STUB.firstCall), true, "The 'destroyPreHook' method should be called before the 'destroy' method");
+			strictEqual(DESTROY_POST_HOOK_STUB.firstCall.calledAfter(DESTROY_STUB.firstCall), true, "The 'destroyPostHook' method should be called after the 'destroy' method");
 			deepStrictEqual(ENTITY, EXPECTED);
 		});
 
