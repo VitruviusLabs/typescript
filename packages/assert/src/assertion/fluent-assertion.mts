@@ -10,8 +10,7 @@ import { AssertionConstantEnum } from "../definition/enum/assertion-constant.enu
 import { createErrorPredicate } from "../error-predicate/create-error-predicate.mjs";
 import { getType } from "../utility/get-type.mjs";
 
-/* eslint-disable @typescript-eslint/promise-function-async -- Promises are handled in a particular manner */
-/* eslint-disable @typescript-eslint/member-ordering -- Ordered more meaningfully */
+/* eslint-disable @ts/member-ordering -- Ordered more meaningfully */
 /* eslint-disable accessor-pairs -- Getters are used for fluent chaining */
 /* eslint-disable id-length -- Fluent chaining words can be short */
 
