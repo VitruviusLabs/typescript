@@ -1,12 +1,13 @@
 import { deepStrictEqual, doesNotReject, doesNotThrow, rejects, strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { type SinonStub, stub } from "sinon";
-import { ReflectUtility } from "@vitruvius-labs/toolbox";
+import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
 import { type ConstructorOf, ValidationError } from "@vitruvius-labs/ts-predicate";
+import { normalizeErrorTree, toError } from "@vitruvius-labs/ts-predicate/helper";
+import { assertDefined } from "@vitruvius-labs/ts-predicate/type-assertion";
 import { BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, HTTPError, HTTPMethodEnum, HTTPStatusCodeEnum } from "../../../src/_index.mjs";
 import { type MockContextInterface, mockContext } from "../../../mock/_index.mjs";
 import { AccessControlDefinition } from "../../../src/core/endpoint/access-control-definition.mjs";
-import { normalizeErrorTree, toError } from "@vitruvius-labs/ts-predicate/helper";
 
 describe("BaseEndpoint", (): void => {
 	describe("getAccessControlDefinition", (): void => {
@@ -41,7 +42,7 @@ describe("BaseEndpoint", (): void => {
 
 			const HOOK: DummyPreHook = new DummyPreHook();
 
-			class DummyEndpoint extends BaseEndpoint<{ query: unknown; path: unknown; payload: unknown; response: unknown }>
+			class DummyEndpoint extends BaseEndpoint
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
 				protected readonly route: string = "/test-dummy";
@@ -289,6 +290,34 @@ describe("BaseEndpoint", (): void => {
 
 			throws(WRAPPER, new Error(`Method "assertPathFragments" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
 		});
+
+		it("should work when redefined", (): void => {
+			const MOCK_CONTEXT: MockContextInterface = mockContext();
+
+			class DummyEndpoint extends BaseEndpoint<{ pathFragments: { test: string } }>
+			{
+				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected readonly route: string = "/test-dummy";
+
+				public execute(): void { }
+
+				protected override assertPathFragments(value: unknown): asserts value is { test: string }
+				{
+					assertDefined(value);
+				}
+			}
+
+			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
+
+			ReflectUtility.Set(ENDPOINT, "context", MOCK_CONTEXT.instance);
+
+			const WRAPPER = (): void => {
+				// @ts-expect-error: Invoking assertor method is not allowed using index access notation
+				ENDPOINT["assertPathFragments"]({ test: "Hello, World!" });
+			};
+
+			doesNotThrow(WRAPPER);
+		});
 	});
 
 	describe("getPathFragments", (): void => {
@@ -456,6 +485,34 @@ describe("BaseEndpoint", (): void => {
 			};
 
 			throws(WRAPPER, new Error(`Method "assertQuery" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
+		});
+
+		it("should work when redefined", (): void => {
+			const MOCK_CONTEXT: MockContextInterface = mockContext();
+
+			class DummyEndpoint extends BaseEndpoint<{ query: { test: string } }>
+			{
+				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected readonly route: string = "/test-dummy";
+
+				public execute(): void { }
+
+				protected override assertQuery(value: unknown): asserts value is { test: string }
+				{
+					assertDefined(value);
+				}
+			}
+
+			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
+
+			ReflectUtility.Set(ENDPOINT, "context", MOCK_CONTEXT.instance);
+
+			const WRAPPER = (): void => {
+				// @ts-expect-error: Invoking assertor method is not allowed using index access notation
+				ENDPOINT["assertQuery"]({ test: "Hello, World!" });
+			};
+
+			doesNotThrow(WRAPPER);
 		});
 	});
 
@@ -625,6 +682,34 @@ describe("BaseEndpoint", (): void => {
 
 			throws(WRAPPER, new Error(`Method "assertPayload" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
 		});
+
+		it("should work when redefined", (): void => {
+			const MOCK_CONTEXT: MockContextInterface = mockContext();
+
+			class DummyEndpoint extends BaseEndpoint<{ payload: { test: string } }>
+			{
+				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected readonly route: string = "/test-dummy";
+
+				public execute(): void { }
+
+				protected override assertPayload(value: unknown): asserts value is { test: string }
+				{
+					assertDefined(value);
+				}
+			}
+
+			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
+
+			ReflectUtility.Set(ENDPOINT, "context", MOCK_CONTEXT.instance);
+
+			const WRAPPER = (): void => {
+				// @ts-expect-error: Invoking assertor method is not allowed using index access notation
+				ENDPOINT["assertPayload"]({ test: "Hello, World!" });
+			};
+
+			doesNotThrow(WRAPPER);
+		});
 	});
 
 	describe("getPayload", (): void => {
@@ -776,11 +861,39 @@ describe("BaseEndpoint", (): void => {
 			ReflectUtility.Set(ENDPOINT, "context", MOCK_CONTEXT.instance);
 
 			const WRAPPER = (): void => {
-				// @ts-expect-error: Invoking protected method for testing purposes.
-				ENDPOINT["buildResponse"]({});
+				ENDPOINT["buildResponse"]();
 			};
 
 			throws(WRAPPER, new Error(`Method "buildResponse" need an override in endpoint ${ENDPOINT.constructor.name}.`));
+		});
+
+		it("should work when redefined", async (): Promise<void> => {
+			const MOCK_CONTEXT: MockContextInterface = mockContext();
+
+			class DummyEndpoint extends BaseEndpoint<{ response: { test: string } }>
+			{
+				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
+				protected readonly route: string = "/test-dummy";
+
+				public execute(): void { }
+
+				protected override async buildResponse(): Promise<{ test: string }>
+				{
+					await Promise.resolve();
+
+					return { test: "Hello, World!" };
+				}
+			}
+
+			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
+
+			ReflectUtility.Set(ENDPOINT, "context", MOCK_CONTEXT.instance);
+
+			const RESULT: unknown = ENDPOINT["buildResponse"]();
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, { test: "Hello, World!" });
 		});
 	});
 

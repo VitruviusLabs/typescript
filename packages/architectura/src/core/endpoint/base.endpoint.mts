@@ -4,8 +4,8 @@ import type { BasePreHook } from "../hook/base.pre-hook.mjs";
 import type { BasePostHook } from "../hook/base.post-hook.mjs";
 import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import type { ExecutionContext } from "../execution-context/execution-context.mjs";
-import type { ExtractType } from "../../definition/type/extract.type.mjs";
 import type { AccessControlDefinition } from "./access-control-definition.mjs";
+import type { BaseEndpointTypingInterface } from "./definition/interface/base-endpoint-typing.interface.mjs";
 import { ValidationError, assertString } from "@vitruvius-labs/ts-predicate/type-assertion";
 import { normalizeErrorTree, toError } from "@vitruvius-labs/ts-predicate/helper";
 import { RouteUtility } from "./route.utility.mjs";
@@ -15,7 +15,7 @@ import { HTTPStatusCodeEnum } from "../server/definition/enum/http-status-code.e
 /**
  * Abstract endpoint class.
  */
-abstract class BaseEndpoint<T extends object = object>
+abstract class BaseEndpoint<T extends BaseEndpointTypingInterface = object>
 {
 	/**
 	 * Which HTTP method match this endpoint.
@@ -47,10 +47,10 @@ abstract class BaseEndpoint<T extends object = object>
 	protected readonly errorHooks: Array<BaseErrorHook | ConstructorOf<BaseErrorHook>> = [];
 	protected readonly excludedGlobalErrorHooks: Array<ConstructorOf<BaseErrorHook>> = [];
 
-	protected pathFragments: ExtractType<T, "pathFragments"> | undefined = undefined;
-	protected query: ExtractType<T, "query"> | undefined = undefined;
-	protected payload: ExtractType<T, "payload"> | undefined = undefined;
-	protected response: ExtractType<T, "response"> | undefined = undefined;
+	protected pathFragments: T["pathFragments"] | undefined = undefined;
+	protected query: T["query"] | undefined = undefined;
+	protected payload: T["payload"] | undefined = undefined;
+	protected response: T["response"] | undefined = undefined;
 
 	private readonly context: ExecutionContext | undefined = undefined;
 
@@ -211,7 +211,7 @@ abstract class BaseEndpoint<T extends object = object>
 	 * This method is meant to be overridden to assert the path fragments of the request.
 	 * It always throws an error by default.
 	 */
-	protected assertPathFragments(value: unknown): asserts value is ExtractType<T, "pathFragments">
+	protected assertPathFragments(value: unknown): asserts value is T["pathFragments"]
 	{
 		// eslint-disable-next-line @ts/no-unused-expressions -- Pretend to use the value
 		value;
@@ -227,7 +227,7 @@ abstract class BaseEndpoint<T extends object = object>
 	 *
 	 * @sealed
 	 */
-	protected getPathFragments(): ExtractType<T, "pathFragments">
+	protected getPathFragments(): T["pathFragments"]
 	{
 		if (this.pathFragments === undefined)
 		{
@@ -255,7 +255,7 @@ abstract class BaseEndpoint<T extends object = object>
 	 * This method is meant to be overridden to assert the query of the request.
 	 * It always throws an error by default.
 	 */
-	protected assertQuery(value: unknown): asserts value is ExtractType<T, "query">
+	protected assertQuery(value: unknown): asserts value is T["query"]
 	{
 		// eslint-disable-next-line @ts/no-unused-expressions -- Pretend to use the value
 		value;
@@ -271,7 +271,7 @@ abstract class BaseEndpoint<T extends object = object>
 	 *
 	 * @sealed
 	 */
-	protected getQuery(): ExtractType<T, "query">
+	protected getQuery(): T["query"]
 	{
 		if (this.query === undefined)
 		{
@@ -299,7 +299,7 @@ abstract class BaseEndpoint<T extends object = object>
 	 * This method is meant to be overridden to assert the payload of the request.
 	 * It always throws an error by default.
 	 */
-	protected assertPayload(value: unknown): asserts value is ExtractType<T, "payload">
+	protected assertPayload(value: unknown): asserts value is T["payload"]
 	{
 		// eslint-disable-next-line @ts/no-unused-expressions -- Pretend to use the value
 		value;
@@ -315,7 +315,7 @@ abstract class BaseEndpoint<T extends object = object>
 	 *
 	 * @sealed
 	 */
-	protected async getPayload(): Promise<ExtractType<T, "payload">>
+	protected async getPayload(): Promise<T["payload"]>
 	{
 		if (this.payload === undefined)
 		{
@@ -343,7 +343,7 @@ abstract class BaseEndpoint<T extends object = object>
 	 * This method is meant to be overridden to build the response of the request.
 	 * It always throws an error by default.
 	 */
-	protected buildResponse(): ExtractType<T, "response"> | Promise<ExtractType<T, "response">>
+	protected buildResponse(): T["response"] | Promise<T["response"]>
 	{
 		throw new Error(`Method "buildResponse" need an override in endpoint ${this.constructor.name}.`);
 	}
@@ -358,7 +358,7 @@ abstract class BaseEndpoint<T extends object = object>
 	 *
 	 * @sealed
 	 */
-	protected async getResponse(): Promise<ExtractType<T, "response">>
+	protected async getResponse(): Promise<T["response"]>
 	{
 		if (this.response === undefined)
 		{
