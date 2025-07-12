@@ -1,0 +1,15 @@
+{
+	"name": "@vitruvius-labs/instrumenta",
+	"version": "0.1.0",
+	"description": "A package providing tools to work with the Architectura framework.",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "Vitruvius Labs",
+	"contributors": [
+		"Nicolas \"SmashingQuasar\" Lebacq"
+	],
+	"license": "ISC",
+	"packageManager": "pnpm@10.10.0"
+}
