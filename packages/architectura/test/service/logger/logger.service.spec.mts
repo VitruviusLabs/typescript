@@ -1,9 +1,11 @@
 import { after, beforeEach, describe, it } from "node:test";
 import { deepStrictEqual, strictEqual } from "node:assert";
 import { type SinonFakeTimers, type SinonStub, stub, useFakeTimers } from "sinon";
-import { pruneIndentTrim } from "@vitruvius-labs/toolbox";
+import { DateTime, pruneIndentTrim } from "@vitruvius-labs/toolbox";
 import { ValidationError } from "@vitruvius-labs/ts-predicate";
 import { LogLevelEnum, LoggerService, Singleton } from "../../../src/_index.mjs";
+import type { LoggerServiceJSONMessageInterface } from "../../../src/service/logger/definition/interface/logger-service-json-message.interface.mjs";
+import { LoggerServiceOutputFormatEnum } from "../../../src/service/logger/definition/enum/logger-service-output-format.enum.mjs";
 
 describe("LoggerService", (): void => {
 	const CONSOLE_LOG_STUB: SinonStub = stub(console, "log");
@@ -27,7 +29,7 @@ describe("LoggerService", (): void => {
 		WRITE_STUB.restore();
 	});
 
-	describe("handleMessage", (): void => {
+	describe("handlePlainMessage", (): void => {
 		it("should log a message (simple)", (): void => {
 			const LOGGER_SERVICE: LoggerService = new LoggerService();
 
@@ -35,7 +37,7 @@ describe("LoggerService", (): void => {
 				[1970-01-01 00:00:00] [INFO] - Hello, World!
 			`);
 
-			LOGGER_SERVICE.handleMessage(
+			LOGGER_SERVICE.handlePlainMessage(
 				"Hello, World!",
 				{
 					level: LogLevelEnum.INFO,
@@ -53,7 +55,7 @@ describe("LoggerService", (): void => {
 				[1970-01-01 00:00:00] [DEBUG] {00000000-0000-0000-0000-000000000000} - Hello, World!
 			`);
 
-			LOGGER_SERVICE.handleMessage(
+			LOGGER_SERVICE.handlePlainMessage(
 				"Hello, World!",
 				{
 					level: LogLevelEnum.DEBUG,
@@ -72,7 +74,7 @@ describe("LoggerService", (): void => {
 				[1970-01-01 00:00:00] [WARNING] [Lorem ipsum] - Hello, World!
 			`);
 
-			LOGGER_SERVICE.handleMessage(
+			LOGGER_SERVICE.handlePlainMessage(
 				"Hello, World!",
 				{
 					level: LogLevelEnum.WARNING,
@@ -91,7 +93,7 @@ describe("LoggerService", (): void => {
 				[1970-01-01 00:00:00] [CRITICAL] {00000000-0000-0000-0000-000000000000} [Lorem ipsum] - Hello, World!
 			`);
 
-			LOGGER_SERVICE.handleMessage(
+			LOGGER_SERVICE.handlePlainMessage(
 				"Hello, World!",
 				{
 					level: LogLevelEnum.CRITICAL,
@@ -113,7 +115,182 @@ describe("LoggerService", (): void => {
 				[1970-01-01 00:00:00] [EMERGENCY] - Hello, World!
 			`);
 
-			LOGGER_SERVICE.handleMessage(
+			LOGGER_SERVICE.handlePlainMessage(
+				"Hello, World!\nHello, World!\nHello, World!",
+				{
+					level: LogLevelEnum.EMERGENCY,
+				}
+			);
+
+			strictEqual(WRITE_STUB.callCount, 1, "'LoggerService.Write' should be called only once");
+			deepStrictEqual(WRITE_STUB.firstCall.args, [EXPECTED]);
+		});
+	});
+
+	describe("handleJSONMessage", (): void => {
+		it("should log a message (simple)", (): void => {
+			const LOGGER_SERVICE: LoggerService = new LoggerService(
+				{
+					outputFormat: LoggerServiceOutputFormatEnum.JSON,
+				}
+			);
+
+			const expectedDateTime: DateTime = DateTime.Create();
+
+			expectedDateTime.setTime(CLOCK.now);
+
+			const EXPECTED_OBJECT_INTERFACE: LoggerServiceJSONMessageInterface = {
+				level: "INFO",
+				timestamp: CLOCK.now,
+				isoDate: expectedDateTime.getISODateTime(),
+				message: "Hello, World!",
+				requestUUID: null,
+				contextTag: null,
+			};
+
+			const EXPECTED: string = JSON.stringify(EXPECTED_OBJECT_INTERFACE);
+
+			LOGGER_SERVICE.handleJSONMessage(
+				"Hello, World!",
+				{
+					level: LogLevelEnum.INFO,
+				}
+			);
+
+			strictEqual(WRITE_STUB.callCount, 1, "'LoggerService.Write' should be called only once");
+			deepStrictEqual(WRITE_STUB.firstCall.args, [EXPECTED]);
+		});
+
+		it("should log a message (with uuid)", (): void => {
+			const LOGGER_SERVICE: LoggerService = new LoggerService(
+				{
+					outputFormat: LoggerServiceOutputFormatEnum.JSON,
+				}
+			);
+
+			const expectedDateTime: DateTime = DateTime.Create();
+
+			expectedDateTime.setTime(CLOCK.now);
+
+			const EXPECTED_OBJECT_INTERFACE: LoggerServiceJSONMessageInterface = {
+				level: "DEBUG",
+				timestamp: CLOCK.now,
+				isoDate: expectedDateTime.getISODateTime(),
+				message: "Hello, World!",
+				requestUUID: "00000000-0000-0000-0000-000000000000",
+				contextTag: null,
+			};
+
+			const EXPECTED: string = JSON.stringify(EXPECTED_OBJECT_INTERFACE);
+
+			LOGGER_SERVICE.handleJSONMessage(
+				"Hello, World!",
+				{
+					level: LogLevelEnum.DEBUG,
+					uuid: "00000000-0000-0000-0000-000000000000",
+				}
+			);
+
+			strictEqual(WRITE_STUB.callCount, 1, "'LoggerService.Write' should be called only once");
+			deepStrictEqual(WRITE_STUB.firstCall.args, [EXPECTED]);
+		});
+
+		it("should log a message (with tag)", (): void => {
+			const LOGGER_SERVICE: LoggerService = new LoggerService(
+				{
+					outputFormat: LoggerServiceOutputFormatEnum.JSON,
+				}
+			);
+
+			const expectedDateTime: DateTime = DateTime.Create();
+
+			expectedDateTime.setTime(CLOCK.now);
+
+			const EXPECTED_OBJECT_INTERFACE: LoggerServiceJSONMessageInterface = {
+				level: "WARNING",
+				timestamp: CLOCK.now,
+				isoDate: expectedDateTime.getISODateTime(),
+				message: "Hello, World!",
+				requestUUID: null,
+				contextTag: "Lorem ipsum",
+			};
+
+			const EXPECTED: string = JSON.stringify(EXPECTED_OBJECT_INTERFACE);
+
+			LOGGER_SERVICE.handleJSONMessage(
+				"Hello, World!",
+				{
+					level: LogLevelEnum.WARNING,
+					tag: "Lorem ipsum",
+				}
+			);
+
+			strictEqual(WRITE_STUB.callCount, 1, "'LoggerService.Write' should be called only once");
+			deepStrictEqual(WRITE_STUB.firstCall.args, [EXPECTED]);
+		});
+
+		it("should log a message (with uuid and tag)", (): void => {
+			const LOGGER_SERVICE: LoggerService = new LoggerService(
+				{
+					outputFormat: LoggerServiceOutputFormatEnum.JSON,
+				}
+			);
+
+			const expectedDateTime: DateTime = DateTime.Create();
+
+			expectedDateTime.setTime(CLOCK.now);
+
+			const EXPECTED_OBJECT_INTERFACE: LoggerServiceJSONMessageInterface = {
+				level: "CRITICAL",
+				timestamp: CLOCK.now,
+				isoDate: expectedDateTime.getISODateTime(),
+				message: "Hello, World!",
+				requestUUID: "00000000-0000-0000-0000-000000000000",
+				contextTag: "Lorem ipsum",
+			};
+
+			const EXPECTED: string = JSON.stringify(EXPECTED_OBJECT_INTERFACE);
+
+			LOGGER_SERVICE.handleJSONMessage(
+				"Hello, World!",
+				{
+					level: LogLevelEnum.CRITICAL,
+					uuid: "00000000-0000-0000-0000-000000000000",
+					tag: "Lorem ipsum",
+				}
+			);
+
+			strictEqual(WRITE_STUB.callCount, 1, "'LoggerService.Write' should be called only once");
+			deepStrictEqual(WRITE_STUB.firstCall.args, [EXPECTED]);
+		});
+
+		it("should log a message (multiline)", (): void => {
+			const LOGGER_SERVICE: LoggerService = new LoggerService(
+				{
+					outputFormat: LoggerServiceOutputFormatEnum.JSON,
+				}
+			);
+
+			const expectedDateTime: DateTime = DateTime.Create();
+
+			expectedDateTime.setTime(CLOCK.now);
+
+			const EXPECTED_OBJECT_INTERFACE: LoggerServiceJSONMessageInterface = {
+				level: "EMERGENCY",
+				timestamp: CLOCK.now,
+				isoDate: expectedDateTime.getISODateTime(),
+				message: pruneIndentTrim(`
+					Hello, World!
+					Hello, World!
+					Hello, World!
+				`),
+				requestUUID: null,
+				contextTag: null,
+			};
+
+			const EXPECTED: string = JSON.stringify(EXPECTED_OBJECT_INTERFACE);
+
+			LOGGER_SERVICE.handleJSONMessage(
 				"Hello, World!\nHello, World!\nHello, World!",
 				{
 					level: LogLevelEnum.EMERGENCY,
