@@ -142,7 +142,7 @@ describe("LoggerService", (): void => {
 			const EXPECTED_OBJECT_INTERFACE: LoggerServiceJSONMessageInterface = {
 				level: "INFO",
 				timestamp: CLOCK.now,
-				isoDate: expectedDateTime.getISODateTime(),
+				logDate: expectedDateTime.getISODateTime(),
 				message: "Hello, World!",
 				requestUUID: null,
 				contextTag: null,
@@ -175,7 +175,7 @@ describe("LoggerService", (): void => {
 			const EXPECTED_OBJECT_INTERFACE: LoggerServiceJSONMessageInterface = {
 				level: "DEBUG",
 				timestamp: CLOCK.now,
-				isoDate: expectedDateTime.getISODateTime(),
+				logDate: expectedDateTime.getISODateTime(),
 				message: "Hello, World!",
 				requestUUID: "00000000-0000-0000-0000-000000000000",
 				contextTag: null,
@@ -209,7 +209,7 @@ describe("LoggerService", (): void => {
 			const EXPECTED_OBJECT_INTERFACE: LoggerServiceJSONMessageInterface = {
 				level: "WARNING",
 				timestamp: CLOCK.now,
-				isoDate: expectedDateTime.getISODateTime(),
+				logDate: expectedDateTime.getISODateTime(),
 				message: "Hello, World!",
 				requestUUID: null,
 				contextTag: "Lorem ipsum",
@@ -243,7 +243,7 @@ describe("LoggerService", (): void => {
 			const EXPECTED_OBJECT_INTERFACE: LoggerServiceJSONMessageInterface = {
 				level: "CRITICAL",
 				timestamp: CLOCK.now,
-				isoDate: expectedDateTime.getISODateTime(),
+				logDate: expectedDateTime.getISODateTime(),
 				message: "Hello, World!",
 				requestUUID: "00000000-0000-0000-0000-000000000000",
 				contextTag: "Lorem ipsum",
@@ -278,7 +278,7 @@ describe("LoggerService", (): void => {
 			const EXPECTED_OBJECT_INTERFACE: LoggerServiceJSONMessageInterface = {
 				level: "EMERGENCY",
 				timestamp: CLOCK.now,
-				isoDate: expectedDateTime.getISODateTime(),
+				logDate: expectedDateTime.getISODateTime(),
 				message: pruneIndentTrim(`
 					Hello, World!
 					Hello, World!

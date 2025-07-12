@@ -103,7 +103,7 @@ class LoggerService extends Singleton implements LoggerInterface
 		const JSON_MESSAGE: LoggerServiceJSONMessageInterface = {
 			level: context.level.toUpperCase(),
 			timestamp: DATE.getTime(),
-			isoDate: DATE.getISODateTime(),
+			logDate: DATE.getISODateTime(),
 			message: message,
 			requestUUID: context.uuid ?? null,
 			contextTag: context.tag ?? null,
