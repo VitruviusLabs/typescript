@@ -5,6 +5,9 @@ import { stringifyErrorTree } from "@vitruvius-labs/ts-predicate/helper";
 import { DateTime } from "@vitruvius-labs/toolbox";
 import { Singleton } from "../../utility/singleton.mjs";
 import { StackTraceUtility } from "../stack-trace/stack-trace.utility.mjs";
+import { LoggerServiceOutputFormatEnum } from "./definition/enum/logger-service-output-format.enum.mjs";
+import type { LoggerServiceInstantiationInterface } from "./definition/interface/logger-service-instantiation.interface.mjs";
+import type { LoggerServiceJSONMessageInterface } from "./definition/interface/logger-service-json-message.interface.mjs";
 
 /**
  * Default logger service
@@ -13,6 +16,23 @@ import { StackTraceUtility } from "../stack-trace/stack-trace.utility.mjs";
  */
 class LoggerService extends Singleton implements LoggerInterface
 {
+	protected outputFormat: LoggerServiceOutputFormatEnum = LoggerServiceOutputFormatEnum.PLAIN;
+
+	public constructor(parameters?: LoggerServiceInstantiationInterface)
+	{
+		super();
+
+		if (parameters === undefined)
+		{
+			return;
+		}
+
+		if (parameters.outputFormat !== undefined)
+		{
+			this.outputFormat = parameters.outputFormat;
+		}
+	}
+
 	/**
 	 * @privateRemarks
 	 * Proxy to console.log for easier testing
@@ -23,10 +43,27 @@ class LoggerService extends Singleton implements LoggerInterface
 		console.log(message);
 	}
 
+	public setOutputFormat(value: LoggerServiceOutputFormatEnum): void
+	{
+		this.outputFormat = value;
+	}
+
+	public handleMessage(message: string, context: LogContextInterface): void
+	{
+		if (this.outputFormat === LoggerServiceOutputFormatEnum.PLAIN)
+		{
+			this.handlePlainMessage(message, context);
+
+			return;
+		}
+
+		this.handleJSONMessage(message, context);
+	}
+
 	/**
 	 * Logs a message
 	 */
-	public handleMessage(message: string, context: LogContextInterface): void
+	public handlePlainMessage(message: string, context: LogContextInterface): void
 	{
 		const LEVEL: string = context.level.toUpperCase();
 		const FORMATTED_DATE: string = DateTime.Create().getISODateTime();
@@ -55,6 +92,26 @@ class LoggerService extends Singleton implements LoggerInterface
 			.join("\n");
 
 		LoggerService.Write(PREFIXED_MESSAGE);
+	}
+
+	/**
+	 * Logs a message
+	 */
+	public handleJSONMessage(message: string, context: LogContextInterface): void
+	{
+		const DATE: DateTime = DateTime.Create();
+		const JSON_MESSAGE: LoggerServiceJSONMessageInterface = {
+			level: context.level.toUpperCase(),
+			timestamp: DATE.getTime(),
+			logDate: DATE.getISODateTime(),
+			message: message,
+			requestUUID: context.uuid ?? null,
+			contextTag: context.tag ?? null,
+		};
+
+		const OUTPUT_MESSAGE: string = JSON.stringify(JSON_MESSAGE);
+
+		LoggerService.Write(OUTPUT_MESSAGE);
 	}
 
 	/**
