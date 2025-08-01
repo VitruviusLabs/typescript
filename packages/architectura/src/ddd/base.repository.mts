@@ -335,12 +335,13 @@ abstract class BaseRepository<
 		await this.destroy(instance);
 
 		ReflectUtility.Set(instance, "persistenceInRepositoryStatus", ModelRepositoryStatusEnum.DESTROYED);
+
+		await this.onPostDestroy(instance);
+
 		ReflectUtility.Set(instance, "id", undefined);
 		ReflectUtility.Set(instance, "createdAt", undefined);
 		ReflectUtility.Set(instance, "updatedAt", undefined);
 		ReflectUtility.Set(instance, "deletedAt", undefined);
-
-		await this.onPostDestroy(instance);
 	}
 
 	/**
