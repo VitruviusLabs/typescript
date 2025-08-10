@@ -1,0 +1,15 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true
+	},
+	"include": [
+		"./src",
+		"./test",
+		"./mock"
+	],
+	"exclude": [
+		"./node_modules"
+	]
+}
