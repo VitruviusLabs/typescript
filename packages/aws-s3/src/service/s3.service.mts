@@ -11,6 +11,7 @@ import { HTTPStatusCodeEnum } from "../definition/enum/http-status-code.enum.mjs
 import type { S3ComputeAddressInterface } from "../definition/interface/s3-compute-address.interface.mjs";
 import type { S3HeadObjectResponseInterface } from "../definition/interface/s3-head-object-response.interface.mjs";
 import type { S3GetObjectRequestInterface } from "../definition/interface/s3-get-object-request.interface.mjs";
+import type { S3DeleteObjectRequestInterface } from "../definition/interface/s3-delete-object-request.interface.mjs";
 
 class S3Service
 {
@@ -181,6 +182,52 @@ class S3Service
 			method: HTTPMethodEnum.PUT,
 			headers: finalHeaders,
 			body: request.body,
+			keepalive: true,
+		});
+
+		const responseText: string = await response.text();
+
+		if (responseText !== "")
+		{
+			throw new Error(responseText);
+		}
+	}
+
+	public async deleteObject(request: S3DeleteObjectRequestInterface): Promise<void>
+	{
+		const parameters: URLSearchParams = new URLSearchParams();
+
+		const address: string = this.computeAddress({
+			protocol: this.protocol,
+			host: this.host,
+			bucket: request.bucket,
+			key: request.key,
+			parameters: parameters,
+		});
+
+		const signature: Signature = new Signature({
+			accessKeyId: this.accessKeyId,
+			accessSecret: this.accessSecret,
+			region: this.region,
+			service: "s3",
+			url: address,
+			method: HTTPMethodEnum.DELETE,
+			headers: {
+				Host: `${request.bucket}.${this.host}`,
+			},
+			body: "",
+		});
+
+		signature.generate();
+
+		const finalHeaders: Headers = signature.getComputedHeaders();
+
+		finalHeaders.append("Authorization", signature.getAuthorizationHeader());
+
+		const response: Response = await fetch(address, {
+			method: HTTPMethodEnum.PUT,
+			headers: finalHeaders,
+			body: "",
 			keepalive: true,
 		});
 
