@@ -225,7 +225,7 @@ class S3Service
 		finalHeaders.append("Authorization", signature.getAuthorizationHeader());
 
 		const response: Response = await fetch(address, {
-			method: HTTPMethodEnum.PUT,
+			method: HTTPMethodEnum.DELETE,
 			headers: finalHeaders,
 			body: "",
 			keepalive: true,
