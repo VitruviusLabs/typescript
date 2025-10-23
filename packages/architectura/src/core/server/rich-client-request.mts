@@ -22,7 +22,7 @@ class RichClientRequest extends IncomingMessage
 	private query: ParsedUrlQuery;
 	private contentType: string | undefined;
 	private boundary: string | undefined;
-	private rawBody: Promise<Buffer>;
+	private rawBody: Promise<Buffer> = Promise.resolve(Buffer.alloc(0));
 
 	/**
 	 * Create a new rich client request.
@@ -42,7 +42,6 @@ class RichClientRequest extends IncomingMessage
 		this.query = parseQuery("");
 		this.contentType = undefined;
 		this.boundary = undefined;
-		this.rawBody = Promise.resolve(Buffer.alloc(0));
 	}
 
 	/**
@@ -59,26 +58,7 @@ class RichClientRequest extends IncomingMessage
 
 		this.initialized = true;
 
-		const CONTENT_TYPE_HEADER: string | undefined = this.getHeader("Content-Type");
-
-		if (CONTENT_TYPE_HEADER !== undefined)
-		{
-			this.contentType = CONTENT_TYPE_HEADER;
-
-			if (CONTENT_TYPE_HEADER.startsWith("multipart/form-data; boundary="))
-			{
-				this.contentType = ContentTypeEnum.FORM_DATA;
-
-				const BOUNDARY_IDENTIFIER: string = CONTENT_TYPE_HEADER.replace("multipart/form-data; boundary=", "");
-
-				if (BOUNDARY_IDENTIFIER.length === 0)
-				{
-					throw new Error(`Received invalid multipart/form-data header: ${this.contentType}.`);
-				}
-
-				this.boundary = `--${BOUNDARY_IDENTIFIER}`;
-			}
-		}
+		this.parseContentType();
 
 		const COOKIE_HEADER: string | undefined = this.getHeader("Cookie");
 
@@ -449,6 +429,32 @@ class RichClientRequest extends IncomingMessage
 		return MultipartUtility.Parse(BODY_AS_STRING.split(this.boundary));
 	}
 	*/
+
+	private parseContentType(): void
+	{
+		const CONTENT_TYPE_HEADER: string | undefined = this.getHeader("Content-Type");
+
+		if (CONTENT_TYPE_HEADER === undefined)
+		{
+			return;
+		}
+
+		this.contentType = CONTENT_TYPE_HEADER;
+
+		if (CONTENT_TYPE_HEADER.startsWith("multipart/form-data; boundary="))
+		{
+			this.contentType = ContentTypeEnum.FORM_DATA;
+
+			const BOUNDARY_IDENTIFIER: string = CONTENT_TYPE_HEADER.replace("multipart/form-data; boundary=", "");
+
+			if (BOUNDARY_IDENTIFIER.length === 0)
+			{
+				throw new Error(`Received invalid multipart/form-data header: ${this.contentType}.`);
+			}
+
+			this.boundary = `--${BOUNDARY_IDENTIFIER}`;
+		}
+	}
 
 	private async listenForContent(): Promise<Buffer>
 	{

@@ -1,10 +1,11 @@
 FROM node:lts-bullseye
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    nano \
-    screen \
-    htop \
-    bash
+	bash \
+	htop \
+	nano \
+	screen \
+	&& apt-get clean
 
 USER root
 
