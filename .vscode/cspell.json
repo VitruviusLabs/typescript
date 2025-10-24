@@ -13,10 +13,12 @@
 		"npm"
 	],
 	"words": [
-		"Vitruvius",
-		"architectura",
+		"fulfill",
+		"fulfills",
 	],
 	"ignoreWords": [
+		"Vitruvius",
+		"architectura",
 		"Lebacq",
 		"Zamralik",
 		"vars",

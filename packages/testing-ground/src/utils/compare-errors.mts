@@ -8,7 +8,7 @@ function compareErrors(value: unknown, expected: Error): void
 
 	if (!(value instanceof CONSTRUCTOR_CLASS))
 	{
-		throw new Error(`An ${CONSTRUCTOR_CLASS.name} must be thrown.`);
+		throw new Error(`An instance of ${CONSTRUCTOR_CLASS.name} must be thrown.`);
 	}
 
 	if (value.message !== expected.message)

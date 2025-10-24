@@ -93,6 +93,8 @@ importers:
         specifier: workspace:^
         version: link:../ts-predicate
 
+  packages/assert: {}
+
   packages/aws-s3:
     dependencies:
       '@vitruvius-labs/aws-signature-v4':
