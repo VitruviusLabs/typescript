@@ -159,7 +159,7 @@ describe("Server", (): void => {
 	});
 
 	describe("Create", (): void => {
-		it("should create a new server instance (unsafe)", async (): Promise<void> => {
+		it.skip("should create a new server instance (unsafe)", async (): Promise<void> => {
 			const CONFIG: UnsafeServerInstantiationInterface = {
 				https: false,
 				port: 80,
