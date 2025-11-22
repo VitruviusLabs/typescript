@@ -233,7 +233,7 @@ class RichClientRequest extends IncomingMessage
 	}
 
 	/**
-	 * Get the path match groups for this request.
+	 * Get that specific path variable for this request.
 	 *
 	 * @remarks
 	 * Correspond to the capturing groups in the endpoint route that matched the request.
@@ -251,7 +251,7 @@ class RichClientRequest extends IncomingMessage
 	}
 
 	/**
-	 * Get the path match groups for this request.
+	 * Get the path variables for this request.
 	 *
 	 * @remarks
 	 * Correspond to the capturing groups in the endpoint route that matched the request.
