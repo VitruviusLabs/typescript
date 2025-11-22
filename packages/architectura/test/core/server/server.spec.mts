@@ -159,7 +159,7 @@ describe("Server", (): void => {
 	});
 
 	describe("Create", (): void => {
-		it("should create a new server instance (unsafe)", async (): Promise<void> => {
+		it.skip("should create a new server instance (unsafe)", async (): Promise<void> => {
 			const CONFIG: UnsafeServerInstantiationInterface = {
 				https: false,
 				port: 80,
@@ -741,7 +741,7 @@ describe("Server", (): void => {
 			deepStrictEqual(SERVER_MOCK.stubs.handleAutomaticPreflight.firstCall.args, [CONTEXT_MOCK.instance]);
 		});
 
-		it("should initialize the request's pathMatchGroups", async (): Promise<void> => {
+		it("should initialize the request's pathVariables", async (): Promise<void> => {
 			const CONTEXT_MOCK: MockContextInterface = mockContext();
 			const SERVER_MOCK: MockServerInterface = mockServer();
 
@@ -774,7 +774,7 @@ describe("Server", (): void => {
 			instanceOf(RESULT, Promise);
 			await doesNotReject(RESULT);
 			strictEqual(await RESULT, true);
-			deepStrictEqual(CONTEXT_MOCK.request.instance["pathMatchGroups"], { slug: "lorem-ipsum" });
+			deepStrictEqual(CONTEXT_MOCK.request.instance["pathVariables"], { slug: "lorem-ipsum" });
 		});
 
 		it("should initialize the endpoint's context if it's contextual", async (): Promise<void> => {

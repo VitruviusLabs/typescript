@@ -342,7 +342,7 @@ class Server
 
 		LoggerProxy.Debug(`Matching endpoint found: ${ENDPOINT.constructor.name}.`);
 
-		ReflectUtility.Set(REQUEST, "pathMatchGroups", MATCHING_ENDPOINT.matchGroups);
+		ReflectUtility.Set(REQUEST, "pathVariables", MATCHING_ENDPOINT.matchGroups);
 
 		if (MATCHING_ENDPOINT.contextual)
 		{

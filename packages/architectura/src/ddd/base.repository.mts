@@ -5,7 +5,7 @@ import type { RepositoryQueryNormalizedOptionsInterface } from "./definition/int
 import type { RepositoryQueryOptionsInterface } from "./definition/interface/repository-query-options.interface.mjs";
 import type { BaseFactory } from "./base.factory.mjs";
 import { ReflectUtility } from "@vitruvius-labs/toolbox";
-import { isDefined } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isDefined, isNullish } from "@vitruvius-labs/ts-predicate/type-guard";
 import { ModelRepositoryStatusEnum } from "./definition/enum/model-repository-status.enum.mjs";
 
 /**
@@ -360,6 +360,25 @@ abstract class BaseRepository<
 		BaseRepository.SetMetadata(model, parameters);
 
 		return model;
+	}
+
+	/**
+	 * Create an existing entity if it exists.
+	 *
+	 * @remarks
+	 * Use this method to create an entity in custom getters.
+	 * Using the factory directly would erroneously create duplicate as metadata would not be set.
+	 *
+	 * @sealed
+	 */
+	protected async createOptional(parameters: (I & ModelMetadataInterface) | null | undefined): Promise<M | undefined>
+	{
+		if (isNullish(parameters))
+		{
+			return undefined;
+		}
+
+		return await this.create(parameters);
 	}
 
 	/**

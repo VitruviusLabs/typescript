@@ -216,8 +216,8 @@ describe("BaseEndpoint", (): void => {
 		});
 	});
 
-	describe("getPathFragment", (): void => {
-		it("should throw if the fragment does not exist", (): void => {
+	describe("getPathVariable", (): void => {
+		it("should call the request method of the same name", (): void => {
 			const MOCK_CONTEXT: MockContextInterface = mockContext();
 
 			class DummyEndpoint extends BaseEndpoint
@@ -231,43 +231,17 @@ describe("BaseEndpoint", (): void => {
 			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
 
 			ReflectUtility.Set(ENDPOINT, "context", MOCK_CONTEXT.instance);
-			MOCK_CONTEXT.request.stubs.getPathMatchGroups.returns({});
+			MOCK_CONTEXT.request.stubs.getPathVariable.returns("0");
 
-			const WRAPPER = (): void => {
-				ENDPOINT["getPathFragment"]("uuid");
-			};
+			const RESULT: unknown = ENDPOINT["getPathVariable"]("uuid");
 
-			throws(WRAPPER, new ValidationError("The value must be a string."));
-		});
-
-		it("should return the fragment", (): void => {
-			const MOCK_CONTEXT: MockContextInterface = mockContext();
-
-			class DummyEndpoint extends BaseEndpoint
-			{
-				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
-				protected readonly route: string = "/test-dummy";
-
-				public execute(): void { }
-			}
-
-			const ENDPOINT: DummyEndpoint = new DummyEndpoint();
-
-			ReflectUtility.Set(ENDPOINT, "context", MOCK_CONTEXT.instance);
-			MOCK_CONTEXT.request.stubs.getPathMatchGroups.returns({ uuid: "0000" });
-
-			let result: unknown = undefined;
-
-			const WRAPPER = (): void => {
-				result = ENDPOINT["getPathFragment"]("uuid");
-			};
-
-			doesNotThrow(WRAPPER);
-			strictEqual(result, "0000");
+			strictEqual(MOCK_CONTEXT.request.stubs.getPathVariable.callCount, 1, "'Request.getPathVariable' should be called once.");
+			deepStrictEqual(MOCK_CONTEXT.request.stubs.getPathVariable.firstCall.args, ["uuid"]);
+			strictEqual(RESULT, "0");
 		});
 	});
 
-	describe("assertPathFragments", (): void => {
+	describe("assertPathVariables", (): void => {
 		it("should throw by default", (): void => {
 			const MOCK_CONTEXT: MockContextInterface = mockContext();
 
@@ -285,23 +259,23 @@ describe("BaseEndpoint", (): void => {
 
 			const WRAPPER = (): void => {
 				// @ts-expect-error: Invoking protected method for testing purposes.
-				ENDPOINT["assertPathFragments"]({});
+				ENDPOINT.assertPathVariables({});
 			};
 
-			throws(WRAPPER, new Error(`Method "assertPathFragments" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
+			throws(WRAPPER, new Error(`Method "assertPathVariables" needs an override in endpoint ${ENDPOINT.constructor.name}.`));
 		});
 
 		it("should work when redefined", (): void => {
 			const MOCK_CONTEXT: MockContextInterface = mockContext();
 
-			class DummyEndpoint extends BaseEndpoint<{ pathFragments: { test: string } }>
+			class DummyEndpoint extends BaseEndpoint<{ pathVariables: { test: string } }>
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
 				protected readonly route: string = "/test-dummy";
 
 				public execute(): void { }
 
-				protected override assertPathFragments(value: unknown): asserts value is { test: string }
+				protected override assertPathVariables(value: unknown): asserts value is { test: string }
 				{
 					assertDefined(value);
 				}
@@ -313,18 +287,18 @@ describe("BaseEndpoint", (): void => {
 
 			const WRAPPER = (): void => {
 				// @ts-expect-error: Invoking assertor method is not allowed using index access notation
-				ENDPOINT["assertPathFragments"]({ test: "Hello, World!" });
+				ENDPOINT["assertPathVariables"]({ test: "Hello, World!" });
 			};
 
 			doesNotThrow(WRAPPER);
 		});
 	});
 
-	describe("getPathFragments", (): void => {
-		it("should retrieve the path fragments then test them with the assertor method", (): void => {
+	describe("getPathVariables", (): void => {
+		it("should retrieve the path variables then test them with the assertor method", (): void => {
 			const MOCK_CONTEXT: MockContextInterface = mockContext();
 
-			class DummyEndpoint extends BaseEndpoint<{ pathFragments: { uuid: string } }>
+			class DummyEndpoint extends BaseEndpoint<{ pathVariables: { uuid: string } }>
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
 				protected readonly route: string = "/test-dummy";
@@ -338,28 +312,28 @@ describe("BaseEndpoint", (): void => {
 
 			const GROUPS: symbol = Symbol();
 
-			MOCK_CONTEXT.request.stubs.getPathMatchGroups.returns(GROUPS);
+			MOCK_CONTEXT.request.stubs.getPathVariables.returns(GROUPS);
 
 			// @ts-expect-error: Stubbing a protected method for testing purposes.
-			const ASSERT_PATH_FRAGMENTS_STUB: SinonStub = stub(ENDPOINT, "assertPathFragments");
+			const ASSERT_PATH_FRAGMENTS_STUB: SinonStub = stub(ENDPOINT, "assertPathVariables");
 
-			ASSERT_PATH_FRAGMENTS_STUB.throws(new Error("The path fragments are invalid."));
+			ASSERT_PATH_FRAGMENTS_STUB.throws(new Error("The path variables are invalid."));
 
 			const WRAPPER = (): void => {
-				ENDPOINT["getPathFragments"]();
+				ENDPOINT["getPathVariables"]();
 			};
 
-			throws(WRAPPER, new Error("The path fragments are invalid."));
-			strictEqual(ASSERT_PATH_FRAGMENTS_STUB.callCount, 1, "'assertPathFragments' should be called once.");
+			throws(WRAPPER, new Error("The path variables are invalid."));
+			strictEqual(ASSERT_PATH_FRAGMENTS_STUB.callCount, 1, "'assertPathVariables' should be called once.");
 			deepStrictEqual(ASSERT_PATH_FRAGMENTS_STUB.firstCall.args, [GROUPS]);
-			strictEqual(MOCK_CONTEXT.request.stubs.getPathMatchGroups.callCount, 1, "'Request.getPathMatchGroups' should be called once.");
-			strictEqual(MOCK_CONTEXT.request.stubs.getPathMatchGroups.firstCall.calledBefore(ASSERT_PATH_FRAGMENTS_STUB.firstCall), true, "'Request.getPathMatchGroups' should be called before 'assertPathFragments'.");
+			strictEqual(MOCK_CONTEXT.request.stubs.getPathVariables.callCount, 1, "'Request.getPathVariables' should be called once.");
+			strictEqual(MOCK_CONTEXT.request.stubs.getPathVariables.firstCall.calledBefore(ASSERT_PATH_FRAGMENTS_STUB.firstCall), true, "'Request.getPathVariables' should be called before 'assertPathVariables'.");
 		});
 
-		it("should return the path fragments if they pass the assertor", (): void => {
+		it("should return the path variables if they pass the assertor", (): void => {
 			const MOCK_CONTEXT: MockContextInterface = mockContext();
 
-			class DummyEndpoint extends BaseEndpoint<{ pathFragments: { uuid: string } }>
+			class DummyEndpoint extends BaseEndpoint<{ pathVariables: { uuid: string } }>
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
 				protected readonly route: string = "/test-dummy";
@@ -373,27 +347,27 @@ describe("BaseEndpoint", (): void => {
 
 			const GROUPS: symbol = Symbol();
 
-			MOCK_CONTEXT.request.stubs.getPathMatchGroups.returns(GROUPS);
+			MOCK_CONTEXT.request.stubs.getPathVariables.returns(GROUPS);
 
 			// @ts-expect-error: Stubbing a protected method for testing purposes.
-			const ASSERT_PATH_FRAGMENTS_STUB: SinonStub = stub(ENDPOINT, "assertPathFragments");
+			const ASSERT_PATH_FRAGMENTS_STUB: SinonStub = stub(ENDPOINT, "assertPathVariables");
 
 			ASSERT_PATH_FRAGMENTS_STUB.returns(undefined);
 
 			let result: unknown = undefined;
 
 			const WRAPPER = (): void => {
-				result = ENDPOINT["getPathFragments"]();
+				result = ENDPOINT["getPathVariables"]();
 			};
 
 			doesNotThrow(WRAPPER);
 			strictEqual(result, GROUPS);
 		});
 
-		it("should cache the path fragments", (): void => {
+		it("should cache the path variables", (): void => {
 			const MOCK_CONTEXT: MockContextInterface = mockContext();
 
-			class DummyEndpoint extends BaseEndpoint<{ pathFragments: { uuid: string } }>
+			class DummyEndpoint extends BaseEndpoint<{ pathVariables: { uuid: string } }>
 			{
 				protected readonly method: HTTPMethodEnum = HTTPMethodEnum.GET;
 				protected readonly route: string = "/test-dummy";
@@ -407,26 +381,26 @@ describe("BaseEndpoint", (): void => {
 
 			const GROUPS: symbol = Symbol();
 
-			ReflectUtility.Set(ENDPOINT, "pathFragments", GROUPS);
+			ReflectUtility.Set(ENDPOINT, "pathVariables", GROUPS);
 
 			// @ts-expect-error: Stubbing a protected method for testing purposes.
-			const ASSERT_PATH_FRAGMENTS_STUB: SinonStub = stub(ENDPOINT, "assertPathFragments");
+			const ASSERT_PATH_FRAGMENTS_STUB: SinonStub = stub(ENDPOINT, "assertPathVariables");
 
 			ASSERT_PATH_FRAGMENTS_STUB.returns(undefined);
 
 			let result: unknown = undefined;
 
 			const WRAPPER = (): void => {
-				result = ENDPOINT["getPathFragments"]();
+				result = ENDPOINT["getPathVariables"]();
 			};
 
 			doesNotThrow(WRAPPER);
 			strictEqual(result, GROUPS);
-			strictEqual(MOCK_CONTEXT.request.stubs.getPathMatchGroups.callCount, 0, "'Request.getPathMatchGroups' should not have been called.");
-			strictEqual(ASSERT_PATH_FRAGMENTS_STUB.callCount, 0, "'assertPathFragments' should not have been called.");
+			strictEqual(MOCK_CONTEXT.request.stubs.getPathVariables.callCount, 0, "'Request.getPathVariables' should not have been called.");
+			strictEqual(ASSERT_PATH_FRAGMENTS_STUB.callCount, 0, "'assertPathVariables' should not have been called.");
 		});
 
-		it("should call 'handleValidationError' with the error thrown by 'assertPathFragments'", (): void => {
+		it("should call 'handleValidationError' with the error thrown by 'assertPathVariables'", (): void => {
 			const MOCK_CONTEXT: MockContextInterface = mockContext();
 
 			class DummyEndpoint extends BaseEndpoint
@@ -442,7 +416,7 @@ describe("BaseEndpoint", (): void => {
 			const ERROR: ValidationError = new ValidationError("The path is invalid.");
 
 			// @ts-expect-error: Stubbing a protected method for testing purposes.
-			const ASSERT_PATH_FRAGMENTS_STUB: SinonStub = stub(ENDPOINT, "assertPathFragments");
+			const ASSERT_PATH_FRAGMENTS_STUB: SinonStub = stub(ENDPOINT, "assertPathVariables");
 			// @ts-expect-error: Stubbing a protected method for testing purposes.
 			const HANDLE_VALIDATION_ERROR_STUB: SinonStub = stub(ENDPOINT, "handleValidationError");
 
@@ -452,12 +426,12 @@ describe("BaseEndpoint", (): void => {
 			ReflectUtility.Set(ENDPOINT, "context", MOCK_CONTEXT.instance);
 
 			const WRAPPER = (): void => {
-				ENDPOINT["getPathFragments"]();
+				ENDPOINT["getPathVariables"]();
 			};
 
 			throws(WRAPPER, ERROR);
 
-			strictEqual(ASSERT_PATH_FRAGMENTS_STUB.callCount, 1, "The method 'assertPathFragments' should have been called exactly once.");
+			strictEqual(ASSERT_PATH_FRAGMENTS_STUB.callCount, 1, "The method 'assertPathVariables' should have been called exactly once.");
 			strictEqual(HANDLE_VALIDATION_ERROR_STUB.callCount, 1, "The method 'handleValidationError' should have been called exactly once.");
 			deepStrictEqual(HANDLE_VALIDATION_ERROR_STUB.firstCall.args, ["Invalid path", ERROR]);
 		});
