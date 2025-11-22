@@ -659,6 +659,30 @@ describe("BaseRepository", (): void => {
 		});
 	});
 
+	describe("createOptional", (): void => {
+		it("should return an instance of the model", async (): Promise<void> => {
+			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
+			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
+
+			const DATA: DummyDelegateDataInterface & ModelMetadataInterface = getDefaultDummyDelegateDataInterface(ModelRepositoryStatusEnum.SAVED);
+			const EXPECTED: DummyModel = getDummy({ persistenceInRepositoryStatus: ModelRepositoryStatusEnum.SAVED });
+
+			const RESULT: unknown = REPOSITORY["createOptional"](DATA);
+
+			instanceOf(RESULT, Promise);
+			await doesNotReject(RESULT);
+			deepStrictEqual(await RESULT, EXPECTED);
+		});
+
+		it("should return undefined if given a nullish value", async (): Promise<void> => {
+			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
+			const REPOSITORY: DummyBaseRepository = new DummyBaseRepository(FACTORY);
+
+			strictEqual(await REPOSITORY["createOptional"](null), undefined);
+			strictEqual(await REPOSITORY["createOptional"](undefined), undefined);
+		});
+	});
+
 	describe("createMany", (): void => {
 		it("should return an array of instances of the model", async (): Promise<void> => {
 			const FACTORY: DummySimpleFactory = new DummySimpleFactory(DummyModel);
