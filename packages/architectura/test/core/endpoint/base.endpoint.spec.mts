@@ -233,10 +233,11 @@ describe("BaseEndpoint", (): void => {
 			ReflectUtility.Set(ENDPOINT, "context", MOCK_CONTEXT.instance);
 			MOCK_CONTEXT.request.stubs.getPathVariable.returns("0");
 
-			ENDPOINT["getPathVariable"]("uuid");
+			const RESULT: unknown = ENDPOINT["getPathVariable"]("uuid");
 
 			strictEqual(MOCK_CONTEXT.request.stubs.getPathVariable.callCount, 1, "'Request.getPathVariable' should be called once.");
 			deepStrictEqual(MOCK_CONTEXT.request.stubs.getPathVariable.firstCall.args, ["uuid"]);
+			strictEqual(RESULT, "0");
 		});
 	});
 
