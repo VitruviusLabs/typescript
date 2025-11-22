@@ -6,7 +6,7 @@ import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import type { ExecutionContext } from "../execution-context/execution-context.mjs";
 import type { AccessControlDefinition } from "./access-control-definition.mjs";
 import type { BaseEndpointTypingInterface } from "./definition/interface/base-endpoint-typing.interface.mjs";
-import { ValidationError, assertString } from "@vitruvius-labs/ts-predicate/type-assertion";
+import { ValidationError } from "@vitruvius-labs/ts-predicate/type-assertion";
 import { normalizeErrorTree, toError } from "@vitruvius-labs/ts-predicate/helper";
 import { RouteUtility } from "./route.utility.mjs";
 import { HTTPError } from "../server/http-error.mjs";
@@ -47,7 +47,7 @@ abstract class BaseEndpoint<T extends BaseEndpointTypingInterface = object>
 	protected readonly errorHooks: Array<BaseErrorHook | ConstructorOf<BaseErrorHook>> = [];
 	protected readonly excludedGlobalErrorHooks: Array<ConstructorOf<BaseErrorHook>> = [];
 
-	protected pathFragments: T["pathFragments"] | undefined = undefined;
+	protected pathVariables: T["pathVariables"] | undefined = undefined;
 	protected query: T["query"] | undefined = undefined;
 	protected payload: T["payload"] | undefined = undefined;
 	protected response: T["response"] | undefined = undefined;
@@ -195,57 +195,53 @@ abstract class BaseEndpoint<T extends BaseEndpointTypingInterface = object>
 	 *
 	 * @sealed
 	 */
-	protected getPathFragment(key: string): string
+	protected getPathVariable(key: string): string
 	{
-		const fragment: string | undefined = this.getContext().getRequest().getPathMatchGroups()[key];
-
-		assertString(fragment);
-
-		return fragment;
+		return this.getContext().getRequest().getPathVariable(key);
 	}
 
 	/**
-	 * Asserts the path fragments of the request
+	 * Asserts the path variables of the request
 	 *
 	 * @remarks
-	 * This method is meant to be overridden to assert the path fragments of the request.
+	 * This method is meant to be overridden to assert the path variables of the request.
 	 * It always throws an error by default.
 	 */
-	protected assertPathFragments(value: unknown): asserts value is T["pathFragments"]
+	protected assertPathVariables(value: unknown): asserts value is T["pathVariables"]
 	{
 		// eslint-disable-next-line @ts/no-unused-expressions -- Pretend to use the value
 		value;
 
-		throw new Error(`Method "assertPathFragments" needs an override in endpoint ${this.constructor.name}.`);
+		throw new Error(`Method "assertPathVariables" needs an override in endpoint ${this.constructor.name}.`);
 	}
 
 	/**
-	 * Get the path fragments of the request.
+	 * Get the path variables of the request.
 	 *
 	 * @remarks
-	 * This method will run the assertPathFragments method before returning the path fragments.
+	 * This method will run the assertPathFragments method before returning the path variables.
 	 *
 	 * @sealed
 	 */
-	protected getPathFragments(): T["pathFragments"]
+	protected getPathVariables(): T["pathVariables"]
 	{
-		if (this.pathFragments === undefined)
+		if (this.pathVariables === undefined)
 		{
-			const fragments: Record<string, string> = this.getContext().getRequest().getPathMatchGroups();
+			const variables: Record<string, string> = this.getContext().getRequest().getPathVariables();
 
 			try
 			{
-				this.assertPathFragments(fragments);
+				this.assertPathVariables(variables);
 			}
 			catch (error: unknown)
 			{
 				this.handleValidationError("Invalid path", error);
 			}
 
-			this.pathFragments = fragments;
+			this.pathVariables = variables;
 		}
 
-		return this.pathFragments;
+		return this.pathVariables;
 	}
 
 	/**

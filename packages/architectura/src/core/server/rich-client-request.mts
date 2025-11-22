@@ -14,7 +14,7 @@ import { isHTTPMethodEnum } from "../predicate/is-http-method-enum.mjs";
  */
 class RichClientRequest extends IncomingMessage
 {
-	private readonly pathMatchGroups: Record<string, string> | undefined;
+	private readonly pathVariables: Record<string, string> | undefined;
 	private initialized: boolean;
 	private cookies: Map<string, string>;
 	private path: string | undefined;
@@ -33,7 +33,7 @@ class RichClientRequest extends IncomingMessage
 	{
 		super(socket);
 
-		this.pathMatchGroups = undefined;
+		this.pathVariables = undefined;
 		this.initialized = false;
 		this.cookies = new Map();
 		this.path = undefined;
@@ -238,9 +238,27 @@ class RichClientRequest extends IncomingMessage
 	 * @remarks
 	 * Correspond to the capturing groups in the endpoint route that matched the request.
 	 */
-	public getPathMatchGroups(): Record<string, string>
+	public getPathVariable(key: string): string
 	{
-		return this.pathMatchGroups ?? {};
+		const value: string | undefined = this.getPathVariables()[key];
+
+		if (value === undefined)
+		{
+			throw new Error(`The path variable "${key}" does not exist.`);
+		}
+
+		return value;
+	}
+
+	/**
+	 * Get the path match groups for this request.
+	 *
+	 * @remarks
+	 * Correspond to the capturing groups in the endpoint route that matched the request.
+	 */
+	public getPathVariables(): Record<string, string>
+	{
+		return this.pathVariables ?? {};
 	}
 
 	/**

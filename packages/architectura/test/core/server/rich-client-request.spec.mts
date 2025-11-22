@@ -11,7 +11,7 @@ describe("RichClientRequest", (): void => {
 		it("should create a new request", async (): Promise<void> => {
 			const REQUEST: RichClientRequest = new RichClientRequest(mockSocket().instance);
 
-			strictEqual(REQUEST["pathMatchGroups"], undefined);
+			strictEqual(REQUEST["pathVariables"], undefined);
 			strictEqual(REQUEST["initialized"], false);
 			deepStrictEqual(REQUEST["cookies"], new Map());
 			strictEqual(REQUEST["path"], undefined);
@@ -124,7 +124,7 @@ describe("RichClientRequest", (): void => {
 
 			REQUEST.initialize();
 
-			strictEqual(REQUEST["pathMatchGroups"], undefined);
+			strictEqual(REQUEST["pathVariables"], undefined);
 			strictEqual(REQUEST["initialized"], true);
 			strictEqual(REQUEST["contentType"], undefined);
 			strictEqual(REQUEST["boundary"], undefined);
@@ -155,7 +155,7 @@ describe("RichClientRequest", (): void => {
 
 			REQUEST.initialize();
 
-			strictEqual(REQUEST["pathMatchGroups"], undefined);
+			strictEqual(REQUEST["pathVariables"], undefined);
 			strictEqual(REQUEST["initialized"], true);
 			strictEqual(REQUEST["contentType"], "application/json");
 			strictEqual(REQUEST["boundary"], undefined);
@@ -184,7 +184,7 @@ describe("RichClientRequest", (): void => {
 
 			REQUEST.initialize();
 
-			strictEqual(REQUEST["pathMatchGroups"], undefined);
+			strictEqual(REQUEST["pathVariables"], undefined);
 			strictEqual(REQUEST["initialized"], true);
 			strictEqual(REQUEST["contentType"], "multipart/form-data");
 			strictEqual(REQUEST["boundary"], "-------123456789");
@@ -447,21 +447,43 @@ describe("RichClientRequest", (): void => {
 		});
 	});
 
-	describe("getPathMatchGroups", (): void => {
-		it("should return the path match groups (default)", (): void => {
+	describe("getPathVariables", (): void => {
+		it("should return the path variables (default)", (): void => {
 			const REQUEST: RichClientRequest = mockRequest().instance;
 
-			deepStrictEqual(REQUEST.getPathMatchGroups(), {});
+			deepStrictEqual(REQUEST.getPathVariables(), {});
 		});
 
-		it("should return the path match groups", (): void => {
+		it("should return the path variables", (): void => {
 			const REQUEST: RichClientRequest = mockRequest().instance;
 
 			const PATH_MATCH_GROUPS: NodeJS.Dict<string> = { lorem: "ipsum" };
 
-			ReflectUtility.Set(REQUEST, "pathMatchGroups", PATH_MATCH_GROUPS);
+			ReflectUtility.Set(REQUEST, "pathVariables", PATH_MATCH_GROUPS);
 
-			deepStrictEqual(REQUEST.getPathMatchGroups(), PATH_MATCH_GROUPS);
+			deepStrictEqual(REQUEST.getPathVariables(), PATH_MATCH_GROUPS);
+		});
+	});
+
+	describe("getPathVariable", (): void => {
+		it("should return the path variable if it exists", (): void => {
+			const REQUEST: RichClientRequest = mockRequest().instance;
+
+			const PATH_MATCH_GROUPS: NodeJS.Dict<string> = { key: "value" };
+
+			ReflectUtility.Set(REQUEST, "pathVariables", PATH_MATCH_GROUPS);
+
+			deepStrictEqual(REQUEST.getPathVariable("key"), "value");
+		});
+
+		it("should throw if the path variable does not exist", (): void => {
+			const REQUEST: RichClientRequest = mockRequest().instance;
+
+			const WRAPPER = (): void => {
+				REQUEST.getPathVariable("key");
+			};
+
+			throws(WRAPPER, createErrorTest('The path variable "key" does not exist.'));
 		});
 	});
 
