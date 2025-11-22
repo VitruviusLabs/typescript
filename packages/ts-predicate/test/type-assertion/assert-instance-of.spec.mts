@@ -1,13 +1,13 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { consumeValue, createErrorTest, createValue, getAllValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { assertInstanceOf } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertInstanceOf", (): void => {
+describe("assertInstanceOf", (): void => {
 	it("should return when given an instance of the given class", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertInstanceOf(new Date(), Date);
+			assertInstanceOf(new Date(), Date);
 		};
 
 		doesNotThrow(WRAPPER);
@@ -20,7 +20,7 @@ describe("TypeAssertion.assertInstanceOf", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertInstanceOf(ITEM, Date);
+				assertInstanceOf(ITEM, Date);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -34,7 +34,7 @@ describe("TypeAssertion.assertInstanceOf", (): void => {
 
 		const CHILD: Child = new Child();
 
-		TypeAssertion.assertInstanceOf(CHILD, Parent);
+		assertInstanceOf(CHILD, Parent);
 	});
 
 	it("should narrow the type to an instance of constructor (default)", (): void => {
@@ -42,7 +42,7 @@ describe("TypeAssertion.assertInstanceOf", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertInstanceOf(VALUE, Date);
+			assertInstanceOf(VALUE, Date);
 			consumeValue<Date>(VALUE);
 		};
 
@@ -54,7 +54,7 @@ describe("TypeAssertion.assertInstanceOf", (): void => {
 		{
 			const VALUE: Date | undefined = createValue();
 
-			TypeAssertion.assertInstanceOf(VALUE, Object);
+			assertInstanceOf(VALUE, Object);
 			consumeValue<Date>(VALUE);
 		};
 

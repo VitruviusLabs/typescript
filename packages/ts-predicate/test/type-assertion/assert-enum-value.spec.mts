@@ -1,9 +1,9 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { assertEnumValue } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertEnumValue", (): void => {
+describe("assertEnumValue", (): void => {
 	it("should return when given a valid value", (): void => {
 		const ENUM_VALUES: Array<number> = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 		const VALUES: Array<number> = ENUM_VALUES;
@@ -12,7 +12,7 @@ describe("TypeAssertion.assertEnumValue", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertEnumValue(ITEM, ENUM_VALUES);
+				assertEnumValue(ITEM, ENUM_VALUES);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -27,7 +27,7 @@ describe("TypeAssertion.assertEnumValue", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertEnumValue(ITEM, ENUM_VALUES);
+				assertEnumValue(ITEM, ENUM_VALUES);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -39,12 +39,12 @@ describe("TypeAssertion.assertEnumValue", (): void => {
 
 		const WRAPPER_ANONYMOUS = (): void =>
 		{
-			TypeAssertion.assertEnumValue("Lorem ipsum", ENUM_VALUES);
+			assertEnumValue("Lorem ipsum", ENUM_VALUES);
 		};
 
 		const WRAPPER_NAMED = (): void =>
 		{
-			TypeAssertion.assertEnumValue("Lorem ipsum", ENUM_VALUES, "DigitEnum");
+			assertEnumValue("Lorem ipsum", ENUM_VALUES, "DigitEnum");
 		};
 
 		throws(WRAPPER_ANONYMOUS, createErrorTest("The value must be one of the following: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9."));
@@ -56,7 +56,7 @@ describe("TypeAssertion.assertEnumValue", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertEnumValue(VALUE, ["lorem ipsum"]);
+			assertEnumValue(VALUE, ["lorem ipsum"]);
 			consumeValue<string>(VALUE);
 		};
 
@@ -68,7 +68,7 @@ describe("TypeAssertion.assertEnumValue", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertEnumValue(VALUE, ["lorem ipsum"] as const);
+			assertEnumValue(VALUE, ["lorem ipsum"] as const);
 			consumeValue<"lorem ipsum">(VALUE);
 		};
 
@@ -85,7 +85,7 @@ describe("TypeAssertion.assertEnumValue", (): void => {
 
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertEnumValue(VALUE, [DummyEnum.MESSAGE]);
+			assertEnumValue(VALUE, [DummyEnum.MESSAGE]);
 			consumeValue<DummyEnum>(VALUE);
 		};
 
@@ -97,7 +97,7 @@ describe("TypeAssertion.assertEnumValue", (): void => {
 		{
 			const VALUE: string | undefined = createValue();
 
-			TypeAssertion.assertEnumValue(VALUE, ["lorem ipsum"]);
+			assertEnumValue(VALUE, ["lorem ipsum"]);
 			consumeValue<string>(VALUE);
 		};
 

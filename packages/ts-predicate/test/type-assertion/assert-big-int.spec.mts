@@ -1,9 +1,9 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { assertBigInt } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertBigInt", (): void => {
+describe("assertBigInt", (): void => {
 	it("should return when given a big integer", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.BIG_INT);
 
@@ -11,7 +11,7 @@ describe("TypeAssertion.assertBigInt", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertBigInt(ITEM);
+				assertBigInt(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -25,7 +25,7 @@ describe("TypeAssertion.assertBigInt", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertBigInt(ITEM);
+				assertBigInt(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -37,7 +37,7 @@ describe("TypeAssertion.assertBigInt", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertBigInt(VALUE);
+			assertBigInt(VALUE);
 			consumeValue<bigint>(VALUE);
 		};
 

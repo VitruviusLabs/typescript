@@ -1,18 +1,18 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { assertProperty, assertString } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertProperty", (): void => {
+describe("assertProperty", (): void => {
 	it("should throw when given an object without the property", (): void => {
 		const SYMBOL: unique symbol = Symbol("answer");
 
 		const WRAPPER_STRING = (): void => {
-			TypeAssertion.assertProperty({}, "answer");
+			assertProperty({}, "answer");
 		};
 
 		const WRAPPER_SYMBOL = (): void => {
-			TypeAssertion.assertProperty({}, SYMBOL);
+			assertProperty({}, SYMBOL);
 		};
 
 		throws(WRAPPER_STRING, createErrorTest("The value must have a property \"answer\"."));
@@ -27,15 +27,15 @@ describe("TypeAssertion.assertProperty", (): void => {
 		for (const ITEM of VALUES)
 		{
 			const WRAPPER_STRING = (): void => {
-				TypeAssertion.assertProperty({ answer: ITEM }, "answer");
+				assertProperty({ answer: ITEM }, "answer");
 			};
 
 			const WRAPPER_SYMBOL = (): void => {
-				TypeAssertion.assertProperty({ [SYMBOL]: ITEM }, SYMBOL);
+				assertProperty({ [SYMBOL]: ITEM }, SYMBOL);
 			};
 
-			throws(WRAPPER_STRING, createErrorTest("The property \"answer\" must not have a nullish value (undefined, null, or NaN)."));
-			throws(WRAPPER_SYMBOL, createErrorTest("The property \"Symbol(answer)\" must not have a nullish value (undefined, null, or NaN)."));
+			throws(WRAPPER_STRING, createErrorTest("The property \"answer\" must not have a nullish value (undefined, null, NaN, or NoValue)."));
+			throws(WRAPPER_SYMBOL, createErrorTest("The property \"Symbol(answer)\" must not have a nullish value (undefined, null, NaN, or NoValue)."));
 		}
 	});
 
@@ -47,11 +47,11 @@ describe("TypeAssertion.assertProperty", (): void => {
 		for (const ITEM of VALUES)
 		{
 			const WRAPPER_STRING = (): void => {
-				TypeAssertion.assertProperty({ answer: ITEM }, "answer");
+				assertProperty({ answer: ITEM }, "answer");
 			};
 
 			const WRAPPER_SYMBOL = (): void => {
-				TypeAssertion.assertProperty({ [SYMBOL]: ITEM }, SYMBOL);
+				assertProperty({ [SYMBOL]: ITEM }, SYMBOL);
 			};
 
 			doesNotThrow(WRAPPER_STRING);
@@ -67,11 +67,11 @@ describe("TypeAssertion.assertProperty", (): void => {
 		for (const ITEM of VALUES)
 		{
 			const WRAPPER_STRING = (): void => {
-				TypeAssertion.assertProperty({ answer: ITEM }, "answer", TypeAssertion.assertString);
+				assertProperty({ answer: ITEM }, "answer", assertString);
 			};
 
 			const WRAPPER_SYMBOL = (): void => {
-				TypeAssertion.assertProperty({ [SYMBOL]: ITEM }, SYMBOL, TypeAssertion.assertString);
+				assertProperty({ [SYMBOL]: ITEM }, SYMBOL, assertString);
 			};
 
 			throws(WRAPPER_STRING, createErrorTest("The value must be a string."));
@@ -87,11 +87,11 @@ describe("TypeAssertion.assertProperty", (): void => {
 		for (const ITEM of VALUES)
 		{
 			const WRAPPER_STRING = (): void => {
-				TypeAssertion.assertProperty({ answer: ITEM }, "answer", TypeAssertion.assertString);
+				assertProperty({ answer: ITEM }, "answer", assertString);
 			};
 
 			const WRAPPER_SYMBOL = (): void => {
-				TypeAssertion.assertProperty({ [SYMBOL]: ITEM }, SYMBOL, TypeAssertion.assertString);
+				assertProperty({ [SYMBOL]: ITEM }, SYMBOL, assertString);
 			};
 
 			doesNotThrow(WRAPPER_STRING);
@@ -103,7 +103,7 @@ describe("TypeAssertion.assertProperty", (): void => {
 		const WRAPPER = (): void => {
 			const VALUE: object = createValue({});
 
-			TypeAssertion.assertProperty(VALUE, "key");
+			assertProperty(VALUE, "key");
 			consumeValue<{ key: unknown }>(VALUE);
 		};
 
@@ -116,7 +116,7 @@ describe("TypeAssertion.assertProperty", (): void => {
 
 			const VALUE: object = createValue({});
 
-			TypeAssertion.assertProperty(VALUE, SYMBOL);
+			assertProperty(VALUE, SYMBOL);
 			consumeValue<{ [SYMBOL]: unknown }>(VALUE);
 		};
 

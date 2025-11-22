@@ -1,6 +1,6 @@
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { Helper, type NormalizedError } from "../../src/_index.mjs";
+import { type NormalizedError, stringifyErrorTree } from "../../src/_index.mjs";
 
 // See error-output.txt
 const EXPECTED_RESULT: string = `root error
@@ -20,7 +20,7 @@ const EXPECTED_RESULT: string = `root error
      └─── error 3-2
 `;
 
-describe("Helper.stringifyError", (): void => {
+describe("stringifyError", (): void => {
 	it("should generate a string representing the provided normalized tree structure", (): void => {
 		const STRUCTURE: NormalizedError = {
 			message: "root error",
@@ -91,7 +91,7 @@ describe("Helper.stringifyError", (): void => {
 			],
 		};
 
-		const RESULT: unknown = Helper.stringifyErrorTree(STRUCTURE);
+		const RESULT: unknown = stringifyErrorTree(STRUCTURE);
 
 		strictEqual(RESULT, EXPECTED_RESULT);
 	});
@@ -145,7 +145,7 @@ describe("Helper.stringifyError", (): void => {
 			"root error"
 		);
 
-		const RESULT: unknown = Helper.stringifyErrorTree(ERROR);
+		const RESULT: unknown = stringifyErrorTree(ERROR);
 
 		strictEqual(RESULT, EXPECTED_RESULT);
 	});

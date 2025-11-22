@@ -1,12 +1,12 @@
 import { deepStrictEqual, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { Helper } from "../../src/_index.mjs";
+import { UnknownError, toError } from "../../src/_index.mjs";
 import { getAllValues } from "@vitruvius-labs/testing-ground";
 
-describe("Helper / toError", (): void => {
+describe("toError", (): void => {
 	it("should return the given Error as is", (): void => {
 		const ERROR: Error = new Error("lorem ipsum");
-		const RESULT: unknown = Helper.toError(ERROR);
+		const RESULT: unknown = toError(ERROR);
 
 		strictEqual(RESULT, ERROR);
 	});
@@ -16,9 +16,9 @@ describe("Helper / toError", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = Helper.toError(ITEM);
+			const RESULT: unknown = toError(ITEM);
 
-			deepStrictEqual(RESULT, new Helper.UnknownError("An unknown error occurred.", ITEM));
+			deepStrictEqual(RESULT, new UnknownError("An unknown error occurred.", ITEM));
 		}
 	});
 });

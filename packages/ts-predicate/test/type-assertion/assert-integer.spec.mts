@@ -1,9 +1,9 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { assertInteger } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertInteger", (): void => {
+describe("assertInteger", (): void => {
 	it("should return when given a safe integer", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.INTEGER);
 
@@ -11,7 +11,7 @@ describe("TypeAssertion.assertInteger", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertInteger(ITEM);
+				assertInteger(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -25,7 +25,7 @@ describe("TypeAssertion.assertInteger", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertInteger(ITEM);
+				assertInteger(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -39,7 +39,7 @@ describe("TypeAssertion.assertInteger", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertInteger(ITEM);
+				assertInteger(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -51,7 +51,7 @@ describe("TypeAssertion.assertInteger", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertInteger(VALUE);
+			assertInteger(VALUE);
 			consumeValue<number>(VALUE);
 		};
 

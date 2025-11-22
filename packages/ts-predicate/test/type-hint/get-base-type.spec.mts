@@ -1,22 +1,22 @@
 import { strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { TypeHint } from "../../src/_index.mjs";
+import { getBaseType } from "../../src/_index.mjs";
 import { GroupType, type OldClassInstance, Values, getValues } from "@vitruvius-labs/testing-ground";
 import { anonymousHoneyPot } from "./values/anonymous-honey-pot.mjs";
 import { namedHoneyPot } from "./values/named-honey-pot.mjs";
 import { HoneyPot } from "./values/class-honey-pot.mjs";
 
-describe("TypeHint.getBaseType", (): void => {
+describe("getBaseType", (): void => {
 	it('should return "undefined" when given undefined', (): void => {
-		strictEqual(TypeHint.getBaseType(undefined), "undefined");
+		strictEqual(getBaseType(undefined), "undefined");
 	});
 
 	it('should return "null" when given null', (): void => {
-		strictEqual(TypeHint.getBaseType(null), "null");
+		strictEqual(getBaseType(null), "null");
 	});
 
 	it('should return "NaN" when given NaN', (): void => {
-		strictEqual(TypeHint.getBaseType(Number.NaN), "NaN");
+		strictEqual(getBaseType(Number.NaN), "NaN");
 	});
 
 	it('should return "boolean" when given a boolean', (): void => {
@@ -24,7 +24,7 @@ describe("TypeHint.getBaseType", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeHint.getBaseType(ITEM), "boolean");
+			strictEqual(getBaseType(ITEM), "boolean");
 		}
 	});
 
@@ -33,7 +33,7 @@ describe("TypeHint.getBaseType", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeHint.getBaseType(ITEM), "number");
+			strictEqual(getBaseType(ITEM), "number");
 		}
 	});
 
@@ -42,7 +42,7 @@ describe("TypeHint.getBaseType", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeHint.getBaseType(ITEM), "bigint");
+			strictEqual(getBaseType(ITEM), "bigint");
 		}
 	});
 
@@ -51,7 +51,7 @@ describe("TypeHint.getBaseType", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeHint.getBaseType(ITEM), "string");
+			strictEqual(getBaseType(ITEM), "string");
 		}
 	});
 
@@ -60,7 +60,7 @@ describe("TypeHint.getBaseType", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeHint.getBaseType(ITEM), "symbol");
+			strictEqual(getBaseType(ITEM), "symbol");
 		}
 	});
 
@@ -69,7 +69,7 @@ describe("TypeHint.getBaseType", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeHint.getBaseType(ITEM), "array");
+			strictEqual(getBaseType(ITEM), "array");
 		}
 	});
 
@@ -82,7 +82,7 @@ describe("TypeHint.getBaseType", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeHint.getBaseType(ITEM), "class");
+			strictEqual(getBaseType(ITEM), "class");
 		}
 	});
 
@@ -108,7 +108,7 @@ describe("TypeHint.getBaseType", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeHint.getBaseType(ITEM), "async generator");
+			strictEqual(getBaseType(ITEM), "async generator");
 		}
 	});
 
@@ -130,7 +130,7 @@ describe("TypeHint.getBaseType", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeHint.getBaseType(ITEM), "generator");
+			strictEqual(getBaseType(ITEM), "generator");
 		}
 	});
 
@@ -151,7 +151,7 @@ describe("TypeHint.getBaseType", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeHint.getBaseType(ITEM), "async function");
+			strictEqual(getBaseType(ITEM), "async function");
 		}
 	});
 
@@ -174,7 +174,7 @@ describe("TypeHint.getBaseType", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeHint.getBaseType(ITEM), "function");
+			strictEqual(getBaseType(ITEM), "function");
 		}
 	});
 
@@ -183,7 +183,7 @@ describe("TypeHint.getBaseType", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeHint.getBaseType(ITEM), "object");
+			strictEqual(getBaseType(ITEM), "object");
 		}
 	});
 });

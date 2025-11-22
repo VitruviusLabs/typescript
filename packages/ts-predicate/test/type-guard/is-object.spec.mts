@@ -1,15 +1,15 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { isObject } from "../../src/_index.mjs";
 
-describe("TypeGuard.isObject", (): void => {
+describe("isObject", (): void => {
 	it("should return true when given an object", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.ARRAY_OBJECT);
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isObject(ITEM);
+			const RESULT: unknown = isObject(ITEM);
 
 			strictEqual(RESULT, true);
 		}
@@ -20,7 +20,7 @@ describe("TypeGuard.isObject", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isObject(ITEM);
+			const RESULT: unknown = isObject(ITEM);
 
 			strictEqual(RESULT, false);
 		}
@@ -31,7 +31,7 @@ describe("TypeGuard.isObject", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isObject(VALUE))
+			if (isObject(VALUE))
 			{
 				consumeValue<object>(VALUE);
 			}
@@ -45,7 +45,7 @@ describe("TypeGuard.isObject", (): void => {
 		{
 			const VALUE: Date | undefined = createValue();
 
-			if (TypeGuard.isObject(VALUE))
+			if (isObject(VALUE))
 			{
 				consumeValue<Date>(VALUE);
 			}

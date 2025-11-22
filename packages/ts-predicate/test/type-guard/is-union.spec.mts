@@ -1,15 +1,15 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { isNumber, isString, isUnion } from "../../src/_index.mjs";
 
-describe("TypeGuard.isUnion", (): void => {
+describe("isUnion", (): void => {
 	it("should return true when given a value matching one of the test", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.STRING, GroupType.NUMBER);
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeGuard.isUnion(ITEM, [TypeGuard.isString, TypeGuard.isNumber]), true);
+			strictEqual(isUnion(ITEM, [isString, isNumber]), true);
 		}
 	});
 
@@ -18,7 +18,7 @@ describe("TypeGuard.isUnion", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeGuard.isUnion(ITEM, [TypeGuard.isString, TypeGuard.isNumber]), false);
+			strictEqual(isUnion(ITEM, [isString, isNumber]), false);
 		}
 	});
 
@@ -27,7 +27,7 @@ describe("TypeGuard.isUnion", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isUnion(VALUE, [TypeGuard.isNumber, TypeGuard.isString]))
+			if (isUnion(VALUE, [isNumber, isString]))
 			{
 				consumeValue<number | string>(VALUE);
 			}
@@ -41,7 +41,7 @@ describe("TypeGuard.isUnion", (): void => {
 		{
 			const VALUE: string | undefined = createValue();
 
-			if (TypeGuard.isUnion(VALUE, [TypeGuard.isNumber, TypeGuard.isString]))
+			if (isUnion(VALUE, [isNumber, isString]))
 			{
 				consumeValue<string>(VALUE);
 			}

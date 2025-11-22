@@ -1,15 +1,15 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { isBoolean } from "../../src/_index.mjs";
 
-describe("TypeGuard.isBoolean", (): void => {
+describe("isBoolean", (): void => {
 	it("should return true when given a boolean", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.BOOLEAN);
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isBoolean(ITEM);
+			const RESULT: unknown = isBoolean(ITEM);
 
 			strictEqual(RESULT, true);
 		}
@@ -20,7 +20,7 @@ describe("TypeGuard.isBoolean", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isBoolean(ITEM);
+			const RESULT: unknown = isBoolean(ITEM);
 
 			strictEqual(RESULT, false);
 		}
@@ -31,7 +31,7 @@ describe("TypeGuard.isBoolean", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isBoolean(VALUE))
+			if (isBoolean(VALUE))
 			{
 				consumeValue<boolean>(VALUE);
 			}

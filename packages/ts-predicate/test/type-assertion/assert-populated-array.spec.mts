@@ -1,18 +1,13 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion, ValidationError } from "../../src/_index.mjs";
+import { ValidationError, assertPopulatedArray, isInteger } from "../../src/_index.mjs";
 
-function isNumberTest(value: unknown): value is number
-{
-	return Number.isSafeInteger(value);
-}
-
-describe("TypeAssertion.assertPopulatedArray", (): void => {
+describe("assertPopulatedArray", (): void => {
 	it("should return when given a populated array", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertPopulatedArray([1, 2, 3]);
+			assertPopulatedArray([1, 2, 3]);
 		};
 
 		doesNotThrow(WRAPPER);
@@ -21,7 +16,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 	it("should throw when given an empty array", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertPopulatedArray([]);
+			assertPopulatedArray([]);
 		};
 
 		throws(WRAPPER, createErrorTest(new ValidationError(
@@ -37,7 +32,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertPopulatedArray(ITEM);
+				assertPopulatedArray(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest("The value is not an array."));
@@ -47,7 +42,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 	it("should ignore empty constraints", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertPopulatedArray([1, "2", true], {});
+			assertPopulatedArray([1, "2", true], {});
 		};
 
 		doesNotThrow(WRAPPER);
@@ -56,12 +51,12 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 	it("should return when given an array with a length greater or equal to the minLength constraint", (): void => {
 		const WRAPPER_GREATER_LENGTH = (): void =>
 		{
-			TypeAssertion.assertPopulatedArray([1, 2, 3], { minLength: 2 });
+			assertPopulatedArray([1, 2, 3], { minLength: 2 });
 		};
 
 		const WRAPPER_EXACT_LENGTH = (): void =>
 		{
-			TypeAssertion.assertPopulatedArray([1, 2, 3], { minLength: 3 });
+			assertPopulatedArray([1, 2, 3], { minLength: 3 });
 		};
 
 		doesNotThrow(WRAPPER_GREATER_LENGTH);
@@ -71,7 +66,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 	it("should throw when given a minLength constraint less than 1", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertPopulatedArray([], { minLength: 0 });
+			assertPopulatedArray([], { minLength: 0 });
 		};
 
 		throws(WRAPPER, createErrorTest(new RangeError("The minimum length cannot be less than one.")));
@@ -80,12 +75,12 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 	it("should throw when given an array with a length below the minLength constraint", (): void => {
 		const WRAPPER_EMPTY = (): void =>
 		{
-			TypeAssertion.assertPopulatedArray([], { minLength: 1 });
+			assertPopulatedArray([], { minLength: 1 });
 		};
 
 		const WRAPPER_SMALL_LENGTH = (): void =>
 		{
-			TypeAssertion.assertPopulatedArray([1, 2, 3], { minLength: 4 });
+			assertPopulatedArray([1, 2, 3], { minLength: 4 });
 		};
 
 		throws(WRAPPER_EMPTY, createErrorTest(new ValidationError(
@@ -102,7 +97,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 	it("should return when given an array with all the values passing the itemTest constraint", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertPopulatedArray([1, 2, 3], { itemTest: isNumberTest });
+			assertPopulatedArray([1, 2, 3], { itemTest: isInteger });
 		};
 
 		doesNotThrow(WRAPPER);
@@ -111,7 +106,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 	it("should throw when given an array with some values not passing the itemTest constraint", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
+			assertPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isInteger });
 		};
 
 		throws(WRAPPER, createErrorTest(new ValidationError(
@@ -128,7 +123,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 	it("should return when given an array with all the values passing the test constraint", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertPopulatedArray([1, 2, 3], isNumberTest);
+			assertPopulatedArray([1, 2, 3], isInteger);
 		};
 
 		doesNotThrow(WRAPPER);
@@ -137,7 +132,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 	it("should throw when given an array with some values not passing the test constraint", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertPopulatedArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
+			assertPopulatedArray([1, 2, 3, Symbol("anomaly")], isInteger);
 		};
 
 		throws(WRAPPER, createErrorTest(new ValidationError(
@@ -156,7 +151,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertPopulatedArray(VALUE);
+			assertPopulatedArray(VALUE);
 			consumeValue<[unknown, ...Array<unknown>]>(VALUE);
 		};
 
@@ -168,7 +163,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertPopulatedArray(VALUE, isNumberTest);
+			assertPopulatedArray(VALUE, isInteger);
 			consumeValue<[number, ...Array<number>]>(VALUE);
 		};
 
@@ -180,7 +175,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertPopulatedArray(VALUE, { itemTest: isNumberTest });
+			assertPopulatedArray(VALUE, { itemTest: isInteger });
 			consumeValue<[number, ...Array<number>]>(VALUE);
 		};
 
@@ -192,7 +187,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 		{
 			const VALUE: [number, ...Array<number>] | undefined = createValue();
 
-			TypeAssertion.assertPopulatedArray(VALUE);
+			assertPopulatedArray(VALUE);
 			consumeValue<[number, ...Array<number>]>(VALUE);
 		};
 
@@ -204,7 +199,7 @@ describe("TypeAssertion.assertPopulatedArray", (): void => {
 		{
 			const VALUE: Array<number> | undefined = createValue();
 
-			TypeAssertion.assertPopulatedArray(VALUE);
+			assertPopulatedArray(VALUE);
 			consumeValue<[number, ...Array<number>]>(VALUE);
 		};
 

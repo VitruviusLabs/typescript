@@ -1,15 +1,15 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { type AbstractConstructorOf, TypeGuard } from "../../src/_index.mjs";
+import { type AbstractConstructorOf, isConstructor } from "../../src/_index.mjs";
 
-describe("TypeGuard.isConstructor", (): void => {
+describe("isConstructor", (): void => {
 	it("should return true when given a constructible", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.CONSTRUCTIBLE);
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isConstructor(ITEM);
+			const RESULT: unknown = isConstructor(ITEM);
 
 			strictEqual(RESULT, true);
 		}
@@ -20,7 +20,7 @@ describe("TypeGuard.isConstructor", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isConstructor(ITEM);
+			const RESULT: unknown = isConstructor(ITEM);
 
 			strictEqual(RESULT, false);
 		}
@@ -31,7 +31,7 @@ describe("TypeGuard.isConstructor", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isConstructor(VALUE))
+			if (isConstructor(VALUE))
 			{
 				consumeValue<AbstractConstructorOf<object>>(VALUE);
 			}
@@ -45,7 +45,7 @@ describe("TypeGuard.isConstructor", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isConstructor<typeof Date>(VALUE))
+			if (isConstructor<typeof Date>(VALUE))
 			{
 				consumeValue<typeof Date>(VALUE);
 			}
@@ -59,7 +59,7 @@ describe("TypeGuard.isConstructor", (): void => {
 		{
 			const VALUE: (typeof Date) | undefined = createValue();
 
-			if (TypeGuard.isConstructor(VALUE))
+			if (isConstructor(VALUE))
 			{
 				consumeValue<typeof Date>(VALUE);
 			}

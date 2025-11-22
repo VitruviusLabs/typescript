@@ -1,14 +1,14 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
-import { TypeGuard } from "../../src/_index.mjs";
+import { hasNullableProperty } from "../../src/_index.mjs";
 import { consumeValue, createValue } from "@vitruvius-labs/testing-ground";
 
-describe("TypeGuard.hasNullableProperty", (): void => {
+describe("hasNullableProperty", (): void => {
 	it("should return false when given an object without the property", (): void => {
 		const SYMBOL: unique symbol = Symbol("answer");
 
-		const RESULT_STRING: unknown = TypeGuard.hasNullableProperty({}, "answer");
-		const RESULT_SYMBOL: unknown = TypeGuard.hasNullableProperty({}, SYMBOL);
+		const RESULT_STRING: unknown = hasNullableProperty({}, "answer");
+		const RESULT_SYMBOL: unknown = hasNullableProperty({}, SYMBOL);
 
 		strictEqual(RESULT_STRING, false);
 		strictEqual(RESULT_SYMBOL, false);
@@ -17,8 +17,8 @@ describe("TypeGuard.hasNullableProperty", (): void => {
 	it("should return true when given an object with the property", (): void => {
 		const SYMBOL: unique symbol = Symbol("answer");
 
-		const RESULT_STRING: unknown = TypeGuard.hasNullableProperty({ answer: undefined }, "answer");
-		const RESULT_SYMBOL: unknown = TypeGuard.hasNullableProperty({ [SYMBOL]: undefined }, SYMBOL);
+		const RESULT_STRING: unknown = hasNullableProperty({ answer: undefined }, "answer");
+		const RESULT_SYMBOL: unknown = hasNullableProperty({ [SYMBOL]: undefined }, SYMBOL);
 
 		strictEqual(RESULT_STRING, true);
 		strictEqual(RESULT_SYMBOL, true);
@@ -28,7 +28,7 @@ describe("TypeGuard.hasNullableProperty", (): void => {
 		const WRAPPER = (): void => {
 			const VALUE: object = createValue({});
 
-			if (TypeGuard.hasNullableProperty(VALUE, "key"))
+			if (hasNullableProperty(VALUE, "key"))
 			{
 				consumeValue<{ key: unknown }>(VALUE);
 			}
@@ -43,7 +43,7 @@ describe("TypeGuard.hasNullableProperty", (): void => {
 
 			const VALUE: object = createValue({});
 
-			if (TypeGuard.hasNullableProperty(VALUE, SYMBOL))
+			if (hasNullableProperty(VALUE, SYMBOL))
 			{
 				consumeValue<{ [SYMBOL]: unknown }>(VALUE);
 			}

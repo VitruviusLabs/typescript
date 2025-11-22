@@ -1,17 +1,17 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { type NullishValues, assertNullish } from "../../../../../src/_index.mjs";
 
-describe("TypeAssertion.assertNullish", (): void => {
-	it("should return when given undefined, null, or NaN", (): void => {
+describe("assertNullish", (): void => {
+	it("should return when given null, undefined, NaN, or NoValue", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.NULLISH);
 
 		for (const ITEM of VALUES)
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertNullish(ITEM);
+				assertNullish(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -25,7 +25,7 @@ describe("TypeAssertion.assertNullish", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertNullish(ITEM);
+				assertNullish(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -37,8 +37,8 @@ describe("TypeAssertion.assertNullish", (): void => {
 		{
 			const VALUE: unknown = createValue(0);
 
-			TypeAssertion.assertNullish(VALUE);
-			consumeValue<null | undefined>(VALUE);
+			assertNullish(VALUE);
+			consumeValue<NullishValues>(VALUE);
 		};
 
 		throws(WRAPPER);
@@ -49,7 +49,7 @@ describe("TypeAssertion.assertNullish", (): void => {
 		{
 			const VALUE: number | undefined = createValue(0);
 
-			TypeAssertion.assertNullish(VALUE);
+			assertNullish(VALUE);
 			consumeValue<undefined>(VALUE);
 		};
 

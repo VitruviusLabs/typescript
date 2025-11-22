@@ -1,9 +1,9 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { assertFiniteNumber } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertFiniteNumber", (): void => {
+describe("assertFiniteNumber", (): void => {
 	it("should return when given a real number", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.FINITE);
 
@@ -11,7 +11,7 @@ describe("TypeAssertion.assertFiniteNumber", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertFiniteNumber(ITEM);
+				assertFiniteNumber(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -25,7 +25,7 @@ describe("TypeAssertion.assertFiniteNumber", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertFiniteNumber(ITEM);
+				assertFiniteNumber(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -39,7 +39,7 @@ describe("TypeAssertion.assertFiniteNumber", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertFiniteNumber(ITEM);
+				assertFiniteNumber(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -51,7 +51,7 @@ describe("TypeAssertion.assertFiniteNumber", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertFiniteNumber(VALUE);
+			assertFiniteNumber(VALUE);
 			consumeValue<number>(VALUE);
 		};
 

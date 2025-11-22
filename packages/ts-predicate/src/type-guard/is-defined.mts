@@ -1,6 +1,9 @@
-function isDefined<Type>(value: Type): value is NonNullable<Type>
+import type { NonNullish } from "../extended/nullish/definition/type/non-nullish.mjs";
+import { isNullish } from "../extended/nullish/predicate/type-guard/is-nullish.mjs";
+
+function isDefined<Type>(value: Type): value is NonNullish<Type>
 {
-	return value !== undefined && value !== null && !Number.isNaN(value);
+	return !isNullish(value);
 }
 
 export { isDefined };

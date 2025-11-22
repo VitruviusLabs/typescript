@@ -5,7 +5,7 @@ function assertInstanceOf<T extends object>(value: unknown, constructor_class: A
 {
 	if (!(value instanceof constructor_class))
 	{
-		throw new ValidationError(`The value is not an instance of ${constructor_class.name}.`);
+		throw new ValidationError(`The value must be an instance of ${constructor_class.name}.`);
 	}
 }
 

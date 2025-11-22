@@ -1,14 +1,14 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { hasProperty, isString } from "../../src/_index.mjs";
 
-describe("TypeGuard.hasProperty", (): void => {
+describe("hasProperty", (): void => {
 	it("should return false when given an object without the property", (): void => {
 		const SYMBOL: unique symbol = Symbol("key");
 
-		const RESULT_STRING: unknown = TypeGuard.hasProperty({}, "key");
-		const RESULT_SYMBOL: unknown = TypeGuard.hasProperty({}, SYMBOL);
+		const RESULT_STRING: unknown = hasProperty({}, "key");
+		const RESULT_SYMBOL: unknown = hasProperty({}, SYMBOL);
 
 		strictEqual(RESULT_STRING, false);
 		strictEqual(RESULT_SYMBOL, false);
@@ -21,8 +21,8 @@ describe("TypeGuard.hasProperty", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT_STRING: unknown = TypeGuard.hasProperty({ key: ITEM }, "key");
-			const RESULT_SYMBOL: unknown = TypeGuard.hasProperty({ [SYMBOL]: ITEM }, SYMBOL);
+			const RESULT_STRING: unknown = hasProperty({ key: ITEM }, "key");
+			const RESULT_SYMBOL: unknown = hasProperty({ [SYMBOL]: ITEM }, SYMBOL);
 
 			strictEqual(RESULT_STRING, false);
 			strictEqual(RESULT_SYMBOL, false);
@@ -36,8 +36,8 @@ describe("TypeGuard.hasProperty", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT_STRING: unknown = TypeGuard.hasProperty({ key: ITEM }, "key");
-			const RESULT_SYMBOL: unknown = TypeGuard.hasProperty({ [SYMBOL]: ITEM }, SYMBOL);
+			const RESULT_STRING: unknown = hasProperty({ key: ITEM }, "key");
+			const RESULT_SYMBOL: unknown = hasProperty({ [SYMBOL]: ITEM }, SYMBOL);
 
 			strictEqual(RESULT_STRING, true);
 			strictEqual(RESULT_SYMBOL, true);
@@ -51,8 +51,8 @@ describe("TypeGuard.hasProperty", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT_STRING: unknown = TypeGuard.hasProperty({ key: ITEM }, "key", TypeGuard.isString);
-			const RESULT_SYMBOL: unknown = TypeGuard.hasProperty({ [SYMBOL]: ITEM }, SYMBOL, TypeGuard.isString);
+			const RESULT_STRING: unknown = hasProperty({ key: ITEM }, "key", isString);
+			const RESULT_SYMBOL: unknown = hasProperty({ [SYMBOL]: ITEM }, SYMBOL, isString);
 
 			strictEqual(RESULT_STRING, false);
 			strictEqual(RESULT_SYMBOL, false);
@@ -66,8 +66,8 @@ describe("TypeGuard.hasProperty", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT_STRING: unknown = TypeGuard.hasProperty({ key: ITEM }, "key", TypeGuard.isString);
-			const RESULT_SYMBOL: unknown = TypeGuard.hasProperty({ [SYMBOL]: ITEM }, SYMBOL, TypeGuard.isString);
+			const RESULT_STRING: unknown = hasProperty({ key: ITEM }, "key", isString);
+			const RESULT_SYMBOL: unknown = hasProperty({ [SYMBOL]: ITEM }, SYMBOL, isString);
 
 			strictEqual(RESULT_STRING, true);
 			strictEqual(RESULT_SYMBOL, true);
@@ -78,7 +78,7 @@ describe("TypeGuard.hasProperty", (): void => {
 		const WRAPPER = (): void => {
 			const VALUE: object = createValue({});
 
-			if (TypeGuard.hasProperty(VALUE, "key"))
+			if (hasProperty(VALUE, "key"))
 			{
 				consumeValue<{ key: unknown }>(VALUE);
 			}
@@ -93,7 +93,7 @@ describe("TypeGuard.hasProperty", (): void => {
 
 			const VALUE: object = createValue({});
 
-			if (TypeGuard.hasProperty(VALUE, SYMBOL))
+			if (hasProperty(VALUE, SYMBOL))
 			{
 				consumeValue<{ [SYMBOL]: unknown }>(VALUE);
 			}

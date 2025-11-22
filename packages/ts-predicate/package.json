@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-labs/ts-predicate",
-	"version": "6.2.0",
+	"version": "7.0.0",
 	"description": "TypeScript predicates library",
 	"author": {
 		"name": "VitruviusLabs"
@@ -37,22 +37,6 @@
 		".": {
 			"import": "./build/esm/_index.mjs",
 			"types": "./build/types/_index.d.mts"
-		},
-		"./helper": {
-			"import": "./build/esm/helper/_index.mjs",
-			"types": "./build/types/helper/_index.d.mts"
-		},
-		"./type-assertion": {
-			"import": "./build/esm/type-assertion/_index.mjs",
-			"types": "./build/types/type-assertion/_index.d.mts"
-		},
-		"./type-guard": {
-			"import": "./build/esm/type-guard/_index.mjs",
-			"types": "./build/types/type-guard/_index.d.mts"
-		},
-		"./type-hint": {
-			"import": "./build/esm/type-hint/_index.mjs",
-			"types": "./build/types/type-hint/_index.d.mts"
 		}
 	},
 	"files": [

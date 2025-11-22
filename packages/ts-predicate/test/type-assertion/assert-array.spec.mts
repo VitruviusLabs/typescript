@@ -1,14 +1,14 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion, ValidationError } from "../../src/_index.mjs";
+import { ValidationError, assertArray } from "../../src/_index.mjs";
 
 function isNumberTest(value: unknown): value is number
 {
 	return Number.isSafeInteger(value);
 }
 
-describe("TypeAssertion.assertArray", (): void => {
+describe("assertArray", (): void => {
 	it("should return when given an array", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.ARRAY);
 
@@ -16,7 +16,7 @@ describe("TypeAssertion.assertArray", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertArray(ITEM);
+				assertArray(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -30,7 +30,7 @@ describe("TypeAssertion.assertArray", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertArray(ITEM);
+				assertArray(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest("The value is not an array."));
@@ -40,7 +40,7 @@ describe("TypeAssertion.assertArray", (): void => {
 	it("should ignore empty constraints", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertArray([1, "2", true], {});
+			assertArray([1, "2", true], {});
 		};
 
 		doesNotThrow(WRAPPER);
@@ -49,12 +49,12 @@ describe("TypeAssertion.assertArray", (): void => {
 	it("should return when given an array with a length greater or equal to the minLength constraint", (): void => {
 		const WRAPPER_GREATER_LENGTH = (): void =>
 		{
-			TypeAssertion.assertArray([1, 2, 3], { minLength: 2 });
+			assertArray([1, 2, 3], { minLength: 2 });
 		};
 
 		const WRAPPER_EXACT_LENGTH = (): void =>
 		{
-			TypeAssertion.assertArray([1, 2, 3], { minLength: 3 });
+			assertArray([1, 2, 3], { minLength: 3 });
 		};
 
 		doesNotThrow(WRAPPER_GREATER_LENGTH);
@@ -64,7 +64,7 @@ describe("TypeAssertion.assertArray", (): void => {
 	it("should throw when given a minLength constraint less than 1", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertArray([], { minLength: 0 });
+			assertArray([], { minLength: 0 });
 		};
 
 		throws(WRAPPER, createErrorTest(new RangeError(
@@ -75,12 +75,12 @@ describe("TypeAssertion.assertArray", (): void => {
 	it("should throw when given an array with a length below the minLength constraint", (): void => {
 		const WRAPPER_EMPTY = (): void =>
 		{
-			TypeAssertion.assertArray([], { minLength: 1 });
+			assertArray([], { minLength: 1 });
 		};
 
 		const WRAPPER_SMALL_LENGTH = (): void =>
 		{
-			TypeAssertion.assertArray([1, 2, 3], { minLength: 4 });
+			assertArray([1, 2, 3], { minLength: 4 });
 		};
 
 		throws(WRAPPER_EMPTY, createErrorTest(new ValidationError(
@@ -97,12 +97,12 @@ describe("TypeAssertion.assertArray", (): void => {
 	it("should return when given an array with all the values passing the itemTest constraint", (): void => {
 		const WRAPPER_EMPTY = (): void =>
 		{
-			TypeAssertion.assertArray([], { itemTest: isNumberTest });
+			assertArray([], { itemTest: isNumberTest });
 		};
 
 		const WRAPPER_VALID = (): void =>
 		{
-			TypeAssertion.assertArray([1, 2, 3], { itemTest: isNumberTest });
+			assertArray([1, 2, 3], { itemTest: isNumberTest });
 		};
 
 		doesNotThrow(WRAPPER_EMPTY);
@@ -112,7 +112,7 @@ describe("TypeAssertion.assertArray", (): void => {
 	it("should throw when given an array with some values not passing the itemTest constraint", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
+			assertArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
 		};
 
 		throws(WRAPPER, createErrorTest(new ValidationError(
@@ -129,12 +129,12 @@ describe("TypeAssertion.assertArray", (): void => {
 	it("should return when given an array with all the values passing the test constraint", (): void => {
 		const WRAPPER_EMPTY = (): void =>
 		{
-			TypeAssertion.assertArray([], isNumberTest);
+			assertArray([], isNumberTest);
 		};
 
 		const WRAPPER_VALID = (): void =>
 		{
-			TypeAssertion.assertArray([1, 2, 3], isNumberTest);
+			assertArray([1, 2, 3], isNumberTest);
 		};
 
 		doesNotThrow(WRAPPER_EMPTY);
@@ -144,7 +144,7 @@ describe("TypeAssertion.assertArray", (): void => {
 	it("should throw when given an array with some values not passing the test constraint", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
+			assertArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
 		};
 
 		throws(WRAPPER, createErrorTest(new ValidationError(
@@ -163,7 +163,7 @@ describe("TypeAssertion.assertArray", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertArray(VALUE);
+			assertArray(VALUE);
 			consumeValue<Array<unknown>>(VALUE);
 		};
 
@@ -175,7 +175,7 @@ describe("TypeAssertion.assertArray", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertArray(VALUE, isNumberTest);
+			assertArray(VALUE, isNumberTest);
 			consumeValue<Array<number>>(VALUE);
 		};
 
@@ -187,7 +187,7 @@ describe("TypeAssertion.assertArray", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertArray(VALUE, { itemTest: isNumberTest });
+			assertArray(VALUE, { itemTest: isNumberTest });
 			consumeValue<Array<number>>(VALUE);
 		};
 
@@ -199,7 +199,7 @@ describe("TypeAssertion.assertArray", (): void => {
 		{
 			const VALUE: Array<number> | undefined = createValue();
 
-			TypeAssertion.assertArray(VALUE);
+			assertArray(VALUE);
 			consumeValue<Array<number>>(VALUE);
 		};
 
