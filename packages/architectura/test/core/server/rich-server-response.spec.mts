@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { deepStrictEqual, rejects, strictEqual, throws } from "node:assert";
 import { createBrotliCompress, createDeflate, createGzip } from "node:zlib";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
-import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
+import { getConstructorOf } from "@vitruvius-labs/ts-predicate";
 import { ReflectUtility, instanceOf, jsonSerialize } from "@vitruvius-labs/toolbox";
 import { ContentEncodingEnum, ContentTypeEnum, type CookieDescriptorInterface, CookieSameSiteEnum, HTTPStatusCodeEnum, type ReplyInterface, RichServerResponse } from "../../../src/_index.mjs";
 import { type MockRequestInterface, type MockResponseInterface, mockRequest, mockResponse, nullPrototype } from "../../../mock/_index.mjs";

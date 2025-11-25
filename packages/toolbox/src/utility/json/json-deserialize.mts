@@ -1,5 +1,5 @@
 import type { JSONValueType } from "./definition/type/json-value.type.mjs";
-import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isString } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Deserializes the given JSON string.

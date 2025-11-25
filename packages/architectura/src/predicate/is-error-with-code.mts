@@ -1,5 +1,5 @@
 import type { ErrorWithCodeInterface } from "../definition/interface/error-with-code.interface.mjs";
-import { hasProperty, isString } from "@vitruvius-labs/ts-predicate/type-guard";
+import { hasProperty, isString } from "@vitruvius-labs/ts-predicate";
 
 /**
  * NodeJS uses the base Error class to represent errors.,

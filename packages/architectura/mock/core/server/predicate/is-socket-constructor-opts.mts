@@ -1,5 +1,5 @@
 import type { SocketConstructorOpts } from "node:net";
-import { isBoolean, isInstanceOf, isNumber, isStructuredData, unary } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isBoolean, isInstanceOf, isNumber, isStructuredData, unary } from "@vitruvius-labs/ts-predicate";
 import { isOnReadOpts } from "./is-on-read-opts.mjs";
 
 function isSocketConstructorOpts(value: unknown): value is SocketConstructorOpts

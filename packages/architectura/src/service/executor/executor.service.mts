@@ -1,6 +1,6 @@
 import type { ExecutorInstantiationInterface } from "./definition/interface/executor-instantiation.interface.mjs";
 import { setTimeout as timeout } from "node:timers/promises";
-import { isCallable } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isCallable } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Service for executing a callable with retries

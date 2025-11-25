@@ -1,7 +1,7 @@
 import type { FileSystemFlagEnum } from "./definition/enum/file-system-flag.enum.mjs";
 import { type Dirent, type ReadStream, type Stats, createReadStream } from "node:fs";
 import { type FileHandle, open, readFile, readdir, stat } from "node:fs/promises";
-import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isString } from "@vitruvius-labs/ts-predicate";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { isErrorWithCode } from "../../predicate/is-error-with-code.mjs";
 

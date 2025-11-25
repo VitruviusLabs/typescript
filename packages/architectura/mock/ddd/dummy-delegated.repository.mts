@@ -1,4 +1,4 @@
-import type { NonNullableKeys } from "@vitruvius-labs/ts-predicate/helper";
+import type { NonNullableKeys } from "@vitruvius-labs/ts-predicate";
 import type { DummyModel } from "./dummy.model.mjs";
 import type { DummyDelegateDataInterface } from "./definition/_index.mjs";
 import type { DummyDelegate } from "./dummy.delegate.mjs";

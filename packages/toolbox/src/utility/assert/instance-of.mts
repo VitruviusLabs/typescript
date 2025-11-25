@@ -1,7 +1,5 @@
-import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import { fail } from "node:assert";
-import { isInstanceOf } from "@vitruvius-labs/ts-predicate/type-guard";
-import { getDetailedType } from "@vitruvius-labs/ts-predicate/type-hint";
+import { type ConstructorOf, getDetailedType, isInstanceOf } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Asserts that a value is an instance of the expected class.

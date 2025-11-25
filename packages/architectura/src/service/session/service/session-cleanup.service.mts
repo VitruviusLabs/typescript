@@ -1,4 +1,4 @@
-import { toError } from "@vitruvius-labs/ts-predicate/helper";
+import { toError } from "@vitruvius-labs/ts-predicate";
 import { MillisecondEnum } from "@vitruvius-labs/toolbox";
 import { LoggerProxy } from "../../logger/logger.proxy.mjs";
 import { SessionRegistry } from "../entity/session.registry.mjs";

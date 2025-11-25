@@ -1,6 +1,5 @@
 import type { Dirent } from "node:fs";
-import type { ConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
-import { isConstructor, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
+import { type ConstructorOf, isConstructor, isRecord } from "@vitruvius-labs/ts-predicate";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { BasePreHook } from "./base.pre-hook.mjs";
 import { BasePostHook } from "./base.post-hook.mjs";

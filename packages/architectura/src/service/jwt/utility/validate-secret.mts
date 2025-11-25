@@ -1,5 +1,5 @@
 import type { SecretType } from "../definition/type/secret.type.mjs";
-import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isString } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Validates the secret

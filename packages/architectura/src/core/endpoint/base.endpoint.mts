@@ -1,4 +1,3 @@
-import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import type { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 import type { BasePreHook } from "../hook/base.pre-hook.mjs";
 import type { BasePostHook } from "../hook/base.post-hook.mjs";
@@ -6,8 +5,7 @@ import type { BaseErrorHook } from "../hook/base.error-hook.mjs";
 import type { ExecutionContext } from "../execution-context/execution-context.mjs";
 import type { AccessControlDefinition } from "./access-control-definition.mjs";
 import type { BaseEndpointTypingInterface } from "./definition/interface/base-endpoint-typing.interface.mjs";
-import { ValidationError } from "@vitruvius-labs/ts-predicate/type-assertion";
-import { normalizeErrorTree, toError } from "@vitruvius-labs/ts-predicate/helper";
+import { type ConstructorOf, ValidationError, normalizeErrorTree, toError } from "@vitruvius-labs/ts-predicate";
 import { RouteUtility } from "./route.utility.mjs";
 import { HTTPError } from "../server/http-error.mjs";
 import { HTTPStatusCodeEnum } from "../server/definition/enum/http-status-code.enum.mjs";

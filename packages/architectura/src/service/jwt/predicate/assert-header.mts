@@ -1,5 +1,5 @@
 import type { JWTHeaderInterface } from "../definition/interface/jwt-header.interface.mjs";
-import { assertEnumValue, assertString, assertStructuredData, unary } from "@vitruvius-labs/ts-predicate/type-assertion";
+import { assertEnumValue, assertString, assertStructuredData, unary } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Asserts that the header is valid

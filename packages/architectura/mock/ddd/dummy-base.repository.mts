@@ -1,5 +1,5 @@
 import type { DummyModel } from "./dummy.model.mjs";
-import type { NonNullableKeys } from "@vitruvius-labs/ts-predicate/helper";
+import type { NonNullableKeys } from "@vitruvius-labs/ts-predicate";
 import type { DummyDelegateDataInterface } from "./definition/_index.mjs";
 import { BaseRepository, type ModelMetadataInterface, type RepositoryQueryNormalizedOptionsInterface } from "../../src/_index.mjs";
 

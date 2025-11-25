@@ -1,4 +1,4 @@
-import { isBigInt } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isBigInt } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Serializes the given data to a JSON string.

@@ -1,5 +1,5 @@
 import type { OnReadOpts } from "node:net";
-import { isCallable, isInstanceOf, isStructuredData, unary } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isCallable, isInstanceOf, isStructuredData, unary } from "@vitruvius-labs/ts-predicate";
 
 function isOnReadOpts(value: unknown): value is OnReadOpts
 {

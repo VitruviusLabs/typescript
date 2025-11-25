@@ -5,7 +5,7 @@ import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
 import { Server as UnsafeServer, type ServerOptions as UnsafeServerOptions } from "node:http";
 import { Server as SecureServer, type ServerOptions as SecureServerOptions } from "node:https";
 import { extname } from "node:path";
-import { assertInteger } from "@vitruvius-labs/ts-predicate/type-assertion";
+import { assertInteger } from "@vitruvius-labs/ts-predicate";
 import { ReflectUtility } from "@vitruvius-labs/toolbox/reflect";
 import { FileSystemService } from "../../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
