@@ -1,5 +1,3 @@
-type Nullable<T> = {
-	[K in keyof T]: T[K] | undefined;
-};
+type Nullable<T> = T | null | undefined;
 
 export type { Nullable };

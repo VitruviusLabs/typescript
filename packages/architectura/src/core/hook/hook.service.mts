@@ -1,12 +1,10 @@
-import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 import type { ExecutionContext } from "../execution-context/execution-context.mjs";
 import type { BaseEndpoint } from "../endpoint/base.endpoint.mjs";
 import type { BasePreHook } from "./base.pre-hook.mjs";
 import type { BasePostHook } from "./base.post-hook.mjs";
 import type { BaseErrorHook } from "./base.error-hook.mjs";
 import type { HooksInterface } from "./definition/interface/hooks.interface.mjs";
-import { isConstructor } from "@vitruvius-labs/ts-predicate/type-guard";
-import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
+import { type ConstructorOf, getConstructorOf, isConstructor } from "@vitruvius-labs/ts-predicate";
 import { HookRegistry } from "./hook.registry.mjs";
 import { LoggerProxy } from "../../service/logger/logger.proxy.mjs";
 import { HTTPError } from "../server/http-error.mjs";

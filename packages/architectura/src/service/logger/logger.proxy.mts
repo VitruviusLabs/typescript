@@ -1,7 +1,6 @@
 import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
 import type { LogContextInterface } from "./definition/interface/log-context.interface.mjs";
-import { toError } from "@vitruvius-labs/ts-predicate/helper";
-import { isString } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isString, toError } from "@vitruvius-labs/ts-predicate";
 import { LoggerService } from "./logger.service.mjs";
 import { ExecutionContextRegistry } from "../../core/execution-context/execution-context.registry.mjs";
 import { LogLevelEnum } from "./definition/enum/log-level.enum.mjs";

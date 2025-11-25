@@ -1,15 +1,15 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { isFiniteNumber } from "../../src/_index.mjs";
 
-describe("TypeGuard.isFiniteNumber", (): void => {
+describe("isFiniteNumber", (): void => {
 	it("should return true when given a real number", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.FINITE);
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isFiniteNumber(ITEM);
+			const RESULT: unknown = isFiniteNumber(ITEM);
 
 			strictEqual(RESULT, true);
 		}
@@ -20,7 +20,7 @@ describe("TypeGuard.isFiniteNumber", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isFiniteNumber(ITEM);
+			const RESULT: unknown = isFiniteNumber(ITEM);
 
 			strictEqual(RESULT, false);
 		}
@@ -31,7 +31,7 @@ describe("TypeGuard.isFiniteNumber", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isFiniteNumber(ITEM);
+			const RESULT: unknown = isFiniteNumber(ITEM);
 
 			strictEqual(RESULT, false);
 		}
@@ -42,7 +42,7 @@ describe("TypeGuard.isFiniteNumber", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isFiniteNumber(VALUE))
+			if (isFiniteNumber(VALUE))
 			{
 				consumeValue<number>(VALUE);
 			}

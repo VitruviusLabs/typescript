@@ -1,4 +1,4 @@
-import { isEnumValue } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isEnumValue } from "@vitruvius-labs/ts-predicate";
 import { HTTPMethodEnum } from "../definition/enum/http-method.enum.mjs";
 
 /**

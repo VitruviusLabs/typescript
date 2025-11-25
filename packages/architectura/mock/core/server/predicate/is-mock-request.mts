@@ -1,5 +1,5 @@
 import type { MockRequestInterface } from "../definition/interface/mock-request.interface.mjs";
-import { isInstanceOf, isStructuredData, unary } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isInstanceOf, isStructuredData, unary } from "@vitruvius-labs/ts-predicate";
 import { isMockSocket } from "./is-mock-socket.mjs";
 import { RichClientRequest } from "../../../../src/_index.mjs";
 

@@ -6,7 +6,7 @@ import { TLSSocket } from "node:tls";
 import { pipeline } from "node:stream/promises";
 import { ServerResponse as HTTPServerResponse } from "node:http";
 import { createBrotliCompress, createDeflate, createGzip } from "node:zlib";
-import { isNumber, isRecord, isString } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isNumber, isRecord, isString } from "@vitruvius-labs/ts-predicate";
 import { jsonSerialize } from "@vitruvius-labs/toolbox";
 import { HTTPStatusCodeEnum } from "./definition/enum/http-status-code.enum.mjs";
 import { ContentTypeEnum } from "./definition/enum/content-type.enum.mjs";

@@ -1,5 +1,5 @@
 import type { JWTClaimsInterface } from "../definition/interface/jwt-claims.interface.mjs";
-import { isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isRecord } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Asserts that the claims are valid

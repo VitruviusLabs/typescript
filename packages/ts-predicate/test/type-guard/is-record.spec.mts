@@ -1,20 +1,15 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { isInteger, isRecord } from "../../src/_index.mjs";
 
-function isNumberTest(value: unknown): value is number
-{
-	return Number.isSafeInteger(value);
-}
-
-describe("TypeGuard.isRecord", (): void => {
+describe("isRecord", (): void => {
 	it("should return true when given a record object", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.RECORD);
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isRecord(ITEM);
+			const RESULT: unknown = isRecord(ITEM);
 
 			strictEqual(RESULT, true);
 		}
@@ -25,7 +20,7 @@ describe("TypeGuard.isRecord", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isRecord(ITEM);
+			const RESULT: unknown = isRecord(ITEM);
 
 			strictEqual(RESULT, false);
 		}
@@ -36,38 +31,38 @@ describe("TypeGuard.isRecord", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isRecord(ITEM);
+			const RESULT: unknown = isRecord(ITEM);
 
 			strictEqual(RESULT, false);
 		}
 	});
 
 	it("should return true when given a record with all the values passing the itemTest constraint", (): void => {
-		const RESULT: unknown = TypeGuard.isRecord({ alpha: 1, beta: 2, gamma: 3 }, { itemTest: isNumberTest });
+		const RESULT: unknown = isRecord({ alpha: 1, beta: 2, gamma: 3 }, { itemTest: isInteger });
 
 		strictEqual(RESULT, true);
 	});
 
 	it("should ignore empty constraints", (): void => {
-		const RESULT: unknown = TypeGuard.isRecord({ alpha: 1, beta: "2", gamma: true }, {});
+		const RESULT: unknown = isRecord({ alpha: 1, beta: "2", gamma: true }, {});
 
 		strictEqual(RESULT, true);
 	});
 
 	it("should return false when given a record with some values not passing the itemTest constraint", (): void => {
-		const RESULT: unknown = TypeGuard.isRecord({ alpha: 1, beta: 2, gamma: Symbol("anomaly") }, { itemTest: isNumberTest });
+		const RESULT: unknown = isRecord({ alpha: 1, beta: 2, gamma: Symbol("anomaly") }, { itemTest: isInteger });
 
 		strictEqual(RESULT, false);
 	});
 
 	it("should return true when given a record with all the values passing the test constraint", (): void => {
-		const RESULT: unknown = TypeGuard.isRecord({ alpha: 1, beta: 2, gamma: 3 }, isNumberTest);
+		const RESULT: unknown = isRecord({ alpha: 1, beta: 2, gamma: 3 }, isInteger);
 
 		strictEqual(RESULT, true);
 	});
 
 	it("should return false when given a record with some values not passing the test constraint", (): void => {
-		const RESULT: unknown = TypeGuard.isRecord({ alpha: 1, beta: 2, gamma: Symbol("anomaly") }, isNumberTest);
+		const RESULT: unknown = isRecord({ alpha: 1, beta: 2, gamma: Symbol("anomaly") }, isInteger);
 
 		strictEqual(RESULT, false);
 	});
@@ -77,7 +72,7 @@ describe("TypeGuard.isRecord", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isRecord(VALUE))
+			if (isRecord(VALUE))
 			{
 				consumeValue<Record<string, unknown>>(VALUE);
 			}
@@ -91,7 +86,7 @@ describe("TypeGuard.isRecord", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isRecord(VALUE, isNumberTest))
+			if (isRecord(VALUE, isInteger))
 			{
 				consumeValue<Record<string, number>>(VALUE);
 			}
@@ -105,7 +100,7 @@ describe("TypeGuard.isRecord", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isRecord(VALUE, { itemTest: isNumberTest }))
+			if (isRecord(VALUE, { itemTest: isInteger }))
 			{
 				consumeValue<Record<string, number>>(VALUE);
 			}
@@ -119,7 +114,7 @@ describe("TypeGuard.isRecord", (): void => {
 		{
 			const VALUE: Record<string, number> | undefined = createValue();
 
-			if (TypeGuard.isRecord(VALUE))
+			if (isRecord(VALUE))
 			{
 				consumeValue<Record<string, number>>(VALUE);
 			}

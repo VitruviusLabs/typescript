@@ -1,17 +1,19 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { NoValue, type NonNullish, assertDefined } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertDefined", (): void => {
-	it("should throw when given undefined, null, or NaN", (): void => {
+describe("assertDefined", (): void => {
+	it("should throw when given undefined, null, NaN, or NoValue", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.NULLISH);
+
+		VALUES.push(NoValue);
 
 		for (const ITEM of VALUES)
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertDefined(ITEM);
+				assertDefined(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -25,7 +27,7 @@ describe("TypeAssertion.assertDefined", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertDefined(ITEM);
+				assertDefined(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -37,8 +39,8 @@ describe("TypeAssertion.assertDefined", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertDefined(VALUE);
-			consumeValue<NonNullable<unknown>>(VALUE);
+			assertDefined(VALUE);
+			consumeValue<NonNullish<unknown>>(VALUE);
 		};
 
 		throws(WRAPPER);
@@ -49,7 +51,7 @@ describe("TypeAssertion.assertDefined", (): void => {
 		{
 			const VALUE: number | undefined = createValue();
 
-			TypeAssertion.assertDefined(VALUE);
+			assertDefined(VALUE);
 			consumeValue<number>(VALUE);
 		};
 

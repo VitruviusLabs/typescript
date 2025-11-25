@@ -1,0 +1,69 @@
+import { doesNotThrow, strictEqual } from "node:assert";
+import { describe, it } from "node:test";
+import { consumeValue, createValue } from "@vitruvius-labs/testing-ground";
+import { type Nullish, hasNullishProperty, isString } from "../../../../../src/_index.mjs";
+
+describe("hasNullishProperty", (): void => {
+	it("should return false when given an object without the property", (): void => {
+		const SYMBOL: unique symbol = Symbol("answer");
+
+		const RESULT_STRING: unknown = hasNullishProperty({}, "answer");
+		const RESULT_SYMBOL: unknown = hasNullishProperty({}, SYMBOL);
+
+		strictEqual(RESULT_STRING, false);
+		strictEqual(RESULT_SYMBOL, false);
+	});
+
+	it("should return true when given an object with the property", (): void => {
+		const SYMBOL: unique symbol = Symbol("answer");
+
+		const RESULT_STRING: unknown = hasNullishProperty({ answer: undefined }, "answer");
+		const RESULT_SYMBOL: unknown = hasNullishProperty({ [SYMBOL]: undefined }, SYMBOL);
+
+		strictEqual(RESULT_STRING, true);
+		strictEqual(RESULT_SYMBOL, true);
+	});
+
+	it("should narrow the type to an object with the corresponding property (regular)", (): void => {
+		const WRAPPER = (): void => {
+			const VALUE: object = createValue({});
+
+			if (hasNullishProperty(VALUE, "key"))
+			{
+				consumeValue<{ key: unknown }>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
+	});
+
+	it("should narrow the type to an object with the corresponding property (symbol)", (): void => {
+		const WRAPPER = (): void => {
+			const SYMBOL: unique symbol = Symbol("key");
+
+			const VALUE: object = createValue({});
+
+			if (hasNullishProperty(VALUE, SYMBOL))
+			{
+				consumeValue<{ [SYMBOL]: unknown }>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
+	});
+
+	it("should narrow the type to an object with the corresponding property (type)", (): void => {
+		const WRAPPER = (): void => {
+			const SYMBOL: unique symbol = Symbol("key");
+
+			const VALUE: Date = createValue({});
+
+			if (hasNullishProperty(VALUE, SYMBOL, isString))
+			{
+				consumeValue<Date & { [SYMBOL]: Nullish<string> }>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
+	});
+});

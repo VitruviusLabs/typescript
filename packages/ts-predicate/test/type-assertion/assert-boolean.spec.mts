@@ -1,9 +1,9 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { assertBoolean } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertBoolean", (): void => {
+describe("assertBoolean", (): void => {
 	it("should return when given a boolean", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.BOOLEAN);
 
@@ -11,7 +11,7 @@ describe("TypeAssertion.assertBoolean", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertBoolean(ITEM);
+				assertBoolean(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -25,7 +25,7 @@ describe("TypeAssertion.assertBoolean", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertBoolean(ITEM);
+				assertBoolean(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -37,7 +37,7 @@ describe("TypeAssertion.assertBoolean", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertBoolean(VALUE);
+			assertBoolean(VALUE);
 			consumeValue<boolean>(VALUE);
 		};
 

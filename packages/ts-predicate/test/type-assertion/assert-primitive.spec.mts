@@ -1,9 +1,9 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { assertPrimitive } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertPrimitive", (): void => {
+describe("assertPrimitive", (): void => {
 	it("should return when given a primitive value", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.PRIMITIVE);
 
@@ -11,7 +11,7 @@ describe("TypeAssertion.assertPrimitive", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertPrimitive(ITEM);
+				assertPrimitive(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -25,7 +25,7 @@ describe("TypeAssertion.assertPrimitive", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertPrimitive(ITEM);
+				assertPrimitive(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -37,7 +37,7 @@ describe("TypeAssertion.assertPrimitive", (): void => {
 		{
 			const VALUE: unknown = createValue({});
 
-			TypeAssertion.assertPrimitive(VALUE);
+			assertPrimitive(VALUE);
 			consumeValue<bigint | boolean | number | string | null | undefined>(VALUE);
 		};
 
@@ -49,7 +49,7 @@ describe("TypeAssertion.assertPrimitive", (): void => {
 		{
 			const VALUE: Date | number | string = createValue({});
 
-			TypeAssertion.assertPrimitive(VALUE);
+			assertPrimitive(VALUE);
 			consumeValue<number | string>(VALUE);
 		};
 

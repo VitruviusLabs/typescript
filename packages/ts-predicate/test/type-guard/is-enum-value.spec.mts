@@ -1,16 +1,16 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { isEnumValue } from "../../src/_index.mjs";
 
-describe("TypeGuard.isEnumValue", (): void => {
+describe("isEnumValue", (): void => {
 	it("should return true when given a valid value", (): void => {
 		const ENUM_VALUES: Array<number> = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 		const VALUES: Array<number> = ENUM_VALUES;
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeGuard.isEnumValue(ITEM, ENUM_VALUES), true);
+			strictEqual(isEnumValue(ITEM, ENUM_VALUES), true);
 		}
 	});
 
@@ -20,7 +20,7 @@ describe("TypeGuard.isEnumValue", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			strictEqual(TypeGuard.isEnumValue(ITEM, ENUM_VALUES), false);
+			strictEqual(isEnumValue(ITEM, ENUM_VALUES), false);
 		}
 	});
 
@@ -29,7 +29,7 @@ describe("TypeGuard.isEnumValue", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isEnumValue(VALUE, ["lorem ipsum"]))
+			if (isEnumValue(VALUE, ["lorem ipsum"]))
 			{
 				consumeValue<string>(VALUE);
 			}
@@ -43,7 +43,7 @@ describe("TypeGuard.isEnumValue", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isEnumValue(VALUE, ["lorem ipsum"] as const))
+			if (isEnumValue(VALUE, ["lorem ipsum"] as const))
 			{
 				consumeValue<"lorem ipsum">(VALUE);
 			}
@@ -62,7 +62,7 @@ describe("TypeGuard.isEnumValue", (): void => {
 
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isEnumValue(VALUE, [DummyEnum.MESSAGE]))
+			if (isEnumValue(VALUE, [DummyEnum.MESSAGE]))
 			{
 				consumeValue<DummyEnum>(VALUE);
 			}
@@ -76,7 +76,7 @@ describe("TypeGuard.isEnumValue", (): void => {
 		{
 			const VALUE: string | undefined = createValue();
 
-			if (TypeGuard.isEnumValue(VALUE, ["lorem ipsum"]))
+			if (isEnumValue(VALUE, ["lorem ipsum"]))
 			{
 				consumeValue<string>(VALUE);
 			}

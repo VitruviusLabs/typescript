@@ -2,9 +2,7 @@ import { deepStrictEqual, doesNotReject, doesNotThrow, rejects, strictEqual, thr
 import { describe, it } from "node:test";
 import { type SinonStub, stub } from "sinon";
 import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
-import { type ConstructorOf, ValidationError } from "@vitruvius-labs/ts-predicate";
-import { normalizeErrorTree, toError } from "@vitruvius-labs/ts-predicate/helper";
-import { assertDefined } from "@vitruvius-labs/ts-predicate/type-assertion";
+import { type ConstructorOf, ValidationError, assertDefined, normalizeErrorTree, toError } from "@vitruvius-labs/ts-predicate";
 import { BaseEndpoint, BaseErrorHook, BasePostHook, BasePreHook, HTTPError, HTTPMethodEnum, HTTPStatusCodeEnum } from "../../../src/_index.mjs";
 import { type MockContextInterface, mockContext } from "../../../mock/_index.mjs";
 import { AccessControlDefinition } from "../../../src/core/endpoint/access-control-definition.mjs";

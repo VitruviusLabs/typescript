@@ -1,9 +1,9 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { assertNumber } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertNumber", (): void => {
+describe("assertNumber", (): void => {
 	it("should return when given a number", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.NUMBER);
 
@@ -11,7 +11,7 @@ describe("TypeAssertion.assertNumber", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertNumber(ITEM);
+				assertNumber(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -25,7 +25,7 @@ describe("TypeAssertion.assertNumber", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertNumber(ITEM);
+				assertNumber(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -37,7 +37,7 @@ describe("TypeAssertion.assertNumber", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertNumber(VALUE);
+			assertNumber(VALUE);
 			consumeValue<number>(VALUE);
 		};
 

@@ -1,6 +1,6 @@
 import type { MockSocketInterface } from "../definition/interface/mock-socket.interface.mjs";
 import { Socket } from "node:net";
-import { isInstanceOf, isStructuredData, unary } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isInstanceOf, isStructuredData, unary } from "@vitruvius-labs/ts-predicate";
 
 function isMockSocket(value: unknown): value is MockSocketInterface
 {

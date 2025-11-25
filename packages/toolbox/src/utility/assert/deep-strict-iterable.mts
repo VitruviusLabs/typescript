@@ -1,6 +1,5 @@
 import { deepStrictEqual, doesNotThrow, ok } from "node:assert";
-import { hasProperty, isCallable, isObject } from "@vitruvius-labs/ts-predicate/type-guard";
-import { getDetailedType } from "@vitruvius-labs/ts-predicate/type-hint";
+import { getDetailedType, hasProperty, isCallable, isObject } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Asserts that a value is an iterable and that it contains the expected values.

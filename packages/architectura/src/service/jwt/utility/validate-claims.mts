@@ -1,5 +1,5 @@
 import type { JWTClaimsInterface } from "../definition/interface/jwt-claims.interface.mjs";
-import { isDefined } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isDefined } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Validates the standard properties of a JWT claims

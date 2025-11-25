@@ -1,8 +1,7 @@
 import type { MessageInterface } from "../definition/interface/message.interface.mjs";
 import type { MessageAttributeInterface } from "../definition/interface/message-attribute.interface.mjs";
-
+import { assertArray, assertRecord, assertString, assertStructuredData } from "@vitruvius-labs/ts-predicate";
 import { assertMessageAttributeInterface } from "./assert-message-attribute-interface.mjs";
-import { assertArray, assertRecord, assertString, assertStructuredData } from "@vitruvius-labs/ts-predicate/type-assertion";
 
 function assertMessageInterface(value: unknown): asserts value is MessageInterface
 {

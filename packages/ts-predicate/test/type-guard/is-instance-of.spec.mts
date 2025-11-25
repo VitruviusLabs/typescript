@@ -1,11 +1,11 @@
 import { doesNotThrow, fail, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { consumeValue, createValue, getAllValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { isInstanceOf } from "../../src/_index.mjs";
 
-describe("TypeGuard.isInstanceOf", (): void => {
+describe("isInstanceOf", (): void => {
 	it("should return true when given an instance of the given class", (): void => {
-		strictEqual(TypeGuard.isInstanceOf(new Date(), Date), true);
+		strictEqual(isInstanceOf(new Date(), Date), true);
 	});
 
 	it("should throw when given anything else", (): void => {
@@ -13,7 +13,7 @@ describe("TypeGuard.isInstanceOf", (): void => {
 
 		for (const ITEM of ALL_VALUES)
 		{
-			strictEqual(TypeGuard.isInstanceOf(ITEM, Date), false);
+			strictEqual(isInstanceOf(ITEM, Date), false);
 		}
 	});
 
@@ -24,19 +24,19 @@ describe("TypeGuard.isInstanceOf", (): void => {
 
 		const CHILD: Child = new Child();
 
-		strictEqual(TypeGuard.isInstanceOf(CHILD, Parent), true);
+		strictEqual(isInstanceOf(CHILD, Parent), true);
 	});
 
 	it("should narrow type in typescript too", (): void => {
 		const DUMMY: unknown = new Date(0);
 
-		if (TypeGuard.isInstanceOf(DUMMY, Date))
+		if (isInstanceOf(DUMMY, Date))
 		{
 			strictEqual(DUMMY.getTime(), 0);
 		}
 		else
 		{
-			fail("TypeGuard.isInstanceOf() failed to narrow the type.");
+			fail("isInstanceOf() failed to narrow the type.");
 		}
 	});
 
@@ -45,7 +45,7 @@ describe("TypeGuard.isInstanceOf", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isInstanceOf(VALUE, Date))
+			if (isInstanceOf(VALUE, Date))
 			{
 				consumeValue<Date>(VALUE);
 			}
@@ -59,7 +59,7 @@ describe("TypeGuard.isInstanceOf", (): void => {
 		{
 			const VALUE: Date | undefined = createValue();
 
-			if (TypeGuard.isInstanceOf(VALUE, Object))
+			if (isInstanceOf(VALUE, Object))
 			{
 				consumeValue<Date>(VALUE);
 			}

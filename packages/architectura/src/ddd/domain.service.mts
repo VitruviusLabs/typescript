@@ -1,5 +1,5 @@
 import type { Dirent } from "node:fs";
-import { isConstructor, isRecord } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isConstructor, isRecord } from "@vitruvius-labs/ts-predicate";
 import { FileSystemService } from "../service/file-system/file-system.service.mjs";
 import { LoggerProxy } from "../service/logger/logger.proxy.mjs";
 import { BaseDomain } from "./base.domain.mjs";

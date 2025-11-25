@@ -1,5 +1,5 @@
 import type { MockContextInterface } from "../definition/interface/mock-context.interface.mjs";
-import { isInstanceOf, isStructuredData, unary } from "@vitruvius-labs/ts-predicate/type-guard";
+import { isInstanceOf, isStructuredData, unary } from "@vitruvius-labs/ts-predicate";
 import { isMockRequest, isMockResponse, isMockSocket } from "../../server/_index.mjs";
 import { ExecutionContext } from "../../../../src/_index.mjs";
 

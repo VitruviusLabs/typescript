@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues } from "@vitruvius-labs/testing-ground";
-import { type StructuredDataDescriptor, TypeAssertion, ValidationError } from "../../src/_index.mjs";
+import { type StructuredDataDescriptor, ValidationError, assertInteger, assertStructuredData } from "../../src/_index.mjs";
 
 interface TestData
 {
@@ -9,26 +9,18 @@ interface TestData
 	beta?: number;
 }
 
-function isNumberTest(value: unknown): asserts value is number
-{
-	if (typeof value !== "number")
-	{
-		throw new ValidationError("Value is not a number.");
-	}
-}
-
 const DESCRIPTOR: StructuredDataDescriptor<TestData> = {
 	alpha: {
 		nullable: true,
-		test: isNumberTest,
+		test: assertInteger,
 	},
 	beta: {
 		optional: true,
-		test: isNumberTest,
+		test: assertInteger,
 	},
 };
 
-describe("TypeAssertion.assertStructuredData", (): void => {
+describe("assertStructuredData", (): void => {
 	it("should throw when the value is not a record", (): void => {
 		const VALUES: Array<unknown> = getInvertedValues(GroupType.RECORD);
 
@@ -36,7 +28,7 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertStructuredData(ITEM, DESCRIPTOR);
+				assertStructuredData(ITEM, DESCRIPTOR);
 			};
 
 			throws(WRAPPER, createErrorTest("The value must be a record."));
@@ -46,7 +38,7 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 	it("should throw when there is an extraneous property", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertStructuredData({ alpha: 1, beta: 2, gamma: 3 }, DESCRIPTOR);
+			assertStructuredData({ alpha: 1, beta: 2, gamma: 3 }, DESCRIPTOR);
 		};
 
 		throws(WRAPPER, createErrorTest(new ValidationError(
@@ -58,7 +50,7 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 	it("should return when there is an extraneous property, but extraneous properties are allowed", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertStructuredData(
+			assertStructuredData(
 				{ alpha: 1, beta: 2, gamma: 3 },
 				DESCRIPTOR,
 				{ allowExtraneousProperties: true }
@@ -71,7 +63,7 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 	it("should return when every property of the object is valid", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertStructuredData({ alpha: 1, beta: 2 }, DESCRIPTOR);
+			assertStructuredData({ alpha: 1, beta: 2 }, DESCRIPTOR);
 		};
 
 		doesNotThrow(WRAPPER);
@@ -80,9 +72,9 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 	it("should ignore properties flagged so", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertStructuredData(
+			assertStructuredData(
 				{ alpha: "1" },
-				{ alpha: { test: isNumberTest, ignore: true } }
+				{ alpha: { test: assertInteger, ignore: true } }
 			);
 		};
 
@@ -92,7 +84,7 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 	it("should throw when a property value is invalid", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertStructuredData({ alpha: 1, beta: "2" }, DESCRIPTOR);
+			assertStructuredData({ alpha: 1, beta: "2" }, DESCRIPTOR);
 		};
 
 		throws(WRAPPER, createErrorTest(new ValidationError(
@@ -100,7 +92,7 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 			[
 				new ValidationError(
 					'The property "beta" has an incorrect value.',
-					[new ValidationError("Value is not a number.")]
+					[new ValidationError("The value must be an integer.")]
 				),
 			]
 		)));
@@ -109,7 +101,7 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 	it("should return when an optional property is missing", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertStructuredData({ alpha: 1 }, DESCRIPTOR);
+			assertStructuredData({ alpha: 1 }, DESCRIPTOR);
 		};
 
 		doesNotThrow(WRAPPER);
@@ -118,7 +110,7 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 	it("should throw when a required property is missing", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertStructuredData({ beta: 2 }, DESCRIPTOR);
+			assertStructuredData({ beta: 2 }, DESCRIPTOR);
 		};
 
 		throws(WRAPPER, createErrorTest(new ValidationError(
@@ -130,7 +122,7 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 	it("should return when a nullable property is nullish", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertStructuredData({ alpha: undefined, beta: 2 }, DESCRIPTOR);
+			assertStructuredData({ alpha: undefined, beta: 2 }, DESCRIPTOR);
 		};
 
 		doesNotThrow(WRAPPER);
@@ -139,7 +131,7 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 	it("should throw when a non-nullable property is nullish", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertStructuredData({ alpha: 1, beta: undefined }, DESCRIPTOR);
+			assertStructuredData({ alpha: 1, beta: undefined }, DESCRIPTOR);
 		};
 
 		throws(WRAPPER, createErrorTest(new ValidationError(
@@ -153,7 +145,7 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertStructuredData(VALUE, DESCRIPTOR);
+			assertStructuredData(VALUE, DESCRIPTOR);
 			consumeValue<TestData>(VALUE);
 		};
 
@@ -165,7 +157,7 @@ describe("TypeAssertion.assertStructuredData", (): void => {
 		{
 			const VALUE: TestData | Date = createValue();
 
-			TypeAssertion.assertStructuredData(VALUE, { alpha: isNumberTest });
+			assertStructuredData(VALUE, { alpha: assertInteger });
 			consumeValue<TestData>(VALUE);
 		};
 

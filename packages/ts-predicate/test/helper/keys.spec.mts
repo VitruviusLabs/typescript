@@ -1,12 +1,12 @@
 import { describe, it } from "node:test";
 import { deepStrictEqual } from "node:assert";
-import { Helper } from "../../src/_index.mjs";
+import { keys } from "../../src/_index.mjs";
 
-describe("Helper.keys", (): void => {
+describe("keys", (): void => {
 	it("should return the keys of the given object", (): void => {
 		const VALUE: { a: 0; b: 0 } = { a: 0, b: 0 };
 
-		const KEYS: Array<"a" | "b"> = Helper.keys(VALUE);
+		const KEYS: Array<"a" | "b"> = keys(VALUE);
 
 		deepStrictEqual(KEYS, ["a", "b"]);
 	});
@@ -20,7 +20,7 @@ describe("Helper.keys", (): void => {
 
 		const VALUE: Foo = new Foo();
 
-		const KEYS: Array<keyof Foo> = Helper.keys(VALUE);
+		const KEYS: Array<keyof Foo> = keys(VALUE);
 
 		deepStrictEqual(KEYS, ["a", "b"]);
 	});

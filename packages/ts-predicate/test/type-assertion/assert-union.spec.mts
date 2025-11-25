@@ -1,9 +1,9 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { assertNumber, assertString, assertUnion } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertUnion", (): void => {
+describe("assertUnion", (): void => {
 	it("should return when given a value matching one of the test", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.NUMBER, GroupType.STRING);
 
@@ -11,7 +11,7 @@ describe("TypeAssertion.assertUnion", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertUnion(ITEM, [TypeAssertion.assertNumber, TypeAssertion.assertString]);
+				assertUnion(ITEM, [assertNumber, assertString]);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -25,7 +25,7 @@ describe("TypeAssertion.assertUnion", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertUnion(ITEM, [TypeAssertion.assertNumber, TypeAssertion.assertString]);
+				assertUnion(ITEM, [assertNumber, assertString]);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -37,7 +37,7 @@ describe("TypeAssertion.assertUnion", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertUnion(VALUE, [TypeAssertion.assertNumber, TypeAssertion.assertString]);
+			assertUnion(VALUE, [assertNumber, assertString]);
 			consumeValue<number | string>(VALUE);
 		};
 
@@ -49,7 +49,7 @@ describe("TypeAssertion.assertUnion", (): void => {
 		{
 			const VALUE: string | undefined = createValue();
 
-			TypeAssertion.assertUnion(VALUE, [TypeAssertion.assertNumber, TypeAssertion.assertString]);
+			assertUnion(VALUE, [assertNumber, assertString]);
 			consumeValue<string>(VALUE);
 		};
 

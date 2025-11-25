@@ -1,15 +1,15 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { type NullishValues, isNullish } from "../../../../../src/_index.mjs";
 
-describe("TypeGuard.isNullish", (): void => {
-	it("should return true when given undefined, null, or NaN", (): void => {
+describe("isNullish", (): void => {
+	it("should return true when given null, undefined, NaN, or NoValue", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.NULLISH);
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isNullish(ITEM);
+			const RESULT: unknown = isNullish(ITEM);
 
 			strictEqual(RESULT, true);
 		}
@@ -20,7 +20,7 @@ describe("TypeGuard.isNullish", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isNullish(ITEM);
+			const RESULT: unknown = isNullish(ITEM);
 
 			strictEqual(RESULT, false);
 		}
@@ -31,9 +31,9 @@ describe("TypeGuard.isNullish", (): void => {
 		{
 			const VALUE: unknown = createValue(0);
 
-			if (TypeGuard.isNullish(VALUE))
+			if (isNullish(VALUE))
 			{
-				consumeValue<null | undefined>(VALUE);
+				consumeValue<NullishValues>(VALUE);
 			}
 		};
 
@@ -45,7 +45,7 @@ describe("TypeGuard.isNullish", (): void => {
 		{
 			const VALUE: number | undefined = createValue(0);
 
-			if (TypeGuard.isNullish(VALUE))
+			if (isNullish(VALUE))
 			{
 				consumeValue<undefined>(VALUE);
 			}

@@ -1,15 +1,15 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { isNumber } from "../../src/_index.mjs";
 
-describe("TypeGuard.isNumber", (): void => {
+describe("isNumber", (): void => {
 	it("should return true when given a number", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.NUMBER);
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isNumber(ITEM);
+			const RESULT: unknown = isNumber(ITEM);
 
 			strictEqual(RESULT, true);
 		}
@@ -20,7 +20,7 @@ describe("TypeGuard.isNumber", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isNumber(ITEM);
+			const RESULT: unknown = isNumber(ITEM);
 
 			strictEqual(RESULT, false);
 		}
@@ -31,7 +31,7 @@ describe("TypeGuard.isNumber", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isNumber(VALUE))
+			if (isNumber(VALUE))
 			{
 				consumeValue<number>(VALUE);
 			}

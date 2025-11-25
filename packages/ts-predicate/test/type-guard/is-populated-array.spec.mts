@@ -1,22 +1,17 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { isInteger, isPopulatedArray } from "../../src/_index.mjs";
 
-function isNumberTest(value: unknown): value is number
-{
-	return Number.isSafeInteger(value);
-}
-
-describe("TypeGuard.isPopulatedArray", (): void => {
+describe("isPopulatedArray", (): void => {
 	it("should return false when given an empty array", (): void => {
-		const RESULT: unknown = TypeGuard.isPopulatedArray([]);
+		const RESULT: unknown = isPopulatedArray([]);
 
 		strictEqual(RESULT, false);
 	});
 
 	it("should return false when given a populated array", (): void => {
-		const RESULT: unknown = TypeGuard.isPopulatedArray([1, 2, 3]);
+		const RESULT: unknown = isPopulatedArray([1, 2, 3]);
 
 		strictEqual(RESULT, true);
 	});
@@ -26,46 +21,46 @@ describe("TypeGuard.isPopulatedArray", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isPopulatedArray(ITEM);
+			const RESULT: unknown = isPopulatedArray(ITEM);
 
 			strictEqual(RESULT, false);
 		}
 	});
 
 	it("should return true when given an array with a length greater or equal to the minLength constraint", (): void => {
-		const RESULT_GREATER_LENGTH: unknown = TypeGuard.isPopulatedArray([1, 2, 3], { minLength: 2 });
-		const RESULT_EXACT_LENGTH: unknown = TypeGuard.isPopulatedArray([1, 2, 3], { minLength: 3 });
+		const RESULT_GREATER_LENGTH: unknown = isPopulatedArray([1, 2, 3], { minLength: 2 });
+		const RESULT_EXACT_LENGTH: unknown = isPopulatedArray([1, 2, 3], { minLength: 3 });
 
 		strictEqual(RESULT_GREATER_LENGTH, true);
 		strictEqual(RESULT_EXACT_LENGTH, true);
 	});
 
 	it("should return false when given an array with a length below the minLength constraint", (): void => {
-		const RESULT: unknown = TypeGuard.isPopulatedArray([1, 2, 3], { minLength: 4 });
+		const RESULT: unknown = isPopulatedArray([1, 2, 3], { minLength: 4 });
 
 		strictEqual(RESULT, false);
 	});
 
 	it("should return true when given an array with all the values passing the itemTest constraint", (): void => {
-		const RESULT: unknown = TypeGuard.isPopulatedArray([1, 2, 3], { itemTest: isNumberTest });
+		const RESULT: unknown = isPopulatedArray([1, 2, 3], { itemTest: isInteger });
 
 		strictEqual(RESULT, true);
 	});
 
 	it("should return false when given an array with some values not passing the itemTest constraint", (): void => {
-		const RESULT: unknown = TypeGuard.isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
+		const RESULT: unknown = isPopulatedArray([1, 2, 3, Symbol("anomaly")], { itemTest: isInteger });
 
 		strictEqual(RESULT, false);
 	});
 
 	it("should return true when given an array with all the values passing the test constraint", (): void => {
-		const RESULT: unknown = TypeGuard.isPopulatedArray([1, 2, 3], isNumberTest);
+		const RESULT: unknown = isPopulatedArray([1, 2, 3], isInteger);
 
 		strictEqual(RESULT, true);
 	});
 
 	it("should return false when given an array with some values not passing the test constraint", (): void => {
-		const RESULT: unknown = TypeGuard.isPopulatedArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
+		const RESULT: unknown = isPopulatedArray([1, 2, 3, Symbol("anomaly")], isInteger);
 
 		strictEqual(RESULT, false);
 	});
@@ -75,7 +70,7 @@ describe("TypeGuard.isPopulatedArray", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isPopulatedArray(VALUE))
+			if (isPopulatedArray(VALUE))
 			{
 				consumeValue<[unknown, ...Array<unknown>]>(VALUE);
 			}
@@ -89,7 +84,7 @@ describe("TypeGuard.isPopulatedArray", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isPopulatedArray(VALUE, isNumberTest))
+			if (isPopulatedArray(VALUE, isInteger))
 			{
 				consumeValue<[number, ...Array<number>]>(VALUE);
 			}
@@ -103,7 +98,7 @@ describe("TypeGuard.isPopulatedArray", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isPopulatedArray(VALUE, { itemTest: isNumberTest }))
+			if (isPopulatedArray(VALUE, { itemTest: isInteger }))
 			{
 				consumeValue<[number, ...Array<number>]>(VALUE);
 			}
@@ -117,7 +112,7 @@ describe("TypeGuard.isPopulatedArray", (): void => {
 		{
 			const VALUE: [number, ...Array<number>] | undefined = createValue();
 
-			if (TypeGuard.isPopulatedArray(VALUE))
+			if (isPopulatedArray(VALUE))
 			{
 				consumeValue<[number, ...Array<number>]>(VALUE);
 			}
@@ -131,7 +126,7 @@ describe("TypeGuard.isPopulatedArray", (): void => {
 		{
 			const VALUE: Array<number> | undefined = createValue();
 
-			if (TypeGuard.isPopulatedArray(VALUE))
+			if (isPopulatedArray(VALUE))
 			{
 				consumeValue<[number, ...Array<number>]>(VALUE);
 			}

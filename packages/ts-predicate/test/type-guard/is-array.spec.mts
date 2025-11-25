@@ -1,20 +1,15 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { isArray, isInteger } from "../../src/_index.mjs";
 
-function isNumberTest(value: unknown): value is number
-{
-	return Number.isSafeInteger(value);
-}
-
-describe("TypeGuard.isArray", (): void => {
+describe("isArray", (): void => {
 	it("should return true when given an array", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.ARRAY);
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isArray(ITEM);
+			const RESULT: unknown = isArray(ITEM);
 
 			strictEqual(RESULT, true);
 		}
@@ -25,58 +20,58 @@ describe("TypeGuard.isArray", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isArray(ITEM);
+			const RESULT: unknown = isArray(ITEM);
 
 			strictEqual(RESULT, false);
 		}
 	});
 
 	it("should ignore empty constraint", (): void => {
-		const RESULT: unknown = TypeGuard.isArray([1, "2", true], {});
+		const RESULT: unknown = isArray([1, "2", true], {});
 
 		strictEqual(RESULT, true);
 	});
 
 	it("should return true when given an array with a length greater or equal to the minLength constraint", (): void => {
-		const RESULT_GREATER_LENGTH: unknown = TypeGuard.isArray([1, 2, 3], { minLength: 2 });
-		const RESULT_EXACT_LENGTH: unknown = TypeGuard.isArray([1, 2, 3], { minLength: 3 });
+		const RESULT_GREATER_LENGTH: unknown = isArray([1, 2, 3], { minLength: 2 });
+		const RESULT_EXACT_LENGTH: unknown = isArray([1, 2, 3], { minLength: 3 });
 
 		strictEqual(RESULT_GREATER_LENGTH, true);
 		strictEqual(RESULT_EXACT_LENGTH, true);
 	});
 
 	it("should return false when given an array with a length below the minLength constraint", (): void => {
-		const RESULT_EMPTY: unknown = TypeGuard.isArray([], { minLength: 1 });
-		const RESULT_SMALLER_LENGTH: unknown = TypeGuard.isArray([1, 2, 3], { minLength: 4 });
+		const RESULT_EMPTY: unknown = isArray([], { minLength: 1 });
+		const RESULT_SMALLER_LENGTH: unknown = isArray([1, 2, 3], { minLength: 4 });
 
 		strictEqual(RESULT_EMPTY, false);
 		strictEqual(RESULT_SMALLER_LENGTH, false);
 	});
 
 	it("should return true when given an array with all the values passing the itemTest constraint", (): void => {
-		const RESULT_EMPTY: unknown = TypeGuard.isArray([], { itemTest: isNumberTest });
-		const RESULT_VALID: unknown = TypeGuard.isArray([1, 2, 3], { itemTest: isNumberTest });
+		const RESULT_EMPTY: unknown = isArray([], { itemTest: isInteger });
+		const RESULT_VALID: unknown = isArray([1, 2, 3], { itemTest: isInteger });
 
 		strictEqual(RESULT_EMPTY, true);
 		strictEqual(RESULT_VALID, true);
 	});
 
 	it("should return false when given an array with some values not passing the itemTest constraint", (): void => {
-		const RESULT: unknown = TypeGuard.isArray([1, 2, 3, Symbol("anomaly")], { itemTest: isNumberTest });
+		const RESULT: unknown = isArray([1, 2, 3, Symbol("anomaly")], { itemTest: isInteger });
 
 		strictEqual(RESULT, false);
 	});
 
 	it("should return true when given an array with all the values passing the test constraint", (): void => {
-		const RESULT_EMPTY: unknown = TypeGuard.isArray([], isNumberTest);
-		const RESULT_VALID: unknown = TypeGuard.isArray([1, 2, 3], isNumberTest);
+		const RESULT_EMPTY: unknown = isArray([], isInteger);
+		const RESULT_VALID: unknown = isArray([1, 2, 3], isInteger);
 
 		strictEqual(RESULT_EMPTY, true);
 		strictEqual(RESULT_VALID, true);
 	});
 
 	it("should return false when given an array with some values not passing the test constraint", (): void => {
-		const RESULT: unknown = TypeGuard.isArray([1, 2, 3, Symbol("anomaly")], isNumberTest);
+		const RESULT: unknown = isArray([1, 2, 3, Symbol("anomaly")], isInteger);
 
 		strictEqual(RESULT, false);
 	});
@@ -86,7 +81,7 @@ describe("TypeGuard.isArray", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isArray(VALUE))
+			if (isArray(VALUE))
 			{
 				consumeValue<Array<unknown>>(VALUE);
 			}
@@ -100,7 +95,7 @@ describe("TypeGuard.isArray", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isArray(VALUE, isNumberTest))
+			if (isArray(VALUE, isInteger))
 			{
 				consumeValue<Array<number>>(VALUE);
 			}
@@ -114,7 +109,7 @@ describe("TypeGuard.isArray", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isArray(VALUE, { itemTest: isNumberTest }))
+			if (isArray(VALUE, { itemTest: isInteger }))
 			{
 				consumeValue<Array<number>>(VALUE);
 			}
@@ -128,7 +123,7 @@ describe("TypeGuard.isArray", (): void => {
 		{
 			const VALUE: Array<number> | undefined = createValue();
 
-			if (TypeGuard.isArray(VALUE))
+			if (isArray(VALUE))
 			{
 				consumeValue<Array<number>>(VALUE);
 			}

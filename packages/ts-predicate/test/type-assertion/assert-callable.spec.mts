@@ -1,9 +1,9 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { type Callable, TypeAssertion } from "../../src/_index.mjs";
+import { type Callable, assertCallable } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertCallable", (): void => {
+describe("assertCallable", (): void => {
 	it("should return when given a callable", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.CALLABLE);
 
@@ -11,7 +11,7 @@ describe("TypeAssertion.assertCallable", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertCallable(ITEM);
+				assertCallable(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -25,7 +25,7 @@ describe("TypeAssertion.assertCallable", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertCallable(ITEM);
+				assertCallable(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest("The value must be a callable."));
@@ -37,7 +37,7 @@ describe("TypeAssertion.assertCallable", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertCallable(VALUE);
+			assertCallable(VALUE);
 			consumeValue<Callable>(VALUE);
 		};
 
@@ -49,7 +49,7 @@ describe("TypeAssertion.assertCallable", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertCallable<() => void>(VALUE);
+			assertCallable<() => void>(VALUE);
 			consumeValue<() => void>(VALUE);
 		};
 
@@ -61,7 +61,7 @@ describe("TypeAssertion.assertCallable", (): void => {
 		{
 			const VALUE: (() => void) | undefined = createValue();
 
-			TypeAssertion.assertCallable(VALUE);
+			assertCallable(VALUE);
 			consumeValue<() => void>(VALUE);
 		};
 

@@ -1,9 +1,9 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { type AbstractConstructorOf, TypeAssertion } from "../../src/_index.mjs";
+import { type AbstractConstructorOf, assertConstructor } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertConstructor", (): void => {
+describe("assertConstructor", (): void => {
 	it("should return when given a constructible", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.CONSTRUCTIBLE);
 
@@ -11,7 +11,7 @@ describe("TypeAssertion.assertConstructor", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertConstructor(ITEM);
+				assertConstructor(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -25,7 +25,7 @@ describe("TypeAssertion.assertConstructor", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertConstructor(ITEM);
+				assertConstructor(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest("The value must be a constructor."));
@@ -37,7 +37,7 @@ describe("TypeAssertion.assertConstructor", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertConstructor(VALUE);
+			assertConstructor(VALUE);
 			consumeValue<AbstractConstructorOf<object>>(VALUE);
 		};
 
@@ -49,7 +49,7 @@ describe("TypeAssertion.assertConstructor", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertConstructor<typeof Date>(VALUE);
+			assertConstructor<typeof Date>(VALUE);
 			consumeValue<typeof Date>(VALUE);
 		};
 
@@ -61,7 +61,7 @@ describe("TypeAssertion.assertConstructor", (): void => {
 		{
 			const VALUE: (typeof Date) | undefined = createValue();
 
-			TypeAssertion.assertConstructor(VALUE);
+			assertConstructor(VALUE);
 			consumeValue<typeof Date>(VALUE);
 		};
 

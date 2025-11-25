@@ -1,9 +1,9 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion } from "../../src/_index.mjs";
+import { assertObject } from "../../src/_index.mjs";
 
-describe("TypeAssertion.assertObject", (): void => {
+describe("assertObject", (): void => {
 	it("should return when given an object", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.ARRAY_OBJECT);
 
@@ -11,7 +11,7 @@ describe("TypeAssertion.assertObject", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertObject(ITEM);
+				assertObject(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -25,7 +25,7 @@ describe("TypeAssertion.assertObject", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertObject(ITEM);
+				assertObject(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest());
@@ -37,7 +37,7 @@ describe("TypeAssertion.assertObject", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertObject(VALUE);
+			assertObject(VALUE);
 			consumeValue<object>(VALUE);
 		};
 
@@ -49,7 +49,7 @@ describe("TypeAssertion.assertObject", (): void => {
 		{
 			const VALUE: Date | undefined = createValue();
 
-			TypeAssertion.assertObject(VALUE);
+			assertObject(VALUE);
 			consumeValue<Date>(VALUE);
 		};
 

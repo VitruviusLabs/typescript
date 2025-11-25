@@ -1,5 +1,4 @@
-import { getConstructorOf } from "@vitruvius-labs/ts-predicate/helper";
-import { assertCallable, assertNullableProperty } from "@vitruvius-labs/ts-predicate/type-assertion";
+import { assertCallable, assertNullableProperty, getConstructorOf } from "@vitruvius-labs/ts-predicate";
 
 class ReflectUtility
 {

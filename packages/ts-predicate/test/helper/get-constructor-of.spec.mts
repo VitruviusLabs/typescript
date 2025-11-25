@@ -1,19 +1,19 @@
 import { deepStrictEqual, strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
-import { Helper } from "../../src/_index.mjs";
+import { getConstructorOf } from "../../src/_index.mjs";
 import { createErrorTest, createValue } from "@vitruvius-labs/testing-ground";
 
-describe("Helper.getConstructorOf", (): void => {
+describe("getConstructorOf", (): void => {
 	it("should return the constructor of the given object", (): void => {
-		strictEqual(Helper.getConstructorOf(new Date()), Date);
-		strictEqual(Helper.getConstructorOf(new Map()), Map);
-		strictEqual(Helper.getConstructorOf(new Set()), Set);
+		strictEqual(getConstructorOf(new Date()), Date);
+		strictEqual(getConstructorOf(new Map()), Map);
+		strictEqual(getConstructorOf(new Set()), Set);
 	});
 
 	it("should throw when given an object without prototype", (): void => {
 		const WRAPPER = (): void =>
 		{
-			Helper.getConstructorOf(Object.create(null));
+			getConstructorOf(Object.create(null));
 		};
 
 		throws(WRAPPER, createErrorTest("The value has no prototype."));
@@ -22,7 +22,7 @@ describe("Helper.getConstructorOf", (): void => {
 	it("should throw when given an object without constructor", (): void => {
 		const WRAPPER = (): void =>
 		{
-			Helper.getConstructorOf(Object.create(Object.create(null)));
+			getConstructorOf(Object.create(Object.create(null)));
 		};
 
 		throws(WRAPPER, createErrorTest("The value has no constructor."));
@@ -31,7 +31,7 @@ describe("Helper.getConstructorOf", (): void => {
 	it("should return a constructor that can be instantiated", (): void => {
 		const EXPECTED: Date = new Date(0);
 
-		const CONSTRUCTOR: typeof Date = Helper.getConstructorOf(EXPECTED);
+		const CONSTRUCTOR: typeof Date = getConstructorOf(EXPECTED);
 
 		const INSTANCE: Date = new CONSTRUCTOR(0);
 
@@ -53,7 +53,7 @@ describe("Helper.getConstructorOf", (): void => {
 				public abstract getFoo(): string;
 			}
 
-			const CONSTRUCTOR: typeof Foo = Helper.getConstructorOf(createValue<Foo>());
+			const CONSTRUCTOR: typeof Foo = getConstructorOf(createValue<Foo>());
 
 			// @ts-expect-error -- Cannot instantiate abstract class
 			new CONSTRUCTOR("foo");

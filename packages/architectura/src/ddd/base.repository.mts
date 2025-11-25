@@ -1,11 +1,10 @@
-import type { AbstractConstructorOf, NonNullableObject } from "@vitruvius-labs/ts-predicate";
 import type { BaseModel } from "./base.model.mjs";
 import type { ModelMetadataInterface } from "./definition/interface/model-metadata.interface.mjs";
 import type { RepositoryQueryNormalizedOptionsInterface } from "./definition/interface/repository-query-normalized-options.interface.mjs";
 import type { RepositoryQueryOptionsInterface } from "./definition/interface/repository-query-options.interface.mjs";
 import type { BaseFactory } from "./base.factory.mjs";
 import { ReflectUtility } from "@vitruvius-labs/toolbox";
-import { isDefined, isNullish } from "@vitruvius-labs/ts-predicate/type-guard";
+import { type AbstractConstructorOf, type NonNullableObject, isDefined, isNullish } from "@vitruvius-labs/ts-predicate";
 import { ModelRepositoryStatusEnum } from "./definition/enum/model-repository-status.enum.mjs";
 
 /**

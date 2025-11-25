@@ -1,14 +1,9 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeAssertion, ValidationError } from "../../src/_index.mjs";
+import { ValidationError, assertRecord, isInteger } from "../../src/_index.mjs";
 
-function isNumberTest(value: unknown): value is number
-{
-	return Number.isSafeInteger(value);
-}
-
-describe("TypeAssertion.assertRecord", (): void => {
+describe("assertRecord", (): void => {
 	it("should return when given a record object", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.RECORD);
 
@@ -16,7 +11,7 @@ describe("TypeAssertion.assertRecord", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertRecord(ITEM);
+				assertRecord(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
@@ -30,7 +25,7 @@ describe("TypeAssertion.assertRecord", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertRecord(ITEM);
+				assertRecord(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest("The value must be a record."));
@@ -44,7 +39,7 @@ describe("TypeAssertion.assertRecord", (): void => {
 		{
 			const WRAPPER = (): void =>
 			{
-				TypeAssertion.assertRecord(ITEM);
+				assertRecord(ITEM);
 			};
 
 			throws(WRAPPER, createErrorTest("The value must be a record."));
@@ -54,7 +49,7 @@ describe("TypeAssertion.assertRecord", (): void => {
 	it("should ignore empty constraints", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertRecord({ alpha: 1, beta: "2", gamma: true }, {});
+			assertRecord({ alpha: 1, beta: "2", gamma: true }, {});
 		};
 
 		doesNotThrow(WRAPPER);
@@ -63,7 +58,7 @@ describe("TypeAssertion.assertRecord", (): void => {
 	it("should return when given a record with all the values passing the itemTest constraint", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertRecord({ alpha: 1, beta: 2, gamma: 3 }, { itemTest: isNumberTest });
+			assertRecord({ alpha: 1, beta: 2, gamma: 3 }, { itemTest: isInteger });
 		};
 
 		doesNotThrow(WRAPPER);
@@ -72,7 +67,7 @@ describe("TypeAssertion.assertRecord", (): void => {
 	it("should throw when given a record with some values not passing the itemTest constraint", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertRecord({ alpha: 1, beta: 2, gamma: Symbol("anomaly") }, { itemTest: isNumberTest });
+			assertRecord({ alpha: 1, beta: 2, gamma: Symbol("anomaly") }, { itemTest: isInteger });
 		};
 
 		throws(WRAPPER, createErrorTest(new ValidationError(
@@ -89,7 +84,7 @@ describe("TypeAssertion.assertRecord", (): void => {
 	it("should return when given a record with all the values passing the test constraint", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertRecord({ alpha: 1, beta: 2, gamma: 3 }, isNumberTest);
+			assertRecord({ alpha: 1, beta: 2, gamma: 3 }, isInteger);
 		};
 
 		doesNotThrow(WRAPPER);
@@ -98,7 +93,7 @@ describe("TypeAssertion.assertRecord", (): void => {
 	it("should throw when given a record with some values not passing the test constraint", (): void => {
 		const WRAPPER = (): void =>
 		{
-			TypeAssertion.assertRecord({ alpha: 1, beta: 2, gamma: Symbol("anomaly") }, isNumberTest);
+			assertRecord({ alpha: 1, beta: 2, gamma: Symbol("anomaly") }, isInteger);
 		};
 
 		throws(WRAPPER, createErrorTest(new ValidationError(
@@ -117,7 +112,7 @@ describe("TypeAssertion.assertRecord", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertRecord(VALUE);
+			assertRecord(VALUE);
 			consumeValue<Record<string, unknown>>(VALUE);
 		};
 
@@ -129,7 +124,7 @@ describe("TypeAssertion.assertRecord", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertRecord(VALUE, isNumberTest);
+			assertRecord(VALUE, isInteger);
 			consumeValue<Record<string, number>>(VALUE);
 		};
 
@@ -141,7 +136,7 @@ describe("TypeAssertion.assertRecord", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			TypeAssertion.assertRecord(VALUE, { itemTest: isNumberTest });
+			assertRecord(VALUE, { itemTest: isInteger });
 			consumeValue<Record<string, number>>(VALUE);
 		};
 
@@ -153,7 +148,7 @@ describe("TypeAssertion.assertRecord", (): void => {
 		{
 			const VALUE: Record<string, number> | undefined = createValue();
 
-			TypeAssertion.assertRecord(VALUE);
+			assertRecord(VALUE);
 			consumeValue<Record<string, number>>(VALUE);
 		};
 

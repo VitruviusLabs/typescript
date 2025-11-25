@@ -1,15 +1,17 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { TypeGuard } from "../../src/_index.mjs";
+import { NoValue, type NonNullish, isDefined } from "../../src/_index.mjs";
 
-describe("TypeGuard.isDefined", (): void => {
-	it("should return false when given undefined, null, or NaN", (): void => {
+describe("isDefined", (): void => {
+	it("should return false when given undefined, null, NaN, or NoValue", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.NULLISH);
+
+		VALUES.push(NoValue);
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isDefined(ITEM);
+			const RESULT: unknown = isDefined(ITEM);
 
 			strictEqual(RESULT, false);
 		}
@@ -20,7 +22,7 @@ describe("TypeGuard.isDefined", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isDefined(ITEM);
+			const RESULT: unknown = isDefined(ITEM);
 
 			strictEqual(RESULT, true);
 		}
@@ -31,9 +33,9 @@ describe("TypeGuard.isDefined", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isDefined(VALUE))
+			if (isDefined(VALUE))
 			{
-				consumeValue<NonNullable<unknown>>(VALUE);
+				consumeValue<NonNullish<unknown>>(VALUE);
 			}
 		};
 
@@ -45,7 +47,7 @@ describe("TypeGuard.isDefined", (): void => {
 		{
 			const VALUE: number | undefined = createValue();
 
-			if (TypeGuard.isDefined(VALUE))
+			if (isDefined(VALUE))
 			{
 				consumeValue<number>(VALUE);
 			}

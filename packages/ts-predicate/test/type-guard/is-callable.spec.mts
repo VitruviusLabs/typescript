@@ -1,15 +1,15 @@
 import { doesNotThrow, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { type Callable, TypeGuard } from "../../src/_index.mjs";
+import { type Callable, isCallable } from "../../src/_index.mjs";
 
-describe("TypeGuard.isCallable", (): void => {
+describe("isCallable", (): void => {
 	it("should return true when given a callable", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.CALLABLE);
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isCallable(ITEM);
+			const RESULT: unknown = isCallable(ITEM);
 
 			strictEqual(RESULT, true);
 		}
@@ -20,7 +20,7 @@ describe("TypeGuard.isCallable", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const RESULT: unknown = TypeGuard.isCallable(ITEM);
+			const RESULT: unknown = isCallable(ITEM);
 
 			strictEqual(RESULT, false);
 		}
@@ -31,7 +31,7 @@ describe("TypeGuard.isCallable", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isCallable(VALUE))
+			if (isCallable(VALUE))
 			{
 				consumeValue<Callable>(VALUE);
 			}
@@ -45,7 +45,7 @@ describe("TypeGuard.isCallable", (): void => {
 		{
 			const VALUE: unknown = createValue();
 
-			if (TypeGuard.isCallable<() => void>(VALUE))
+			if (isCallable<() => void>(VALUE))
 			{
 				consumeValue<() => void>(VALUE);
 			}
@@ -59,7 +59,7 @@ describe("TypeGuard.isCallable", (): void => {
 		{
 			const VALUE: (() => void) | undefined = createValue();
 
-			if (TypeGuard.isCallable(VALUE))
+			if (isCallable(VALUE))
 			{
 				consumeValue<() => void>(VALUE);
 			}
