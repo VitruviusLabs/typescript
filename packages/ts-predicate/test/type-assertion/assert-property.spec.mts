@@ -122,4 +122,17 @@ describe("assertProperty", (): void => {
 
 		throws(WRAPPER, createErrorTest('The value must have a property "Symbol(key)".'));
 	});
+
+	it("should narrow the type to an object with the corresponding property (type)", (): void => {
+		const WRAPPER = (): void => {
+			const SYMBOL: unique symbol = Symbol("key");
+
+			const VALUE: Date = createValue({});
+
+			assertProperty(VALUE, SYMBOL, assertString);
+			consumeValue<Date & { [SYMBOL]: string }>(VALUE);
+		};
+
+		throws(WRAPPER, createErrorTest('The value must have a property "Symbol(key)".'));
+	});
 });

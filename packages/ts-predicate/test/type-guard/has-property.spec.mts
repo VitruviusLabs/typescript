@@ -101,4 +101,19 @@ describe("hasProperty", (): void => {
 
 		doesNotThrow(WRAPPER);
 	});
+
+	it("should narrow the type to an object with the corresponding property (type)", (): void => {
+		const WRAPPER = (): void => {
+			const SYMBOL: unique symbol = Symbol("key");
+
+			const VALUE: Date = createValue({});
+
+			if (hasProperty(VALUE, SYMBOL, isString))
+			{
+				consumeValue<Date & { [SYMBOL]: string }>(VALUE);
+			}
+		};
+
+		doesNotThrow(WRAPPER);
+	});
 });
