@@ -1,21 +1,8 @@
 {
+	"$schema": "../../node_modules/@stryker-mutator/core/schema/stryker-schema.json",
 	"packageManager": "pnpm",
-	"mutate": [
-		"./src/**/*.mts"
-	],
-	"ignorePatterns": [
-		"**/node_modules/**",
-		"**/.github/**",
-		"**/.husky/**",
-		"**/.stryker-tmp/**",
-		"**/stats/**",
-		"**/docs/**",
-		"**/documentations/**",
-		"**/reports/**",
-		"**/coverage/**",
-		"**/build/**",
-		"**/dist/**",
-		"**/lib/**"
+	"plugins": [
+		"@stryker-mutator/mocha-runner"
 	],
 	"concurrency": 6,
 	"reporters": [
@@ -23,19 +10,14 @@
 		"clear-text",
 		"progress"
 	],
+	"testRunnerNodeArgs": ["--experimental-specifier-resolution=node", "--loader=ts-node/esm"],
 	"htmlReporter": {
 		"fileName": "./reports/stryker/mutation.html"
 	},
 	"jsonReporter": {
 		"fileName": "./reports/stryker/mutation.json"
 	},
-	"buildCommand": "tsc -b tsconfig.stryker.json",
 	"coverageAnalysis": "perTest",
-	"mochaOptions": {
-		"config": ".mocharc.json",
-		"spec": [ "./build/**/*.spec.jts"]
-	},
 	"ignoreStatic": true,
-	"tsconfigFile": "tsconfig.stryker.json",
 	"testRunner": "mocha"
 }
