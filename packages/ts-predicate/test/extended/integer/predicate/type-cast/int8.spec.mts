@@ -5,7 +5,7 @@ import { type Int8, NoValue, int8 } from "../../../../../src/_index.mjs";
 import { IntegerBoundaryEnum } from "../../../../../src/extended/integer/definition/enum/integer-boundary.enum.mjs";
 
 describe("int8", (): void => {
-	it("should return the provided value when given an integer with the boundaries", (): void => {
+	it("should return the provided value when given an integer within the boundaries", (): void => {
 		const VALUES: Array<number> = [
 			IntegerBoundaryEnum.INT8_MIN,
 			IntegerBoundaryEnum.INT8_MIN + 1,

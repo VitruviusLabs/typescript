@@ -5,7 +5,7 @@ import { assertInt32 } from "../../../../../src/_index.mjs";
 import { IntegerBoundaryEnum } from "../../../../../src/extended/integer/definition/enum/integer-boundary.enum.mjs";
 
 describe("assertInt32", (): void => {
-	it("should return when given an integer with the boundaries", (): void => {
+	it("should return when given an integer within the boundaries", (): void => {
 		const VALUES: Array<number> = [
 			IntegerBoundaryEnum.INT32_MIN,
 			IntegerBoundaryEnum.INT32_MIN + 1,

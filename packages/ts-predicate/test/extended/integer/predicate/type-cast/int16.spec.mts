@@ -5,7 +5,7 @@ import { type Int16, NoValue, int16 } from "../../../../../src/_index.mjs";
 import { IntegerBoundaryEnum } from "../../../../../src/extended/integer/definition/enum/integer-boundary.enum.mjs";
 
 describe("int16", (): void => {
-	it("should return the provided value when given an integer with the boundaries", (): void => {
+	it("should return the provided value when given an integer within the boundaries", (): void => {
 		const VALUES: Array<number> = [
 			IntegerBoundaryEnum.INT16_MIN,
 			IntegerBoundaryEnum.INT16_MIN + 1,
