@@ -1,11 +1,11 @@
-import { doesNotThrow, throws } from "node:assert";
+import { doesNotThrow, strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
-import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { assertInt8 } from "../../../../../src/_index.mjs";
+import { GroupType, consumeValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
+import { type Int8, NoValue, int8 } from "../../../../../src/_index.mjs";
 import { IntegerBoundaryEnum } from "../../../../../src/extended/integer/definition/enum/integer-boundary.enum.mjs";
 
-describe("assertInt8", (): void => {
-	it("should return when given an integer within the boundaries", (): void => {
+describe("int8", (): void => {
+	it("should return the provided value when given an integer within the boundaries", (): void => {
 		const VALUES: Array<number> = [
 			IntegerBoundaryEnum.INT8_MIN,
 			IntegerBoundaryEnum.INT8_MIN + 1,
@@ -18,12 +18,15 @@ describe("assertInt8", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const WRAPPER = (): void =>
-			{
-				assertInt8(ITEM);
+			let result: unknown = NoValue;
+
+			const WRAPPER = (): void => {
+				result = int8(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
+
+			strictEqual(result, ITEM);
 		}
 	});
 
@@ -35,26 +38,24 @@ describe("assertInt8", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const WRAPPER = (): void =>
-			{
-				assertInt8(ITEM);
+			const WRAPPER = (): void => {
+				int8(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER);
 		}
 	});
 
-	it("should throw when given any other number", (): void => {
+	it("should throw when given a non-integer number", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.REAL, GroupType.INFINITY);
 
 		for (const ITEM of VALUES)
 		{
-			const WRAPPER = (): void =>
-			{
-				assertInt8(ITEM);
+			const WRAPPER = (): void => {
+				int8(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER);
 		}
 	});
 
@@ -63,22 +64,18 @@ describe("assertInt8", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const WRAPPER = (): void =>
-			{
-				assertInt8(ITEM);
+			const WRAPPER = (): void => {
+				int8(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER);
 		}
 	});
 
-	it("should narrow the type to a number", (): void => {
+	it("should narrow the type to an Int8", (): void => {
 		const WRAPPER = (): void =>
 		{
-			const VALUE: unknown = createValue();
-
-			assertInt8(VALUE);
-			consumeValue<number>(VALUE);
+			consumeValue<Int8>(int8(NoValue));
 		};
 
 		throws(WRAPPER);

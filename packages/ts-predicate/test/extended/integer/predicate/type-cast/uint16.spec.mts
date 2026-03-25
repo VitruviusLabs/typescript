@@ -1,11 +1,11 @@
-import { doesNotThrow, throws } from "node:assert";
+import { doesNotThrow, strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
-import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { assertUInt16 } from "../../../../../src/_index.mjs";
+import { GroupType, consumeValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
+import { NoValue, type UInt16, uInt16 } from "../../../../../src/_index.mjs";
 import { IntegerBoundaryEnum } from "../../../../../src/extended/integer/definition/enum/integer-boundary.enum.mjs";
 
-describe("assertUInt16", (): void => {
-	it("should return when given an integer within the boundaries", (): void => {
+describe("uInt16", (): void => {
+	it("should return the provided value when given an integer within the boundaries", (): void => {
 		const VALUES: Array<number> = [
 			0,
 			1,
@@ -15,12 +15,15 @@ describe("assertUInt16", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const WRAPPER = (): void =>
-			{
-				assertUInt16(ITEM);
+			let result: unknown = NoValue;
+
+			const WRAPPER = (): void => {
+				result = uInt16(ITEM);
 			};
 
 			doesNotThrow(WRAPPER);
+
+			strictEqual(result, ITEM);
 		}
 	});
 
@@ -29,26 +32,24 @@ describe("assertUInt16", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const WRAPPER = (): void =>
-			{
-				assertUInt16(ITEM);
+			const WRAPPER = (): void => {
+				uInt16(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER);
 		}
 	});
 
-	it("should throw when given any other number", (): void => {
+	it("should throw when given a non-integer number", (): void => {
 		const VALUES: Array<unknown> = getValues(GroupType.REAL, GroupType.INFINITY);
 
 		for (const ITEM of VALUES)
 		{
-			const WRAPPER = (): void =>
-			{
-				assertUInt16(ITEM);
+			const WRAPPER = (): void => {
+				uInt16(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER);
 		}
 	});
 
@@ -57,22 +58,18 @@ describe("assertUInt16", (): void => {
 
 		for (const ITEM of VALUES)
 		{
-			const WRAPPER = (): void =>
-			{
-				assertUInt16(ITEM);
+			const WRAPPER = (): void => {
+				uInt16(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER);
 		}
 	});
 
-	it("should narrow the type to a number", (): void => {
+	it("should narrow the type to an UInt16", (): void => {
 		const WRAPPER = (): void =>
 		{
-			const VALUE: unknown = createValue();
-
-			assertUInt16(VALUE);
-			consumeValue<number>(VALUE);
+			consumeValue<UInt16>(uInt16(NoValue));
 		};
 
 		throws(WRAPPER);

@@ -5,7 +5,7 @@ import { type UInt32, isUInt32 } from "../../../../../src/_index.mjs";
 import { IntegerBoundaryEnum } from "../../../../../src/extended/integer/definition/enum/integer-boundary.enum.mjs";
 
 describe("isUInt32", (): void => {
-	it("should return true when given an integer with the boundaries", (): void => {
+	it("should return true when given an integer within the boundaries", (): void => {
 		const VALUES: Array<number> = [
 			0,
 			1,
