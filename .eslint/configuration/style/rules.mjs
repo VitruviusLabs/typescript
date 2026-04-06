@@ -571,6 +571,7 @@ const RULES = {
 			"before": false,
 			"after": true,
 			"overrides": {
+				// Handled by @style/arrow-spacing
 				"arrow": "ignore"
 			}
 		}
