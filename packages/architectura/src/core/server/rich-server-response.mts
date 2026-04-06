@@ -546,7 +546,6 @@ class RichServerResponse extends HTTPServerResponse<RichClientRequest>
 			}
 			else
 			{
-				// eslint-disable-next-line @ts/only-throw-error -- Rethrow as-is
 				throw error;
 			}
 		}

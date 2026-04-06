@@ -65,7 +65,7 @@ const RULES = {
 		"error",
 		"consistent"
 	],
-	"@style/func-call-spacing": [
+	"@style/function-call-spacing": [
 		"error",
 		"never"
 	],
@@ -397,11 +397,33 @@ const RULES = {
 			"returnAssign": true,
 			"nestedBinaryExpressions": false,
 			"ternaryOperandBinaryExpressions": false,
-			"enforceForArrowConditionals": false,
-			"enforceForNewInMemberExpressions": false,
 			"enforceForFunctionPrototypeMethods": false,
 			/*"allowParensAfterCommentPattern": undefined,*/
-			"ignoreJSX": "multi-line"
+			"ignoreJSX": "multi-line",
+			"ignoredNodes": [
+				// Allows `() => (a ? b : c)` instead of `() => a ? b : c`
+				"ArrowFunctionExpression[body.type=ConditionalExpression]",
+				// Allows `(new Foo()).bar()` instead of `new Foo().bar()`
+				"MemberExpression[object.type=NewExpression]",
+				// Allows `[...(a ? b : c)]` instead of `[...a ? b : c]`
+				"SpreadElement[argument.type=ConditionalExpression]",
+				// Allows `...(a && b)` instead of `...a && b`
+				"SpreadElement[argument.type=LogicalExpression]",
+				// Allows `...(await f())` instead of `...await f()`
+				"SpreadElement[argument.type=AwaitExpression]",
+				// Allows `const a = (b + c)` instead of `const a = b + c`
+				"VariableDeclarator[init]",
+				// Allows `type A = (B & C)` instead of `type A = B & C`
+				"TSTypeAliasDeclaration[typeAnnotation.type=TSIntersectionType]",
+				// Allows `type A = (B | C)` instead of `type A = B | C`
+				"TSTypeAliasDeclaration[typeAnnotation.type=TSUnionType]",
+				// Allows `identifier: (A & B)` instead of `identifier: A & B`
+				"TSTypeAnnotation[typeAnnotation.type=TSIntersectionType]",
+				// Allows `identifier: (A | B)` instead of `identifier: A | B`
+				"TSTypeAnnotation[typeAnnotation.type=TSUnionType]",
+				// Allows `identifier: (() => unknown)` instead of `identifier: () => unknown`
+				"TSTypeAnnotation[typeAnnotation.type=TSFunctionType]"
+			]
 		}
 	],
 	"@style/no-extra-semi": "error",
@@ -513,7 +535,7 @@ const RULES = {
 		"double",
 		{
 			"avoidEscape": true,
-			"allowTemplateLiterals": false
+			"allowTemplateLiterals": "avoidEscape"
 		}
 	],
 	"@style/semi": [
@@ -549,10 +571,8 @@ const RULES = {
 			"before": false,
 			"after": true,
 			"overrides": {
-				"arrow": {
-					"before": true,
-					"after": true
-				}
+				// Handled by @style/arrow-spacing
+				"arrow": "ignore"
 			}
 		}
 	],
