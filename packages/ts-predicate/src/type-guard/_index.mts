@@ -20,3 +20,4 @@ export * from "./is-record.mjs";
 export * from "./is-string.mjs";
 export * from "./is-structured-data.mjs";
 export * from "./is-union.mjs";
+export * from "./is-unknown.mjs";
