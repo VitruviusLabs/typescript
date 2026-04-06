@@ -12,6 +12,10 @@ function isSocketConstructorOpts(value: unknown): value is SocketConstructorOpts
 		writable: { test: isBoolean, optional: true },
 		signal: { test: unary(isInstanceOf, AbortSignal), optional: true },
 		onread: { test: isOnReadOpts, optional: true },
+		noDelay: { test: isBoolean, optional: true },
+		keepAlive: { test: isBoolean, optional: true },
+		keepAliveInitialDelay: { test: isNumber, optional: true },
+		blockList: { ignore: true },
 	});
 }
 

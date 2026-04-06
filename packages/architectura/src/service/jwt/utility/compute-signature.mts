@@ -10,7 +10,6 @@ import { Base64URL } from "./base64-url.mjs";
 function computeSignature(ingredients: SignatureIngredientsInterface): string
 {
 	const PAYLOAD: string = `${ingredients.encodedHeader}.${ingredients.encodedClaims}`;
-	// eslint-disable-next-line @ts/no-deprecated -- It's still valid as a type
 	const HMAC: Hmac = createHmac(ingredients.algorithm, ingredients.secret);
 	const HASH: Buffer = HMAC.update(PAYLOAD).digest();
 	const SIGNATURE: string = Base64URL.Encode(HASH.toString("binary"));

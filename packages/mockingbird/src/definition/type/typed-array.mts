@@ -1,4 +1,4 @@
-type TypedArray =
+type TypedArray = (
 	| BigInt64Array
 	| BigUint64Array
 	| Float32Array
@@ -10,6 +10,6 @@ type TypedArray =
 	| Uint8ClampedArray
 	| Uint16Array
 	| Uint32Array
-;
+);
 
 export type { TypedArray };

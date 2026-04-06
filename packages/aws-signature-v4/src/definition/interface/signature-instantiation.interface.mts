@@ -8,10 +8,9 @@ interface SignatureInstantiationInterface
 	region: string;
 	service: string;
 	method: HTTPMethodEnum;
-	headers: Array<Array<string>> | Headers | Record<string, string>;
+	headers: Array<[string, string]> | Headers | Record<string, string>;
 	url: string;
 	body: NodeBuffer | string;
 }
 
 export type { SignatureInstantiationInterface };
-
