@@ -23,3 +23,4 @@ export * from "./assert-record.mjs";
 export * from "./assert-string.mjs";
 export * from "./assert-structured-data.mjs";
 export * from "./assert-union.mjs";
+export * from "./assert-unknown.mjs";
