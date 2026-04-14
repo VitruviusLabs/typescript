@@ -7,7 +7,7 @@ import { deepStrictEqual, doesNotMatch, doesNotReject, doesNotThrow, fail, match
 import { BaseAssertion } from "./base-assertion.mjs";
 import { VoidAssertion } from "./void-assertion.mjs";
 import { AssertionConstantEnum } from "../definition/enum/assertion-constant.enum.mjs";
-import { createErrorPredicate } from "../error-predicate/create-error-predicate.mjs";
+import { ErrorPredicate } from "../utility/error-predicate.mjs";
 import { getType } from "../utility/get-type.mjs";
 
 /* eslint-disable @ts/member-ordering -- Ordered more meaningfully */
@@ -150,7 +150,7 @@ class FluentAssertion extends BaseAssertion
 
 				const MESSAGE: string = `Expected ${this.name} to throw`;
 
-				throws(this.actualValue, createErrorPredicate(MESSAGE, predicate), MESSAGE);
+				throws(this.actualValue, ErrorPredicate.Create(MESSAGE, predicate), MESSAGE);
 			}
 		);
 
@@ -228,7 +228,7 @@ class FluentAssertion extends BaseAssertion
 
 				const MESSAGE: string = `Expected ${this.name} to reject`;
 
-				await rejects(this.actualValue, createErrorPredicate(MESSAGE, predicate), MESSAGE);
+				await rejects(this.actualValue, ErrorPredicate.Create(MESSAGE, predicate), MESSAGE);
 			}
 		);
 

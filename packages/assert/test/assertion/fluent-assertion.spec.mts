@@ -7,7 +7,7 @@ import { mockAssertionInstantiation } from "../../mock/mock-assertion-instantiat
 import { mockAssertion } from "../../mock/mock-assertion.mjs";
 import { mockChildAssertion } from "../../mock/mock-child-assertion.mjs";
 import { mockVoidAssertion } from "../../mock/mock-void-assertion.mjs";
-import { createErrorPredicate } from "../../src/error-predicate/create-error-predicate.mjs";
+import { ErrorPredicate } from "../../src/utility/error-predicate.mjs";
 
 describe("FluentAssertion", (): void => {
 	describe("constructor", (): void => {
@@ -47,12 +47,12 @@ describe("FluentAssertion", (): void => {
 
 			throws(
 				(): void => { ASSERTION.not; },
-				createErrorPredicate("Double negation")
+				ErrorPredicate.Create("Double negation")
 			);
 
 			throws(
 				(): void => { ASSERTION.not; },
-				createErrorPredicate("Double negation")
+				ErrorPredicate.Create("Double negation")
 			);
 		});
 
@@ -69,7 +69,7 @@ describe("FluentAssertion", (): void => {
 
 			throws(
 				(): void => { ASSERTION.not.throw(); },
-				createErrorPredicate('"throws" cannot be negated, use "returns" instead')
+				ErrorPredicate.Create('"throws" cannot be negated, use "returns" instead')
 			);
 		});
 
@@ -78,7 +78,7 @@ describe("FluentAssertion", (): void => {
 
 			throws(
 				(): void => { ASSERTION.throw(); },
-				createErrorPredicate("Expected the tested value to be a function")
+				ErrorPredicate.Create("Expected the tested value to be a function")
 			);
 		});
 
@@ -90,7 +90,7 @@ describe("FluentAssertion", (): void => {
 
 			throws(
 				(): void => { ASSERTION.throw(); },
-				createErrorPredicate("Missing expected exception: Expected the tested value to throw")
+				ErrorPredicate.Create("Missing expected exception: Expected the tested value to throw")
 			);
 
 			strictEqual(STUB.callCount, 1, "Expected the callable to be called");
@@ -104,7 +104,7 @@ describe("FluentAssertion", (): void => {
 
 			throws(
 				(): void => { ASSERTION.throw(); },
-				createErrorPredicate("Expected the tested value to throw with an instance of Error, but got an integer.")
+				ErrorPredicate.Create("Expected the tested value to throw with an instance of Error, but got an integer.")
 			);
 
 			strictEqual(STUB.callCount, 1, "Expected the callable to be called");
@@ -118,7 +118,7 @@ describe("FluentAssertion", (): void => {
 
 			throws(
 				(): void => { ASSERTION.throw(RangeError); },
-				createErrorPredicate("Expected the tested value to throw with an instance of RangeError, but got an instance of Error.")
+				ErrorPredicate.Create("Expected the tested value to throw with an instance of RangeError, but got an instance of Error.")
 			);
 
 			strictEqual(STUB.callCount, 1, "Expected the callable to be called");
@@ -160,7 +160,7 @@ describe("FluentAssertion", (): void => {
 
 			throws(
 				(): void => { ASSERTION.not.return; },
-				createErrorPredicate('"returns" cannot be negated, use "throws" instead')
+				ErrorPredicate.Create('"returns" cannot be negated, use "throws" instead')
 			);
 		});
 
@@ -169,7 +169,7 @@ describe("FluentAssertion", (): void => {
 
 			throws(
 				(): void => { ASSERTION.return; },
-				createErrorPredicate("Expected the tested value to be a function")
+				ErrorPredicate.Create("Expected the tested value to be a function")
 			);
 		});
 
@@ -181,7 +181,7 @@ describe("FluentAssertion", (): void => {
 
 			throws(
 				(): void => { ASSERTION.return; },
-				createErrorPredicate("Got unwanted exception: Expected the tested value to return")
+				ErrorPredicate.Create("Got unwanted exception: Expected the tested value to return")
 			);
 
 			strictEqual(STUB.callCount, 1, "Expected the callable to be called");
@@ -232,7 +232,7 @@ describe("FluentAssertion", (): void => {
 
 			throws(
 				(): void => { ASSERTION.not.reject(); },
-				createErrorPredicate('"rejects" cannot be negated, use "fulfills" instead')
+				ErrorPredicate.Create('"rejects" cannot be negated, use "fulfills" instead')
 			);
 		});
 
@@ -241,7 +241,7 @@ describe("FluentAssertion", (): void => {
 
 			await rejects(
 				async (): Promise<void> => { await ASSERTION.reject(); },
-				createErrorPredicate("Expected the tested value to be a function")
+				ErrorPredicate.Create("Expected the tested value to be a function")
 			);
 		});
 
@@ -250,7 +250,7 @@ describe("FluentAssertion", (): void => {
 
 			await rejects(
 				async (): Promise<void> => { await ASSERTION.reject(); },
-				createErrorPredicate("Missing expected exception: Expected the tested value to throw")
+				ErrorPredicate.Create("Missing expected exception: Expected the tested value to throw")
 			);
 		});
 
@@ -259,7 +259,7 @@ describe("FluentAssertion", (): void => {
 
 			await rejects(
 				async (): Promise<void> => { await ASSERTION.reject(); },
-				createErrorPredicate("Expected the tested value to throw with an instance of Error, but got an integer.")
+				ErrorPredicate.Create("Expected the tested value to throw with an instance of Error, but got an integer.")
 			);
 		});
 
@@ -268,7 +268,7 @@ describe("FluentAssertion", (): void => {
 
 			await rejects(
 				async (): Promise<void> => { await ASSERTION.reject(RangeError); },
-				createErrorPredicate("Expected the tested value to throw with an instance of RangeError, but got an instance of Error.")
+				ErrorPredicate.Create("Expected the tested value to throw with an instance of RangeError, but got an instance of Error.")
 			);
 		});
 
@@ -299,7 +299,7 @@ describe("FluentAssertion", (): void => {
 
 			throws(
 				(): void => { ASSERTION.not.fulfill; },
-				createErrorPredicate('"fulfills" cannot be negated, use "rejects" instead')
+				ErrorPredicate.Create('"fulfills" cannot be negated, use "rejects" instead')
 			);
 		});
 
@@ -308,7 +308,7 @@ describe("FluentAssertion", (): void => {
 
 			rejects(
 				async (): Promise<void> => { await ASSERTION.fulfill; },
-				createErrorPredicate("Expected the tested value to be a Promise")
+				ErrorPredicate.Create("Expected the tested value to be a Promise")
 			);
 		});
 
@@ -317,7 +317,7 @@ describe("FluentAssertion", (): void => {
 
 			await rejects(
 				async (): Promise<void> => { await ASSERTION.fulfill; },
-				createErrorPredicate("Got unwanted exception: Expected the tested value to return")
+				ErrorPredicate.Create("Got unwanted exception: Expected the tested value to return")
 			);
 		});
 
