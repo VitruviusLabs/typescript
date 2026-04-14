@@ -1,5 +1,4 @@
-import type { FluentAssertion } from "./assertion/fluent-assertion.mjs";
-import type { VoidAssertion } from "./assertion/void-assertion.mjs";
-import { expect } from "./assertion/expect.mjs";
+import { FluentAssertion, RootAssertion, VoidAssertion } from "./proxy/_index.mjs";
+import { expect } from "./expect.mjs";
 
-export { type FluentAssertion, type VoidAssertion, expect };
+export { FluentAssertion, RootAssertion, VoidAssertion, expect };

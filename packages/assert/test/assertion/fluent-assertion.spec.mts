@@ -2,30 +2,30 @@ import type { AssertionInstantiationInterface } from "../../src/definition/inter
 import { describe, it } from "node:test";
 import { deepStrictEqual, doesNotReject, doesNotThrow, fail, rejects, strictEqual, throws } from "node:assert";
 import { type SinonStub, stub } from "sinon";
-import { FluentAssertion } from "../../src/assertion/_internal.mjs";
+import { FluentAssertionInternal } from "../../src/assertion/_internal.mjs";
 import { mockAssertionInstantiation } from "../../mock/mock-assertion-instantiation.mjs";
 import { mockAssertion } from "../../mock/mock-assertion.mjs";
 import { mockChildAssertion } from "../../mock/mock-child-assertion.mjs";
 import { mockVoidAssertion } from "../../mock/mock-void-assertion.mjs";
 import { ErrorPredicate } from "../../src/utility/error-predicate.mjs";
 
-describe("FluentAssertion", (): void => {
+describe("FluentAssertionInternal", (): void => {
 	describe("constructor", (): void => {
 		it("should create a new instance", (): void => {
 			const PARAMETERS: Required<AssertionInstantiationInterface> = mockAssertionInstantiation();
 
-			const ASSERTION: FluentAssertion = Reflect.construct(FluentAssertion, [PARAMETERS]);
+			const ASSERTION: FluentAssertionInternal = Reflect.construct(FluentAssertionInternal, [PARAMETERS]);
 
 			strictEqual(Reflect.get(ASSERTION, "root"), PARAMETERS.root);
 			strictEqual(Reflect.get(ASSERTION, "parent"), PARAMETERS.parent);
 			strictEqual(Reflect.get(ASSERTION, "name"), PARAMETERS.name);
-			strictEqual(Reflect.get(ASSERTION, "actualValue"), Reflect.get(FluentAssertion, "MISSING_VALUE"));
+			strictEqual(Reflect.get(ASSERTION, "actualValue"), Reflect.get(FluentAssertionInternal, "MISSING_VALUE"));
 		});
 	});
 
 	describe("not", (): void => {
 		it("should keep the chain going", (): void => {
-			const ASSERTION: FluentAssertion = mockAssertion();
+			const ASSERTION: FluentAssertionInternal = mockAssertion();
 
 			const RESULT: unknown = ASSERTION.not;
 
@@ -33,7 +33,7 @@ describe("FluentAssertion", (): void => {
 		});
 
 		it("should set the negation flag", (): void => {
-			const ASSERTION: FluentAssertion = mockAssertion();
+			const ASSERTION: FluentAssertionInternal = mockAssertion();
 
 			ASSERTION.not;
 
@@ -41,7 +41,7 @@ describe("FluentAssertion", (): void => {
 		});
 
 		it("should throw if the flag is already set", (): void => {
-			const ASSERTION: FluentAssertion = mockAssertion();
+			const ASSERTION: FluentAssertionInternal = mockAssertion();
 
 			doesNotThrow((): void => { ASSERTION.not; });
 
@@ -57,7 +57,7 @@ describe("FluentAssertion", (): void => {
 		});
 
 		it("should return itself", (): void => {
-			const ASSERTION: FluentAssertion = mockAssertion();
+			const ASSERTION: FluentAssertionInternal = mockAssertion();
 
 			strictEqual(ASSERTION.not, ASSERTION, "Expected the getter to return this");
 		});
@@ -65,7 +65,7 @@ describe("FluentAssertion", (): void => {
 
 	describe("throws", (): void => {
 		it("should throw if negated", (): void => {
-			const ASSERTION: FluentAssertion = mockAssertion();
+			const ASSERTION: FluentAssertionInternal = mockAssertion();
 
 			throws(
 				(): void => { ASSERTION.not.throw(); },
@@ -74,7 +74,7 @@ describe("FluentAssertion", (): void => {
 		});
 
 		it("should throw if the value is not a callable", (): void => {
-			const ASSERTION: FluentAssertion = mockAssertion();
+			const ASSERTION: FluentAssertionInternal = mockAssertion();
 
 			throws(
 				(): void => { ASSERTION.throw(); },
@@ -84,7 +84,7 @@ describe("FluentAssertion", (): void => {
 
 		it("should throw if the value does not throw", (): void => {
 			const STUB: SinonStub = stub();
-			const ASSERTION: FluentAssertion = mockAssertion(STUB);
+			const ASSERTION: FluentAssertionInternal = mockAssertion(STUB);
 
 			STUB.returns(undefined);
 
@@ -98,7 +98,7 @@ describe("FluentAssertion", (): void => {
 
 		it("should throw if the thrown error does not match the default predicate", (): void => {
 			const STUB: SinonStub = stub();
-			const ASSERTION: FluentAssertion = mockAssertion(STUB);
+			const ASSERTION: FluentAssertionInternal = mockAssertion(STUB);
 
 			STUB.throws(42);
 
@@ -112,7 +112,7 @@ describe("FluentAssertion", (): void => {
 
 		it("should throw if the thrown error does not match the custom predicate", (): void => {
 			const STUB: SinonStub = stub();
-			const ASSERTION: FluentAssertion = mockAssertion(STUB);
+			const ASSERTION: FluentAssertionInternal = mockAssertion(STUB);
 
 			STUB.throws(new Error("Test"));
 
@@ -126,7 +126,7 @@ describe("FluentAssertion", (): void => {
 
 		it("should return if the thrown error match the default predicate", (): void => {
 			const STUB: SinonStub = stub();
-			const ASSERTION: FluentAssertion = mockAssertion(STUB);
+			const ASSERTION: FluentAssertionInternal = mockAssertion(STUB);
 
 			STUB.throws(new RangeError("Test"));
 
@@ -136,7 +136,7 @@ describe("FluentAssertion", (): void => {
 
 		it("should return if the thrown error match the custom predicate", (): void => {
 			const STUB: SinonStub = stub();
-			const ASSERTION: FluentAssertion = mockAssertion(STUB);
+			const ASSERTION: FluentAssertionInternal = mockAssertion(STUB);
 
 			STUB.throws(new RangeError("Test"));
 
@@ -144,9 +144,9 @@ describe("FluentAssertion", (): void => {
 			strictEqual(STUB.callCount, 1, "Expected the callable to be called");
 		});
 
-		it("should return a VoidAssertion", (): void => {
+		it("should return a VoidAssertionInternal", (): void => {
 			const STUB: SinonStub = stub();
-			const ASSERTION: FluentAssertion = mockAssertion(STUB);
+			const ASSERTION: FluentAssertionInternal = mockAssertion(STUB);
 
 			STUB.throws(new Error("Test"));
 
@@ -156,7 +156,7 @@ describe("FluentAssertion", (): void => {
 
 	describe("returns", (): void => {
 		it("should throw if negated", (): void => {
-			const ASSERTION: FluentAssertion = mockAssertion();
+			const ASSERTION: FluentAssertionInternal = mockAssertion();
 
 			throws(
 				(): void => { ASSERTION.not.return; },
@@ -165,7 +165,7 @@ describe("FluentAssertion", (): void => {
 		});
 
 		it("should throw if the value is not a callable", (): void => {
-			const ASSERTION: FluentAssertion = mockAssertion();
+			const ASSERTION: FluentAssertionInternal = mockAssertion();
 
 			throws(
 				(): void => { ASSERTION.return; },
@@ -175,7 +175,7 @@ describe("FluentAssertion", (): void => {
 
 		it("should throw if the value throws", (): void => {
 			const STUB: SinonStub = stub();
-			const ASSERTION: FluentAssertion = mockAssertion(STUB);
+			const ASSERTION: FluentAssertionInternal = mockAssertion(STUB);
 
 			STUB.throws();
 
@@ -189,7 +189,7 @@ describe("FluentAssertion", (): void => {
 
 		it("should return if the value returns", (): void => {
 			const STUB: SinonStub = stub();
-			const ASSERTION: FluentAssertion = mockAssertion(STUB);
+			const ASSERTION: FluentAssertionInternal = mockAssertion(STUB);
 
 			STUB.returns(undefined);
 
@@ -199,7 +199,7 @@ describe("FluentAssertion", (): void => {
 
 		it("should return a new assertion for the returned value", (): void => {
 			const STUB: SinonStub = stub();
-			const ASSERTION: FluentAssertion = mockAssertion(STUB);
+			const ASSERTION: FluentAssertionInternal = mockAssertion(STUB);
 
 			STUB.returns(undefined);
 
@@ -208,17 +208,17 @@ describe("FluentAssertion", (): void => {
 			doesNotThrow((): void => { result = ASSERTION.return; });
 			strictEqual(STUB.callCount, 1, "Expected the callable to be called");
 
-			if (result === ASSERTION || !(result instanceof FluentAssertion))
+			if (result === ASSERTION || !(result instanceof FluentAssertionInternal))
 			{
-				fail("Expected the returned value to be a new FluentAssertion");
+				fail("Expected the returned value to be a new FluentAssertionInternal");
 			}
 
 			strictEqual(Reflect.get(result, "parent"), ASSERTION);
 		});
 
-		it("should return a new FluentAssertion for the returned value", (): void => {
+		it("should return a new FluentAssertionInternal for the returned value", (): void => {
 			const STUB: SinonStub = stub();
-			const ASSERTION: FluentAssertion = mockAssertion(STUB);
+			const ASSERTION: FluentAssertionInternal = mockAssertion(STUB);
 
 			STUB.returns(42);
 
@@ -228,7 +228,7 @@ describe("FluentAssertion", (): void => {
 
 	describe("rejects", (): void => {
 		it("should throw if negated", (): void => {
-			const ASSERTION: FluentAssertion = mockAssertion();
+			const ASSERTION: FluentAssertionInternal = mockAssertion();
 
 			throws(
 				(): void => { ASSERTION.not.reject(); },
@@ -237,7 +237,7 @@ describe("FluentAssertion", (): void => {
 		});
 
 		it("should reject if the value is not a Promise", async (): Promise<void> => {
-			const ASSERTION: FluentAssertion = mockAssertion();
+			const ASSERTION: FluentAssertionInternal = mockAssertion();
 
 			await rejects(
 				async (): Promise<void> => { await ASSERTION.reject(); },
@@ -246,7 +246,7 @@ describe("FluentAssertion", (): void => {
 		});
 
 		it("should rejects if the value does not reject", async (): Promise<void> => {
-			const ASSERTION: FluentAssertion = mockAssertion(Promise.resolve());
+			const ASSERTION: FluentAssertionInternal = mockAssertion(Promise.resolve());
 
 			await rejects(
 				async (): Promise<void> => { await ASSERTION.reject(); },
@@ -255,7 +255,7 @@ describe("FluentAssertion", (): void => {
 		});
 
 		it("should rejects if the thrown error does not match the default predicate", async (): Promise<void> => {
-			const ASSERTION: FluentAssertion = mockAssertion(Promise.reject(42));
+			const ASSERTION: FluentAssertionInternal = mockAssertion(Promise.reject(42));
 
 			await rejects(
 				async (): Promise<void> => { await ASSERTION.reject(); },
@@ -264,7 +264,7 @@ describe("FluentAssertion", (): void => {
 		});
 
 		it("should rejects if the thrown error does not match the custom predicate", async (): Promise<void> => {
-			const ASSERTION: FluentAssertion = mockAssertion(Promise.reject(new Error("Test")));
+			const ASSERTION: FluentAssertionInternal = mockAssertion(Promise.reject(new Error("Test")));
 
 			await rejects(
 				async (): Promise<void> => { await ASSERTION.reject(RangeError); },
@@ -273,19 +273,19 @@ describe("FluentAssertion", (): void => {
 		});
 
 		it("should fulfills if the thrown error match the default predicate", async (): Promise<void> => {
-			const ASSERTION: FluentAssertion = mockAssertion(Promise.reject(new Error("Test")));
+			const ASSERTION: FluentAssertionInternal = mockAssertion(Promise.reject(new Error("Test")));
 
 			await doesNotReject(async (): Promise<void> => { await ASSERTION.reject(); });
 		});
 
 		it("should fulfills if the thrown error match the custom predicate", async (): Promise<void> => {
-			const ASSERTION: FluentAssertion = mockAssertion(Promise.reject(new RangeError("Test")));
+			const ASSERTION: FluentAssertionInternal = mockAssertion(Promise.reject(new RangeError("Test")));
 
 			await doesNotReject(async (): Promise<void> => { await ASSERTION.reject(RangeError); });
 		});
 
-		it("should return a VoidAssertion", (): void => {
-			const ASSERTION: FluentAssertion = mockAssertion(Promise.reject(new Error("Test")));
+		it("should return a VoidAssertionInternal", (): void => {
+			const ASSERTION: FluentAssertionInternal = mockAssertion(Promise.reject(new Error("Test")));
 
 			const RESULT: unknown = ASSERTION.reject();
 
@@ -295,7 +295,7 @@ describe("FluentAssertion", (): void => {
 
 	describe("fulfills", (): void => {
 		it("should throw if negated", (): void => {
-			const ASSERTION: FluentAssertion = mockAssertion();
+			const ASSERTION: FluentAssertionInternal = mockAssertion();
 
 			throws(
 				(): void => { ASSERTION.not.fulfill; },
@@ -304,7 +304,7 @@ describe("FluentAssertion", (): void => {
 		});
 
 		it("should reject if the value is not a Promise", (): void => {
-			const ASSERTION: FluentAssertion = mockAssertion();
+			const ASSERTION: FluentAssertionInternal = mockAssertion();
 
 			rejects(
 				async (): Promise<void> => { await ASSERTION.fulfill; },
@@ -313,7 +313,7 @@ describe("FluentAssertion", (): void => {
 		});
 
 		it("should reject if the value rejects", async (): Promise<void> => {
-			const ASSERTION: FluentAssertion = mockAssertion(Promise.reject(new Error("Test")));
+			const ASSERTION: FluentAssertionInternal = mockAssertion(Promise.reject(new Error("Test")));
 
 			await rejects(
 				async (): Promise<void> => { await ASSERTION.fulfill; },
@@ -323,7 +323,7 @@ describe("FluentAssertion", (): void => {
 
 		it("should return if the value returns", (): void => {
 			const STUB: SinonStub = stub();
-			const ASSERTION: FluentAssertion = mockAssertion(STUB);
+			const ASSERTION: FluentAssertionInternal = mockAssertion(STUB);
 
 			STUB.returns(undefined);
 
@@ -331,8 +331,8 @@ describe("FluentAssertion", (): void => {
 			strictEqual(STUB.callCount, 1, "Expected the callable to be called");
 		});
 
-		it("should return a new FluentAssertion for the promised value", async (): Promise<void> => {
-			const ASSERTION: FluentAssertion = mockAssertion(Promise.resolve(42));
+		it("should return a new FluentAssertionInternal for the promised value", async (): Promise<void> => {
+			const ASSERTION: FluentAssertionInternal = mockAssertion(Promise.resolve(42));
 
 			const RESULT: unknown = ASSERTION.fulfill;
 

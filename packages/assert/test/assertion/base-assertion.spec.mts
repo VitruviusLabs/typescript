@@ -2,34 +2,34 @@ import type { BaseAssertionInstantiationInterface } from "../../src/definition/i
 import { describe, it } from "node:test";
 import { doesNotReject, strictEqual, throws } from "node:assert";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
-import { BaseAssertion } from "../../src/assertion/_internal.mjs";
+import { BaseAssertionInternal } from "../../src/assertion/_internal.mjs";
 import { mockAssertionInstantiation } from "../../mock/mock-assertion-instantiation.mjs";
 
-describe("BaseAssertion", (): void => {
+describe("BaseAssertionInternal", (): void => {
 	describe("constructor", (): void => {
 		it("should create a new instance", (): void => {
 			const PARAMETERS: Required<BaseAssertionInstantiationInterface> = mockAssertionInstantiation();
 
-			const ASSERTION: BaseAssertion = Reflect.construct(BaseAssertion, [PARAMETERS]);
+			const ASSERTION: BaseAssertionInternal = Reflect.construct(BaseAssertionInternal, [PARAMETERS]);
 
 			strictEqual(Reflect.get(ASSERTION, "root"), PARAMETERS.root);
 			strictEqual(Reflect.get(ASSERTION, "parent"), PARAMETERS.parent);
 		});
 
-		it("should throw if the root is not a RootAssertion", (): void => {
+		it("should throw if the root is not a RootAssertionInternal", (): void => {
 			const PARAMETERS: Required<BaseAssertionInstantiationInterface> = mockAssertionInstantiation();
 
 			throws(
-				(): void => { Reflect.construct(BaseAssertion, [{ root: undefined, parent: PARAMETERS.parent }]); },
+				(): void => { Reflect.construct(BaseAssertionInternal, [{ root: undefined, parent: PARAMETERS.parent }]); },
 				createErrorTest()
 			);
 		});
 
-		it("should throw if the parent is not a FluentAssertion", (): void => {
+		it("should throw if the parent is not a FluentAssertionInternal", (): void => {
 			const PARAMETERS: Required<BaseAssertionInstantiationInterface> = mockAssertionInstantiation();
 
 			throws(
-				(): void => { Reflect.construct(BaseAssertion, [{ root: PARAMETERS.root, parent: undefined }]); },
+				(): void => { Reflect.construct(BaseAssertionInternal, [{ root: PARAMETERS.root, parent: undefined }]); },
 				createErrorTest()
 			);
 		});
@@ -48,7 +48,7 @@ describe("BaseAssertion", (): void => {
 		it("should return the root assertion", (): void => {
 			const PARAMETERS: Required<BaseAssertionInstantiationInterface> = mockAssertionInstantiation();
 
-			const ASSERTION: BaseAssertion = Reflect.construct(BaseAssertion, [PARAMETERS]);
+			const ASSERTION: BaseAssertionInternal = Reflect.construct(BaseAssertionInternal, [PARAMETERS]);
 
 			const RESULT: unknown = ASSERTION.reset();
 
@@ -69,7 +69,7 @@ describe("BaseAssertion", (): void => {
 		it("should return the parent assertion", (): void => {
 			const PARAMETERS: Required<BaseAssertionInstantiationInterface> = mockAssertionInstantiation();
 
-			const ASSERTION: BaseAssertion = Reflect.construct(BaseAssertion, [PARAMETERS]);
+			const ASSERTION: BaseAssertionInternal = Reflect.construct(BaseAssertionInternal, [PARAMETERS]);
 
 			const RESULT: unknown = ASSERTION.rewind();
 
@@ -81,7 +81,7 @@ describe("BaseAssertion", (): void => {
 		it("should make the assertion resolve as a promise", async (): Promise<void> => {
 			const PARAMETERS: Required<BaseAssertionInstantiationInterface> = mockAssertionInstantiation();
 
-			const ASSERTION: BaseAssertion = Reflect.construct(BaseAssertion, [PARAMETERS]);
+			const ASSERTION: BaseAssertionInternal = Reflect.construct(BaseAssertionInternal, [PARAMETERS]);
 
 			Reflect.set(PARAMETERS.root, "promise", Promise.resolve("promise"));
 
