@@ -11,14 +11,37 @@ function fluent_length(assertion: FluentAssertionInternal): FluentAssertionInter
 	assertion.appendAction(
 		(): void =>
 		{
-			if (typeof assertion.actualValue !== "string")
+			if (typeof assertion.actualValue === "string")
 			{
-				const TYPE: string = getType(assertion.actualValue);
+				ASSERTION.setValue(assertion.actualValue.length);
 
-				fail(`Expected ${assertion.name} to be a string, but got ${TYPE}`);
+				return;
 			}
 
-			ASSERTION.setValue(assertion.actualValue.length);
+			if (Array.isArray(assertion.actualValue))
+			{
+				ASSERTION.setValue(assertion.actualValue.length);
+
+				return;
+			}
+
+			if (assertion.actualValue instanceof Map)
+			{
+				ASSERTION.setValue(assertion.actualValue.size);
+
+				return;
+			}
+
+			if (assertion.actualValue instanceof Set)
+			{
+				ASSERTION.setValue(assertion.actualValue.size);
+
+				return;
+			}
+
+			const TYPE: string = getType(assertion.actualValue);
+
+			fail(`Expected ${assertion.name} to be a string, Array, Map, or Set, but got ${TYPE}`);
 		}
 	);
 

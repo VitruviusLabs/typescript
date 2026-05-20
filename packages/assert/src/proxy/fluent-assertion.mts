@@ -387,6 +387,9 @@ class FluentAssertion<T extends FluentAssertionInternal = FluentAssertionInterna
 	/**
 	 * Accessor for the value's length
 	 *
+	 * @remarks
+	 * Works with strings, arrays, maps and sets
+	 *
 	 * @returns A new assertion with the value's length
 	 *
 	 * @throws if the value is not a string
