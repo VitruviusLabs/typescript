@@ -1,4 +1,5 @@
 import { assertInteger } from "../../../type-assertion/assert-integer.mjs";
+import { ValidationError } from "../../../type-assertion/utils/validation-error.mjs";
 
 function assertBetween(value: unknown, min: number, max: number): void
 {
@@ -6,7 +7,7 @@ function assertBetween(value: unknown, min: number, max: number): void
 
 	if (value < min || max < value)
 	{
-		throw new RangeError(`Value ${value.toFixed(0)} is not between ${min.toFixed(0)} and ${max.toFixed(0)}.`);
+		throw new ValidationError(`Value ${value.toFixed(0)} is not between ${min.toFixed(0)} and ${max.toFixed(0)}.`);
 	}
 }
 

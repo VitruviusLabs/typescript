@@ -35,7 +35,7 @@ describe("assertPopulatedArray", (): void => {
 				assertPopulatedArray(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest("The value is not an array."));
+			throws(WRAPPER, createErrorTest(new ValidationError("The value is not an array.")));
 		}
 	});
 

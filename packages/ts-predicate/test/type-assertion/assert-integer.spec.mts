@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { assertInteger } from "../../src/_index.mjs";
+import { ValidationError, assertInteger } from "../../src/_index.mjs";
 
 describe("assertInteger", (): void => {
 	it("should return when given a safe integer", (): void => {
@@ -28,7 +28,7 @@ describe("assertInteger", (): void => {
 				assertInteger(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 
@@ -42,7 +42,7 @@ describe("assertInteger", (): void => {
 				assertInteger(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 

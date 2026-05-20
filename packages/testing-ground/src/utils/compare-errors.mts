@@ -1,4 +1,5 @@
 import { isValidationError } from "./is-validation-error.mjs";
+import { validateError } from "./validate-error.mjs";
 import { wrapCause } from "./wrap-cause.mjs";
 
 function compareErrors(value: unknown, expected: Error): void
@@ -6,10 +7,7 @@ function compareErrors(value: unknown, expected: Error): void
 	// @ts-expect-error -- constructor is badly typed
 	const CONSTRUCTOR_CLASS: typeof Error = expected.constructor;
 
-	if (!(value instanceof CONSTRUCTOR_CLASS))
-	{
-		throw new Error(`An ${CONSTRUCTOR_CLASS.name} must be thrown.`);
-	}
+	validateError(value, CONSTRUCTOR_CLASS);
 
 	if (value.message !== expected.message)
 	{

@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { assertString } from "../../src/_index.mjs";
+import { ValidationError, assertString } from "../../src/_index.mjs";
 
 describe("assertString", (): void => {
 	it("should return when given a string", (): void => {
@@ -28,7 +28,7 @@ describe("assertString", (): void => {
 				assertString(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 

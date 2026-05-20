@@ -31,7 +31,7 @@ describe("assertStructuredData", (): void => {
 				assertStructuredData(ITEM, DESCRIPTOR);
 			};
 
-			throws(WRAPPER, createErrorTest("The value must be a record."));
+			throws(WRAPPER, createErrorTest(new ValidationError("The value must be a record.")));
 		}
 	});
 

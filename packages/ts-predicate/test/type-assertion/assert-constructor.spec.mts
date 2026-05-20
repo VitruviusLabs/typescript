@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { type AbstractConstructorOf, assertConstructor } from "../../src/_index.mjs";
+import { type AbstractConstructorOf, ValidationError, assertConstructor } from "../../src/_index.mjs";
 
 describe("assertConstructor", (): void => {
 	it("should return when given a constructible", (): void => {
@@ -28,7 +28,7 @@ describe("assertConstructor", (): void => {
 				assertConstructor(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest("The value must be a constructor."));
+			throws(WRAPPER, createErrorTest(new ValidationError("The value must be a constructor.")));
 		}
 	});
 

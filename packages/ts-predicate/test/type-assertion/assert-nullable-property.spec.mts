@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { consumeValue, createErrorTest, createValue } from "@vitruvius-labs/testing-ground";
-import { type Nullable, assertNullableProperty, assertString } from "../../src/_index.mjs";
+import { type Nullable, ValidationError, assertNullableProperty, assertString } from "../../src/_index.mjs";
 
 describe("assertNullableProperty", (): void => {
 	it("should throw when given an object without the property", (): void => {
@@ -15,8 +15,8 @@ describe("assertNullableProperty", (): void => {
 			assertNullableProperty({}, SYMBOL);
 		};
 
-		throws(WRAPPER_STRING, createErrorTest("The value must have a property \"key\"."));
-		throws(WRAPPER_SYMBOL, createErrorTest("The value must have a property \"Symbol(key)\"."));
+		throws(WRAPPER_STRING, createErrorTest(new ValidationError("The value must have a property \"key\".")));
+		throws(WRAPPER_SYMBOL, createErrorTest(new ValidationError("The value must have a property \"Symbol(key)\".")));
 	});
 
 	it("should return when given an object with the property", (): void => {
@@ -42,7 +42,7 @@ describe("assertNullableProperty", (): void => {
 			consumeValue<{ key: unknown }>(VALUE);
 		};
 
-		throws(WRAPPER, createErrorTest('The value must have a property "key".'));
+		throws(WRAPPER, createErrorTest(new ValidationError('The value must have a property "key".')));
 	});
 
 	it("should narrow the type to an object with the corresponding property (symbol)", (): void => {
@@ -55,7 +55,7 @@ describe("assertNullableProperty", (): void => {
 			consumeValue<{ [SYMBOL]: unknown }>(VALUE);
 		};
 
-		throws(WRAPPER, createErrorTest('The value must have a property "Symbol(key)".'));
+		throws(WRAPPER, createErrorTest(new ValidationError('The value must have a property "Symbol(key)".')));
 	});
 
 	it("should narrow the type to an object with the corresponding property (type)", (): void => {
@@ -68,6 +68,6 @@ describe("assertNullableProperty", (): void => {
 			consumeValue<Date & { [SYMBOL]: Nullable<string> }>(VALUE);
 		};
 
-		throws(WRAPPER, createErrorTest('The value must have a property "Symbol(key)".'));
+		throws(WRAPPER, createErrorTest(new ValidationError('The value must have a property "Symbol(key)".')));
 	});
 });

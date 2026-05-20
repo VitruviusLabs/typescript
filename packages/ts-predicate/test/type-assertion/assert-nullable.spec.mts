@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues } from "@vitruvius-labs/testing-ground";
-import { NoValue, assertNullable } from "../../src/_index.mjs";
+import { NoValue, ValidationError, assertNullable } from "../../src/_index.mjs";
 
 describe("assertNullable", (): void => {
 	it("should return when given null or undefined", (): void => {
@@ -31,7 +31,7 @@ describe("assertNullable", (): void => {
 				assertNullable(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 

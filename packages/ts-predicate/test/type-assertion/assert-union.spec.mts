@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { assertNumber, assertString, assertUnion } from "../../src/_index.mjs";
+import { ValidationError, assertNumber, assertString, assertUnion } from "../../src/_index.mjs";
 
 describe("assertUnion", (): void => {
 	it("should return when given a value matching one of the test", (): void => {
@@ -28,7 +28,7 @@ describe("assertUnion", (): void => {
 				assertUnion(ITEM, [assertNumber, assertString]);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 

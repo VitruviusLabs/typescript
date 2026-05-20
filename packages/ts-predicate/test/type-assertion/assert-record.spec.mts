@@ -28,7 +28,7 @@ describe("assertRecord", (): void => {
 				assertRecord(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest("The value must be a record."));
+			throws(WRAPPER, createErrorTest(new ValidationError("The value must be a record.")));
 		}
 	});
 
@@ -42,7 +42,7 @@ describe("assertRecord", (): void => {
 				assertRecord(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest("The value must be a record."));
+			throws(WRAPPER, createErrorTest(new ValidationError("The value must be a record.")));
 		}
 	});
 

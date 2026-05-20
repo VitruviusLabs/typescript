@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { assertBoolean } from "../../src/_index.mjs";
+import { ValidationError, assertBoolean } from "../../src/_index.mjs";
 
 describe("assertBoolean", (): void => {
 	it("should return when given a boolean", (): void => {
@@ -28,7 +28,7 @@ describe("assertBoolean", (): void => {
 				assertBoolean(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 
