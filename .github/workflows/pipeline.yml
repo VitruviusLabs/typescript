@@ -6,69 +6,8 @@ on:
   push:
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    outputs:
-      ts-files-changed: ${{ steps.parse-changed-files.outputs.ts-files-changed }}
-      require-spell-check: ${{ steps.parse-changed-files.outputs.require-spell-check }}
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Parse changed files
-        id: parse-changed-files
-        run: |
-          echo "ts-files-changed=$((git diff --name-status ${{ github.event.before }} ${{ github.event.after }} | grep -oP '[M]{1}[^A-Za-z]*(.*)' | sed --regexp-extended 's/[AMD]\s+//g' | grep -oP '.*\.ts$') 1> /dev/null && echo true || echo false)" >> $GITHUB_OUTPUT
-          echo "require-spell-check=$(./_ops/continuous-integration/scripts/requires_spell_check.sh ${{ github.event.before }} ${{ github.event.after }})" >> $GITHUB_OUTPUT
-
-      - name: Debug
-        run: |
-          echo ${{ steps.parse-changed-files.outputs.ts-files-changed }}
-          echo ${{ steps.parse-changed-files.outputs.require-spell-check }}
-
-      - name: PNPM installation
-        # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
-        uses: pnpm/action-setup@v4
-        id: pnpm-install
-        with:
-          version: 11
-          run_install: false
-
-      - name: Get pnpm store directory
-        # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: PNPM cache configuration
-        # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install dependencies
-        # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
-        run: |
-          pnpm install --frozen-lockfile
-          cd packages/mockingbird && pnpm install --frozen-lockfile && cd ../..
-
-      - name: Dependencies caching
-        # if: ${{ steps.parse-changed-files.outputs.ts-files-changed == 'true'  || steps.parse-changed-files.outputs.require-spell-check == 'true' }}
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-
   spell-check-global:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.require-spell-check == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -78,17 +17,11 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
+          run_install: true
 
       - uses: actions/setup-node@v4
         with:
           node-version: "22.x"
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Check spelling with CSpell
         run: pnpm --filter ts-predicate ci:spell:check
@@ -96,9 +29,7 @@ jobs:
   ## TS Predicate
 
   lint-ts-predicate:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -108,13 +39,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: pnpm --filter testing-ground ci:build
@@ -123,9 +48,7 @@ jobs:
         run: pnpm --filter ts-predicate ci:lint
 
   typescript-syntax-check-ts-predicate:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -135,13 +58,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: pnpm --filter testing-ground ci:build
@@ -150,9 +67,7 @@ jobs:
         run: pnpm --filter ts-predicate ci:ts:check
 
   test-ts-predicate:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -162,17 +77,11 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
+          run_install: true
 
       - uses: actions/setup-node@v4
         with:
           node-version: "22.x"
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
         run: pnpm --filter testing-ground ci:build
@@ -207,12 +116,6 @@ jobs:
           version: 11
           run_install: true
 
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-
       - name: Building workspace dependencies
         run: pnpm --filter testing-ground ci:build
 
@@ -228,9 +131,7 @@ jobs:
   ## Toolbox
 
   lint-toolbox:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -240,13 +141,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: pnpm --filter ts-predicate ci:build
@@ -258,9 +153,7 @@ jobs:
         run: pnpm --filter toolbox ci:lint
 
   typescript-syntax-check-toolbox:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -270,13 +163,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: pnpm --filter ts-predicate ci:build
@@ -288,9 +175,7 @@ jobs:
         run: pnpm --filter toolbox ci:ts:check
 
   test-toolbox:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -300,17 +185,11 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
+          run_install: true
 
       - uses: actions/setup-node@v4
         with:
           node-version: "22.x"
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
         run: pnpm --filter ts-predicate ci:build
@@ -348,12 +227,6 @@ jobs:
           version: 11
           run_install: true
 
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-
       - name: Building workspace dependencies
         run: pnpm --filter ts-predicate ci:build
 
@@ -372,9 +245,7 @@ jobs:
   ## AWS Signature v4
 
   lint-aws-signature-v4:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -384,13 +255,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: pnpm --filter testing-ground ci:build
@@ -399,9 +264,7 @@ jobs:
         run: pnpm --filter aws-signature-v4 ci:lint
 
   typescript-syntax-check-aws-signature-v4:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -411,13 +274,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: pnpm --filter testing-ground ci:build
@@ -426,9 +283,7 @@ jobs:
         run: pnpm --filter aws-signature-v4 ci:ts:check
 
   test-aws-signature-v4:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -438,13 +293,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: pnpm --filter testing-ground ci:build
@@ -479,12 +328,6 @@ jobs:
           version: 11
           run_install: true
 
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-
       - name: Building workspace dependencies
         run: pnpm --filter testing-ground ci:build
 
@@ -500,9 +343,7 @@ jobs:
   ## AWS S3
 
   lint-aws-s3:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -512,13 +353,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: |
@@ -531,9 +366,7 @@ jobs:
         run: pnpm --filter aws-s3 ci:lint
 
   typescript-syntax-check-aws-s3:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -543,13 +376,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: |
@@ -562,9 +389,7 @@ jobs:
         run: pnpm --filter aws-s3 ci:ts:check
 
   test-aws-s3:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -574,13 +399,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: |
@@ -619,12 +438,6 @@ jobs:
           version: 11
           run_install: true
 
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-
       - name: Building workspace dependencies
         run: |
           pnpm --filter aws-signature-v4 ci:build
@@ -644,9 +457,7 @@ jobs:
   ## AWS SQS
 
   lint-aws-sqs:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -656,13 +467,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: |
@@ -676,9 +481,7 @@ jobs:
         run: pnpm --filter aws-sqs ci:lint
 
   typescript-syntax-check-aws-sqs:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -688,13 +491,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: |
@@ -708,9 +505,7 @@ jobs:
         run: pnpm --filter aws-sqs ci:ts:check
 
   test-aws-sqs:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -720,13 +515,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: |
@@ -766,12 +555,6 @@ jobs:
           version: 11
           run_install: true
 
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-
       - name: Building workspace dependencies
         run: |
           pnpm --filter aws-signature-v4 ci:build
@@ -792,9 +575,7 @@ jobs:
   ## Mockingbird
 
   lint-mockingbird:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -804,13 +585,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: |
@@ -824,9 +599,7 @@ jobs:
         run: pnpm --filter mockingbird ci:lint
 
   typescript-syntax-check-mockingbird:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -836,13 +609,7 @@ jobs:
         id: pnpm-install
         with:
           version: 11
-          run_install: false
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          run_install: true
 
       - name: Building workspace dependencies
         run: |
@@ -881,12 +648,6 @@ jobs:
           version: 11
           run_install: true
 
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-
       - name: Building workspace dependencies
         run: |
           pnpm --filter testing-ground ci:build
@@ -907,9 +668,7 @@ jobs:
   ## Architectura
 
   lint-architectura:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -920,12 +679,6 @@ jobs:
         with:
           version: 11
           run_install: true
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
         run: |
@@ -940,9 +693,7 @@ jobs:
         run: pnpm --filter architectura ci:lint
 
   typescript-syntax-check-architectura:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -953,12 +704,6 @@ jobs:
         with:
           version: 11
           run_install: true
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
         run: |
@@ -973,9 +718,7 @@ jobs:
         run: pnpm --filter architectura ci:ts:check
 
   test-architectura:
-    needs: setup
     runs-on: ubuntu-latest
-    # if: ${{ needs.setup.outputs.ts-files-changed == 'true' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -990,12 +733,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22.x"
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
         run: |
@@ -1035,12 +772,6 @@ jobs:
         with:
           version: 11
           run_install: true
-
-      - name: Dependencies cache unpacking
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Building workspace dependencies
         run: |
