@@ -16,7 +16,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - uses: actions/setup-node@v4
@@ -38,7 +38,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -57,7 +57,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -76,7 +76,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - uses: actions/setup-node@v4
@@ -113,7 +113,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -140,7 +140,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -162,7 +162,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -184,7 +184,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - uses: actions/setup-node@v4
@@ -224,7 +224,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -254,7 +254,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -273,7 +273,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -292,7 +292,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -325,7 +325,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -352,7 +352,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -375,7 +375,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -398,7 +398,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -435,7 +435,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -466,7 +466,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -490,7 +490,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -514,7 +514,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -552,7 +552,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -584,7 +584,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -608,7 +608,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -645,7 +645,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -677,7 +677,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -702,7 +702,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
@@ -727,7 +727,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - uses: actions/setup-node@v4
@@ -770,7 +770,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
-          version: 11
+          version: 10
           run_install: true
 
       - name: Building workspace dependencies
