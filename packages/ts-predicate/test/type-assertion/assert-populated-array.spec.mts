@@ -69,7 +69,7 @@ describe("assertPopulatedArray", (): void => {
 			assertPopulatedArray([], { minLength: 0 });
 		};
 
-		throws(WRAPPER, createErrorTest(new ValidationError("The minimum length cannot be less than one.")));
+		throws(WRAPPER, createErrorTest(new RangeError("The minimum length cannot be less than one.")));
 	});
 
 	it("should throw when given an array with a length below the minLength constraint", (): void => {

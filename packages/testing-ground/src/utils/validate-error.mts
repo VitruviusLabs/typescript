@@ -4,7 +4,7 @@ function validateError(value: unknown, error_constructor: ErrorConstructorType):
 {
 	if (!(value instanceof error_constructor))
 	{
-		throw new Error(`An ${error_constructor.name} must be thrown.`);
+		throw new Error(`An instance of ${error_constructor.name} must be thrown.`);
 	}
 
 	if (value.message.length === 0)
