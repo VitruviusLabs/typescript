@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { assertBigInt } from "../../src/_index.mjs";
+import { ValidationError, assertBigInt } from "../../src/_index.mjs";
 
 describe("assertBigInt", (): void => {
 	it("should return when given a big integer", (): void => {
@@ -28,7 +28,7 @@ describe("assertBigInt", (): void => {
 				assertBigInt(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 

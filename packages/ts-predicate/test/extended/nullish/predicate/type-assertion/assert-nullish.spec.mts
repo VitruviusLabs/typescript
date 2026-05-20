@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { type NullishValues, assertNullish } from "../../../../../src/_index.mjs";
+import { type NullishValues, ValidationError, assertNullish } from "../../../../../src/_index.mjs";
 
 describe("assertNullish", (): void => {
 	it("should return when given null, undefined, NaN, or NoValue", (): void => {
@@ -28,7 +28,7 @@ describe("assertNullish", (): void => {
 				assertNullish(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 

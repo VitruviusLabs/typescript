@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { assertFiniteNumber } from "../../src/_index.mjs";
+import { ValidationError, assertFiniteNumber } from "../../src/_index.mjs";
 
 describe("assertFiniteNumber", (): void => {
 	it("should return when given a real number", (): void => {
@@ -28,7 +28,7 @@ describe("assertFiniteNumber", (): void => {
 				assertFiniteNumber(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 
@@ -42,7 +42,7 @@ describe("assertFiniteNumber", (): void => {
 				assertFiniteNumber(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 

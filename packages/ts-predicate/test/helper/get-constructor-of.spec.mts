@@ -16,7 +16,7 @@ describe("getConstructorOf", (): void => {
 			getConstructorOf(Object.create(null));
 		};
 
-		throws(WRAPPER, createErrorTest("The value has no prototype."));
+		throws(WRAPPER, createErrorTest(new Error("The value has no prototype.")));
 	});
 
 	it("should throw when given an object without constructor", (): void => {
@@ -25,7 +25,7 @@ describe("getConstructorOf", (): void => {
 			getConstructorOf(Object.create(Object.create(null)));
 		};
 
-		throws(WRAPPER, createErrorTest("The value has no constructor."));
+		throws(WRAPPER, createErrorTest(new Error("The value has no constructor.")));
 	});
 
 	it("should return a constructor that can be instantiated", (): void => {

@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
-import { assertAllowedKeys } from "../../src/_index.mjs";
 import { createErrorTest } from "@vitruvius-labs/testing-ground";
+import { ValidationError, assertAllowedKeys } from "../../src/_index.mjs";
 
 describe("assertAllowedKeys", (): void => {
 	it("should return when every key is allowed, even if some allowed keys are missing", (): void => {
@@ -24,7 +24,7 @@ describe("assertAllowedKeys", (): void => {
 			assertAllowedKeys({ alpha: 1, beta: 2, gamma: 3, delta: 4 }, ["alpha", "beta"]);
 		};
 
-		throws(WRAPPER_SINGLE, createErrorTest('The value must not have the properties "gamma".'));
-		throws(WRAPPER_MULTIPLE, createErrorTest('The value must not have the properties "gamma", "delta".'));
+		throws(WRAPPER_SINGLE, createErrorTest(new ValidationError('The value must not have the properties "gamma".')));
+		throws(WRAPPER_MULTIPLE, createErrorTest(new ValidationError('The value must not have the properties "gamma", "delta".')));
 	});
 });

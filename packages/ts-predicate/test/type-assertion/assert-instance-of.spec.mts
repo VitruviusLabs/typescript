@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { consumeValue, createErrorTest, createValue, getAllValues } from "@vitruvius-labs/testing-ground";
-import { assertInstanceOf } from "../../src/_index.mjs";
+import { ValidationError, assertInstanceOf } from "../../src/_index.mjs";
 
 describe("assertInstanceOf", (): void => {
 	it("should return when given an instance of the given class", (): void => {
@@ -23,7 +23,7 @@ describe("assertInstanceOf", (): void => {
 				assertInstanceOf(ITEM, Date);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 

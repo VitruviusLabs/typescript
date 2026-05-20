@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues } from "@vitruvius-labs/testing-ground";
-import { assertEnumValue } from "../../src/_index.mjs";
+import { ValidationError, assertEnumValue } from "../../src/_index.mjs";
 
 describe("assertEnumValue", (): void => {
 	it("should return when given a valid value", (): void => {
@@ -30,7 +30,7 @@ describe("assertEnumValue", (): void => {
 				assertEnumValue(ITEM, ENUM_VALUES);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 
@@ -47,8 +47,8 @@ describe("assertEnumValue", (): void => {
 			assertEnumValue("Lorem ipsum", ENUM_VALUES, "DigitEnum");
 		};
 
-		throws(WRAPPER_ANONYMOUS, createErrorTest("The value must be one of the following: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9."));
-		throws(WRAPPER_NAMED, createErrorTest("The value must be a DigitEnum."));
+		throws(WRAPPER_ANONYMOUS, createErrorTest(new ValidationError("The value must be one of the following: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9.")));
+		throws(WRAPPER_NAMED, createErrorTest(new ValidationError("The value must be a DigitEnum.")));
 	});
 
 	it("should narrow the type to the enumerated values (arbitrary values)", (): void => {

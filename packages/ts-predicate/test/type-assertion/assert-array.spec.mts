@@ -67,7 +67,7 @@ describe("assertArray", (): void => {
 			assertArray([], { minLength: 0 });
 		};
 
-		throws(WRAPPER, createErrorTest(new RangeError(
+		throws(WRAPPER, createErrorTest(new ValidationError(
 			"The minimum length cannot be less than one."
 		)));
 	});

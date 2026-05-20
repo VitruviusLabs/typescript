@@ -34,7 +34,7 @@ describe("TypeAssertion / utils / itemAssertion", (): void => {
 			itemAssertion(null, GUARD);
 		};
 
-		throws(WRAPPER, createErrorTest());
+		throws(WRAPPER, createErrorTest(ValidationError));
 	});
 
 	it("should return when given a type assertion and a valid value", (): void => {
@@ -72,6 +72,6 @@ describe("TypeAssertion / utils / itemAssertion", (): void => {
 			itemAssertion(null, GUARD);
 		};
 
-		throws(WRAPPER, createErrorTest());
+		throws(WRAPPER, createErrorTest(ValidationError));
 	});
 });

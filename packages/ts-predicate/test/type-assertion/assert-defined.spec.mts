@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { NoValue, type NonNullish, assertDefined } from "../../src/_index.mjs";
+import { NoValue, type NonNullish, ValidationError, assertDefined } from "../../src/_index.mjs";
 
 describe("assertDefined", (): void => {
 	it("should throw when given undefined, null, NaN, or NoValue", (): void => {
@@ -16,7 +16,7 @@ describe("assertDefined", (): void => {
 				assertDefined(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 

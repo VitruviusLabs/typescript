@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { assertPrimitive } from "../../src/_index.mjs";
+import { ValidationError, assertPrimitive } from "../../src/_index.mjs";
 
 describe("assertPrimitive", (): void => {
 	it("should return when given a primitive value", (): void => {
@@ -28,7 +28,7 @@ describe("assertPrimitive", (): void => {
 				assertPrimitive(ITEM);
 			};
 
-			throws(WRAPPER, createErrorTest());
+			throws(WRAPPER, createErrorTest(ValidationError));
 		}
 	});
 

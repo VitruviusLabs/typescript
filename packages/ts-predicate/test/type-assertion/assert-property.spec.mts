@@ -1,7 +1,7 @@
 import { doesNotThrow, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { GroupType, consumeValue, createErrorTest, createValue, getInvertedValues, getValues } from "@vitruvius-labs/testing-ground";
-import { assertProperty, assertString } from "../../src/_index.mjs";
+import { ValidationError, assertProperty, assertString } from "../../src/_index.mjs";
 
 describe("assertProperty", (): void => {
 	it("should throw when given an object without the property", (): void => {
@@ -15,8 +15,8 @@ describe("assertProperty", (): void => {
 			assertProperty({}, SYMBOL);
 		};
 
-		throws(WRAPPER_STRING, createErrorTest("The value must have a property \"answer\"."));
-		throws(WRAPPER_SYMBOL, createErrorTest("The value must have a property \"Symbol(answer)\"."));
+		throws(WRAPPER_STRING, createErrorTest(new ValidationError("The value must have a property \"answer\".")));
+		throws(WRAPPER_SYMBOL, createErrorTest(new ValidationError("The value must have a property \"Symbol(answer)\".")));
 	});
 
 	it("should throw when given an object with the property, but the value is nullish", (): void => {
@@ -34,8 +34,8 @@ describe("assertProperty", (): void => {
 				assertProperty({ [SYMBOL]: ITEM }, SYMBOL);
 			};
 
-			throws(WRAPPER_STRING, createErrorTest("The property \"answer\" must not have a nullish value (undefined, null, NaN, or NoValue)."));
-			throws(WRAPPER_SYMBOL, createErrorTest("The property \"Symbol(answer)\" must not have a nullish value (undefined, null, NaN, or NoValue)."));
+			throws(WRAPPER_STRING, createErrorTest(new ValidationError("The property \"answer\" must not have a nullish value (undefined, null, NaN, or NoValue).")));
+			throws(WRAPPER_SYMBOL, createErrorTest(new ValidationError("The property \"Symbol(answer)\" must not have a nullish value (undefined, null, NaN, or NoValue).")));
 		}
 	});
 
@@ -74,8 +74,8 @@ describe("assertProperty", (): void => {
 				assertProperty({ [SYMBOL]: ITEM }, SYMBOL, assertString);
 			};
 
-			throws(WRAPPER_STRING, createErrorTest("The value must be a string."));
-			throws(WRAPPER_SYMBOL, createErrorTest("The value must be a string."));
+			throws(WRAPPER_STRING, createErrorTest(new ValidationError("The value must be a string.")));
+			throws(WRAPPER_SYMBOL, createErrorTest(new ValidationError("The value must be a string.")));
 		}
 	});
 
@@ -107,7 +107,7 @@ describe("assertProperty", (): void => {
 			consumeValue<{ key: unknown }>(VALUE);
 		};
 
-		throws(WRAPPER, createErrorTest('The value must have a property "key".'));
+		throws(WRAPPER, createErrorTest(new ValidationError('The value must have a property "key".')));
 	});
 
 	it("should narrow the type to an object with the corresponding property (symbol)", (): void => {
@@ -120,7 +120,7 @@ describe("assertProperty", (): void => {
 			consumeValue<{ [SYMBOL]: unknown }>(VALUE);
 		};
 
-		throws(WRAPPER, createErrorTest('The value must have a property "Symbol(key)".'));
+		throws(WRAPPER, createErrorTest(new ValidationError('The value must have a property "Symbol(key)".')));
 	});
 
 	it("should narrow the type to an object with the corresponding property (type)", (): void => {
