@@ -1,0 +1,16 @@
+{
+	"extension": [
+		"mts"
+	],
+	"node-option": [
+		"loader=tsx"
+	],
+	"spec": [
+		"test/**/*.spec.mts"
+	],
+	"timeout": 5000,
+	"parallel": true,
+	"checkLeaks": true,
+	"diff": true,
+	"forbidPending": true
+}

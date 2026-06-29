@@ -21,6 +21,10 @@
 			"path": "packages/mockingbird"
 		},
 		{
+			"name": "ddd",
+			"path": "packages/ddd"
+		},
+		{
 			"name": "architectura",
 			"path": "packages/architectura"
 		},
@@ -69,6 +73,7 @@
 			"./packages/aws-s3",
 			"./packages/aws-signature-v4",
 			"./packages/aws-sqs",
+			"./packages/ddd",
 			"./packages/functional",
 			"./packages/mockingbird",
 			"./packages/testing-ground",
