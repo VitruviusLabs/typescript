@@ -5,7 +5,7 @@ import { RepositoryDatePropertyDefinition } from "./repository-date-property-def
 import { PredefinedMetaProperty } from "../../../base/auxiliary/meta-property/predefined-meta-property.mjs";
 import { RepositoryDateProperty } from "./repository-date-property.mjs";
 import { NullableTypeDefinition } from "../../../base/auxiliary/type-definition/nullable-type-definition.mjs";
-import { DateTypeDefinition } from "./date-type-definition.mjs";
+import { DateTypeDefinition } from "../../../predefined-type/date/date-type-definition.mjs";
 
 abstract class RepositoryDateMetaProperty extends PredefinedMetaProperty<Date | null, RepositoryDatePropertyDefinition, RepositoryDateProperty>
 {
@@ -26,7 +26,10 @@ abstract class RepositoryDateMetaProperty extends PredefinedMetaProperty<Date | 
 	{
 		const type_definition: BaseTypeDefinition<Date | null> = new NullableTypeDefinition(new DateTypeDefinition());
 
-		return new RepositoryDatePropertyDefinition(this.getIdentifier(), type_definition);
+		return new RepositoryDatePropertyDefinition({
+			identifier: this.getIdentifier(),
+			typeDefinition: type_definition,
+		});
 	}
 
 	// eslint-disable-next-line @ts/class-methods-use-this
