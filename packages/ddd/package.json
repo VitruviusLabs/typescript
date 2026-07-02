@@ -1,6 +1,6 @@
 {
 	"name": "@vitruvius-labs/ddd",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "",
 	"author": {
 		"name": "VitruviusLabs"
@@ -46,7 +46,6 @@
 		"ci:build": "pnpm build"
 	},
 	"dependencies": {
-		"@vitruvius-labs/ts-predicate": "workspace:^",
-		"@vitruvius-labs/toolbox": "workspace:^"
+		"@vitruvius-labs/ts-predicate": "workspace:^"
 	}
 }

@@ -1,5 +1,5 @@
 import { ValidationError } from "@vitruvius-labs/ts-predicate";
-import { BaseRequiredTypeDefinition } from "../../../base/auxiliary/type-definition/base-required-type-definition.mjs";
+import { BaseRequiredTypeDefinition } from "../../base/auxiliary/type-definition/base-required-type-definition.mjs";
 
 class DateTypeDefinition extends BaseRequiredTypeDefinition<Date>
 {
