@@ -9,7 +9,7 @@ const enum TreeStructure
 	LAST_CHILD_INDENT /*   */ = "     ",
 }
 
-function generateTreeStructure(errors: Array<NormalizedError>, indent: string): string
+function generateTreeStructure(errors: ReadonlyArray<NormalizedError>, indent: string): string
 {
 	let result: string = "";
 

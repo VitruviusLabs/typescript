@@ -1,15 +1,15 @@
 import type { RepositoryStatusPropertyDefinition } from "./repository-status-property-definition.mjs";
-import type { BasePropertyInstantiationInterface } from "../../../base/auxiliary/property/definition/interface/base-property-instantiation.interface.mjs";
-import { BaseProperty } from "../../../base/auxiliary/property/base-property.mjs";
+import type { PropertyInstantiationInterface } from "../../../base/auxiliary/property/definition/interface/property-instantiation.interface.mjs";
+import { Property } from "../../../base/auxiliary/property/property.mjs";
 import { RepositoryStatusEnum } from "./definition/enum/repository-status.enum.mjs";
 import { RepositoryActionEnum } from "./definition/enum/repository-action.enum.mjs";
 import { NoValue } from "@vitruvius-labs/ts-predicate";
 
-class RepositoryStatusProperty extends BaseProperty<RepositoryStatusEnum, RepositoryStatusPropertyDefinition>
+class RepositoryStatusProperty extends Property<RepositoryStatusEnum, RepositoryStatusPropertyDefinition>
 {
 	protected action: RepositoryActionEnum;
 
-	public constructor(parameters: BasePropertyInstantiationInterface<RepositoryStatusEnum, RepositoryStatusPropertyDefinition>)
+	public constructor(parameters: PropertyInstantiationInterface<RepositoryStatusEnum, RepositoryStatusPropertyDefinition>)
 	{
 		super(parameters);
 

@@ -1,1 +1,1 @@
-export type * from "./base-property-instantiation.interface.mjs";
+export type * from "./property-instantiation.interface.mjs";

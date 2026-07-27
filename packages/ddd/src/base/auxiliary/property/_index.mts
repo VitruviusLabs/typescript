@@ -1,3 +1,3 @@
 export type * from "./definition/_index.mjs";
-export * from "./base-immutable-property.mjs";
-export * from "./base-property.mjs";
+export * from "./immutable-property.mjs";
+export * from "./property.mjs";

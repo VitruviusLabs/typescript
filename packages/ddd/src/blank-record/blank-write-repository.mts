@@ -1,9 +1,9 @@
 import type { BlankRecord } from "./blank-record.mjs";
 import type { WriteRepositoryHooks } from "./write-repository-hooks.mjs";
-import { BaseWriteRepository } from "../base/primary/base-write-repository.mjs";
+import { WriteRepository } from "../base/primary/write-repository.mjs";
 import { RepositoryActionEnum } from "./properties/repository-status/definition/enum/repository-action.enum.mjs";
 
-abstract class BlankWriteRepository<M extends BlankRecord<M>> extends BaseWriteRepository<M>
+abstract class BlankWriteRepository<M extends BlankRecord<M>> extends WriteRepository<M>
 {
 	protected readonly hooks: WriteRepositoryHooks<M> | undefined;
 

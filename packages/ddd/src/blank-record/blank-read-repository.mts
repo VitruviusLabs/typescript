@@ -1,8 +1,8 @@
 import { type Nullable, isNullable } from "@vitruvius-labs/ts-predicate";
 import type { BlankRecord } from "./blank-record.mjs";
-import { BaseReadRepository } from "../base/primary/base-read-repository.mjs";
+import { ReadRepository } from "../base/primary/read-repository.mjs";
 
-abstract class BlankReadRepository<M extends BlankRecord<M>, T extends object> extends BaseReadRepository<M, T>
+abstract class BlankReadRepository<M extends BlankRecord<M>, T extends object> extends ReadRepository<M, T>
 {
 	protected abstract fetchByUUID(uuid: string): Promise<Nullable<T>>;
 

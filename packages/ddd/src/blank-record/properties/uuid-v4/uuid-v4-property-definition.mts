@@ -1,6 +1,6 @@
 import type { UUID } from "node:crypto";
-import { BasePropertyDefinition } from "../../../base/auxiliary/property-definition/base-property-definition.mjs";
+import { PropertyDefinition } from "../../../base/auxiliary/property-definition/property-definition.mjs";
 
-class UUIDv4PropertyDefinition extends BasePropertyDefinition<UUID> {}
+class UUIDv4PropertyDefinition extends PropertyDefinition<UUID> {}
 
 export { UUIDv4PropertyDefinition };
