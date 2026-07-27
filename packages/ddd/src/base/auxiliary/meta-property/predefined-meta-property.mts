@@ -1,8 +1,14 @@
 import type { PropertyDefinition } from "../property-definition/property-definition.mjs";
 import type { Property } from "../property/property.mjs";
+import type { TypeDefinition } from "../type-definition/type-definition.mjs";
 import { MetaProperty } from "./meta-property.mjs";
 
-abstract class PredefinedMetaProperty<T, PD extends PropertyDefinition<T> = PropertyDefinition<T>, P extends Property<T, PD> = Property<T, PD>> extends MetaProperty<T, PD, P>
+abstract class PredefinedMetaProperty<
+	T,
+	TD extends TypeDefinition<T> = TypeDefinition<T>,
+	PD extends PropertyDefinition<T, TD> = PropertyDefinition<T, TD>,
+	P extends Property<T, TD, PD> = Property<T, TD, PD>
+> extends MetaProperty<T, TD, PD, P>
 {
 	protected abstract getInitialValue(): Promise<T>;
 
