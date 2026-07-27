@@ -1,5 +1,5 @@
-import { BasePropertyDefinition } from "../../../base/auxiliary/property-definition/base-property-definition.mjs";
+import { PropertyDefinition } from "../../../base/auxiliary/property-definition/property-definition.mjs";
 
-class RepositoryDatePropertyDefinition extends BasePropertyDefinition<Date | null> {}
+class RepositoryDatePropertyDefinition extends PropertyDefinition<Date | null> {}
 
 export { RepositoryDatePropertyDefinition };

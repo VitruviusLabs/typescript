@@ -1,7 +1,7 @@
 import { ValidationError } from "@vitruvius-labs/ts-predicate";
-import { BaseRequiredTypeDefinition } from "../../base/auxiliary/type-definition/base-required-type-definition.mjs";
+import { RequiredTypeDefinition } from "../required/required-type-definition.mjs";
 
-class DateTypeDefinition extends BaseRequiredTypeDefinition<Date>
+class DateTypeDefinition extends RequiredTypeDefinition<Date>
 {
 	// eslint-disable-next-line @ts/class-methods-use-this
 	public assertType(value: unknown): asserts value is Date

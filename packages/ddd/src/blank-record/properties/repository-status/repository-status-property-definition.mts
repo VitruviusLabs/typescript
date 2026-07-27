@@ -1,6 +1,6 @@
 import type { RepositoryStatusEnum } from "./definition/enum/repository-status.enum.mjs";
-import { BasePropertyDefinition } from "../../../base/auxiliary/property-definition/base-property-definition.mjs";
+import { PropertyDefinition } from "../../../base/auxiliary/property-definition/property-definition.mjs";
 
-class RepositoryStatusPropertyDefinition extends BasePropertyDefinition<RepositoryStatusEnum> {}
+class RepositoryStatusPropertyDefinition extends PropertyDefinition<RepositoryStatusEnum> {}
 
 export { RepositoryStatusPropertyDefinition };

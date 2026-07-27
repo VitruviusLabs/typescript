@@ -1,1 +1,1 @@
-export type * from "./base-property.type.mjs";
+export type * from "./property.type.mjs";

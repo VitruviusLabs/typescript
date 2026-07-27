@@ -1,8 +1,8 @@
 import type { UUID } from "node:crypto";
-import { BaseRequiredTypeDefinition } from "../../base/auxiliary/type-definition/base-required-type-definition.mjs";
+import { RequiredTypeDefinition } from "../required/required-type-definition.mjs";
 import { assertUUIDv4 } from "./predicate/assert-uuid-v4.mjs";
 
-class UUIDv4TypeDefinition extends BaseRequiredTypeDefinition<UUID>
+class UUIDv4TypeDefinition extends RequiredTypeDefinition<UUID>
 {
 	// eslint-disable-next-line @ts/class-methods-use-this
 	public assertType(value: unknown): asserts value is UUID

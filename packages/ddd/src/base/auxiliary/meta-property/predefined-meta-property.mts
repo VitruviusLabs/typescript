@@ -1,14 +1,13 @@
-import type { BasePropertyDefinition } from "../property-definition/base-property-definition.mjs";
-import type { BaseProperty } from "../property/base-property.mjs";
-import { BaseMetaProperty } from "./base-meta-property.mjs";
+import type { PropertyDefinition } from "../property-definition/property-definition.mjs";
+import type { Property } from "../property/property.mjs";
+import { MetaProperty } from "./meta-property.mjs";
 
-abstract class PredefinedMetaProperty<T, PD extends BasePropertyDefinition<T>, P extends BaseProperty<T, PD> = BaseProperty<T, PD>> extends BaseMetaProperty<T, PD, P>
+abstract class PredefinedMetaProperty<T, PD extends PropertyDefinition<T> = PropertyDefinition<T>, P extends Property<T, PD> = Property<T, PD>> extends MetaProperty<T, PD, P>
 {
 	protected abstract getInitialValue(): Promise<T>;
 
 	public async createPredefinedProperty(): Promise<P>
 	{
-		// @ts-expect-error -- We have to assume this is the correct definition
 		const definition: PD = await this.getPropertyDefinition();
 
 		const property: P = this.createProperty({
