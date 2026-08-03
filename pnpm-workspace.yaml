@@ -5,3 +5,6 @@ packages:
   # all packages in subdirectories of components/
   - "shared/**"
   - "!packages/architectura-test"
+allowBuilds:
+  '@swc/core': true
+  esbuild: true

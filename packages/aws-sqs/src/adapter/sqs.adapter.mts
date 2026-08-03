@@ -4,6 +4,7 @@ import type { SQSAdapterInstantiationInterface } from "./definition/interface/sq
 import { HTTPMethodEnum, Signature } from "@vitruvius-labs/aws-signature-v4";
 import { ResponseEnvelope } from "../entity/response-envelope/response-envelope.mjs";
 import { assertResponseEnvelope } from "../entity/response-envelope/definition/predicate/assert-response-envelope.mjs";
+import { type AWSError, AWSErrorFactory } from "@vitruvius-labs/aws-core";
 
 class SQSService
 {
@@ -72,6 +73,14 @@ class SQSService
 		});
 
 		const responseText: string = await response.text();
+
+		const error: AWSError | undefined = AWSErrorFactory.CreateFromStringPayload(responseText);
+
+		if (error !== undefined)
+		{
+			throw error;
+		}
+
 		const responseJSON: unknown = JSON.parse(responseText);
 
 		assertResponseEnvelope(responseJSON);
@@ -134,6 +143,14 @@ class SQSService
 		});
 
 		const responseText: string = await response.text();
+
+		const error: AWSError | undefined = AWSErrorFactory.CreateFromStringPayload(responseText);
+
+		if (error !== undefined)
+		{
+			throw error;
+		}
+
 		const responseJson: unknown = JSON.parse(responseText);
 
 		return responseJson;
@@ -184,6 +201,14 @@ class SQSService
 		});
 
 		const responseText: string = await response.text();
+
+		const error: AWSError | undefined = AWSErrorFactory.CreateFromStringPayload(responseText);
+
+		if (error !== undefined)
+		{
+			throw error;
+		}
+
 		const responseJson: unknown = JSON.parse(responseText);
 
 		return responseJson;

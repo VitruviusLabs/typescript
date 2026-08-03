@@ -37,6 +37,10 @@
 			"path": "packages/aws-s3"
 		},
 		{
+			"name": "aws-core",
+			"path": "packages/aws-core"
+		},
+		{
 			"name": "aws-sqs",
 			"path": "packages/aws-sqs"
 		},
