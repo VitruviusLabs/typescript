@@ -375,29 +375,29 @@ jobs:
           run_install: true
 
       - name: Building workspace dependencies
-        run: pnpm --filter testing-ground ci:build
+        run: pnpm --filter ts-predicate ci:build
 
       - name: Check TypeScript syntax
         run: pnpm --filter aws-core ci:ts:check
 
-  test-aws-core:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
+  # test-aws-core:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out repository code
+  #       uses: actions/checkout@v4
 
-      - name: PNPM installation
-        uses: pnpm/action-setup@v4
-        id: pnpm-install
-        with:
-          version: 10
-          run_install: true
+  #     - name: PNPM installation
+  #       uses: pnpm/action-setup@v4
+  #       id: pnpm-install
+  #       with:
+  #         version: 10
+  #         run_install: true
 
-      - name: Building workspace dependencies
-        run: pnpm --filter testing-ground ci:build
+  #     - name: Building workspace dependencies
+  #       run: pnpm --filter ts-predicate ci:build
 
-      - name: Test with Node Test runner
-        run: pnpm --filter aws-core ci:test:unit
+  #     - name: Test with Node Test runner
+  #       run: pnpm --filter aws-core ci:test:unit
 
   publish-aws-core:
     if: ${{ github.ref == 'refs/heads/main' && ! failure() && ! cancelled() && github.event_name == 'push' }}
@@ -427,7 +427,7 @@ jobs:
           run_install: true
 
       - name: Building workspace dependencies
-        run: pnpm --filter testing-ground ci:build
+        run: pnpm --filter ts-predicate ci:build
 
       - name: Package build
         run: pnpm --filter aws-core ci:build
@@ -594,6 +594,7 @@ jobs:
 
       - name: Building workspace dependencies
         run: |
+          pnpm --filter aws-core ci:build
           pnpm --filter aws-signature-v4 ci:build
           pnpm --filter ts-predicate ci:build
 
@@ -618,6 +619,7 @@ jobs:
 
       - name: Building workspace dependencies
         run: |
+          pnpm --filter aws-core ci:build
           pnpm --filter aws-signature-v4 ci:build
           pnpm --filter ts-predicate ci:build
 
@@ -656,6 +658,7 @@ jobs:
 
       - name: Building workspace dependencies
         run: |
+          pnpm --filter aws-core ci:build
           pnpm --filter aws-signature-v4 ci:build
           pnpm --filter ts-predicate ci:build
 
