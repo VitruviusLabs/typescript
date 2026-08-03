@@ -1,7 +1,7 @@
 {
-	"name": "@vitruvius-labs/aws-sqs",
-	"version": "0.2.0",
-	"description": "A simple library to interact with AWS SQS",
+	"name": "@vitruvius-labs/aws-core",
+	"version": "0.1.0",
+	"description": "A tooling package providing basic AWS tools.",
 	"author": {
 		"name": "VitruviusLabs"
 	},
@@ -9,7 +9,7 @@
 		"Nicolas \"SmashingQuasar\" Lebacq <contact@vitruvius-labs.com>",
 		"Benjamin Blum <benjamin.blum.98@gmail.com>"
 	],
-	"homepage": "https://github.com/VitruviusLabs/typescript/tree/main/packages/aws-sqs#readme",
+	"homepage": "https://github.com/VitruviusLabs/typescript/tree/main/packages/aws-core#readme",
 	"bugs": "https://github.com/VitruviusLabs/typescript/issues",
 	"license": "MIT",
 	"keywords": [],
@@ -55,8 +55,6 @@
 		"ci:build": "pnpm build"
 	},
 	"dependencies": {
-		"@vitruvius-labs/aws-signature-v4": "workspace:^",
-		"@vitruvius-labs/aws-core": "workspace:^",
 		"@vitruvius-labs/ts-predicate": "workspace:^"
 	}
 }

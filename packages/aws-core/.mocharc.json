@@ -1,0 +1,17 @@
+{
+	"extension": [
+		"mts"
+	],
+	"node-option": [
+		"experimental-specifier-resolution=node",
+		"loader=ts-node/esm"
+	],
+	"spec": [
+		"test/**/*.spec.mts"
+	],
+	"timeout": 5000,
+	"parallel": true,
+	"checkLeaks": true,
+	"diff": true,
+	"forbidPending": true
+}
