@@ -16,7 +16,7 @@ class AWSXMLInspector
 	{
 		const errorTag: string = this.extractFirstXMLTagContent("Error");
 
-		return errorTag === "";
+		return errorTag !== "";
 	}
 
 	public extractFirstXMLTagContent(tagName: string): string
