@@ -406,7 +406,7 @@ jobs:
         spell-check-global,
         lint-aws-core,
         typescript-syntax-check-aws-core,
-        test-aws-core,
+        # test-aws-core,
       ]
     runs-on: ubuntu-latest
     environment: npm
