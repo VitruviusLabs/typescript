@@ -569,9 +569,9 @@ jobs:
 
       - name: Building workspace dependencies
         run: |
-          pnpm --filter aws-core ci:build
-          pnpm --filter aws-signature-v4 ci:build
           pnpm --filter ts-predicate ci:build
+          pnpm --filter aws-signature-v4 ci:build
+          pnpm --filter aws-core ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter aws-sqs
@@ -594,9 +594,9 @@ jobs:
 
       - name: Building workspace dependencies
         run: |
-          pnpm --filter aws-core ci:build
-          pnpm --filter aws-signature-v4 ci:build
           pnpm --filter ts-predicate ci:build
+          pnpm --filter aws-signature-v4 ci:build
+          pnpm --filter aws-core ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter aws-sqs
@@ -619,9 +619,9 @@ jobs:
 
       - name: Building workspace dependencies
         run: |
-          pnpm --filter aws-core ci:build
-          pnpm --filter aws-signature-v4 ci:build
           pnpm --filter ts-predicate ci:build
+          pnpm --filter aws-signature-v4 ci:build
+          pnpm --filter aws-core ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter aws-sqs
@@ -658,9 +658,9 @@ jobs:
 
       - name: Building workspace dependencies
         run: |
-          pnpm --filter aws-core ci:build
-          pnpm --filter aws-signature-v4 ci:build
           pnpm --filter ts-predicate ci:build
+          pnpm --filter aws-signature-v4 ci:build
+          pnpm --filter aws-core ci:build
 
       - name: Package dependencies installation
         run: pnpm install --filter aws-sqs
