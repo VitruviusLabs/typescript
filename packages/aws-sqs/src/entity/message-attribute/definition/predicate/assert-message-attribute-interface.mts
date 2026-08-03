@@ -1,0 +1,16 @@
+import { assertString, assertStructuredData } from "@vitruvius-labs/ts-predicate";
+import type { MessageAttributeInterface } from "../interface/message-attribute.interface.mjs";
+
+function assertMessageAttributeInterface(value: unknown): asserts value is MessageAttributeInterface
+{
+	assertStructuredData<MessageAttributeInterface>(value, {
+		Name: {
+			test: assertString,
+		},
+		Value: {
+			test: assertString,
+		},
+	});
+}
+
+export { assertMessageAttributeInterface };

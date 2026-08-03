@@ -2,15 +2,15 @@ import { describe, it } from "mocha";
 import { expect as chaiExpect } from "chai";
 import { mockDefaultMessageInterface } from "../../mock/definition/interface/message.interface.mjs";
 import { mockDefaultMessageAttributeInterface } from "../../mock/definition/interface/message-attribute.interface.mjs";
-import { assertMessageInterface } from "../../src/predicate/assert-message-interface.mjs";
-import type { MessageInterface } from "../../src/definition/interface/message.interface.mjs";
+import { assertMessageInstantiationInterface } from "../../src/entity/message/definition/predicate/assert-message-instantiation-interface.mjs";
+import type { MessageInterface } from "../../src/entity/message/definition/interface/message.interface.mjs";
 
 describe("assertMessageInterface", (): void => {
 	it("should not throw an error when the value is a valid MessageInterface", (): void => {
 		const value: MessageInterface = mockDefaultMessageInterface();
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.not.throw();
 	});
 
@@ -18,37 +18,37 @@ describe("assertMessageInterface", (): void => {
 		let value: unknown = null;
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 
 		value = undefined;
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 
 		value = 0;
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 
 		value = "foo";
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 
 		value = true;
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 
 		value = {};
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 	});
 
@@ -59,7 +59,7 @@ describe("assertMessageInterface", (): void => {
 		};
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 	});
 
@@ -70,7 +70,7 @@ describe("assertMessageInterface", (): void => {
 		};
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 	});
 
@@ -81,7 +81,7 @@ describe("assertMessageInterface", (): void => {
 		};
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 	});
 
@@ -92,7 +92,7 @@ describe("assertMessageInterface", (): void => {
 		};
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 	});
 
@@ -103,7 +103,7 @@ describe("assertMessageInterface", (): void => {
 		};
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 	});
 
@@ -114,7 +114,7 @@ describe("assertMessageInterface", (): void => {
 		};
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 	});
 
@@ -125,7 +125,7 @@ describe("assertMessageInterface", (): void => {
 		};
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 	});
 
@@ -136,7 +136,7 @@ describe("assertMessageInterface", (): void => {
 		};
 
 		chaiExpect((): void => {
-			assertMessageInterface(value);
+			assertMessageInstantiationInterface(value);
 		}).to.throw();
 	});
 });

@@ -1,4 +1,4 @@
-import type { MessageAttributeInterface } from "../../../src/definition/interface/message-attribute.interface.mjs";
+import type { MessageAttributeInterface } from "../../../src/entity/message-attribute/definition/interface/message-attribute.interface.mjs";
 
 function mockDefaultMessageAttributeInterface(): MessageAttributeInterface
 {
