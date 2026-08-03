@@ -356,7 +356,7 @@ jobs:
           run_install: true
 
       - name: Building workspace dependencies
-        run: pnpm --filter testing-ground ci:build
+        run: pnpm --filter ts-predicate ci:build
 
       - name: Lint with ESlint
         run: pnpm --filter aws-core ci:lint
