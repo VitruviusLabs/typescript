@@ -8,12 +8,11 @@ class AWSError extends Error
 
 	public constructor(parameters: AWSErrorInstantiationInterface)
 	{
-		super();
+		super(`[${parameters.type}] ${parameters.message} (${parameters.code})`);
 
 		this.awsType = parameters.type;
 		this.awsCode = parameters.code;
 		this.awsMessage = parameters.message;
-		this.message = `[${this.awsType}] ${this.awsMessage} (${this.awsCode})`;
 	}
 
 	public getMessage(): string
