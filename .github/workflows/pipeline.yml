@@ -1018,3 +1018,99 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm --filter ddd ci:publish
+
+  ## Assert
+
+  lint-assert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: PNPM installation
+        uses: pnpm/action-setup@v4
+        id: pnpm-install
+        with:
+          version: 10
+          run_install: true
+
+  typescript-syntax-check-assert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: PNPM installation
+        uses: pnpm/action-setup@v4
+        id: pnpm-install
+        with:
+          version: 10
+          run_install: true
+
+      - name: Package dependencies installation
+        run: pnpm install --filter assert
+
+      - name: Check TypeScript syntax
+        run: pnpm --filter assert ci:ts:check
+
+  test-assert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: PNPM installation
+        uses: pnpm/action-setup@v4
+        id: pnpm-install
+        with:
+          version: 10
+          run_install: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+
+      - name: Package dependencies installation
+        run: pnpm install --filter assert
+
+      - name: Test with Node Test runner
+        run: pnpm --filter assert ci:test:unit
+
+  publish-assert:
+    if: ${{ github.ref == 'refs/heads/main' && ! failure() && ! cancelled() && github.event_name == 'push' }}
+    needs:
+      [
+        spell-check-global,
+        lint-assert,
+        typescript-syntax-check-assert,
+        test-assert,
+      ]
+    runs-on: ubuntu-latest
+    environment: npm
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: PNPM installation
+        uses: pnpm/action-setup@v4
+        id: pnpm-install
+        with:
+          version: 10
+          run_install: true
+
+      - name: Package dependencies installation
+        run: pnpm install --filter assert
+
+      - name: Package build
+        run: pnpm --filter assert ci:build
+
+      - name: Publish package
+        id: package-version
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm --filter assert ci:publish

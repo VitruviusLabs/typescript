@@ -1,4 +1,3 @@
-// eslint-disable-next-line @ts/no-explicit-any,@ts/array-type -- Constructors are complicated to type
-type ConstructorOf<T extends object> = new (...args: any[]) => T;
+type ConstructorOf<T extends object, A extends Array<unknown> = Array<never>> = new (...args: A) => T;
 
 export type { ConstructorOf };
