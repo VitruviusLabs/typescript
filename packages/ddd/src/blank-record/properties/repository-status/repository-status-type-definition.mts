@@ -1,13 +1,17 @@
-import type { RepositoryStatusEnum } from "./definition/enum/repository-status.enum.mjs";
-import { RequiredTypeDefinition } from "../../../predefined-type/required/required-type-definition.mjs";
-import { assertRepositoryStatusEnum } from "./predicate/assert-repository-status-enum.mjs";
+import { RepositoryStatusEnum } from "./definition/enum/repository-status.enum.mjs";
+import { EnumTypeDefinition } from "../../../predefined-type/enum/enum-type-definition.mjs";
 
-class RepositoryStatusTypeDefinition extends RequiredTypeDefinition<RepositoryStatusEnum>
+class RepositoryStatusTypeDefinition extends EnumTypeDefinition<RepositoryStatusEnum>
 {
 	// eslint-disable-next-line @ts/class-methods-use-this
-	public assertType(value: unknown): asserts value is RepositoryStatusEnum
+	public getValues(): ReadonlyArray<RepositoryStatusEnum>
 	{
-		assertRepositoryStatusEnum(value);
+		return [
+			RepositoryStatusEnum.NEW,
+			RepositoryStatusEnum.SAVED,
+			RepositoryStatusEnum.ARCHIVED,
+			RepositoryStatusEnum.DESTROYED,
+		];
 	}
 }
 

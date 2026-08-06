@@ -2,12 +2,12 @@ import type { NoValue } from "@vitruvius-labs/ts-predicate";
 import type { TypeDefinition } from "../type-definition/type-definition.mjs";
 import type { PropertyDefinitionInstantiationInterface } from "./definition/interface/property-definition-instantiation-interface.mjs";
 
-class PropertyDefinition<T>
+class PropertyDefinition<T, TD extends TypeDefinition<T> = TypeDefinition<T>>
 {
 	protected readonly identifier: string;
-	protected readonly typeDefinition: TypeDefinition<T>;
+	protected readonly typeDefinition: TD;
 
-	public constructor(parameters: PropertyDefinitionInstantiationInterface<T>)
+	public constructor(parameters: PropertyDefinitionInstantiationInterface<T, TD>)
 	{
 		this.identifier = parameters.identifier;
 		this.typeDefinition = parameters.typeDefinition;
@@ -18,7 +18,7 @@ class PropertyDefinition<T>
 		return this.identifier;
 	}
 
-	public getTypeDefinition(): TypeDefinition<T>
+	public getTypeDefinition(): TD
 	{
 		return this.typeDefinition;
 	}
