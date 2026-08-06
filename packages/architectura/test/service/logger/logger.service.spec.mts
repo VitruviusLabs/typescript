@@ -3,7 +3,7 @@ import { deepStrictEqual, strictEqual } from "node:assert";
 import { type SinonFakeTimers, type SinonStub, stub, useFakeTimers } from "sinon";
 import { DateTime, pruneIndentTrim } from "@vitruvius-labs/toolbox";
 import { ValidationError } from "@vitruvius-labs/ts-predicate";
-import { LogLevelEnum, LoggerService, Singleton } from "../../../src/_index.mjs";
+import { LogLevelEnum, LoggerService } from "../../../src/_index.mjs";
 import type { LoggerServiceJSONMessageInterface } from "../../../src/service/logger/definition/interface/logger-service-json-message.interface.mjs";
 import { LoggerServiceOutputFormatEnum } from "../../../src/service/logger/definition/enum/logger-service-output-format.enum.mjs";
 
@@ -20,7 +20,6 @@ describe("LoggerService", (): void => {
 		CLOCK.reset();
 		WRITE_STUB.reset();
 		WRITE_STUB.returns(undefined);
-		Singleton.RemoveInstance(LoggerService);
 	});
 
 	after((): void => {

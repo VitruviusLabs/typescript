@@ -1,26 +1,23 @@
-import type { LogContextInterface } from "./definition/interface/log-context.interface.mjs";
-import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
 import { ValidationError, stringifyErrorTree } from "@vitruvius-labs/ts-predicate";
 import { DateTime } from "@vitruvius-labs/toolbox";
-import { Singleton } from "../../utility/singleton.mjs";
-import { StackTraceUtility } from "../stack-trace/stack-trace.utility.mjs";
-import { LoggerServiceOutputFormatEnum } from "./definition/enum/logger-service-output-format.enum.mjs";
+import type { LogContextInterface } from "./definition/interface/log-context.interface.mjs";
+import type { LoggerInterface } from "./definition/interface/logger.interface.mjs";
 import type { LoggerServiceInstantiationInterface } from "./definition/interface/logger-service-instantiation.interface.mjs";
 import type { LoggerServiceJSONMessageInterface } from "./definition/interface/logger-service-json-message.interface.mjs";
+import { LoggerServiceOutputFormatEnum } from "./definition/enum/logger-service-output-format.enum.mjs";
+import { StackTraceUtility } from "../stack-trace/stack-trace.utility.mjs";
 
 /**
  * Default logger service
  *
  * @internal
  */
-class LoggerService extends Singleton implements LoggerInterface
+class LoggerService implements LoggerInterface
 {
 	protected outputFormat: LoggerServiceOutputFormatEnum = LoggerServiceOutputFormatEnum.PLAIN;
 
 	public constructor(parameters?: LoggerServiceInstantiationInterface)
 	{
-		super();
-
 		if (parameters === undefined)
 		{
 			return;
