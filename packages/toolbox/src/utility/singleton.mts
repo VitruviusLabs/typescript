@@ -1,6 +1,6 @@
 import type { ConstructorOf } from "@vitruvius-labs/ts-predicate";
 
-// eslint-disable-next-line @ts/no-unsafe-function-type -- TypeScript type the constructor property as Function
+// eslint-disable-next-line @ts/no-unsafe-function-type, @ts/no-use-before-define -- TypeScript type the constructor property as Function
 const INSTANCES: Map<Function, Singleton> = new Map();
 
 /**

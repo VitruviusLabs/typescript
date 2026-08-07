@@ -8,11 +8,11 @@ describe("Singleton", (): void => {
 		it("should create an instance of the Singleton class and add it to the internal map.", (): void => {
 			class MySingleton extends Singleton {}
 
-			const INSTANCE: MySingleton = new MySingleton();
+			const INSTANCE_1: MySingleton = new MySingleton();
 
 			const INSTANCE_2: MySingleton | undefined = MySingleton.GetInstance();
 
-			strictEqual(INSTANCE, INSTANCE_2);
+			strictEqual(INSTANCE_1, INSTANCE_2);
 		});
 
 		it("should throw an error when the constructor is called more than once.", (): void => {
