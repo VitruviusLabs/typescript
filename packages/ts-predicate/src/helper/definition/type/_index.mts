@@ -7,3 +7,4 @@ export * from "./nullable-keys.mjs";
 export * from "./nullable-object.mjs";
 export * from "./optional-keys.mjs";
 export * from "./required-keys.mjs";
+export * from "./void-callable.mjs";

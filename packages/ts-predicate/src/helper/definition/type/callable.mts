@@ -1,4 +1,3 @@
-// eslint-disable-next-line @ts/no-explicit-any,@ts/array-type -- Callables are complicated to type
-type Callable = (...args: any[]) => any;
+type Callable<TArgs extends Array<unknown> = Array<never>, TReturn = unknown> = (...args: TArgs) => TReturn;
 
 export type { Callable };
