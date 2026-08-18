@@ -1,5 +1,5 @@
 import { deepStrictEqual, doesNotThrow, ok } from "node:assert";
-import { getDetailedType, hasProperty, isCallable, isObject } from "@vitruvius-labs/ts-predicate";
+import { type Callable, getDetailedType, hasProperty, isCallable, isObject } from "@vitruvius-labs/ts-predicate";
 
 /**
  * Asserts that a value is an iterable and that it contains the expected values.
@@ -9,7 +9,7 @@ function deepStrictIterable<T>(value: unknown, expected_values: Array<T>): asser
 	const MESSAGE: string = `Expected an iterable, but got ${getDetailedType(value)}.`;
 
 	ok(isObject(value), MESSAGE);
-	ok(hasProperty(value, Symbol.iterator, isCallable), MESSAGE);
+	ok(hasProperty<object, typeof Symbol.iterator, Callable<[], Iterator<unknown>>>(value, Symbol.iterator, isCallable), MESSAGE);
 
 	let items: Array<unknown> | undefined = undefined;
 

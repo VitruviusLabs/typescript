@@ -29,7 +29,7 @@ abstract class BaseModel
 		this.persistenceInRepositoryStatus = ModelRepositoryStatusEnum.NEW;
 	}
 
-	protected abstract getSelfRepository(): BaseRepository<BaseModel, ConstructorOf<BaseModel>>;
+	protected abstract getSelfRepository(): BaseRepository<BaseModel, ConstructorOf<BaseModel, Array<unknown>>>;
 
 	/**
 	 * Get the repository status
