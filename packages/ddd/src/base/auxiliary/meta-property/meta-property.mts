@@ -3,11 +3,18 @@ import type { Property } from "../property/property.mjs";
 import type { PropertyInstantiationInterface } from "../property/definition/interface/property-instantiation.interface.mjs";
 import type { TypeDefinition } from "../type-definition/type-definition.mjs";
 
-abstract class MetaProperty<T, PD extends PropertyDefinition<T> = PropertyDefinition<T>, P extends Property<T, PD> = Property<T, PD>>
+abstract class MetaProperty<
+	T,
+	TD extends TypeDefinition<T> = TypeDefinition<T>,
+	PD extends PropertyDefinition<T, TD> = PropertyDefinition<T, TD>,
+	P extends Property<T, TD, PD> = Property<T, TD, PD>
+>
 {
+	public abstract getTypeDefinition(): Promise<TD>;
+
 	public abstract getPropertyDefinition(): Promise<PD>;
 
-	protected abstract createProperty(parameters: PropertyInstantiationInterface<T, PD>): P;
+	protected abstract createProperty(parameters: PropertyInstantiationInterface<T, TD, PD>): P;
 
 	public async createNewProperty(value: T): Promise<P>
 	{
@@ -26,7 +33,7 @@ abstract class MetaProperty<T, PD extends PropertyDefinition<T> = PropertyDefini
 	{
 		const property_definition: PD = await this.getPropertyDefinition();
 
-		const type_definition: TypeDefinition<T> = property_definition.getTypeDefinition();
+		const type_definition: TD = property_definition.getTypeDefinition();
 
 		const normalized_value: T = await this.normalize(value, type_definition);
 
@@ -42,7 +49,7 @@ abstract class MetaProperty<T, PD extends PropertyDefinition<T> = PropertyDefini
 	}
 
 	// eslint-disable-next-line @ts/class-methods-use-this, @ts/require-await
-	public async normalize(value: unknown, type_definition: TypeDefinition<T>): Promise<T>
+	public async normalize(value: unknown, type_definition: TD): Promise<T>
 	{
 		type_definition.assertType(value);
 

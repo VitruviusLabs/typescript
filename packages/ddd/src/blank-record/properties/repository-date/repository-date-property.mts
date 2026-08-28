@@ -1,7 +1,6 @@
 import { Property } from "../../../base/auxiliary/property/property.mjs";
-import type { RepositoryDatePropertyDefinition } from "./repository-date-property-definition.mjs";
 
-class RepositoryDateProperty extends Property<Date | null, RepositoryDatePropertyDefinition>
+class RepositoryDateProperty extends Property<Date | null>
 {
 	// eslint-disable-next-line @ts/class-methods-use-this
 	public override isMutable(): false

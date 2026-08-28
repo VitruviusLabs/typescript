@@ -1,16 +1,17 @@
+import type { UUID } from "node:crypto";
 import type { RepositoryStatusProperty } from "./properties/repository-status/repository-status-property.mjs";
-import type { UUIDv4PropertyType } from "./properties/uuid-v4/definition/type/uuid-v4-property.type.mjs";
 import type { RepositoryDateProperty } from "./properties/repository-date/repository-date-property.mjs";
 import type { BlankRecordInstantiationInterface } from "./definition/interface/blank-record-instantiation.interface.mjs";
+import type { MetaRecord } from "../base/primary/meta-record.mjs";
+import type { ImmutableProperty } from "../base/auxiliary/property/immutable-property.mjs";
 import { RepositoryRecord } from "../base/primary/repository-record.mjs";
 import { RepositoryActionEnum } from "./properties/repository-status/definition/enum/repository-action.enum.mjs";
-import type { MetaRecord } from "../base/primary/meta-record.mjs";
 
 abstract class BlankRecord<M extends BlankRecord<M>> extends RepositoryRecord
 {
 	protected readonly metaRecord: MetaRecord<M>;
 	protected readonly status: RepositoryStatusProperty;
-	protected readonly uuid: UUIDv4PropertyType;
+	protected readonly uuid: ImmutableProperty<UUID>;
 	protected readonly registrationDate: RepositoryDateProperty;
 	protected readonly lastUpdateDate: RepositoryDateProperty;
 
@@ -30,7 +31,7 @@ abstract class BlankRecord<M extends BlankRecord<M>> extends RepositoryRecord
 		return this.status;
 	}
 
-	public getUUID(): UUIDv4PropertyType
+	public getUUID(): ImmutableProperty<UUID>
 	{
 		return this.uuid;
 	}

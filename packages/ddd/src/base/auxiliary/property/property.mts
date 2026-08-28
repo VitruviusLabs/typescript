@@ -1,15 +1,20 @@
 import { NoValue } from "@vitruvius-labs/ts-predicate";
+import type { TypeDefinition } from "../type-definition/type-definition.mjs";
 import type { PropertyDefinition } from "../property-definition/property-definition.mjs";
 import type { PropertyInstantiationInterface } from "./definition/interface/property-instantiation.interface.mjs";
 
-class Property<T, PD extends PropertyDefinition<T> = PropertyDefinition<T>>
+class Property<
+	T,
+	TD extends TypeDefinition<T> = TypeDefinition<T>,
+	PD extends PropertyDefinition<T, TD> = PropertyDefinition<T, TD>
+>
 {
 	private readonly definition: PD;
 	private mutability: boolean;
 	private value: T;
 	private previousValue: T | typeof NoValue;
 
-	public constructor(parameters: PropertyInstantiationInterface<T, PD>)
+	public constructor(parameters: PropertyInstantiationInterface<T, TD, PD>)
 	{
 		this.definition = parameters.definition;
 		this.mutability = true;
