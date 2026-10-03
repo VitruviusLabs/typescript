@@ -1,0 +1,37 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "conan-release",
+            "displayName": "Conan Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/build/Release",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "generators/conan_toolchain.cmake",
+                "CMAKE_BUILD_TYPE": "Release",
+                "ARCHITECTURA_BUILD_TESTING": "ON"
+            }
+        },
+        {
+            "name": "conan-debug",
+            "displayName": "Conan Debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/build/Debug",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "generators/conan_toolchain.cmake",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "ARCHITECTURA_BUILD_TESTING": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "conan-release",
+            "configurePreset": "conan-release"
+        },
+        {
+            "name": "conan-debug",
+            "configurePreset": "conan-debug"
+        }
+    ]
+}
