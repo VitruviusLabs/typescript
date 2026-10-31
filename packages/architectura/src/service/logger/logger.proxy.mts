@@ -111,22 +111,7 @@ class LoggerProxy
 		Promise.try(
 			async (): Promise<void> =>
 			{
-				const UUID: string | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext()?.getUUID();
-
-				const CONTEXT: LogContextInterface = {
-					level: level,
-					uuid: UUID,
-					tag: tag,
-				};
-
-				if (isString(message))
-				{
-					await LoggerProxy.Logger.handleMessage(message, CONTEXT);
-
-					return;
-				}
-
-				await LoggerProxy.Logger.handleError(toError(message), CONTEXT);
+				await LoggerProxy.ProcessRaw(message, level, tag);
 			}
 		)
 		.catch(
@@ -136,6 +121,26 @@ class LoggerProxy
 				console.error(error);
 			}
 		);
+	}
+
+	private static async ProcessRaw(message: unknown, level: LogLevelEnum, tag: string | undefined): Promise<void>
+	{
+		const UUID: string | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext()?.getUUID();
+
+		const CONTEXT: LogContextInterface = {
+			level: level,
+			uuid: UUID,
+			tag: tag,
+		};
+
+		if (isString(message))
+		{
+			await LoggerProxy.Logger.handleMessage(message, CONTEXT);
+
+			return;
+		}
+
+		await LoggerProxy.Logger.handleError(toError(message), CONTEXT);
 	}
 }
 
