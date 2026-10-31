@@ -1,5 +1,5 @@
 import { after, afterEach, beforeEach, describe, it } from "node:test";
-import { deepStrictEqual, doesNotReject, strictEqual } from "node:assert";
+import { deepStrictEqual, rejects, strictEqual } from "node:assert";
 import { type SinonStub, stub } from "sinon";
 import { ReflectUtility, instanceOf } from "@vitruvius-labs/toolbox";
 import { ExecutionContextRegistry, LogLevelEnum, LoggerProxy, type LoggerService } from "../../../src/_index.mjs";
@@ -9,6 +9,8 @@ describe("LoggerProxy", (): void => {
 	const LOGGER_SERVICE: LoggerService = Reflect.get(LoggerProxy, "Logger");
 	// @ts-expect-error: Stub private method
 	const LOGGER_PROXY_PROCESS_STUB: SinonStub = stub(LoggerProxy, "Process");
+	// @ts-expect-error: Stub private method
+	const LOGGER_PROXY_PROCESS_RAW_STUB: SinonStub = stub(LoggerProxy, "ProcessRaw");
 	const CONSOLE_ERROR_STUB: SinonStub = stub(console, "error");
 	const HANDLE_MESSAGE_STUB: SinonStub = stub(LOGGER_SERVICE, "handleMessage");
 	const HANDLE_ERROR_STUB: SinonStub = stub(LOGGER_SERVICE, "handleError");
@@ -17,6 +19,8 @@ describe("LoggerProxy", (): void => {
 	beforeEach((): void => {
 		LOGGER_PROXY_PROCESS_STUB.reset();
 		LOGGER_PROXY_PROCESS_STUB.returns(undefined);
+		LOGGER_PROXY_PROCESS_RAW_STUB.reset();
+		LOGGER_PROXY_PROCESS_RAW_STUB.returns(undefined);
 		CONSOLE_ERROR_STUB.reset();
 		CONSOLE_ERROR_STUB.returns(undefined);
 		HANDLE_MESSAGE_STUB.reset();
@@ -29,6 +33,7 @@ describe("LoggerProxy", (): void => {
 
 	after((): void => {
 		LOGGER_PROXY_PROCESS_STUB.restore();
+		LOGGER_PROXY_PROCESS_RAW_STUB.restore();
 		CONSOLE_ERROR_STUB.restore();
 		HANDLE_MESSAGE_STUB.restore();
 		HANDLE_ERROR_STUB.restore();
@@ -330,8 +335,42 @@ describe("LoggerProxy", (): void => {
 	});
 
 	describe("Process", (): void => {
-		it("should pass the message to the logger with the contextual informations", async (): Promise<void> => {
+		it("should pass the arguments to ProcessRaw", (): void => {
 			LOGGER_PROXY_PROCESS_STUB.callThrough();
+
+			const PARAMETERS: Array<unknown> = [
+				"Hello, World!",
+				LogLevelEnum.DEBUG,
+				undefined,
+			];
+
+			LoggerProxy["Process"]("Hello, World!", LogLevelEnum.DEBUG, undefined);
+
+			strictEqual(LOGGER_PROXY_PROCESS_RAW_STUB.callCount, 1, "'handleMessage' should be called exactly once");
+			deepStrictEqual(LOGGER_PROXY_PROCESS_RAW_STUB.firstCall.args, PARAMETERS);
+		});
+
+		it("should manage errors without interrupting the app", async (): Promise<void> => {
+			LOGGER_PROXY_PROCESS_STUB.callThrough();
+
+			const ERROR: Error = new Error("Dummy logging error");
+			const PROMISE: Promise<unknown> = Promise.reject(ERROR);
+
+			LOGGER_PROXY_PROCESS_RAW_STUB.returns(PROMISE);
+			CONSOLE_ERROR_STUB.returns(undefined);
+
+			LoggerProxy["Process"]("Hello, World!", LogLevelEnum.DEBUG, undefined);
+
+			await rejects(PROMISE);
+
+			strictEqual(CONSOLE_ERROR_STUB.callCount, 1, "'console.error' should be called exactly once");
+			deepStrictEqual(CONSOLE_ERROR_STUB.firstCall.args, [ERROR]);
+		});
+	});
+
+	describe("ProcessRaw", (): void => {
+		it("should pass the message to the logger with the contextual informations", async (): Promise<void> => {
+			LOGGER_PROXY_PROCESS_RAW_STUB.callThrough();
 			HANDLE_MESSAGE_STUB.resolves();
 
 			const PARAMETERS: Array<unknown> = [
@@ -343,7 +382,7 @@ describe("LoggerProxy", (): void => {
 				},
 			];
 
-			const PROMISE: unknown = LoggerProxy["Process"]("Hello, World!", LogLevelEnum.DEBUG, undefined);
+			const PROMISE: unknown = LoggerProxy["ProcessRaw"]("Hello, World!", LogLevelEnum.DEBUG, undefined);
 
 			instanceOf(PROMISE, Promise);
 			await PROMISE;
@@ -352,7 +391,7 @@ describe("LoggerProxy", (): void => {
 		});
 
 		it("should pass the error to the logger with the contextual informations", async (): Promise<void> => {
-			LOGGER_PROXY_PROCESS_STUB.callThrough();
+			LOGGER_PROXY_PROCESS_RAW_STUB.callThrough();
 			HANDLE_ERROR_STUB.resolves();
 
 			const ERROR: Error = new Error("Dummy error");
@@ -366,27 +405,12 @@ describe("LoggerProxy", (): void => {
 				},
 			];
 
-			const PROMISE: unknown = LoggerProxy["Process"](ERROR, LogLevelEnum.ERROR, "Lorem ipsum");
+			const PROMISE: unknown = LoggerProxy["ProcessRaw"](ERROR, LogLevelEnum.ERROR, "Lorem ipsum");
 
 			instanceOf(PROMISE, Promise);
 			await PROMISE;
 			strictEqual(HANDLE_ERROR_STUB.callCount, 1, "'handleError' should be called exactly once");
 			deepStrictEqual(HANDLE_ERROR_STUB.firstCall.args, PARAMETERS);
-		});
-
-		it("should manage errors without interrupting the app", async (): Promise<void> => {
-			LOGGER_PROXY_PROCESS_STUB.callThrough();
-			const ERROR: Error = new Error("Dummy logging error");
-
-			HANDLE_MESSAGE_STUB.rejects(ERROR);
-			CONSOLE_ERROR_STUB.returns(undefined);
-
-			const PROMISE: unknown = LoggerProxy["Process"]("Hello, World!", LogLevelEnum.DEBUG, undefined);
-
-			instanceOf(PROMISE, Promise);
-			await doesNotReject(PROMISE);
-			strictEqual(CONSOLE_ERROR_STUB.callCount, 1, "'console.error' should be called exactly once");
-			deepStrictEqual(CONSOLE_ERROR_STUB.firstCall.args, [ERROR]);
 		});
 	});
 });

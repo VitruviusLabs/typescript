@@ -6,9 +6,7 @@
 		"./test",
 		"./mock"
 	],
-	"compilerOptions": {
-		"allowSyntheticDefaultImports": true,
-	},
+	"compilerOptions": {},
 	"exclude": [
 		"./node_modules"
 	]

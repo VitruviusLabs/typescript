@@ -1,10 +1,9 @@
 import { isValidationError } from "./is-validation-error.mjs";
 import { validateError } from "./validate-error.mjs";
-import { wrapCause } from "./wrap-cause.mjs";
 
 function compareErrors(value: unknown, expected: Error): void
 {
-	// @ts-expect-error -- constructor is badly typed
+	// @ts-expect-error: constructor is badly typed
 	const CONSTRUCTOR_CLASS: typeof Error = expected.constructor;
 
 	validateError(value, CONSTRUCTOR_CLASS);
@@ -29,7 +28,7 @@ function compareErrors(value: unknown, expected: Error): void
 		{
 			throw new Error(
 				"Invalid cause error.",
-				{ cause: wrapCause(error) }
+				{ cause: error }
 			);
 		}
 	}
@@ -60,7 +59,7 @@ function compareErrors(value: unknown, expected: Error): void
 				{
 					throw new Error(
 						`Invalid error at index ${index.toFixed(0)}.`,
-						{ cause: wrapCause(error) }
+						{ cause: error }
 					);
 				}
 			}

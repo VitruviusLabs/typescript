@@ -79,17 +79,26 @@ class Server
 
 		SERVER.nativeServer.addListener(
 			"request",
-			// eslint-disable-next-line @ts/no-misused-promises -- Asynchronous event listener
-			async (request: RichClientRequest, response: RichServerResponse): Promise<void> =>
+			(request: RichClientRequest, response: RichServerResponse): void =>
 			{
-				try
-				{
-					await SERVER.requestListener(request, response);
-				}
-				catch (error: unknown)
-				{
-					await SERVER.handleError(error);
-				}
+				Promise.try(
+					async (): Promise<void> =>
+					{
+						try
+						{
+							await SERVER.requestListener(request, response);
+						}
+						catch (error: unknown)
+						{
+							await SERVER.handleError(error);
+						}
+					}
+				).catch(
+					(error: unknown): void =>
+					{
+						LoggerProxy.Critical(error);
+					}
+				);
 			}
 		);
 

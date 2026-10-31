@@ -4,7 +4,6 @@ import { ValidationError } from "./validation-error.mjs";
 /** @internal */
 function itemAssertion<Type>(value: unknown, callable: Test<Type>): asserts value is Type
 {
-	// eslint-disable-next-line @ts/no-unnecessary-condition -- assertion return undefined
 	const SUCCESS: boolean = callable(value) ?? true;
 
 	if (!SUCCESS)
