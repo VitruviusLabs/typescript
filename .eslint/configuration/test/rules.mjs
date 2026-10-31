@@ -31,6 +31,7 @@ const RULES = {
 	"@ts/no-unsafe-call": "off",
 	"@ts/only-throw-error": "off",
 	"@ts/prefer-promise-reject-errors": "off",
+	"@ts/strict-void-return": "off",
 	"@ts/unbound-method": "off",
 	"func-names": "off",
 	"func-style": "off",

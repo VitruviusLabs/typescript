@@ -106,33 +106,36 @@ class LoggerProxy
 		LoggerProxy.Process(message, LogLevelEnum.EMERGENCY, tag);
 	}
 
-	// @ts-expect-error: Returns void to not interrupt the flow
-	private static async Process(message: unknown, level: LogLevelEnum, tag: string | undefined): void
+	private static Process(message: unknown, level: LogLevelEnum, tag: string | undefined): void
 	{
-		try
-		{
-			const UUID: string | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext()?.getUUID();
-
-			const CONTEXT: LogContextInterface = {
-				level: level,
-				uuid: UUID,
-				tag: tag,
-			};
-
-			if (isString(message))
+		Promise.try(
+			async (): Promise<void> =>
 			{
-				await LoggerProxy.Logger.handleMessage(message, CONTEXT);
+				const UUID: string | undefined = ExecutionContextRegistry.GetUnsafeExecutionContext()?.getUUID();
 
-				return;
+				const CONTEXT: LogContextInterface = {
+					level: level,
+					uuid: UUID,
+					tag: tag,
+				};
+
+				if (isString(message))
+				{
+					await LoggerProxy.Logger.handleMessage(message, CONTEXT);
+
+					return;
+				}
+
+				await LoggerProxy.Logger.handleError(toError(message), CONTEXT);
 			}
-
-			await LoggerProxy.Logger.handleError(toError(message), CONTEXT);
-		}
-		catch (error: unknown)
-		{
-			// eslint-disable-next-line no-console -- No alternative
-			console.error(error);
-		}
+		)
+		.catch(
+			(error: unknown): void =>
+			{
+				// eslint-disable-next-line no-console -- No alternative
+				console.error(error);
+			}
+		);
 	}
 }
 
