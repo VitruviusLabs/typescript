@@ -177,7 +177,6 @@ const RULES = {
 			]
 		}
 	],
-	"@ts/no-loop-func": "error",
 	"@ts/no-magic-numbers": [
 		"error",
 		{
@@ -212,6 +211,7 @@ const RULES = {
 			"checksSpreads": true
 		}
 	],
+	"@ts/no-misused-spread": "error",
 	"@ts/no-namespace": [
 		"error",
 		{
@@ -259,6 +259,7 @@ const RULES = {
 	"@ts/no-unnecessary-template-expression": "error",
 	"@ts/no-unnecessary-type-assertion": "error",
 	"@ts/no-unnecessary-type-constraint": "error",
+	"@ts/no-unnecessary-type-conversion": "error",
 	"@ts/no-unsafe-argument": "error",
 	"@ts/no-unsafe-assignment": "error",
 	"@ts/no-unsafe-call": "error",
@@ -276,6 +277,8 @@ const RULES = {
 			"enforceForJSX": true
 		}
 	],
+	"no-unused-private-class-members": "off",
+	"@ts/no-unused-private-class-members": "error",
 	"@ts/no-unused-vars": [
 		"error",
 		{
@@ -300,6 +303,7 @@ const RULES = {
 		}
 	],
 	"@ts/no-useless-constructor": "error",
+	"@ts/no-useless-default-assignment": "error",
 	"@ts/no-useless-empty-export": "error",
 	"@ts/no-wrapper-object-types": "error",
 	"@ts/only-throw-error": [
@@ -428,6 +432,7 @@ const RULES = {
 			"allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing": false
 		}
 	],
+	"@ts/strict-void-return": "error",
 	"@ts/switch-exhaustiveness-check": [
 		"error",
 		{
@@ -441,19 +446,6 @@ const RULES = {
 			"lib": "never",
 			"path": "never",
 			"types": "never"
-		}
-	],
-	"@ts/typedef": [
-		"error",
-		{
-			"arrayDestructuring": true,
-			"arrowParameter": true,
-			"memberVariableDeclaration": true,
-			"objectDestructuring": true,
-			"parameter": true,
-			"propertyDeclaration": true,
-			"variableDeclaration": true,
-			"variableDeclarationIgnoreFunction": true
 		}
 	],
 	"@ts/unbound-method": [
@@ -766,6 +758,7 @@ const RULES = {
 	],
 	"no-unexpected-multiline": "error",
 	"no-unmodified-loop-condition": "error",
+	"no-unassigned-vars": "error",
 	"no-unneeded-ternary": [
 		"error",
 		{
@@ -785,7 +778,6 @@ const RULES = {
 			"disallowArithmeticOperators": true
 		}
 	],
-	"no-unused-private-class-members": "error",
 	"no-useless-backreference": "error",
 	"no-useless-call": "error",
 	"no-useless-catch": "error",
@@ -859,6 +851,7 @@ const RULES = {
 	"prefer-rest-params": "error",
 	"prefer-spread": "error",
 	"prefer-template": "error",
+	"preserve-caught-error": "error",
 	"radix": [
 		"error",
 		"always"

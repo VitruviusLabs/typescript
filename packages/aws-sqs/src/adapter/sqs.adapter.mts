@@ -1,10 +1,10 @@
 import { type Hash, createHash } from "node:crypto";
 
-import type { SQSAdapterInstantiationInterface } from "./definition/interface/sqs-adapter-instantiation.interface.mjs";
+import { type AWSError, AWSErrorFactory } from "@vitruvius-labs/aws-core";
 import { HTTPMethodEnum, Signature } from "@vitruvius-labs/aws-signature-v4";
+import type { SQSAdapterInstantiationInterface } from "./definition/interface/sqs-adapter-instantiation.interface.mjs";
 import { ResponseEnvelope } from "../entity/response-envelope/response-envelope.mjs";
 import { assertResponseEnvelope } from "../entity/response-envelope/definition/predicate/assert-response-envelope.mjs";
-import { type AWSError, AWSErrorFactory } from "@vitruvius-labs/aws-core";
 
 class SQSService
 {

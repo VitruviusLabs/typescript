@@ -65,17 +65,27 @@ class SessionCleanupService
 		}
 
 		SessionCleanupService.TIMER = setInterval(
-			// eslint-disable-next-line @ts/no-misused-promises -- Asynchronous callback
-			async (): Promise<void> =>
+			(): void =>
 			{
-				try
-				{
-					await SessionCleanupService.Cleanup();
-				}
-				catch (error: unknown)
-				{
-					LoggerProxy.Error(error);
-				}
+				Promise.try(
+					async (): Promise<void> =>
+					{
+						try
+						{
+							await SessionCleanupService.Cleanup();
+						}
+						catch (error: unknown)
+						{
+							LoggerProxy.Error(error);
+						}
+					}
+				)
+				.catch(
+					(error: unknown): void =>
+					{
+						LoggerProxy.Critical(error);
+					}
+				);
 			},
 			SessionConstantEnum.MINUTES_BETWEEN_CLEANUP * MillisecondEnum.MINUTE
 		);

@@ -22,7 +22,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
 
       - name: Check spelling with CSpell
         run: pnpm --filter ts-predicate ci:spell:check
@@ -82,7 +82,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
 
       - name: Building workspace dependencies
         run: pnpm --filter testing-ground ci:build
@@ -107,7 +107,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
@@ -194,7 +194,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
 
       - name: Building workspace dependencies
         run: |
@@ -224,7 +224,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
@@ -327,7 +327,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
@@ -425,7 +425,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
@@ -535,7 +535,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
@@ -655,7 +655,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
@@ -749,7 +749,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
@@ -843,7 +843,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
 
       - name: Building workspace dependencies
         run: |
@@ -874,7 +874,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation
@@ -969,7 +969,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
 
       - name: Building workspace dependencies
         run: |
@@ -1000,7 +1000,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "26.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: PNPM installation

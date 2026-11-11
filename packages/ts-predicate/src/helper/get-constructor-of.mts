@@ -3,21 +3,20 @@ import type { ConstructorOf } from "./definition/type/constructor-of.mjs";
 
 function getConstructorOf<T extends object, C extends AbstractConstructorOf<T> = ConstructorOf<T>>(value: T): C
 {
-	// eslint-disable-next-line @ts/no-unsafe-assignment -- Object.getPrototypeOf is badly typed
-	const PROTOTYPE: object | null = Object.getPrototypeOf(value);
+	const PROTOTYPE: unknown = Object.getPrototypeOf(value);
 
-	if (PROTOTYPE === null)
+	if (PROTOTYPE === null || typeof PROTOTYPE !== "object")
 	{
 		throw new Error("The value has no prototype.");
 	}
 
-	// eslint-disable-next-line @ts/no-unnecessary-condition -- Object.create can make constructor-less objects
+	// eslint-disable-next-line @ts/no-unnecessary-condition -- Object.create can make constructor-free objects
 	if (PROTOTYPE.constructor === undefined)
 	{
 		throw new Error("The value has no constructor.");
 	}
 
-	// @ts-expect-error -- Prototype constructor is badly typed
+	// @ts-expect-error: Prototype constructor is badly typed
 	return PROTOTYPE.constructor;
 }
 

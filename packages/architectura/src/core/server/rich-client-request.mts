@@ -339,7 +339,7 @@ class RichClientRequest extends IncomingMessage
 	 */
 	public hasHeader(name: string): boolean
 	{
-		const NORMALIZED_NAME: string = name.toString().toLowerCase();
+		const NORMALIZED_NAME: string = name.toLowerCase();
 
 		return Object.hasOwn(this.headersDistinct, NORMALIZED_NAME);
 	}
@@ -349,7 +349,7 @@ class RichClientRequest extends IncomingMessage
 	 */
 	public getRawHeader(name: string): Array<string>
 	{
-		const NORMALIZED_NAME: string = name.toString().toLowerCase();
+		const NORMALIZED_NAME: string = name.toLowerCase();
 
 		return this.headersDistinct[NORMALIZED_NAME] ?? [];
 	}
@@ -361,7 +361,7 @@ class RichClientRequest extends IncomingMessage
 	public getHeader(name: string): string | undefined;
 	public getHeader(name: string): Array<string> | string | undefined
 	{
-		const NORMALIZED_NAME: string = name.toString().toLowerCase();
+		const NORMALIZED_NAME: string = name.toLowerCase();
 
 		const HEADER: Array<string> | string | undefined = this.headers[NORMALIZED_NAME];
 

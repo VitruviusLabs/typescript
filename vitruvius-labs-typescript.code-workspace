@@ -90,8 +90,6 @@
 			"source.fixAll.tslint": "never"
 		},
 		"eslint.format.enable": true,
-		// Code spell checker extension settings
-		"cSpell.enabled": true,
 		// UX
 		"explorer.fileNesting.enabled": true,
 		"search.exclude": {
@@ -101,9 +99,10 @@
 		},
 		// TypeScript
 		"js/ts.implicitProjectConfig.target": "ESNext",
-		"typescript.tsdk": "./node_modules/typescript/bin",
-		"typescript.tsserver.maxTsServerMemory": 4096,
-		"typescript.preferences.quoteStyle": "double",
-		"prettier.enable": false,
+		"js/ts.tsdk.path": "./node_modules/typescript/bin",
+		"js/ts.tsserver.maxMemory": 4096,
+		"js/ts.preferences.quoteStyle": "double",
+		"js/ts.preferences.importModuleSpecifier": "relative",
+		"js/ts.preferences.preferTypeOnlyAutoImports": true,
 	}
 }

@@ -1,5 +1,5 @@
 import type { SocketConstructorOpts } from "node:net";
-import { isBoolean, isInstanceOf, isNumber, isStructuredData, unary } from "@vitruvius-labs/ts-predicate";
+import { isBoolean, isInstanceOf, isNumber, isObject, isStructuredData, unary } from "@vitruvius-labs/ts-predicate";
 import { isOnReadOpts } from "./is-on-read-opts.mjs";
 
 function isSocketConstructorOpts(value: unknown): value is SocketConstructorOpts
@@ -15,6 +15,7 @@ function isSocketConstructorOpts(value: unknown): value is SocketConstructorOpts
 		noDelay: { test: isBoolean, optional: true },
 		keepAlive: { test: isBoolean, optional: true },
 		keepAliveInitialDelay: { test: isNumber, optional: true },
+		typeOfService: { test: isObject, optional: true },
 		blockList: { ignore: true },
 	});
 }

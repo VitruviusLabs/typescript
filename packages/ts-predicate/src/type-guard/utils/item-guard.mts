@@ -6,7 +6,6 @@ function itemGuard<Type>(value: unknown, callable: Test<Type>): value is Type
 {
 	try
 	{
-		// eslint-disable-next-line @ts/no-unnecessary-condition -- assertion return undefined
 		return callable(value) ?? true;
 	}
 	catch (error: unknown)

@@ -1,4 +1,5 @@
-// @ts-expect-error -- Unused parameter is intended
+// @ts-expect-error: Unused parameter is intended
+// eslint-disable-next-line @ts/no-unused-vars -- Unused parameter is intended
 function isUnknown(value: unknown): value is unknown
 {
 	return true;

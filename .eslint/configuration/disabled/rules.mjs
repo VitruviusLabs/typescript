@@ -36,11 +36,7 @@ const RULES = {
 	// We don't do JSX
 	"@style/jsx-pascal-case": "off",
 	// We don't do JSX
-	"@style/jsx-props-no-multi-spaces": "off",
-	// We don't do JSX
 	"@style/jsx-self-closing-comp": "off",
-	// We don't do JSX
-	"@style/jsx-sort-props": "off",
 	// We don't do JSX
 	"@style/jsx-tag-spacing": "off",
 	// We don't do JSX
@@ -77,8 +73,6 @@ const RULES = {
 	"@ts/no-mixed-enums": "off",
 	// Handled by TypeScript
 	"@ts/no-redeclare": "off",
-	// It was not necessary so far
-	"@ts/no-restricted-imports": "off",
 	// Not needed so far
 	"@ts/no-restricted-types": "off",
 	// The @ts/parameter-properties rule make this rule obsolete
