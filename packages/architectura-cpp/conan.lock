@@ -1,0 +1,9 @@
+{
+    "version": "0.5",
+    "requires": [
+        "boost/1.86.0#0f50292723b9e4d908af7b26b8da79e5%1788958844.501"
+    ],
+    "build_requires": [],
+    "python_requires": [],
+    "config_requires": []
+}
